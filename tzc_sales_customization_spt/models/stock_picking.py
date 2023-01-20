@@ -13,8 +13,6 @@ import base64
 import ast
 import os
 
-
-
 class stock_picking(models.Model):
     _inherit = "stock.picking"
 
