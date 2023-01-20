@@ -1,0 +1,64 @@
+<?xml version='1.0' encoding='utf-8'?>
+<odoo>
+    <data>
+        <record id="kits_assign_salesperson_wizard_view_form" model="ir.ui.view">
+            <field name="name">kits.assign.salesperson.wizard.view.form</field>
+            <field name="model">kits.assign.salesperson.wizard</field>
+            <field name="arch" type="xml">
+                <form>
+                    <sheet>
+                        <div>
+                            <h3>
+                                <field name="message" readonly="1" style="color:red" attrs="{'invisible':[('message','=',False)]}"/>
+                            </h3>
+                        </div>
+                        <group>
+                            <group>
+                                <field name="sales_person_id" options="{'no_create': True, 'no_create_edit' : True}" required="1"/>
+                                <field name="change_contact_options" widget="radio" attrs="{'invisible':[('hide_button','=',False)]}" />
+                            </group>
+                            <!-- <group>
+                                <field name="archive_old" />
+                            </group> -->
+                            <group>
+                                <field name="readonly_new_manager" invisible="1" />
+                                <field name="hide_button" invisible="1" />
+                                <field name="new_manager_id" attrs="{'invisible':[('hide_button','=',True)],'readonly':[('readonly_new_manager','=',True)]}" options="{'no_create':True,'no_open':True}" />
+                            </group>
+                            <group>
+                                <field name="partner_ids" readonly="1" options="{'no_create': True, 'no_create_edit' : True}" attrs="{'invisible':[('hide_button','=',False)]}">
+                                    <tree>
+                                        <field name="internal_id"/>
+                                        <field name="contact_name_spt"/>
+                                        <field name="email"/>
+                                        <field name="user_id"/>
+                                        <field name="customer_type"/>
+                                    </tree>
+                                </field>
+                            </group>
+                        </group>
+                    </sheet>
+                    <footer>
+                        <button string="Update Customer and Order" name="update_orders" type="object" class="oe_highlight" invisible="context.get('from_action')" attrs="{'invisible':[('hide_button','=',True)]}"/>
+                        <button string="Update Customer" name="update_partner" type="object" class="oe_highlight" invisible="context.get('from_action')" attrs="{'invisible':[('hide_button','=',True)]}"/>
+                        <button string="Update Customer and Order" name="update_sales_Person" type="object" class="oe_highlight" context="{'multiple_customer_order_update':True}" invisible="not context.get('from_action')" attrs="{'invisible':[('hide_button','=',True)]}"/>
+                        <button string="Update Customer" name="update_sales_Person" type="object" class="oe_highlight" invisible="not context.get('from_action')" attrs="{'invisible':[('hide_button','=',True)]}"/>
+                        <button string="Process" name="action_process" type="object" class="oe_highlight" attrs="{'invisible':[('hide_button','=',False)]}"/>
+                        <button string="Cancel" class="btn-secondary" special="cancel" />
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+        <record id="partner_sale_person_assign_id" model="ir.actions.act_window">
+            <field name="name">Assign Sales Person</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">kits.assign.salesperson.wizard</field>
+            <field name="view_mode">form</field>
+            <field name="context">{'from_action':True}</field>
+            <field name="groups_id" eval="[(4, ref('base.group_system')),(4,ref('tzc_sales_customization_spt.group_sales_manager_spt'))]"/>
+            <field name="target">new</field>
+            <field name="binding_model_id" ref="base.model_res_partner" />
+        </record>
+    </data>
+</odoo>

@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <data noupdate="1">
+
+        <!-- <record id="rule_mailing_contact_of_manager_country" model="ir.rule">
+            <field name="name">Mailing Contacts of Manager's designated countries</field>
+            <field ref="mass_mailing.model_mailing_contact" name="model_id"/>
+            <field name="domain_force">[('country_id','in',user.contact_allowed_countries.ids)]</field>
+            <field name="groups" eval="[(4, ref('tzc_sales_customization_spt.group_sales_manager_spt'))]" />
+            <field name="perm_read" eval="True"/>
+        </record> -->
+
+        <!-- 
+        <record id="sales_manager_rule_marketing_campaign" model="ir.rule">
+            <field name="name">Sales Manager Marketing Campaign</field>
+            <field ref="model_marketing_campaign" name="model_id"/>
+            <field name="domain_force">['|',('user_id','=',user.id),('user_id','in',user.allow_user_ids.ids)]</field>
+            <field name="groups" eval="[(4, ref('tzc_sales_customization_spt.group_sales_manager_spt'))]"/>
+        </record> -->
+
+
+        <!-- <record id="sales_manager_email_log" model="ir.rule">
+            <field name="name">Sales Manager Email Log</field>
+            <field ref="model_mailgun_email_logs" name="model_id"/>
+            <field name="domain_force">['|',('create_user_id','=',user.id),('create_user_id','in',user.allow_user_ids.ids)]</field>
+            <field name="groups" eval="[(4, ref('tzc_sales_customization_spt.group_sales_manager_spt'))]"/>
+        </record> -->
+
+
+        <!-- <record id="kits_sales_manager_access_rule" model="ir.rule">
+            <field name="name">Sales Manager Rule For Website Visitor</field>
+            <field ref="website.model_website_visitor" name="model_id"/>
+            <field name="domain_force">['|','|',('partner_id.user_ids','in',user.allow_user_ids.ids),('partner_id.user_id','in',user.allow_user_ids.ids),('partner_id.country_id','in',user.contact_allowed_countries.ids)]</field>
+            <field name="groups" eval="[(4, ref('tzc_sales_customization_spt.group_sales_manager_spt'))]" />
+        </record> -->
+
+
+        <!-- <record id="sales_manager_rule_for_catalog_spt" model="ir.rule">
+            <field name="name">Sales Manager For Catalog</field>
+            <field ref="model_sale_catalog" name="model_id"/>
+            <field name="domain_force">[('user_id','in',user.allow_user_ids.ids)]</field>
+            <field name="groups" eval="[(4, ref('tzc_sales_customization_spt.group_sales_manager_spt'))]"/>
+        </record> -->
+
+        <record id="sales_manager_rule_for_sale_order_spt" model="ir.rule">
+            <field name="name">Sales Manager For Sale Order</field>
+            <field ref="sale.model_sale_order" name="model_id"/>
+            <field name="domain_force">[('user_id','in',user.allow_user_ids.ids)]</field>
+            <field name="groups" eval="[(4, ref('tzc_sales_customization_spt.group_sales_manager_spt'))]"/>
+        </record>
+
+        <record id="sales_manager_rule_for_sale_order_line_spt" model="ir.rule">
+            <field name="name">Sales Manager For Sale Order Line</field>
+            <field ref="sale.model_sale_order_line" name="model_id"/>
+            <field name="domain_force">[('order_id.user_id','in',user.allow_user_ids.ids)]</field>
+            <field name="groups" eval="[(4, ref('tzc_sales_customization_spt.group_sales_manager_spt'))]"/>
+        </record>
+
+        <record id="sales_manager_rule_for_invoice_spt" model="ir.rule">
+            <field name="name">Sales Manager For Invoice</field>
+            <field ref="account.model_account_move" name="model_id"/>
+            <field name="domain_force">[('user_id','in',user.allow_user_ids.ids)]</field>
+            <field name="groups" eval="[(4, ref('tzc_sales_customization_spt.group_sales_manager_spt'))]"/>
+        </record>
+
+        <record id="sales_manager_rule_for_invoice_line_spt" model="ir.rule">
+            <field name="name">Sales Manager For Invoice</field>
+            <field ref="account.model_account_move_line" name="model_id"/>
+            <field name="domain_force">[('move_id.user_id','in',user.allow_user_ids.ids)]</field>
+            <field name="groups" eval="[(4, ref('tzc_sales_customization_spt.group_sales_manager_spt'))]"/>
+        </record>
+
+        <record id="sales_manager_rule_for_res_partner_spt" model="ir.rule">
+            <field name="name">Sales Manager For Contact</field>
+            <field ref="base.model_res_partner" name="model_id"/>
+            <field name="domain_force">['|','|',('user_ids','in',user.allow_user_ids.ids),('user_id','in',user.allow_user_ids.ids),('country_id','in',user.contact_allowed_countries.ids)]</field>
+            <field name="groups" eval="[(4, ref('tzc_sales_customization_spt.group_sales_manager_spt'))]"/>
+            <field name="perm_unlink" eval="False"/>
+        </record>
+
+        <!-- <record id="sales_manager_rule_for_pending_catalog_spt" model="ir.rule">
+            <field name="name">Sales Manager For Pending Catalog</field>
+            <field ref="model_pending_catalog_spt" name="model_id"/>
+            <field name="domain_force">['|',('user_id','=',user.id),('user_id','in',user.allow_user_ids.ids)]</field>
+            <field name="groups" eval="[(4, ref('tzc_sales_customization_spt.group_sales_manager_spt'))]"/>
+        </record>
+
+        <record id="sales_manager_rule_for_order_catalog_spt" model="ir.rule">
+            <field name="name">Sales Manager For Order Catalog</field>
+            <field ref="model_pending_order_spt" name="model_id"/>
+            <field name="domain_force">['|',('user_id','=',user.id),('user_id','in',user.allow_user_ids.ids)]</field>
+            <field name="groups" eval="[(4, ref('tzc_sales_customization_spt.group_sales_manager_spt'))]"/>
+        </record> -->
+        <record id="rule_own_partner_salesperson" model="ir.rule">
+            <field name="name">View Own partner</field>
+            <field ref="model_res_partner" name="model_id"/>
+            <field name="domain_force">['|',('user_id','=',user.id),('id','=',user.partner_id.id)]</field>
+            <!-- <field name="domain_force">['|',('sales_person_ids','in',user.id),('id','=',user.partner_id.id)]</field> -->
+            <field name="groups" eval="[(4, ref('group_partner_access_salesperson'))]"/>
+            <field name="perm_unlink" eval="False"/>
+        </record>
+
+        <record id="rule_all_partner_manager" model="ir.rule">
+            <field name="name">View All partner</field>
+            <field ref="model_res_partner" name="model_id"/>
+            <field name="domain_force">[(1,'=',1)]</field>
+            <field name="groups" eval="[(4, ref('group_partner_access_manager'))]"/>
+            <field name="perm_unlink" eval="False"/>
+        </record>
+
+        <record id="self_access_rule_for_internaluser_res_partner_spt" model="ir.rule">
+            <field name="name">self rule for internal user</field>
+            <field ref="model_res_partner" name="model_id"/>
+            <field name="domain_force">['|',('id','=',user.partner_id.id),('is_user_internal','=',True)]</field>
+            <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+            <field name="perm_unlink" eval="False"/>
+        </record>
+
+        <record id="admin_customer_partner_spt" model="ir.rule">
+            <field name="name">Administrator</field>
+            <field ref="model_res_partner" name="model_id"/>
+            <field name="domain_force">[(1,'=',1)]</field>
+            <field name="groups" eval="[(4, ref('base.group_system'))]"/>
+        </record>
+
+    </data>
+
+
+</odoo>

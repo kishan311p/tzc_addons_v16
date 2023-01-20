@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <data>
+        <record id="kits_change_contact_country_form_view" model="ir.ui.view">
+            <field name="name">kits.change.contact.country.form.view</field>
+            <field name="model">kits.change.contact.country</field>
+            <field name="arch" type="xml">
+                <form>
+                    <sheet>
+                        <div>
+                            <h3>
+                                <field name="message" readonly="1" style="color:red;" />
+                            </h3>
+                        </div>
+
+                        <group>
+                            <group>
+                                <field name="country_id" options="{'no_create':True,'no_create_edit':True}"/>
+                            </group>
+                            <group>
+                                <field name="state_id" domain="[('country_id','=',country_id)]"/>
+                            </group>
+                        </group>
+                    </sheet>
+                    <footer>
+                        <button name="action_process" type="object" string="Process" class="oe_highlight"/>
+                        <button special="cancel" type="object" string="Cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+    </data>
+
+</odoo>

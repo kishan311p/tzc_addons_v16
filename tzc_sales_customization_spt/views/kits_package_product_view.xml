@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="kits_package_product_form_view" model="ir.ui.view">
+            <field name="name">kits.package.product.form</field>
+            <field name="model">kits.package.product</field>
+            <field name="arch" type="xml">
+                <form>
+                    <header>
+                        <button name="action_bulk_price_change" type="object" class="oe_highlight"
+                            string="Bulk Discount" />
+                    </header>
+                    <sheet>
+                        <div class="oe_button_box" name="button_box" invisible="1">
+                            <field name="is_published" invisible="1" />
+                            <button type="object" name="product_is_publish" style="color:#f06767;"
+                                class="oe_stat_button" icon="fa-product-hunt"
+                                attrs="{'invisible':[('is_published','=',True)]}">
+                                <span>Unpublished</span>
+                            </button>
+                            <button type="object" name="product_is_unpublish" style="color:#00b115;"
+                                class="oe_stat_button" icon="fa-product-hunt"
+                                attrs="{'invisible':[('is_published','=',False)]}">
+                                <span>Published</span>
+                            </button>
+                        </div>
+                        <div class="">
+                            <field name="pack_product_image" widget="image" class="oe_avatar" />
+                        </div>
+                        <div class="oe_title">
+                            <div name="kits_name">
+                                <div class="col-12">
+                                    <label class="oe_edit_only" for="name" string="Package Name" />
+                                    <h1>
+                                        <field name="name" placeholder="Package Name" required="1" />
+                                    </h1>
+                                </div>
+
+                            </div>
+                        </div>
+
+                        <group>
+                            <group>
+                                <field name="package_seo_name" required="1" />
+                                <field name="pack_product_url" />
+                                <field name="sale_price_usd" />
+                                <!-- <field name="sale_price_cad" readonly="1" /> -->
+                                <field name="discounted_price_usd" readonly="1" />
+                                <!-- <field name="discounted_price_cad" readonly="1" /> -->
+                                <field name="is_promotion_required" />
+                                <field name="promo_code"
+                                    attrs="{'invisible':[('is_promotion_required','=',False)],'required':[('is_promotion_required','=',True)]}" />
+                                <field name="start_date" />
+                                <field name="end_date" />
+                                <field name="is_global" />
+                                <field name="pack_description" required="1" />
+                            </group>
+                        </group>
+                        <notebook>
+                            <page name="product_lines" string="Package Products">
+                                <field name="product_line_ids" mode="tree">
+                                    <tree editable="bottom" create="1" delete="1"
+                                        string="Combo Product Lines" default_order="product_id">
+                                        <field name="image_product_url" class="oe_avatar"
+                                            string="Primary Image" widget="image"
+                                            options="{'zoom': true,'thumb_image':'image_product_url','preview_image':'image_product_url','size': [256, 256]}" />
+                                        <field name="image_product_secondary_url" class="oe_avatar"
+                                            string="Secondary Image" widget="image"
+                                            style="margin-left:10px;"
+                                            options="{'zoom': true,'thumb_image':'image_product_secondary_url','preview_image':'image_product_secondary_url','size': [256, 256]}" />
+                                        <field name="product_id" />
+                                        <field name="sale_type" />
+                                        <field name="qty" />
+                                        <field name="product_price" />
+                                        <field name="usd_price" string="Our Price" />
+                                        <field name="discount" />
+                                        <field name="fix_discount_price" />
+                                        <field name="subtotal" />
+                                    </tree>
+                                </field>
+
+                            </page>
+                            <page name="partner_ids" string="Customers">
+                                <group>
+                                    <field name="select_all" />
+                                </group>
+                                <br />
+                                <field name="partner_ids" />
+                            </page>
+                        </notebook>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+        <record id="kits_package_product_tree_view" model="ir.ui.view">
+            <field name="name">kits.package.product.tree.view</field>
+            <field name="model">kits.package.product</field>
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="pack_product_image" widget="image"
+                        options="{'zoom': true,'size': [128, 120]}" />
+                    <field name="name" />
+                    <field name="sale_price_usd" />
+                    <!-- <field name="sale_price_cad" /> -->
+                    <!-- <field name="discounted_price_cad" /> -->
+                    <field name="discounted_price_usd" />
+
+                </tree>
+            </field>
+        </record>
+        <record id="kits_package_product_action_view" model="ir.actions.act_window">
+            <field name="name">Packages</field>
+            <field name="res_model">kits.package.product</field>
+            <field name="view_mode">tree,form</field>
+            <field name="context">{}</field>
+        </record>
+        <!-- sales/product -->
+        <menuitem id="kits_menu_combo_products" groups="base.group_system" name="Package Products"
+            action="kits_package_product_action_view" parent='sale.product_menu_catalog' />
+        <!-- website/ -->
+        <!-- <menuitem id="kits_menu_website_combo_products" groups="base.group_system"
+        name="Package Products" action="kits_package_product_action_view"
+        parent='website_sale.menu_catalog'/> -->
+    </data>
+</odoo>

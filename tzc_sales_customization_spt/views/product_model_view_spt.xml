@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!-- <act_window id="action_open_model_product_variants" name="Model Products" res_model="product.product" view_mode="kanban,form,tree" domain="[('model', '=', active_id)]"/> -->
+
+        <record id="action_product_model_spt" model="ir.actions.act_window">
+        <field name="view_mode">tree,form</field>
+            <field name="name">Product Model</field>
+            <field name="res_model">product.model.spt</field>
+        </record>
+
+        <record id="product_model_from_view_spt" model="ir.ui.view">
+            <field name="name">product.model.from.view.spt</field>
+            <field name="model">product.model.spt</field>
+            <field name="arch" type="xml">
+                <form create="0" edit="0">
+                    <sheet>
+                        <div class="oe_button_box" name="button_box">
+                            <button name="open_model_product_variants" type="object" class="oe_stat_button" icon="fa-cubes">
+                                <field name="product_count" string="Products" widget="statinfo"/>
+                            </button>
+                        </div>
+
+                        <group>
+                            <group>
+                                <field name="name"/>
+                            </group>
+
+                        </group>
+
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="product_model_tree_view_spt" model="ir.ui.view">
+            <field name="name">product.model.tree.view.spt</field>
+            <field name="model">product.model.spt</field>
+            <field name="arch" type="xml">
+                <tree default_order="name" create="0" edit="0">
+                    <field name="name"/>
+                </tree>
+            </field>
+        </record>
+
+    <menuitem name="Model" action="action_product_model_spt" id="menu_action_product_model_spt" parent="menu_action_product_custom_spt" sequence="1"/>
+
+    </data>
+</odoo>
+

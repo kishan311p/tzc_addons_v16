@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <record id="python_script_runner_tree_view" model="ir.ui.view">
+            <field name="name">python.script.runner.tree.view</field>
+            <field name="model">python.script.runner</field>
+            <field name="type">tree</field>
+            <field name="arch" type="xml">
+            	<tree string="Python Script">
+            		<field name="name"/>
+            	</tree>
+            </field>
+       </record>
+
+        <record id="python_script_runner_form_view" model="ir.ui.view">
+            <field name="name">python.script.runner.form.view</field>
+            <field name="model">python.script.runner</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <form string="Python Script">
+                    <sheet>
+                        <separator string="Name"/>
+                        <field name="name" nolabel="1"/>
+                        <separator string="Generate your python code below and click on Execute button."/>
+                        <html>
+                            <b style="font-size:15px;">
+                                <field name="code" nolabel="1"/>
+                            </b> 
+                        </html>
+                        <group>
+                            <button special="cancel" string="Cancel" icon="fa-close" style="color:red"/>
+                                <!-- <i class="fa fa-close" title="Cancel" style="color:red"></i>
+                            </button> -->
+                            <button name="execute_script" string="Execute" type="object" icon="fa-caret-square-o-right" style="color:green"/> 
+                                <!-- <i class="fa fa-caret-square-o-right" title="Execute" style="color:green"></i>
+                            </button> -->
+                        </group>
+                        <group>
+                            <separator string="Result"/>
+                            <field name="result" nolabel="1"/>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="action_python_script_runner" model="ir.actions.act_window">
+            <field name="name">Python Script</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">python.script.runner</field>
+            <field name="view_mode">tree,form</field>
+            <field name="view_id" ref="python_script_runner_tree_view"/>
+        </record>
+
+        <menuitem parent="base.menu_automation" name="Python Script" id="menu_python_script_runner" action="action_python_script_runner" />
+
+    </data>
+</odoo>

@@ -1,0 +1,15 @@
+<?xml version='1.0' encoding='utf-8'?>
+<odoo>
+    <data>
+        <record id="stock_move_line_inherit_tree_view" model="ir.ui.view">
+            <field name="name">stock.move.line.inherit.tree.view</field>
+            <field name="model">stock.move.line</field>
+            <field name="inherit_id" ref="stock.view_move_line_tree"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='reference']" position="after">
+                    <field name="attach_file_name" />
+                </xpath>
+            </field>
+        </record>
+    </data>
+</odoo>

@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <data>
+        <record id="kits_sales_commission_inherit_account_move_form_view" model="ir.ui.view">
+            <field name="name">kits.sales.commission.inherit.account.move.form.view</field>
+            <field name="model">account.move</field>
+            <field name="inherit_id" ref="account.view_move_form" />
+            <field name="arch" type="xml">
+                <!-- <xpath expr="//sheet/widget[@name='web_ribbon']" position="replace">
+                    <widget name="web_ribbon" title="Paid" attrs="{'invisible': [('is_commission_paid','=',False)]}"/>
+                </xpath> -->
+                <xpath expr="//notebook/page[@id='aml_tab']" position="after">
+                    <page name="commission_lines" string="Commissions" id="commission_lines" attrs="{'invisible':[('state','!=','posted')]}" groups="base.group_system">
+                        <field name="commission_line_ids" readonly="1" context="{'default_create_type':'manual'}">
+                            <tree decoration-danger="create_type == 'manual'" decoration-info="create_type == 'by_system'" >
+                                <field name="create_type" invisible="1" />
+                                <field name="state" invisible="1" />
+                                <field name="name" attrs="{'readonly':[('create_type','=','by_system')]}"/>
+                                <field name="user_id" attrs="{'readonly':[('create_type','=','by_system')]}"/>
+                                <field name="commission_for" attrs="{'readonly':[('create_type','=','by_system')]}"/>
+                                <field name="amount" sum="Total" attrs="{'readonly':[('create_type','=','by_system')]}"/>
+                            </tree>
+                            <form>
+                                <sheet>
+                                    <div>
+                                        <h3><field name="name" readonly="1"/></h3>
+                                    </div>
+                                    <group>
+                                        <group>
+                                            <field name="create_type"  invisible="1" />
+                                            <field name="commission_for"  attrs="{'readonly':[('create_type','=','by_system')]}" />
+                                            <field name="user_id"  attrs="{'readonly':[('create_type','=','by_system')]}" options="{'no_create':True,'no_open':True}" />
+                                        </group>
+                                        <group>
+                                            <field name="rule_id" force_save="1" readonly="1" options="{'no_create':True,'no_open':True}"/>
+                                            <field name="amount"  attrs="{'readonly':[('create_type','=','by_system')]}" />
+                                        </group>
+                                    </group>
+                                </sheet>
+                            </form>
+                        </field>
+                    </page>
+                </xpath>
+            </field>
+        </record>
+
+        <!-- <record id="kits_sales_commission_inherit_account_move_tree_view" model="ir.ui.view">
+            <field name="name">kits.sales.commission.inherit.account.move.tree.view</field>
+            <field name="model">account.move</field>
+            <field name="inherit_id" ref="account.view_invoice_tree" />
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='invoice_payment_state']" position="replace">
+                    <field name="kits_payment_status" string="Payment"/>
+                </xpath>
+            </field>
+        </record> -->
+
+        <!-- <record id="kits_sales_commission_inherit_account_move_search_view" model="ir.ui.view">
+            <field name="name">kits.sales.commission.inherit.account.move.search.view</field>
+            <field name="model">account.move</field>
+            <field name="inherit_id" ref="account.view_account_invoice_filter" />
+            <field name="arch" type="xml">
+                <filter name="paid" position="replace">
+                    <filter name="paid" string="Paid" domain="[('is_commission_paid', '=',True)]"/>
+                </filter>
+                <filter name="unpaid" position="replace">
+                    <filter name="unpaid" string="Not Paid" domain="[('is_commission_paid', '=', False)]"/>
+                </filter>
+            </field>
+        </record> -->
+    </data>
+
+</odoo>

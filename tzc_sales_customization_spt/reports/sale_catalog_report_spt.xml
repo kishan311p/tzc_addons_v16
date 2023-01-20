@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!-- <report 
+            id="action_report_saleorder_catalog_spt"
+            string="Catalog"
+            model="sale.order" 
+            report_type="qweb-pdf"
+            file="tzc_sales_customization_spt.report_saleorder_for_catalog_spt" 
+            name="tzc_sales_customization_spt.report_saleorder_for_catalog_spt"
+            print_report_name="'Catalog - %s' % (object.name)"
+            menu="False"
+
+        /> -->
+        <report 
+            id="action_report_sales_preson_spt"
+            string="sales_preson"
+            model="sales.report.for.sales.person.wizard.spt" 
+            report_type="qweb-pdf"
+            file="tzc_sales_customization_spt.report_template_sales_preson_spt" 
+            name="tzc_sales_customization_spt.report_template_sales_preson_spt"
+            print_report_name="'Sales Preson Report'"
+            menu="False"
+
+        />
+        <!-- <report 
+            id="action_report_saleorder"
+            string="Quotation / Order"
+            model="False" 
+            report_type="qweb-pdf"
+            file="sale.report_saleorder" 
+            name="sale.report_saleorder"
+            print_report_name="(object.state in ('draft', 'sent') and 'Quotation - %s' % (object.name)) or 'Order - %s' % (object.name)"
+        /> -->
+
+        <report
+            string="Picking Operations"
+            id="stock.action_report_picking"
+            model="False"
+            report_type="qweb-pdf"
+            name="stock.report_picking"
+            file="stock.report_picking_operations"
+            print_report_name="'Picking Operations - %s - %s' % (object.partner_id.name or '', object.name)"
+        />
+
+        <report 
+            id="action_catalog_report_spt"
+            string="Catalog"
+            model="pending.catalog.spt" 
+            report_type="qweb-pdf"
+            file="tzc_sales_customization_spt.catalog_report_template_spt" 
+            name="tzc_sales_customization_spt.catalog_report_template_spt"
+            print_report_name="'Catalog - %s' % (object.catalog_id.name)"
+            menu="False"
+
+        />
+        <report 
+            id="action_confirm_catalog_report_spt"
+            string="Catalog"
+            model="pending.order.spt" 
+            report_type="qweb-pdf"
+            file="tzc_sales_customization_spt.confirm_catalog_report_template_spt" 
+            name="tzc_sales_customization_spt.confirm_catalog_report_template_spt"
+            print_report_name="'Catalog - %s' % (object.catalog_id.name)"
+            menu="False"
+
+        />
+
+        <report 
+            id="action_catalog_report_pdf"
+            string="Catalog"
+            model="kits.wizard.download.catalog.excel" 
+            report_type="qweb-pdf"
+            file="tzc_sales_customization_spt.confirm_catalog_report_pdf_template" 
+            name="tzc_sales_customization_spt.confirm_catalog_report_pdf_template"
+            print_report_name="'Catalog - %s' % (object.catalog_id.name)"
+            menu="False"
+
+        />
+
+
+        <report 
+            id="action_abbreviate_report_spt"
+            string="Abbreviate Report"
+            model="sale.order" 
+            report_type="qweb-pdf"
+            file="tzc_sales_customization_spt.abbreviate_report_template_spt" 
+            name="tzc_sales_customization_spt.abbreviate_report_template_spt"
+            print_report_name="'Sales - %s Abbreviate Report' % (object.name)"
+            menu="False"
+
+        />
+
+        <report 
+            id="action_abbreviate_invoice_report_spt"
+            string="Abbreviate Report"
+            model="account.move" 
+            report_type="qweb-pdf"
+            file="tzc_sales_customization_spt.abbreviate_invoice_report_template_spt" 
+            name="tzc_sales_customization_spt.abbreviate_invoice_report_template_spt"
+            print_report_name="'Invoice - %s Abbreviate Report' % (object.name)"
+            menu="False"
+
+        />
+
+        <report
+            id = "account.account_invoices"
+            string = "Invoices"
+            model = "account.move"
+            report_type = "qweb-pdf"
+            file = "tzc_sales_customization_spt.kits_invoice_report"
+            name = "tzc_sales_customization_spt.kits_invoice_report"
+            print_report_name = "(object._get_report_base_filename())"
+        />
+
+        <report
+            id="account.account_invoices_without_payment"
+            model="False"
+            string="Invoices without Payment"
+            report_type="qweb-pdf"
+            name="account.report_invoice"
+            file="account.report_invoice"
+            attachment="(object.state == 'posted') and ((object.name or 'INV').replace('/','_')+'.pdf')"
+            print_report_name="(object._get_report_base_filename())"
+        />
+
+    </data>
+</odoo>

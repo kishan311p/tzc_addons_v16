@@ -1,0 +1,477 @@
+<?xml version='1.0' encoding='utf-8'?>
+<odoo>
+    <data noupdate="0">
+        <record model="ir.ui.menu" id="sale.menu_product_template_action">
+            <field name="active" eval="False" />
+        </record>
+        <record model="ir.ui.menu" id="sale.menu_products">
+            <field name="name">Products</field>
+        </record>
+        <record model="ir.actions.act_window" id="product.product_normal_action_sell">
+            <field name="name">Products</field>
+        </record>
+
+        <record id="inherit_product_product_form_view" model="ir.ui.view">
+            <field name="name">inherit.product.product.form.view</field>
+            <field name="model">product.product</field>
+            <field name="inherit_id" ref="product.product_normal_form_view" />
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='name']" position="before">
+                    <field name="variant_name" string="Name"/>
+                </xpath>
+                <xpath expr="//field[@name='name']" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </xpath>
+                <xpath expr="//field[@name='uom_id']" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </xpath>
+                <xpath expr="//field[@name='uom_po_id']" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </xpath>
+                <xpath expr="//field[@name='expense_policy']" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </xpath>
+                <xpath expr="//field[@name='id']" position="after">
+                    <field name="case_image_url" class="oe_avatar" string="Primary Image"
+                        widget="image" style="margin-left:10px;"
+                        options="{'zoom': true,'thumb_image':'case_image_url','preview_image':'case_image_url','size': [235, 81]}" />
+                    <field
+                        name="image_secondary_url" class="oe_avatar" string="Secondary Image"
+                        widget="image" style="margin-left:10px;"
+                        options="{'zoom': true,'thumb_image':'image_secondary_url','preview_image':'image_secondary_url','size': [173, 173]}" />
+                    &#x2063;&#x2063;&#x2063;&#x2063;&#x2063;&#x2063;&#x2063;&#x2063;&#x2063;&#x2063;&#x2063;&#x2063;
+                    <field
+                        name="image_url" class="oe_avatar" string="Primary Image" widget="image"
+                        options="{'zoom': true,'thumb_image':'image_url','preview_image':'image_url','size': [173, 173]}" />
+                </xpath>
+                <xpath expr="//button[@name='action_view_orderpoints']" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </xpath>
+                <xpath expr="//button[@name='action_open_label_layout']" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </xpath>
+                <xpath expr="//div[hasclass('oe_button_box')]/button[@name='open_pricelist_rules']"
+                    position="before">
+                    <field name="is_published_spt" invisible="1" />
+                    <button type="object" name="website_is_publish_form" class="oe_stat_button"
+                        icon="fa-product-hunt" attrs="{'invisible':[('is_published_spt','=',True)]}">
+                        <span style="color:#f06767;">Unpublished</span>
+                    </button>
+                    <button type="object" name="website_is_unpublish_form" class="oe_stat_button"
+                        icon="fa-product-hunt"
+                        attrs="{'invisible':[('is_published_spt','=',False)]}">
+                        <span style="color:#00b115;">Published</span>
+                    </button>
+                    <button name="open_product_variant_spt" type="object" icon="fa-eye"
+                        class="oe_stat_button">
+                        <field string="Variants" name="variant_count" widget="statinfo" />
+                    </button>
+                </xpath>
+                <xpath expr="//form" position="attributes">
+                    <attribute name="edit">0</attribute>
+                </xpath>
+                <xpath expr="//form" position="attributes">
+                    <attribute name="create">0</attribute>
+                </xpath>
+                <xpath expr="//form" position="attributes">
+                    <attribute name="delete">0</attribute>
+                </xpath>
+                <xpath expr="//field[@name='default_code']" position="replace">
+                </xpath>
+                <xpath expr="//field[@name='barcode']" position="replace">
+                </xpath>
+                <xpath expr="//field[@name='product_tooltip']" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </xpath>
+                <xpath expr="//div[hasclass('fst-italic') and hasclass('text-muted')][2]"
+                    position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </xpath>
+                <xpath expr="//field[@name='invoice_policy']" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </xpath>
+                <xpath expr="//field[@name='categ_id']" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </xpath>
+                <xpath expr="//field[@name='product_tag_ids']" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </xpath>
+                <xpath expr="//field[@name='additional_product_tag_ids']" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </xpath>
+                <xpath expr="//field[@name='company_id']" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </xpath>
+                <xpath expr="//field[@name='lst_price']" position="attributes">
+                    <attribute name="string">Our Price</attribute>
+                </xpath>
+                <xpath expr="//field[@name='taxes_id']" position="before">
+                    <field name="price_msrp" />
+                    <field name="price_wholesale" />
+                </xpath>
+                <xpath expr="//field[@name='detailed_type']" position="after">
+                    <field name="default_code" />
+                    <field name="barcode" />
+                    <field name="product_seo_keyword" />
+                    <field name="product_seo_url" widget="url" />
+                    <field name="primary_image_url" widget="url" />
+                    <field name="sec_image_url" widget="url" />
+                </xpath>
+                <xpath expr="//page[@name='sales']" position="before">
+                    <page string="Sales" name="kits_sales">
+                        <group>
+                            <group string="Invoicing">
+                                <field name="invoice_policy" widget="radio" />
+                                <field name="product_brand_commission" />
+                            </group>
+                            <group string="eCommerce Shop" name="shop"
+                                attrs="{'invisible': [('sale_ok','=',False)]}">
+                                <field name="label_line_ids" widget="one2many_list"
+                                    context="{'show_attribute': False}">
+                                    <tree string="Labels" editable="bottom">
+                                        <!-- <field name="website_id" /> -->
+                                        <field name="label" />
+                                    </tree>
+                                </field>
+                            </group>
+                        </group>
+                        <group name="product_template_images" string="Extra Product Media"
+                            attrs="{'invisible': [('sale_ok','=',False)]}">
+                        </group>
+                        <group string="Sales Description" name="description">
+                            <field colspan="2" name="description_sale" nolabel="1"
+                                placeholder="This note is added to sales orders and invoices." />
+                        </group>
+                    </page>
+                </xpath>
+
+                <xpath expr="//page[@name='general_information']/group" position="after">
+                    <group string="General Information">
+                        <group name="product_specification">
+
+                            <field name="categ_id" />
+                            <field name="brand" />
+                            <field name="model" />
+                            <field name="color_code" />
+                            <field name="product_color_name" />
+                            <field name="eye_size" />
+
+                            <field name="bridge_size" />
+                            <field name="temple_size" />
+                            <field name='material_id' />
+                            <field name='shape_id' />
+                            <field name="secondary_color_name" />
+                            <field name="lense_color_name" />
+                            <field name="aging" />
+                            <field name="rim_type" />
+                            <field name="custom_message" />
+
+                        </group>
+
+                        <group>
+                            <field name="sale_type" widget="radio" />
+                            <field name="on_sale_usd"
+                                attrs="{'invisible':[('sale_type','!=','on_sale')]}" />
+                            <field name="on_sale_usd_in_percentage"
+                                attrs="{'invisible':[('sale_type','!=','on_sale')]}" />
+                            <field name="clearance_usd"
+                                attrs="{'invisible':[('sale_type','!=','clearance')]}" />
+                            <field name="clearance_usd_in_percentage"
+                                attrs="{'invisible':[('sale_type','!=','clearance')]}" />
+                            <field name="case_type" />
+                            <field name="new_arrival_update" />
+                            <field name="last_qty_update" />
+                            <field name="updated_on" />
+                            <field name="updated_by" />
+                            <field name="temporary_out_of_stock" />
+                            <field name="new_arrivals" string="New Arrivals" />
+                            <field name="on_consignment" />
+                            <field name="minimum_qty"
+                                attrs="{'invisible':[('on_consignment','=',False)]}" />
+                            <field name="length" />
+                            <field name="width" />
+                            <field name="height" />
+                            <field name="country_of_origin"
+                                options="{'no_create': True, 'no_create_edit':True}" />
+                            <field name="gender" />
+                            <field name="flex_hinges" />
+                            <field name="geo_restriction" widget="many2many_tags" />
+                        </group>
+                    </group>
+                </xpath>
+            </field>
+        </record>
+        <record id="tzc_product_product_reserve_inherit_form_view_spt" model="ir.ui.view">
+            <field name="name">tzc.product.product.reserve.inherit.form.view.spt</field>
+            <field name="model">product.product</field>
+            <field name="priority">50</field>
+            <field name="inherit_id" ref="stock.product_form_view_procurement_button" />
+            <field name="arch" type="xml">
+                <xpath expr="//button[@name='action_product_forecast_report']" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </xpath>
+                <xpath expr="//button[@name='action_view_orderpoints'][2]" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </xpath>
+
+                <button name="action_view_stock_move_lines" position="before">
+                    <button type="object" name="action_product_reserv_qty"
+                        attrs="{'invisible':[('type', 'not in', ['product', 'consu'])]}"
+                        class="oe_stat_button" icon="fa-cubes">
+                        <div class="o_field_widget o_stat_info">
+                            <span class="o_stat_value">
+                                <field name="available_qty_spt" widget="statinfo" nolabel="1"
+                                    class="mr4" />
+                                <field name="uom_name" />
+                            </span>
+                            <span class="o_stat_text">Available Qty</span>
+                        </div>
+                    </button>
+                    <button type="object" name="action_product_reserv_qty"
+                        attrs="{'invisible':[('type', 'not in', ['product', 'consu'])]}"
+                        class="oe_stat_button" icon="fa-truck">
+                        <div class="o_field_widget o_stat_info">
+                            <span class="o_stat_value">
+                                <field name="reversed_qty_spt" widget="statinfo" nolabel="1"
+                                    class="mr4" />
+                                <field name="uom_name" />
+                            </span>
+                            <span class="o_stat_text">Reserved Qty</span>
+                        </div>
+                    </button>
+                    <button type="object" name="actoin_get_sale_order"
+                        attrs="{'invisible':[('type', 'not in', ['product', 'consu'])]}"
+                        class="oe_stat_button" icon="fa-pencil-square-o">
+                        <div class="o_field_widget o_stat_info">
+                            <span class="o_stat_value">
+                                <field name="update_open_order" invisible="1" readonly="1" />
+                                <field name="order_not_invoice" widget="statinfo" nolabel="1"
+                                    class="mr4" />
+                            </span>
+                            <span class="o_stat_text">Open Orders</span>
+                        </div>
+                    </button>
+                </button>
+            </field>
+        </record>
+        <record id="tzc_product_sale_product_inherit_tree_view_spt" model="ir.ui.view">
+            <field name="name">tzc.product.sale.product.inherit.tree.view.spt</field>
+            <field name="model">product.product</field>
+            <field name="inherit_id" ref="sale.product_form_view_sale_order_button" />
+            <field name="arch" type="xml">
+                <button class="oe_stat_button" name="action_view_sales" type="object"
+                    position="replace">
+                    <button class="oe_stat_button" name="action_view_sales" type="object"
+                        icon="fa-signal" groups="sales_team.group_sale_salesman"
+                        help="Sold in the last 365 days"
+                        attrs="{'invisible': [('sale_ok', '=', False)]}">
+                        <div class="o_field_widget o_stat_info">
+                            <span class="o_stat_value">
+                                <field name="sales_count" widget="statinfo" nolabel="1" class="mr4" />
+                            </span>
+                            <span class="o_stat_text">Sale Orders</span>
+                        </div>
+                    </button>
+                </button>
+            </field>
+        </record>
+
+        <record id="tzc_product_product_inherit_tree_view_spt" model="ir.ui.view">
+            <field name="name">tzc.product.product.inherit.tree.view.spt</field>
+            <field name="model">product.product</field>
+            <field name="inherit_id" ref="product.product_product_tree_view" />
+            <field name="arch" type="xml">
+                <xpath expr="//tree" position="attributes">
+                    <attribute name="create">1</attribute>
+                    <attribute name="edit">1</attribute>
+                    <attribute name="multi_edit">1</attribute>
+                </xpath>
+                <field name="barcode" position="attributes">
+                    <attribute name="optional">show</attribute>
+                    <attribute name="invisible">1</attribute>
+                </field>
+                <field name="categ_id" position="attributes">
+                    <attribute name="optional">show</attribute>
+                </field>
+                <field name="type" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </field>
+                <xpath expr="//field[@name='default_code']" position="before">
+                    <field name="image_url" widget="image" options="{'zoom': true,'preview_image':'image_url','size': [173, 173]}" string="Primary" optional="show" />
+                    <field name="image_secondary_url" widget='image' options="{'zoom': true,'preview_image':'image_secondary_url','size': [173, 173]}" string="Secondary" optional="show" />
+                    <field name="case_image_url" widget='image' options="{'zoom': true,'preview_image':'case_image_url','size': [235, 81]}" string="Case Image" optional="show" />
+                    <field name="variant_name" string="Name" optional="show" />
+                </xpath>
+                <xpath expr="//field[@name='product_template_variant_value_ids']" position="after">
+                    <field name="variant_count" string="#Variant" optional="show" />
+                    <button name="open_product_variant_spt" string='Open Variant' type="object" 
+                        icon="fa-eye" attrs="{'invisible':[('variant_count','&lt;',2)]}" />
+                    <field name="sale_type" optional="show" />
+                    <field name="on_sale_usd" string="On sale Price"
+                        attrs="{'invisible':[('sale_type','!=','on_sale')]}" optional="show" />
+                    <field name="clearance_usd" string="Clearance Price"
+                        attrs="{'invisible':[('sale_type','!=','clearance')]}" optional="show" />
+                </xpath>
+                <xpath expr="//field[@name='default_code']" position="after">
+                    <field name="barcode" optional="show" />
+                    <field name="brand" optional="show" />
+                    <field name="model" optional="show" />
+                    <field name="color_code" optional="show" />
+                    <field name="eye_size" optional="show" />
+                    <field name="bridge_size" optional="show" />
+                    <field name="temple_size" optional="show" />
+                    <field name="aging" optional="show" invisible="1" />
+                    <field name="product_color_name" optional="show" />
+                    <field name="rim_type" optional="show" />
+                    <field name="shape_id" optional="show" />
+                    <field name="material_id" optional="show" />
+                    <field name="flex_hinges" optional="show" />
+                    <field name="gender" optional="show" />
+                    <field name="new_arrival_update" optional="show" />
+                    <field name="last_qty_update" optional="show" />
+                </xpath>
+                <xpath expr="//field[@name='company_id']" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </xpath>
+                <xpath expr="//field[@name='priority']" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </xpath>
+                <xpath expr="//field[@name='product_tag_ids']" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </xpath>
+                <xpath expr="//field[@name='categ_id']" position="after">
+                    <field name="price_wholesale" optional="show" />
+                    <field name="price_msrp" optional="show" />
+
+                    <field name="lst_price_usd" optional="show" />
+                    <field name="price_wholesale_usd" optional="show" />
+                    <field name="price_msrp_usd" optional="show" />
+                    <field name="reversed_qty_spt" groups='stock.group_stock_user' optional="show" />
+                    <field name="available_qty_spt" optional="show" />
+                    <field name="is_select_for_lenses" optional="hide" />
+                </xpath>
+                <xpath expr="//field[@name='name']" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </xpath>
+                <xpath expr="//field[@name='standard_price']" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </xpath>
+                <xpath expr="//field[@name='qty_available']" position="attributes">
+                    <attribute name="string">QTY On Hand</attribute>
+                    <attribute name="optional">show</attribute>
+                </xpath>
+                <xpath expr="//field[@name='virtual_available']" position="attributes">
+                    <attribute name="string">Forecasted Qty</attribute>
+                </xpath>
+                <xpath expr="//field[@name='virtual_available']" position="after">
+                    <field name="write_date" string="Last Update" optional="show" />
+                </xpath>
+                <xpath expr="//field[@name='default_code']" position="attributes">
+                    <attribute name="string">SKU</attribute>
+                </xpath>
+                <xpath expr="//field[@name='product_template_variant_value_ids']"
+                    position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </xpath>
+                <xpath expr="//field[@name='lst_price']" position="attributes">
+                    <attribute name="string">Price</attribute>
+                    <attribute name="invisible">1</attribute>
+                </xpath>
+                <xpath expr="//tree" position="attributes">
+                    <attribute name="create">0</attribute>
+                    <attribute name="edit">0</attribute>
+                    <attribute name="multi_edit">0</attribute>
+                </xpath>
+                <xpath expr="//field[@name='virtual_available']" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </xpath>
+                <xpath expr="//field[@name='qty_available']" position="after">
+                    <field name="order_not_invoice" groups='stock.group_stock_user' optional="show" />
+
+                </xpath>
+                <xpath expr="//tree" position="inside">
+                    <field name="is_published_spt" optional="hide" />
+                    <field name="is_forcefully_unpublished" optional="hide" />
+                    <field name='updated_on' string="Last Updated On" optional="show" />
+                    <field name='updated_by' string="Last Updated By" optional="show" />
+                </xpath>
+                <xpath expr="//tree" position="inside">
+                    <field name="product_seo_url" optional="hide" />
+                </xpath>
+            </field>
+        </record>
+
+        <record id="tzc_product_product_inherit_search_view_spt" model="ir.ui.view">
+            <field name="name">tzc.product.product.inherit.search.view.spt</field>
+            <field name="model">product.product</field>
+            <field name="inherit_id" ref="product.product_search_form_view"/>
+            <field name="arch" type="xml">
+                <field name="name" position="after">
+                    <field name='default_code' string='SKU'/>
+                    <field name='barcode' />
+                    <field name='brand' />
+                    <field name='model' />
+                    <field name='eye_size' />
+                    <field name='lense_color_name'  />
+                    <field name='country_of_origin'  />
+                    <field name='gender' widget="radio" />
+                    <field name='material' filter_domain="[('material','ilike',self)]"/>
+                    <field name="bridge_size"/>
+                    <field name="temple_size" />
+                    <field name='aging'  />
+                    <field name='rim_type'  />
+                    <field name='custom_message'  />
+                </field>
+                <field name="name" position="replace">
+                    <field name="name" string="Name" filter_domain="['|', '|','|',('variant_name','ilike',self),('default_code', 'ilike', self), ('name', 'ilike', self), ('barcode', 'ilike', self)]"/>
+                </field>
+                <xpath expr="//filter[@name='inactive']" position="after">
+                    <separator/>
+                    <filter name="image_not_Set" string="Image Not Set" domain="[('is_image_missing','=',True)]"/>
+                    <separator/>
+                    <!-- <filter name="available_in_slider_spt" string="Available In Slider" domain="[('available_in_slider_spt','=',True)]"/>
+                    <separator/> -->
+                    <filter name="on_sale_products" string="On Sale Products" domain="[('sale_type','=','on_sale')]"/>
+                    <separator/>
+                    <filter name="clearance_products" string="Clearance Products" domain="[('sale_type','=','clearance')]"/>
+                    <separator/>
+                    <filter name="product_consignment_filter" string="Consignment Product" domain="[('on_consignment', '=', True)]"/>
+                    <separator/>
+                    <filter name="temporary_out_of_stock" string="Temporary Out Of Stock" domain="[('temporary_out_of_stock', '=', True)]"/>
+                    <separator/>
+                    <filter name="new_price_product" string="New Price" domain="[('is_new_price','=',True)]"/>
+                    <filter name="actual_price_product" string="Actual Price" domain="[('is_new_price','=',False)]"/>
+                    <separator />
+                    <filter name="is_select_for_lenses" string="Product For Lenses" domain="[('is_select_for_lenses','=',True)]"/>
+
+                    <separator />
+                    <filter name="is_forcefully_unpublished" string="Forcefully Unpublished" domain="[('is_forcefully_unpublished','=',True)]"/>
+
+                    <separator />
+                    <filter name="other_config_product" string="Any Other Attribute" domain="['|','|','|','|','|',('product_color_name.name', 'ilike', 'other'),('secondary_color_name.name', 'ilike', 'other'),('lense_color_name.name', 'ilike', 'other'),('rim_type.name', 'ilike', 'other'),('material_id.name','ilike','other'),('shape_id.name','ilike','other')]"/>
+                    <filter name="other_with_zero_qty" string="Other with zero Qty" domain="['|','|','|','|','|',('product_color_name.name', 'ilike', 'other'),('secondary_color_name.name', 'ilike', 'other'),('lense_color_name.name', 'ilike', 'other'),('rim_type.name', 'ilike', 'other'),('material_id.name','ilike','other'),('shape_id.name','ilike','other'),('qty_available','=',0.0)]" />
+                    <filter name="other_ready_to_delete" string="Any Other ready to Delete" domain="['|','|','|','|','|',('product_color_name.name', 'ilike', 'other'),('secondary_color_name.name', 'ilike', 'other'),('lense_color_name.name', 'ilike', 'other'),('rim_type.name', 'ilike', 'other'),('material_id.name','ilike','other'),('shape_id.name','ilike','other'),('qty_available','=',0.0),('sale_order_line_ids','=',False)]" />
+                </xpath>
+
+                <filter name="consumable" position="after">
+                    <separator/>
+                    <filter string="Published" name="published" domain="[('is_published_spt', '=', True)]"/>
+                    <separator/>
+                    <filter name="filter_new_arrival" string="New Arrival" domain="[('new_arrivals','=',True)]"/>
+                    <separator/>
+                    <filter name="filter_available_qty_spt" string="Available Qty" domain="[('available_qty_spt','>',0)]"/>
+                    <filter name="filter_qty_on_hand" string="QTY On Hand" domain="[('qty_available','>',0)]" />
+                    <separator/>
+                    <filter name="open_orders_found" string="Open Orders" domain="[('order_not_invoice', '>', 0.00)]"/>
+                    <filter name="not_open_orders_found" string="No Open Order" domain="[('not_open_order', '=', True)]"/>
+                    <filter name="ideal_product_found" string="No Order" domain="[('ideal_product', '=', True)]"/>
+                    <separator/>
+                    <filter name="flex_hinges_search" string="Flex Hinges" domain="[('flex_hinges', '=', 'yes')]" />
+                    <filter name="no_flex_hinges_search" string="Not Flex Hinges" domain="[('flex_hinges', '=', 'no')]" />
+                </filter>
+            </field>
+        </record>
+        <menuitem id="refresh_product_images_menu" name="Refresh Images" action="refresh_product_image" parent="sale.sale_menu_root" sequence="200" groups="base.group_system"/>
+        <menuitem id="menu_product_data" name="All Product Export" action="action_product_data" groups="base.group_system" parent="sale.menu_sale_report"/>
+    </data>
+</odoo>

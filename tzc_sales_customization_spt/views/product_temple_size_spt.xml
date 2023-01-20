@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="action_product_temple_size_spt" model="ir.actions.act_window">
+            <field name="view_mode">tree,form</field>
+            <field name="name">Temple Size</field>
+            <field name="res_model">product.temple.size.spt</field>
+        </record>
+
+        <record id="product_temple_size_from_view_spt" model="ir.ui.view">
+            <field name="name">product.temple.size.from.view.spt</field>
+            <field name="model">product.temple.size.spt</field>
+            <field name="arch" type="xml">
+                <form create="0" edit="0">
+                    <sheet>
+                        <div class="oe_button_box" name="button_box">
+                            <button name="action_open_temple_size_products_spt" type="object"
+                                class="oe_stat_button" icon="fa-cubes">
+                                <field name="products_count" string="Products" widget="statinfo" />
+                            </button>
+                        </div>
+
+                        <group>
+                            <group>
+                                <field name="name" />
+                            </group>
+
+                        </group>
+
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="product_temple_size_tree_view_spt" model="ir.ui.view">
+            <field name="name">product.temple.size.tree.view.spt</field>
+            <field name="model">product.temple.size.spt</field>
+            <field name="arch" type="xml">
+                <tree default_order="name" create="0" edit="0">
+                    <field name="name" />
+                </tree>
+            </field>
+        </record>
+
+        <menuitem name="Temple Size" action="action_product_temple_size_spt"
+            id="menu_action_product_temple_size_spt" parent="menu_action_product_custom_spt"
+            sequence="4" />
+
+    </data>
+</odoo>

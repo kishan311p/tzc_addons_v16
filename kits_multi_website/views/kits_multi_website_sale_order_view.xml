@@ -1,0 +1,306 @@
+<?xml version='1.0' encoding='utf-8'?>
+<odoo>
+    <data>
+
+        <record id="kits_multi_website_sale_order_form_view" model="ir.ui.view">
+            <field name="name">kits.multi.website.sale.order.form.view</field>
+            <field name="model">kits.multi.website.sale.order</field>
+            <field name="arch" type="xml">
+                <form>
+                    <header>
+                        <field name="state" widget="statusbar" statusbar_visible="quotation,sale,invoice"/>
+                        <button string="Confirm" name="action_confirm" type="object" class="oe_highlight" attrs="{'invisible': [('state', '!=','quotation')]}"/>
+                        <button string="Ready To Ship" name="action_pack_product" type="object" class="oe_highlight" attrs="{'invisible': [('state', '!=','order_placed')]}"/>
+                        <button string="Reset To Quotation" name="action_reset_to_quotation" type="object" class="oe_highlight" attrs="{'invisible': [('state', '!=','order_placed')]}"/>
+                        <button string="Send for Adding Glasses" name="action_sent_for_adding_glasses" type="object" class="oe_highlight" attrs="{'invisible': [('state', '!=', 'sale')]}"/>
+                        <button string="Receive Frame" name="action_receive_frame" type="object" class="oe_highlight" attrs="{'invisible': [('state', '!=', 'glass_add')]}"/>
+                        <button string="Create Invoice" name="action_create_invoice" type="object" class="oe_highlight" attrs="{'invisible': ['|','&amp;',('state', 'in',['order_placed','shipped']),('invoice_state','in',['not_paid','paid']),('state', 'not in',['order_placed','shipped'])]}"/>
+                        <button string="Return" name="action_return_products" type="object" class="oe_highlight" attrs="{'invisible': [('state', 'not in',('shipped','done'))]}"/>
+
+                        <button string="Ready To Ship" name="action_ready_to_ship" type="object" class="oe_highlight" attrs="{'invisible': [('state', '!=', 'receive')]}"/>
+
+                        <button string="Ship" name="action_ship" type="object" class="oe_highlight" attrs="{'invisible': [('state', '!=', 'ready_to_ship')]}"/>
+
+                        <button string="Shipped" name="action_ship" type="object" class="oe_highlight" attrs="{'invisible': [('state', '!=', 'ship')]}"/>
+                        <button string="Cancel" name="action_cancel" type="object" class="oe_highlight" attrs="{'invisible': [('state', 'in', ['cancel','shipped','invoice','return'])]}"/>
+                    </header>
+                    <div id="scanned_msg" class="text-center" attrs="{'invisible':[('state','in',['quotation','order_placed','waiting_for_prescription','prescription_added','glass_add'])]}">
+                        <div role="alert" class="alert alert-info" style="margin-left:10px; margin-right:2px; font-size:19px;" attrs="{'invisible':[('delivery_day_count','&lt;',1)]}">
+                            A delivery ship in <field name="delivery_day_count" t-options='{"widget": "date"}'/>
+days
+                        </div>
+                        <div role="alert" class="alert alert-danger" style="margin-left:10px; margin-right:2px; font-size:19px;" attrs="{'invisible':[('delivery_day_count','&gt;',0)]}">
+                            A delivery ship in <field name="delivery_day_count" t-options='{"widget": "date"}'/>
+days
+                        </div>
+                    </div>
+                    <sheet>
+                        <div class="oe_button_box" name="button_box">
+                            <button type="object" name="action_return_request" attrs="{'invisible': [('return_request_count', '=', 0)]}" class="oe_stat_button" icon="fa-arrow-up">
+                                <span>Return Request</span>
+                            </button>
+                            <button type="object" name="action_open_moves" attrs="{'invisible': [('has_moves', '=', False)]}" class="oe_stat_button">
+                                <i class="fa fa-fw fa-truck"/>
+                                <span>Moves</span>
+                            </button>
+                            <button type="object" name="action_open_invoices" attrs="{'invisible': [('has_invoice', '=', False)]}" class="oe_stat_button" icon="fa-money">
+                                <span>Invoices</span>
+                            </button>
+                        </div>
+                        <div>
+                            <h1>
+                                <field name="name" attrs="{'invisible': [('name', '=', False)], 'readonly': [('name', '!=', False)]}"/>
+                            </h1>
+                        </div>
+
+                        <!-- invisible fields -->
+                        <field name="has_moves" invisible="1" />
+                        <field name="has_invoice" invisible="1" />
+                        <field name="return_request_count" invisible="1" />
+
+                        <group>
+                            <group>
+                                <field name="customer_id" required="1" options="{'no_create': True,'no_edit': True}" attrs="{'readonly': [('state', '!=', 'quotation')]}"/>
+                                <field name="invoice_address_id" options="{'no_open': True,'no_create': True,'no_edit': True}" domain="[('customer_id','=',customer_id)]" attrs="{'invisible': [('invoice_address_id','!=',False)]}" />
+                                <label for="customer_street" string="Address"/>
+                                <div class="o_address_format">
+                                    <field name="customer_street" placeholder="Street..." class="o_address_street" attrs="{'invisible': [('customer_street', '=', False)]}"/>
+                                    <field name="customer_street2" placeholder="Street 2..." class="o_address_street" attrs="{'invisible': [('customer_street2', '=', False)]}"/>
+                                    <field name="customer_city" placeholder="City" class="o_address_city" attrs="{'invisible': [('customer_city', '=', False)]}"/>
+                                    <field name="customer_state_id" placeholder="State" class="o_address_state" options="{'no_open': True}" attrs="{'invisible': [('customer_state_id', '=', False)]}"/>
+                                    <field name="customer_zip" placeholder="Zip" class="o_address_zip" attrs="{'invisible': [('customer_zip', '=', False)]}"/>
+                                    <field name="customer_country_id" placeholder="Country" class="o_address_country" options="{'no_open': True}" attrs="{'invisible': [('customer_country_id', '=', False)]}"/>
+                                    <field name="customer_phone" />
+                                </div>
+                                <field name="delivery_address_id" attrs="{'readonly': [('state', '!=', 'quotation')]}" options="{'no_open': True,'no_open': True,'no_create': True,'no_edit': True}" domain="[('customer_id','=',customer_id)]"/>
+                                <label for="delivery_street" string="Address"/>
+                                <div class="o_address_format">
+                                    <field name="delivery_street" placeholder="Street..." class="o_address_street" attrs="{'invisible': [('delivery_street', '=', False)]}"/>
+                                    <field name="delivery_street2" placeholder="Street 2..." class="o_address_street" attrs="{'invisible': [('delivery_street2', '=', False)]}"/>
+                                    <field name="delivery_city" placeholder="City" class="o_address_city" attrs="{'invisible': [('delivery_city', '=', False)]}"/>
+                                    <field name="delivery_state_id" placeholder="State" class="o_address_state" options="{'no_open': True}" attrs="{'invisible': [('delivery_state_id', '=', False)]}"/>
+                                    <field name="delivery_zip" placeholder="Zip" class="o_address_zip" attrs="{'invisible': [('delivery_zip', '=', False)]}"/>
+                                    <field name="delivery_country_id" placeholder="Country" class="o_address_country" options="{'no_open': True}" attrs="{'invisible': [('delivery_country_id', '=', False)]}"/>
+                                    <field name="delivery_phone" />
+
+                                </div>
+                            </group>
+                            <group>
+                                <field name="currency_id" options="{'no_create': True}" readonly="1" force_save="1"/>
+                                <field name="create_date" />
+                                <field name="order_date" readonly="1" />
+                                <field name="order_placed_date" readonly="1" />
+                                <field name="expected_delivry_date" attrs="{'readonly': [('state', 'not in', ('quotation','order_placed','waiting_for_prescription','prescription_added','glass_add','receive'))]}"/>
+                                <field name="website_id" invisible="context.get('show_website_id',False)" options="{'no_create': True,'no_edit': True}"  />
+                            </group>
+                        </group>
+                        <notebook>
+                            <page name="sale_order_lines" string="Order Lines">
+                                <field name="sale_order_line_ids" attrs="{'readonly': [('state', '!=', 'quotation')]}">
+                                    <tree>
+                                        <field name="product_id" options="{'no_edit': True,'no_create': True}" domain="[('website_ids','=',website_id)]" required="1" />
+                                        <field name="quantity" />
+                                        <field name="unit_price" />
+                                        <field name="discounted_unit_price" />
+                                        <field name="glass_price" />
+                                        <field name="discounted_glass_price" />
+                                        <field name="tax_ids" widget="many2many_tags"/>
+                                        <field name="discount" invisible="1"/>
+                                        <field name="discount_amount" invisible="1" />
+                                        <field name="tax_amount" invisible="1"/>
+                                        <field name="tax_percent" invisible="1"/>
+                                        <field name="promo_code" invisible="1"/>
+                                        <field name="promo_code_amount" invisible="1"/>
+                                        <field name="prescription_id" />
+                                        <field name="prescription_state" invisible="1"/>
+                                        <button title="Prescription" name="prescription_wizard" type="object" class="oe_stat_button" icon="fa-eye" style="color:red;" attrs="{'invisible': [('prescription_state', '!=','unverified')]}"/>
+                                        <button title="Prescription" name="prescription_wizard" type="object" class="oe_stat_button" icon="fa-eye" style="color:green;" attrs="{'invisible': [('prescription_state', '!=','verified')]}"/>
+                                        <field name="subtotal" />
+                                        <field name="currency_id" force_save="1" invisible="1" />
+                                        <field name="website_id" invisible="context.get('show_website_id',False)"  options="{'no_create': True,'no_edit': True}" />
+                                        <field name="state" />
+                                        <button string="Add prescription" name="add_priscription" type="object" class="oe_highlight" attrs="{'invisible': [('state', '!=', 'waiting_for_prescription')]}"/>
+                                        <field name="show_add_glass_button" invisible="1"/>
+                                        <field name="show_receive_button" invisible="1"/>
+                                        <button string="sent For Adding Glass" name="sent_for_add_glass" type="object" class="oe_highlight" attrs="{'invisible': [('show_add_glass_button','=',False)]}"/>
+
+                                        <button string="receive" name="receive_glass" type="object" class="oe_highlight" attrs="{'invisible': [('show_receive_button', '=', False)]}"/>
+
+                                    </tree>
+                                    <form>
+                                        <header>
+                                            <field name="state" widget="statusbar" statusbar_visible="draft,sale,done"/>
+                                        </header>
+                                        <sheet>
+
+                                            <h1>
+                                                <field name="sale_order_id" readonly="1"/>
+                                                <br/>
+                                                <field name="product_id" options="{'no_create': True,'no_edit': True}" domain="[('website_ids','=',website_id)]" required="1" />
+                                            </h1>
+                                            <group>
+                                                <group name="pricing" string="Pricing">
+                                                    <field name="unit_price" />
+                                                    <field name="glass_price" attrs="{'invisible': [('is_select_for_lenses', '=',False)]}"/>
+                                                    <field name="quantity" />
+                                                </group>
+                                                <group name="our_pricing" string="Our Pricing">
+                                                    <field name="discounted_unit_price" />
+                                                    <field name="discounted_glass_price" attrs="{'invisible': [('is_select_for_lenses', '=',False)]}"/>
+                                                </group>
+                                                <group name="goggles_ifo" string="Goggles Information" attrs="{'invisible': [('is_select_for_lenses', '=',False)]}">
+                                                    <field name="power_type_id" attrs="{'required': [('is_select_for_lenses','=',True)],'invisible': [('is_select_for_lenses', '=',False)]}" options="{'no_open': True,'no_create': True}"/>
+                                                    <field name="is_power_glass" invisible="1"/>
+                                                    <field name="glass_type_id" attrs="{'required': [('is_select_for_lenses','=',True)],'invisible': [('is_select_for_lenses', '=',False)]}" options="{'no_open': True,'no_create': True}"/>
+                                                    <field name="left_eye_power" attrs="{'required': [('is_power_glass','=',True)],'invisible': [('is_power_glass', '=',False)]}"/>
+                                                    <field name="right_eye_power" attrs="{'required': [('is_power_glass','=',True)],'invisible': [('is_power_glass', '=',False)]}"/>
+                                                </group>
+                                                <div class="d-flex" attrs="{'invisible': [('is_select_for_lenses', '=',False)]}">
+                                                    <strong>Prescription Download</strong>
+                                                    <button title="Prescription Download" name="action_download_prescription" type="object" class="oe_stat_button" icon="fa-download"/>
+                                                    <button title="Prescription" name="prescription_wizard" type="object" class="oe_stat_button" icon="fa-eye" style="color:red;" attrs="{'invisible': [('prescription_state', '!=','unverified')]}"/>
+                                                    <button title="Prescription" name="prescription_wizard" type="object" class="oe_stat_button" icon="fa-eye" style="color:green;" attrs="{'invisible': [('prescription_state', '!=','verified')]}"/>
+                                                    <field name="prescription_filename" />
+                                                    <field name="prescription_state" invisible="1"/>
+
+                                                </div>
+                                                <group name="other_info" string="  ">
+                                                    <field name="is_select_for_lenses" />
+                                                    <field name="tax_ids" options="{'no_create': True,'no_edit': True}" widget="many2many_tags"/>
+                                                    <field name="subtotal" />
+                                                    <field name="website_id" invisible="context.get('show_website_id',False)"  options="{'no_create': True,'no_edit': True}" />
+                                                </group>
+                                            </group>
+                                            <notebook>
+                                                <page name="tracking_info" string="Tracking Info" attrs="{'invisible': [('return_request_date', '=', False)]}">
+                                                    <group>
+                                                        <group>
+                                                            <field name="return_request_date" attrs="{'invisible': [('return_request_date', '=', False)]}"/>
+                                                            <field name="return_pickup_date" attrs="{'invisible': [('return_pickup_date', '=', False)]}"/>
+                                                            <field name="return_received_date" attrs="{'invisible': [('return_received_date', '=', False)]}"/>
+                                                            <field name="return_examined_date" attrs="{'invisible': [('return_examined_date', '=', False)]}"/>
+                                                            <field name="return_approved_date" attrs="{'invisible': [('return_approved_date', '=', False)]}"/>
+                                                        </group>
+                                                        <group>
+                                                            <field name="return_returned_date" attrs="{'invisible': [('return_returned_date', '=', False)]}"/>
+                                                            <field name="return_rejected_date" attrs="{'invisible': [('return_rejected_date', '=', False)]}"/>
+                                                            <field name="return_scrapped_date" attrs="{'invisible': [('return_scrapped_date', '=', False)]}"/>
+                                                            <field name="return_refunded_date" attrs="{'invisible': [('return_refunded_date', '=', False)]}"/>
+                                                        </group>
+                                                    </group>
+                                                </page>
+                                            </notebook>
+                                        </sheet>
+
+                                    </form>
+                                </field>
+                                <div align="right">
+                                    <button style="font-size:30px;" icon="fa-truck" help="Shipping Cost" name="action_add_shipping_cost" type="object" />
+                                </div>
+                                <div>
+                                    <group class="oe_subtotal_footer oe_right">
+                                        <field name="amount_without_discount" string="Subtotal" widget="monetary" />
+                                        <field name="amount_tax" string="Tax" widget="monetary" />
+                                        <field name="discounted_shipping_cost" widget="monetary" readonly="1" force_save="1" />
+                                        <field name="shipping_discount" widget="monetary" invisible="1" />
+                                        <field name="amount_discount" widget="monetary" />
+                                        <field name="promo_code_discount" string="Promo Code Discount" widget="monetary" invisible="1"/>
+                                        <field name="total" string="Total" widget="monetary" style="border-top: 1px solid #dee2e6;"/>
+                                    </group>
+                                    <div class="oe_left d-flex">
+                                        <label for="promo_code" style="width:120px;margin-top: 15px;" />
+                                        <field name="promo_code" attrs="{'readonly': [('state', '!=', 'quotation')]}" style="margin:15px;"/>
+
+                                    </div>
+                                </div>
+                                <group>
+                                    <group>
+                                        <field name="shipping_rule_id" attrs="{'invisible': [('shipping_rule_id', '=', False)]}" options="{'no_create': True}" />
+                                    </group>
+                                </group>
+                                <div>
+                                    <button string="Apply" style="margin-top:8px;" name="action_apply_promo_code" type="object" class="oe_highlight" attrs="{'invisible': ['|', ('promo_code_discount','not in',[0,0.0,False,None]),('state', '!=', 'quotation')]}"/>
+                                    <button string="Remove Promo Code" name="action_remove_promo_code" style="margin-top:8px;margin-left: 7px;" attrs="{'invisible': ['|', ('promo_code_discount','in',[0,0.0,False,None]),('state', '!=', 'quotation')]}" type="object" class="oe_highlight"/>
+                                    <br/>
+                                </div>
+
+                            </page>
+                            <page name="other_info" string="Other Information">
+                                <group>
+                                    <group>
+                                        <field name="fiscal_position_id" options="{'no_create': True}" />
+                                        <field name="invoice_state" />
+                                        <!-- <field name="user_id" required="1" domain="[('is_salesperson','=',True)]" options="{'no_open': True,'no_create': True}" /> -->
+                                        <field name="user_id" required="1" options="{'no_open': True,'no_create': True}" />
+                                    </group>
+                                </group>
+                            </page>
+                        </notebook>
+                    </sheet>
+                    <div class="oe_chatter">
+                        <field name="message_follower_ids" widget="mail_followers"/>
+                        <field name="message_ids" widget="mail_thread" options="{'display_log_button': True}"/>
+                    </div>
+                </form>
+            </field>
+        </record>
+
+        <record id="kits_multi_website_sale_order_tree_view" model="ir.ui.view">
+            <field name="name">kits.multi.website.sale.order.tree.view</field>
+            <field name="model">kits.multi.website.sale.order</field>
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="name" />
+                    <field name="customer_id" />
+                    <field name="order_date" />
+                    <field name="invoice_state" />
+                    <field name="state"/>
+                    <field name="website_id" invisible="context.get('show_website_id',False)"  options="{'no_create': True,'no_edit': True}" />
+                </tree>
+            </field>
+        </record>
+
+        <record id="kits_multi_website_sale_order_search_view" model="ir.ui.view">
+            <field name="name">kits.multi.website.sale.order.search.view</field>
+            <field name="model">kits.multi.website.sale.order</field>
+            <field name="arch" type="xml">
+                <search>
+                    <field name="name" />
+                    <filter name="not_invoice" string="Not Invoice" domain="[('invoice_state','=','not_inv')]"/>
+                    <filter name="paid" string="Paid" domain="[('invoice_state','=','paid')]"/>
+                    <filter name="not_paid" string="Not Paid" domain="[('invoice_state','=','not_paid')]"/>
+                    <separator/>
+                    <filter name="quotation" string="Quotation" domain="[('state','=','quotation')]"/>
+                    <filter name="order_placed" string="Order Placed" domain="[('state','=','order_placed')]"/>
+                    <filter name="sale" string="Sale Order" domain="[('state','=','sale')]"/>
+                    <filter name="glass_add" string="Sent for Adding Glasses" domain="[('state','=','glass_add')]"/>
+                    <filter name="receive" string="Frame Received" domain="[('state','=','receive')]"/>
+                    <filter name="ready_to_ship" string="Ready To Ship" domain="[('state','=','ready_to_ship')]"/>
+                    <filter name="ship" string="Ship" domain="[('state','=','ship')]"/>
+                    <filter name="shipped" string="Shipped" domain="[('state','=','shipped')]"/>
+                    <filter name="cancel" string="Cancel" domain="[('state','=','cancel')]"/>
+                    <filter name="return" string="Return" domain="[('state','=','return')]"/>
+                    <filter name="scrap" string="Scrap" domain="[('state','=','scrap')]"/>
+
+
+                    <group string="Group By">
+                        <filter name="website_id" string="Website" context="{'group_by': 'website_id'}"/>
+                        <filter name="invoice_state" string="Invoice State" context="{'group_by': 'invoice_state'}"/>
+                        <filter name="State" string="State" context="{'group_by': 'state'}"/>
+                        <filter name="customer_id" string="Customers" context="{'group_by': 'customer_id'}"/>
+                        <filter name="order_date" string="Order Date" context="{'group_by': 'order_date'}"/>
+
+                    </group>
+                </search>
+            </field>
+        </record>
+
+
+        <record id="kits_multi_website_sale_order_action" model="ir.actions.act_window">
+            <field name="name">Orders</field>
+            <field name="res_model">kits.multi.website.sale.order</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+    </data>
+</odoo>

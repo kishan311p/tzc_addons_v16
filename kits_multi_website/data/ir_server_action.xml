@@ -1,0 +1,144 @@
+<?xml version='1.0' encoding='utf-8'?>
+<odoo>
+    <data>
+        
+        <record id="action_reset_password" model="ir.actions.server">
+            <field name="name">Change Password</field>
+            <field name="model_id" ref="model_kits_multi_website_customer"/>
+            <field name="binding_model_id" ref="model_kits_multi_website_customer"/>
+            <field name="binding_view_types">form</field>
+            <field name="state">code</field>
+            <field name="code">
+                action = records.change_password()
+            </field>
+        </record>
+
+        <record id="action_set_products" model="ir.actions.server">
+            <field name="name">Add Website</field>
+            <field name="model_id" ref="model_product_product"/>
+            <field name="binding_model_id" ref="model_product_product"/>
+            <field name="binding_view_types">list,form</field>
+            <field name="state">code</field>
+            <field name="code">
+                action = records.action_set_products()
+            </field>
+        </record>
+
+        <record id="action_set_slider_category_to_products" model="ir.actions.server">
+            <field name="name">Set Slider Category</field>
+            <field name="model_id" ref="model_product_product"/>
+            <field name="binding_model_id" ref="model_product_product"/>
+            <field name="binding_view_types">list,form</field>
+            <field name="state">code</field>
+            <field name="code">
+                action = records.action_set_slider_category_to_products()
+            </field>
+        </record>
+
+        <record id="action_model_kits_multi_website_lense_add" model="ir.actions.server">
+            <field name="name">Add Website</field>
+            <field name="model_id" ref="model_kits_multi_website_lense"/>
+            <field name="binding_model_id" ref="model_kits_multi_website_lense"/>
+            <field name="binding_view_types">list,form</field>
+            <field name="state">code</field>
+            <field name="code">
+                action = records.add_website_id()
+            </field>
+        </record>
+        <record id="action_model_kits_multi_website_lense_remove" model="ir.actions.server">
+            <field name="name">Remove Website</field>
+            <field name="model_id" ref="model_kits_multi_website_lense"/>
+            <field name="binding_model_id" ref="model_kits_multi_website_lense"/>
+            <field name="binding_view_types">list,form</field>
+            <field name="state">code</field>
+            <field name="code">
+                action = records.remove_website_id()
+            </field>
+        </record>
+
+        <record id="action_model_kits_free_shipping_rule_add" model="ir.actions.server">
+            <field name="name">Add Website</field>
+            <field name="model_id" ref="model_kits_free_shipping_rule"/>
+            <field name="binding_model_id" ref="model_kits_free_shipping_rule"/>
+            <field name="binding_view_types">list,form</field>
+            <field name="state">code</field>
+            <field name="code">
+                action = records.add_website_id()
+            </field>
+        </record>
+        <record id="action_model_kits_free_shipping_rule_remove" model="ir.actions.server">
+            <field name="name">Remove Website</field>
+            <field name="model_id" ref="model_kits_free_shipping_rule"/>
+            <field name="binding_model_id" ref="model_kits_free_shipping_rule"/>
+            <field name="binding_view_types">list,form</field>
+            <field name="state">code</field>
+            <field name="code">
+                action = records.remove_website_id()
+            </field>
+        </record>
+
+        <record id="action_model_kits_multi_website_coupon_add" model="ir.actions.server">
+            <field name="name">Add Website</field>
+            <field name="model_id" ref="model_kits_multi_website_coupon"/>
+            <field name="binding_model_id" ref="model_kits_multi_website_coupon"/>
+            <field name="binding_view_types">list,form</field>
+            <field name="state">code</field>
+            <field name="code">
+                action = records.add_website_id()
+            </field>
+        </record>
+        <record id="action_model_kits_multi_website_coupon_remove" model="ir.actions.server">
+            <field name="name">Remove Website</field>
+            <field name="model_id" ref="model_kits_multi_website_coupon"/>
+            <field name="binding_model_id" ref="model_kits_multi_website_coupon"/>
+            <field name="binding_view_types">list,form</field>
+            <field name="state">code</field>
+            <field name="code">
+                action = records.remove_website_id()
+            </field>
+        </record>
+
+        <record id="action_model_kits_multi_website_glass_type_add" model="ir.actions.server">
+            <field name="name">Add Website</field>
+            <field name="model_id" ref="model_kits_multi_website_glass_type"/>
+            <field name="binding_model_id" ref="model_kits_multi_website_glass_type"/>
+            <field name="binding_view_types">list,form</field>
+            <field name="state">code</field>
+            <field name="code">
+                action = records.add_website_id()
+            </field>
+        </record>
+        <record id="action_model_kits_multi_website_glass_type_remove" model="ir.actions.server">
+            <field name="name">Remove Website</field>
+            <field name="model_id" ref="model_kits_multi_website_glass_type"/>
+            <field name="binding_model_id" ref="model_kits_multi_website_glass_type"/>
+            <field name="binding_view_types">list,form</field>
+            <field name="state">code</field>
+            <field name="code">
+                action = records.remove_website_id()
+            </field>
+        </record>
+
+        <record id="action_model_kits_multi_website_power_type_add" model="ir.actions.server">
+            <field name="name">Add Website</field>
+            <field name="model_id" ref="model_kits_multi_website_power_type"/>
+            <field name="binding_model_id" ref="model_kits_multi_website_power_type"/>
+            <field name="binding_view_types">list,form</field>
+            <field name="state">code</field>
+            <field name="code">
+                action = records.add_website_id()
+            </field>
+        </record>
+        <record id="action_model_kits_multi_website_power_type_remove" model="ir.actions.server">
+            <field name="name">Remove Website</field>
+            <field name="model_id" ref="model_kits_multi_website_power_type"/>
+            <field name="binding_model_id" ref="model_kits_multi_website_power_type"/>
+            <field name="binding_view_types">list,form</field>
+            <field name="state">code</field>
+            <field name="code">
+                action = records.remove_website_id()
+            </field>
+        </record>
+
+    </data>
+</odoo>

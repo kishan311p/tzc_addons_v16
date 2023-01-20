@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <data>
+        <record id="kits_confirm_contact_delete_wizard_form_view" model="ir.ui.view">
+            <field name="name">kits.confirm.contact.delete.wizard.form.view</field>
+            <field name="model">kits.confirm.contact.delete.wizard</field>
+            <field name="arch" type="xml">
+                <form>
+                    <sheet>
+                        <div attrs="{'invisible':[('partner_ids','=',[])]}">
+                            <h3>
+                                <field name="message" readonly="1" nolabel="1"/>
+                                <!-- Below contact's are deleted or archived.<t t-if="len(partner_ids) > 1">s</t>? -->
+                            </h3>
+                            <field name="partner_ids" nolabel="1" readonly="1" style="pointer-events:none;">
+                                <tree limit="50"> 
+                                    <field name="internal_id" />
+                                    <field name="name" />
+                                    <field name="email" />
+                                    <field name="customer_type" />
+                                </tree>
+                            </field>
+                        </div>
+                        <div attrs="{'invisible':[('user_ids','=',[])]}">
+                            <h3>
+                                <field name="message" readonly="1" nolabel="1"/>
+                            </h3>
+                            <field name="user_ids" nolabel="1" readonly="1" style="pointer-events:none;">
+                                <tree limit="50"> 
+                                    <field name="internal_id" />
+                                    <field name="name" />
+                                    <field name="email" />
+                                    <field name="customer_type" />
+                                </tree>
+                            </field>
+                        </div>
+                        <div attrs="{'invisible':[('internal_contacts','=',[])]}">
+                            <h3>
+                                The below contacts are internal users so you can not delete multiple records at the same time.
+                            </h3>
+                            <field name="internal_contacts" nolabel="1" readonly="1" style="pointer-events:none;">
+                                <tree limit="50"> 
+                                    <field name="internal_id" />
+                                    <field name="name" />
+                                    <field name="email" />
+                                    <field name="customer_type" />
+                                </tree>
+                            </field>
+                        </div>
+                        <!-- <div attrs="{'invisible':[('error_partners','=',[])]}">
+                            <h3>
+                                Only the administrator can delete below internal contacts.
+                            </h3>
+                            <field name="error_partners" nolabel="1" readonly="1" style="pointer-events:none;">
+                                <tree limit="80"> 
+                                    <field name="internal_id" />
+                                    <field name="name" />
+                                    <field name="email" />
+                                    <field name="customer_type" />
+                                </tree>
+                            </field>
+                        </div> -->
+                        <!-- <notebook>
+                            <page name="internal_contacts" string="Internal Contacts" attrs="{'invisible':[('internal_contacts','=',[])]}">
+                                <div>
+                                    <span style="color:red;">
+                                        You are not allowed to delete these contacts, because these contacts are Internal User Contacts.
+                                    </span>
+                                </div>
+                                <field name="internal_contacts" nolabel="1" readonly="1" style="pointer-events:none;">
+                                    <tree > 
+                                        <field name="internal_id" />
+                                        <field name="name" />
+                                        <field name="email" />
+                                        <field name="customer_type" />
+                                    </tree>
+                                </field>
+                            </page>
+                            <page name="open_order_contacts" string="Open Order Contacts" attrs="{'invisible':[('order_partners','=',[])]}">
+                                <div>
+                                    <span style="color:red;">
+                                        You are not allowed to delete these contacts, because these contacts have orders.
+                                    </span>
+                                </div>
+                                <field name="order_partners" nolabel="1" readonly="1" style="pointer-events:none;">
+                                    <tree > 
+                                        <field name="internal_id" />
+                                        <field name="name" />
+                                        <field name="email" />
+                                        <field name="customer_type" />
+                                    </tree>
+                                </field>
+                            </page>
+                        </notebook> -->
+                    </sheet>
+                    <footer>
+                        <!-- <button name="action_delete" type="object" string="Keep Mailing Contact &amp; Delete" class="oe_highlight"/>
+                        <button name="action_delete" context="{'completely_delete':True}" type="object" string="Completely Delete" class="oe_highlight"/> -->
+                        <button name="action_confirm_delete" type="object" string="Process" class="oe_highlight"/>
+                        <button special="cancel" string="Cancel" type="object"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+    </data>
+
+</odoo>

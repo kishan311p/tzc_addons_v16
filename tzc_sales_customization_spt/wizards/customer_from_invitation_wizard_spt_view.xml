@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <record id="customer_from_invitation_wizard_from_view_spt" model="ir.ui.view">
+            <field name="name">customer.from.invitation.from.view.spt</field>
+            <field name="model">customer.from.invitation.wizard.spt</field>
+            <field name="arch" type="xml">
+                <form>
+                    <sheet>
+                        <group>
+                            <group>
+                                <field name="user_id" options="{'no_create': True}" domain="[('is_salesperson','=',True)]" required="1" invisible="1"/>
+                                <field name="invitation"/>
+                            </group>
+                            <group/>
+                        </group>
+                    </sheet>
+                    <footer>
+                        <button string="Process" class="btn btn-primary" type="object" name="action_process" />
+                        <button string="Cancel" class="btn-secondary" special="cancel" />
+                    </footer>
+                </form>
+
+            </field>
+        </record>
+
+        <record id="action_customer_invitation_status_spt" model="ir.actions.act_window">
+            <field name="name">Manual Invitation Status</field>
+            <field name="res_model">customer.from.invitation.wizard.spt</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+        </record>
+
+        <menuitem action="action_customer_invitation_status_spt" id="menu_customer_invitation_status_spt" name="Manual Invitation Status" parent="tzc_sales_customization_spt.reporting_menu" sequence='5'/>
+
+    </data>
+</odoo>

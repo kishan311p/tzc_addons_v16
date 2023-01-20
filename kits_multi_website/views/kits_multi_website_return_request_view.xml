@@ -1,0 +1,183 @@
+<?xml version='1.0' encoding='utf-8'?>
+<odoo>
+    <data>
+        <record id="kits_multi_website_return_request_line_view_form" model="ir.ui.view">
+            <field name="name">kits.multi.website.return.request.line.view.form</field>
+            <field name="model">kits.multi.website.return.request.line</field>
+            <field name="arch" type="xml">
+                <form string="">
+                    <sheet>
+                        <header>
+                            <field name="state" widget="statusbar"/>
+                        </header>
+                        <div>
+                            <h1>
+                                <field name="product_id" readonly="1" force_save="1"/>
+                            </h1>
+                        </div>
+                        <group>
+                            <group>
+                                <field name="quantity" />
+                                <field name="amount" />
+                                <field name="website_id"  invisible="context.get('show_website_id',False)" />
+                                <field name="return_request_id" />
+                                <field name="sale_order_line_id" invisible="1"/>
+                                <field name="power_type_id" invisible="1"/>
+                                <field name="glass_type_id" invisible="1"/>
+
+                            </group>
+                            <group>
+                                <field name="requested_date" />
+                                <field name="approved_date" />
+                                <field name="pickup_date" />
+                                <field name="received_date" />
+                                <field name="examined_date" />
+                                <field name="returned_date" />
+                                <field name="scrapped_date" />
+                            </group>
+                            <group>
+                                <group>
+                                    <field name="flag_show" invisible="1" />
+                                    <field name="return_request_reason_id" options="{'no_open': True,'no_create': True}" />
+                                    <field name="description" string="Other Reason" attrs="{'readonly':[('flag_show','=',False)],'invisible':[('flag_show','=',False)]}"/>
+                                </group>
+                            </group>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+        <record id="kits_multi_website_return_request_form_view" model="ir.ui.view">
+            <field name="name">kits.multi.website.return.request.form.view</field>
+            <field name="model">kits.multi.website.return.request</field>
+            <field name="arch" type="xml">
+                <form>
+                    <header>
+                        <field name="state" widget="statusbar"/>
+                        <button string="Add Product" name="action_sale_order_line" type="object" class="oe_highlight" attrs="{'invisible': [('state', '!=','draft')]}"/>
+                        <button string="return inventory" name="action_confirm" type="object" class="oe_highlight" attrs="{'invisible': [('state', '!=','in_progress')]}"/>
+                        <button string="Refund" name="action_refund" type="object" class="oe_highlight" attrs="{'invisible': [('state', '!=','confirm')]}"/>
+                        <button string="Cancel" name="action_cancel" type="object" class="oe_highlight" attrs="{'invisible': [('state', 'in', ['draft','cancel','refund'])]}"/>
+                    </header>
+                    <sheet>
+                        <div>
+                            <h1>
+                                <field name="name" readonly="1" force_save="1"/>
+                            </h1>
+                        </div>
+                        <group>
+                            <group>
+                                <field name="sale_order_id" required="1" attrs="{'readonly': [('state','!=','draft')]}" />
+                                <field name="customer_id" readonly="1" force_save="1"/>
+                            </group>
+                            <group>
+                            <!-- <field name="user_id" required="1"  domain="[('is_salesperson','=',True)]"   options="{'no_open': True,'no_create': True}" />
+                            <field name="so_sales_person_id"  domain="[('is_salesperson','=',True)]"   options="{'no_open': True,'no_create': True}" /> -->
+                                <field name="website_id"  invisible="context.get('show_website_id',False)" options="{'no_open': True,'no_create': True}" />
+                            </group>
+                        </group>
+
+                        <notebook>
+                            <page name="return_request_lines" string="Return Request Lines">
+                                <field name="return_request_line_ids" attrs="{'readonly':[('state','not in',['draft','in_progress'])]}">
+                                    <tree editable="bottom" create="0">
+                                        <field name="product_id" readonly="1" force_save="1"/>
+                                        <field name="power_type_id" invisible="1" readonly="1" force_save="1"/>
+                                        <field name="glass_type_id" invisible="1" readonly="1" force_save="1"/>
+                                        <field name="sale_order_line_id" invisible="1" />
+                                        <field name="return_request_id" invisible="1" />
+                                        <field name="flag_show" invisible="1" />
+                                        <field name="return_request_reason_id" options="{'no_open': True,'no_create': True}" />
+                                        <field name="description" string="Other Reason" attrs="{'readonly':[('flag_show','=',False)],'required':[('flag_show','=',True)]}"/>
+                                        <field name="remark" />
+                                        <field name="amount" sum="Total Amount"/>
+                                        <field name="quantity" readonly="1" force_save="1" />
+                                        <field name="state"/>
+                                    </tree>
+                                </field>
+                            </page>
+                        </notebook>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <!-- Form view for wizard in sale order -->
+        <record id="kits_return_request_form_view" model="ir.ui.view">
+            <field name="name">kits.return.request.form.view</field>
+            <field name="model">kits.multi.website.return.request</field>
+            <field name="arch" type="xml">
+                <form>
+                    <header>
+                        <field name="state" widget="statusbar" />
+                    </header>
+                    <sheet>
+                        <div>
+                            <h1>
+                                <field name="name" readonly="1" force_save="1"/>
+                            </h1>
+                        </div>
+                        <group>
+                            <group>
+                                <field name="customer_id" options="{'no_create': True}" readonly="1" force_save="1"/>
+                            </group>
+                            <group>
+                                <field name="sale_order_id" options="{'no_create': True}" readonly="1" force_save="1"/>
+                            </group>
+                        </group>
+                        <notebook>
+                            <page name="return_request_lines" string="Return request Lines">
+                                <field name="return_request_line_ids">
+                                    <tree editable="bottom" create="0">
+                                        <field name="product_id" readonly="1" force_save="1"/>
+                                        <field name="power_type_id" readonly="1" force_save="1"/>
+                                        <field name="glass_type_id" readonly="1" force_save="1"/>
+                                        <field name="quantity" />
+                                        <field name="sale_order_line_id" invisible="1" />
+                                    </tree>
+                                </field>
+                            </page>
+                        </notebook>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+
+        <record id="kits_multi_website_return_request_tree_view" model="ir.ui.view">
+            <field name="name">kits.multi.website.return.request.tree.view</field>
+            <field name="model">kits.multi.website.return.request</field>
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="name" />
+                    <field name="sale_order_id" />
+                    <field name="website_id" invisible="context.get('show_website_id',False)"  options="{'no_open': True,'no_create': True}" />
+                </tree>
+            </field>
+        </record>
+
+        <record id="kits_multi_website_return_request_search_view" model="ir.ui.view">
+            <field name="name">kits.multi.website.return.request.search.view</field>
+            <field name="model">kits.multi.website.return.request</field>
+            <field name="arch" type="xml">
+                <search>
+                    <field name="name" />
+                    <field name="sale_order_id" options="{'no_edit': True,'no_create': True}" />
+                    <field name="website_id" options="{'no_open': True,'no_create': True}" />
+                    <group expand="0" string="Group By">
+                        <filter name="website_id" string="Website" context="{'group_by': 'website_id'}"/>
+                        <filter name="sale_order_id" string="Sale Order" context="{'group_by': 'sale_order_id'}"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+
+        <record id="kits_multi_website_return_request_action" model="ir.actions.act_window">
+            <field name="name">Return Requests</field>
+            <field name="res_model">kits.multi.website.return.request</field>
+            <field name="view_mode">tree,form</field>
+            <field name="context">{'create':0}</field>
+        </record>
+
+    </data>
+</odoo>

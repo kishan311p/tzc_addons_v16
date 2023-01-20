@@ -1,0 +1,63 @@
+<?xml version='1.0' encoding='utf-8'?>
+<odoo>
+    <data>
+
+        <record id="kits_b2c1_website_menu_form_view" model="ir.ui.view">
+            <field name="name">kits.b2c1.website.menu.form.view</field>
+            <field name="model">kits.b2c1.website.menu</field>
+            <field name="arch" type="xml">
+                <form>
+                    <sheet>
+
+                        <field name="menu_icon" widget="image" style="float:right;"  options="{'zoom': true,'preview_image':'menu_icon', 'size' : [128,128]}"/>
+                        <div>
+                            <h1>
+                                <field name="name" placeholder="Name"/>
+                            </h1>
+                        </div>
+                        <group>
+                            <group>
+                                <field name="is_mega_menu" />
+                                <field name="product_filter" attrs="{'invisible': [('is_mega_menu', '=', False)]}"/>
+                            </group>
+                            <group>
+                                <field name="product_category_ids" widget="many2many_checkboxes" attrs="{'invisible': ['|',('product_filter', 'in', [False,'sale_type','new_arrivals']),('is_mega_menu', '=', False)]}"/>
+                                <group>
+                                    <field name="new_arrivals" attrs="{'invisible': ['|',('product_filter', 'in', [False,'sale_type','category']),('is_mega_menu', '=', False)]}"/>
+                                    <field name="sale_type_on_sale" attrs="{'invisible': ['|',('product_filter', 'in', [False,'category','new_arrivals']),('is_mega_menu', '=', False)]}"/>
+                                    <field name="sale_type_clearence" attrs="{'invisible': ['|',('product_filter', 'in', [False,'category','new_arrivals']),('is_mega_menu', '=', False)]}"/>
+                                    <field name="menu_url" attrs="{'invisible': [('is_mega_menu', '!=', False)]}"/>
+                                    <field name="menu_icon_url" widget="url" invisible="0" />
+                                </group>
+                                <field name="website_id" invisible="1" />
+                            </group>
+                            <group attrs="{'invisible': [('is_mega_menu', '!=', False)]}">
+                                <field name="metadata_title" />
+                                <field name="metadata_keyword" />
+                                <field name="metadata_description" />
+                            </group>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="kits_b2c1_website_menu_tree_view" model="ir.ui.view">
+            <field name="name">kits.b2c1.website.menu.tree.view</field>
+            <field name="model">kits.b2c1.website.menu</field>
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="sequence" widget="handle"/>
+                    <field name="name" />
+                </tree>
+            </field>
+        </record>
+
+        <record id="kits_b2c1_website_menu_action" model="ir.actions.act_window">
+            <field name="name">Menus</field>
+            <field name="res_model">kits.b2c1.website.menu</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+    </data>
+</odoo>

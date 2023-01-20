@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="action_report_kits_b2c_sales_report" model="ir.actions.report">
+        <field name="name">Sales Preson</field>
+        <field name="model">kits.b2c.sales.report</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">kits_multi_website.report_kits_b2c_sales_report</field>
+        <field name="report_file">kits_multi_website.report_kits_b2c_sales_report</field>
+        <field name="print_report_name">'Sales Report %s' % (object.create_date)</field>
+        <field name="binding_model_id" ref="model_kits_b2c_sales_report"/>
+        <field name="binding_type">report</field>
+    </record>
+</odoo>

@@ -1,0 +1,35 @@
+<?xml version='1.0' encoding='utf-8'?>
+<odoo>
+    <data>
+        
+        <record id="multi_website_sale_order_sequence" model="ir.sequence">
+            <field name="name">Multi Website Sale Order Sequence</field>
+            <field name="code">unique.multi.website.sale.order.sequence</field>
+            <field name="prefix">SO/</field>
+            <field name="padding">4</field>
+        </record>
+
+        <record id="multi_website_invoice_sequence" model="ir.sequence">
+            <field name="name">Multi Website Invoice Sequence</field>
+            <field name="code">unique.multi.website.invoice.sequence</field>
+            <!-- <field name="prefix">INV/</field> -->
+            <field name="prefix">INV/%(range_year)s/</field>
+            <field name="padding">4</field>
+        </record>
+
+        <record id="multi_website_refund_invoice_sequence" model="ir.sequence">
+            <field name="name">Multi Website Refund Invoice Sequence</field>
+            <field name="code">unique.multi.website.refund.invoice.sequence</field>
+            <field name="prefix">REFUND/</field>
+            <field name="padding">4</field>
+        </record>
+
+        <record id="multi_website_return_request_sequence" model="ir.sequence">
+            <field name="name">Multi Website Return Request Sequence</field>
+            <field name="code">unique.multi.website.return.request.sequence</field>
+            <field name="prefix">RR/</field>
+            <field name="padding">4</field>
+        </record>
+
+    </data>
+</odoo>

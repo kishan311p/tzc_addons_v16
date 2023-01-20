@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!-- <record id="action_open_brand_products" model="ir.actions.act_window" name="Brand Products" res_model="product.product" view_mode="kanban,form,tree" domain="[('brand', '=', active_id)]" /> -->
+        <!-- <record id="action_open_single_product_brand" model="ir.actions.act_window" name="Product Brand" res_model="product.brand.spt" view_mode="kanban,form,tree" target="current" domain="[('product_ids', 'in', active_id)]" /> -->
+        <record id= "action_open_brand_products" model="ir.actions.act_window">
+            <field name="name">Brand Products</field>
+            <field name="res_model">product.product</field>
+            <field name="view_mode">tree,form</field>
+            <field name="domain">[('brand', '=', active_id)]</field>
+        </record>
+        <record id="action_product_brand_spt" model="ir.actions.act_window">
+            <field name="view_mode">tree,form</field>
+            <field name="res_model">product.brand.spt</field>
+            <field name="name">Product Brand</field>
+        </record>
+        <record id="product_brand_from_view_spt" model="ir.ui.view">
+            <field name="name">product.brand.from.view.spt</field>
+            <field name="model">product.brand.spt</field>
+            <field name="arch" type="xml">
+                <form create="0">
+                    <sheet>
+                        <!-- <div class="oe_button_box" name="button_box">
+                            <button class="oe_stat_button" name="website_publish_button" groups="base.group_system" type="object" icon="fa-globe">
+                                <field name="website_published" widget="website_publish_button" />
+                            </button>
+                            <button name="%(action_open_brand_products)d" type="action" class="oe_stat_button" icon="fa-cubes">
+                                <field name="products_count" widget="statinfo" string="Products" />
+                            </button>
+                        </div> -->
+                        <field name="logo" widget="image" class="oe_avatar" />
+                        <div class="oe_title">
+                            <label for="name" string="Brand Name" class="oe_edit_only" />
+                            <h1>
+                                <field name="name" readonly="1" />
+                            </h1>
+                        </div>
+                        <group>
+                            <field name="sequence" />
+                            <field name="brand_link" widget="url"/>
+                            <field name="collection_button_name"/>
+                            <field name="brand_seo_keyword" />
+                        </group>
+                        <!-- <div groups="website.group_multi_website">
+                            <label for="website_id" string="Website" class="col-sm-1 p-0 pt-3" />
+                            <field name="website_id" domain="[('theme_id.author','like','SnepTech')]" options="{'no_quick_create': True, 'no_create_edit' : True}" />
+                        </div> -->
+                        <!-- <div>
+                            <label for="is_brand_page" string="Brand Page" class="col-sm-1 p-0 pt-3" />
+                            <field name="is_brand_page" />
+                        </div> -->
+                        <!-- <div>
+                            <label for="is_logo_published" string="Publish Logo" class="col-sm-1 p-0 pt-3" />
+                            <field name="is_logo_published" />
+                        </div> -->
+                        <xpath>
+                            <notebook>
+                                <page string="Products" readonly="1">
+                                    <separator string="Select Products of this Brand" />
+                                    <tr>
+                                        <td>
+                                            <field name="product_ids" readonly="1" nolabel="1" domain="[('brand','=',False),('is_published_spt','=',True)]" options="{'no_create': True}">
+                                                <tree>
+                                                    <field name="default_code" />
+                                                    <field name="name" />
+                                                </tree>
+                                            </field>
+                                        </td>
+                                    </tr>
+                                </page>
+                                <page string="Description">
+                                    <group>
+                                        <field name="description"/>
+                                    </group>
+                                    <group >
+                                        <field name="desc_heading" string="Heading"/>
+                                    </group>
+                                    <br/>
+                                    <div class="row o_website_sale_image_modal">
+                                        <div class="col-md-6 col-xl-7 text-center o_website_sale_image_modal_container">
+                                            <div class="row">
+                                                <div class="col">
+                                                    <field name="brand_image" widget="image" />
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </page>
+                            </notebook>
+                        </xpath>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+        <record id="product_brand_tree_view_spt" model="ir.ui.view">
+            <field name="name">product.brand.tree.view.spt</field>
+            <field name="model">product.brand.spt</field>
+            <field name="arch" type="xml">
+                <tree default_order="name">
+                    <field name="name" />
+                </tree>
+            </field>
+        </record>
+        <menuitem name="Products Configuration " groups="base.group_system" id="menu_action_product_custom_spt" parent="sale.sale_menu_root" sequence="100" />
+        <menuitem name="Brand" action="action_product_brand_spt" id="menu_action_product_brand_spt" parent="menu_action_product_custom_spt" sequence="1" />
+        <!-- <menuitem name="Brand" action="action_product_brand_spt" groups="mass_mailing.group_mass_mailing_user" id="menu_in_website_action_product_brand_spt" parent="website.menu_website_configuration" sequence="21"/> -->
+    </data>
+</odoo>

@@ -1,0 +1,28 @@
+<?xml version='1.0' encoding='utf-8'?>
+<odoo>
+    <data>
+
+        <record id="kits_add_prescription_wizard_form_view" model="ir.ui.view">
+            <field name="name">kits.add.prescription.wizard.form.view</field>
+            <field name="model">kits.add.prescription.wizard</field>
+            <field name="arch" type="xml">
+                <form>
+                    <sheet>
+                        <group>
+                            <field name="customer_id" invisible="1" />
+                            <field name="select_prescription" widget="radio" />
+                            <field name="name" placeholder="My/My wife/My Son" attrs="{'invisible':[('select_prescription','=','old')],'required':[('select_prescription','=','new')]}"/>
+                            <field name="prescription" filename="file_name" attrs="{'invisible':[('select_prescription','=','old')]}"/>
+                            <field name="prescription_id" options="{'no_open': True,'no_create': True,'no_edit': True}" attrs="{'invisible':[('select_prescription','=','new')]}"/>
+                        </group>
+                    </sheet>
+                    <footer>
+                        <button string="Process" name="action_add_prescription" type="object" class="oe_highlight"/>
+                        <button string="Cancel" special="cancel" class="btn-secondary"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+    </data>
+</odoo>

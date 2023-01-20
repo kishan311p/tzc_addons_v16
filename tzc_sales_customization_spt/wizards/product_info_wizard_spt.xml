@@ -1,0 +1,186 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <data>
+        <record id="product_info_wizard_form_view" model="ir.ui.view">
+            <field name="name">product.info.wizard.form.view.spt</field>
+            <field name="model">product.info.wizard.spt</field>
+            <field name="arch" type="xml">
+                <form>
+                    <sheet>
+                        <group>
+                            <group>
+                                <field name="start_date" string="Order Start Date"/>
+                                <field name="brand_ids" widget="many2many_tags" options="{'no_create': True}" />
+                                <field name="barcode" />
+                                <field name="color_ids" widget="many2many_tags" options="{'no_create': True}" />
+                                <field name="rim_type_ids" widget="many2many_tags" options="{'no_create': True}" />
+                                <field name="category_ids" widget="many2many_tags" options="{'no_create': True}"  />
+                                <field name="is_published" />
+                                <field name="not_set_image" />
+                                <field name="consignment_products" />
+                            </group>
+                            <group>
+                                <field name="end_date" string="Order End Date"/>
+                                <field name="model_ids" widget="many2many_tags" options="{'no_create': True}" />
+                                <field name="color_code" />
+                                <field name="material_ids" widget="many2many_tags" options="{'no_create': True}" />
+                                <field name="shape_ids" widget="many2many_tags" options="{'no_create': True}" />
+                                <field name="temporary_out_of_stock" />
+                                <field name="product_flex_hinges" />
+                                <field name="in_future_archive" />
+                            </group>
+                        </group>
+                        <group>
+                            <group>
+                                <div class="block" style="display:flex;">
+                                    <div class="inline-block pr-2">
+                                        <b>
+                                    Prices
+                                        </b>
+                                    </div>
+                                    <div class="inline-block px-3">
+                                        <b>
+                                    From
+                                        </b>
+                                    </div>
+                                    <div class="inline-block">
+                                        <field name="start_price" style="width:70px;" />
+                                    </div>
+                                    <div class="inline-block pr-3 pl-3 ml-3">
+                                        <b>
+                                    To
+                                        </b>
+                                    </div>
+                                    <div class="inline-block">
+                                        <field name="end_price" style="width:70px;margin-left:10%;" />
+                                    </div>
+                                </div>
+                            </group>
+                            <group>
+                                <div class="block" style="display:flex;">
+                                    <div class="inline-block pr-2">
+                                        <b>
+                                    Bridge Size
+                                        </b>
+                                    </div>
+                                    <div class="inline-block px-3">
+                                        <b>
+                                    From
+                                        </b>
+                                    </div>
+                                    <div class="inline-block">
+                                        <field name="bridge_size_start" style="width:70px;" />
+                                    </div>
+                                    <div class="inline-block pr-3 pl-3 ml-3">
+                                        <b>
+                                    To
+                                        </b>
+                                    </div>
+                                    <div class="inline-block">
+                                        <field name="bridge_size_end" style="width:70px;margin-left:10%;" />
+                                    </div>
+                                </div>
+                            </group>
+                            <group>
+                                <div class="block" style="display:flex;">
+                                    <div class="inline-block pr-2">
+                                        <b>
+                                        Eye Size
+                                        </b>
+                                    </div>
+                                    <div class="inline-block px-3">
+                                        <b>
+                                        From
+                                        </b>
+                                    </div>
+                                    <div class="inline-block">
+                                        <field name="eye_size_start" style="width:70px;" />
+                                    </div>
+                                    <div class="inline-block pr-3 pl-3 ml-3">
+                                        <b>
+                                        To
+                                        </b>
+                                    </div>
+                                    <div class="inline-block">
+                                        <field name="eye_size_end" style="width:70px;margin-left:10%;" />
+                                    </div>
+                                </div>
+
+                            </group>
+                            <group>
+                                <div class="block" style="display:flex;">
+                                    <div class="inline-block pr-2">
+                                        <b>
+                                        Temple Size
+                                        </b>
+                                    </div>
+                                    <div class="inline-block px-3">
+                                        <b>
+                                        From
+                                        </b>
+                                    </div>
+                                    <div class="inline-block">
+                                        <field name="temple_size_start" style="width:70px;" />
+                                    </div>
+                                    <div class="inline-block pr-3 pl-3 ml-3">
+                                        <b>
+                                        To
+                                        </b>
+                                    </div>
+                                    <div class="inline-block">
+                                        <field name="temple_size_end" style="width:70px;margin-left:10%;" />
+                                    </div>
+                                </div>
+                            </group>
+                        </group>
+                        <group>
+                            <group>
+                                <field name="sku" />
+                            </group>
+                            <group>
+                                <div class="block" style="display:flex;">
+                                    <div class="inline-block pr-2">
+                                        <b>
+                                        Quantity
+                                        </b>
+                                    </div>
+                                    <div class="inline-block px-3">
+                                        <b>
+                                        From
+                                        </b>
+                                    </div>
+                                    <div class="inline-block">
+                                        <field name="start_quantity" style="width:70px;" />
+                                    </div>
+                                    <div class="inline-block px-3">
+                                        <b>
+                                        To
+                                        </b>
+                                    </div>
+                                    <div class="inline-block">
+                                        <field name="end_quantity" style="width:70px;" />
+                                    </div>
+                                </div>
+                            </group>
+                        </group>
+                    </sheet>
+                    <footer>
+                        <button name="action_sale_print_filtered_report" type="object" string="Export" class="oe_highlight"/>
+                        <button string="Export With Image" context="{'with_image':True}" name="product_export_report_with_image" type="object" class="oe_highlight"/>
+                        <button name="action_process" type="object" string="Search" class="oe_highlight" />
+                        <button special="cancel" type="object" string="Cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+        <record id="action_open_product_info_wizard_spt" model="ir.actions.act_window">
+            <field name="name">Product Search/Export </field>
+            <field name="res_model">product.info.wizard.spt</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+        </record>
+        <menuitem id="menu_open_wizard_to_print_filtered_excel" name="Product Search/Export" action="action_open_product_info_wizard_spt" parent="sale.menu_sale_report" sequence="150"/>
+    </data>
+
+</odoo>

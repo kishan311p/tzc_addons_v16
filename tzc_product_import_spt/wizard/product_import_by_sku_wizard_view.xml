@@ -1,0 +1,41 @@
+<?xml version='1.0' encoding='utf-8'?>
+<odoo>
+    <data>
+        <record id="product_import_by_sku_wizard_form_view" model="ir.ui.view">
+            <field name="name">product.import.by.sku.wizard.form.view</field>
+            <field name="model">product.import.by.sku.wizard</field>
+            <field name="arch" type="xml">
+                <form>
+                    <sheet>
+                        <group>
+                            <group>
+                                <field name="product_sku"/>
+                            </group>
+                            <group>
+                                <div role="alert" class="alert alert-info">
+                                    <p>Note : Add Comma Separated Product SKU.<br/>
+                                              e.g. E-ABC-123-00-1234,E-XYZ-Wa00-Bur,etc.</p>
+                                </div>
+                            </group>
+                        </group>
+                    </sheet>
+                    <footer>
+                        <button string="Search" name="action_search" type="object" class="oe_highlight"/>
+                        <button string="Cancel" class="btn-secondary" special="cancel" />
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+        <record id="action_product_import_by_sku_wizard" model="ir.actions.act_window">
+            <field name="view_mode">form</field>
+            <field name="view_mode">form</field>
+            <field name="name">Product Import by SKU</field>
+            <field name="res_model">product.import.by.sku.wizard</field>
+            <field name="target">new</field>
+        </record>
+
+        <menuitem name="Product Import By SKU" action="action_product_import_by_sku_wizard" id="menu_product_import_by_sku_wizard" parent="sale.menu_sale_report" groups="base.group_system"/>
+
+    </data>
+</odoo>

@@ -1,0 +1,343 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record model="ir.ui.view" id="inherit_view_partner_form">
+            <field name="name">inherit.view.partner.form</field>
+            <field name="model">res.partner</field>
+            <field name="inherit_id" ref="base.view_partner_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//form" position="attributes">
+                    <attribute name="delete">0</attribute>
+                </xpath>
+                <xpath expr="//form/div[1]" position="before">
+                    <field name="access_field_flag" invisible="1" />
+                </xpath>
+                <xpath expr="//sheet" position="before">
+                    <header>
+                        <field name="customer_type" options="{'clickable': '1'}" widget="statusbar" statusbar_visible='b2c,b2b_regular,b2b_fs' class='oe_highlight' />
+                        <!-- <field name="customer_type" groups="sales_team.group_sale_salesman" options="{'clickable': '1'}" widget="statusbar"/> -->
+                        <button string="Send Email" class="btn btn-primary" type="object" name="partner_approved_spt" />
+                        <button string="Send Reset Password Email" class="btn btn-primary" type="object" name="action_reset_password" />
+                        <button string="Assing Salesperson" class="btn btn-primary" type="object" name="update_salesperson" />
+                        <button string="Change Country" name="action_change_contact_country" type="object" class="oe_highlight" groups="base.group_system,tzc_sales_customization_spt.group_sales_manager_spt"/>
+                        <button string="Verify Email" name="action_verify_email" type="object" class="oe_highlight" />
+                    </header>
+                </xpath>
+                <!-- name="address_name" -->
+                <xpath expr="//sheet/group/group/span[@name='address_name']" position="before">
+                    <field name="type"/>
+                </xpath>
+                <xpath expr="//sheet/group/group/span[@name='address_name']/b" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </xpath>
+                <xpath expr="//sheet/group/group/span[@name='address_name']" position="inside">
+                    <b>Address</b>
+                </xpath>
+                <xpath expr="//field[@name='state_id']" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </xpath>
+                <xpath expr="//sheet/div/h1/field[@name='name']" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </xpath>
+                <xpath expr="//sheet/div/h1/field[@id='individual']" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </xpath>
+                <xpath expr="//sheet/div/h1" position="inside">
+                    <field id="company" class="text-break" name="name" default_focus="1" placeholder="Name" attrs="{'required' : [('type', '=', 'contact'),('is_company', '=', True)], 'invisible': [('is_company','=', False)]}"/>
+                    <field id="individual" class="text-break" name="name" default_focus="1" placeholder="Name" attrs="{'required' : [('type', '=', 'contact'), ('is_company', '=', False)], 'invisible': [('is_company','=', True)]}"/>
+                </xpath>
+                <xpath expr="//field[@name='country_id']" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </xpath>
+                <xpath expr="//field[@name='vat']" position="after">
+                    <field name="state_id" placeholder="State" options="{'no_open': True}" attrs="{'readonly': [('type', '=', 'contact'),('parent_id', '!=', False)]}" context="{'country_id': country_id, 'zip': zip}"/>
+                    <field name="country_id" placeholder="Country" options="{'no_open': True, 'no_create': True}" attrs="{'readonly': [('type', '=', 'contact'),('parent_id', '!=', False)]}"/>
+                    <field name="territory" />
+                    <field name="contact_name_spt" />
+                    <field name="access_field_flag" />
+                </xpath>
+                <xpath expr="//field[@name='category_id']" position="after">
+                    <field name="updated_on" readonly="1" />
+                    <field name="updated_by" readonly="1" />
+                </xpath>
+                <xpath expr="//notebook" position="before">
+                    <group name="tzc_custome">
+                        <group>
+                            <field name="internal_id" string="Internal ID" readonly='1' required='0'/>
+                            <field name="previous_total_sales"/>
+                            <field name="customer_sales_rank"/>
+                        </group>
+                        <group>
+                            <field name="kits_lang" />
+                            <field name="internal_flag_id" />
+                            <field name="eto" />
+                            <field name="business_type_ids" widget='many2many_tags'/>
+                            <field name="is_customer"/>
+                            <field name="is_vendor"/>
+                            <field name="is_salesperson"/>
+                            <field name="is_email_verified"/>
+                            <field name="is_granted_portal_access"/>
+                        </group>
+                        <group>
+                            <field name="business_fax"/>
+                            <field name="business_type"/>
+                        </group>
+                    </group>
+                </xpath>
+                <xpath expr="//button[@name='open_partner_ledger']" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </xpath>
+                <xpath expr="//notebook/page[@name='sales_purchases']/group/group[2]/field[@name='property_payment_method_id']" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </xpath>
+
+                <xpath expr="//sheet/notebook/page[@name='sales_purchases']/group/group/field[@name='user_id']" position="after">
+                    <field name="sales_person_id"/>
+                </xpath>
+                <xpath expr="//notebook/page[@name='sales_purchases']/group/group[1]/field[@name='property_delivery_carrier_id']" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </xpath>
+                <xpath expr="//form/sheet/notebook/page[@name='sales_purchases']/group/group[@name='misc']/field[@name='company_registry']" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </xpath>
+                <xpath expr="//notebook/page[@name='sales_purchases']/group/group[1]/field[@name='user_id']" position="after">
+                    <field name="property_delivery_carrier_id" />
+                </xpath>
+                <xpath expr="//notebook/page[@name='sales_purchases']/group/group[@name='misc']/field[@name='company_id']" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </xpath>
+                <xpath expr="//notebook/page[@name='internal_notes']/group" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </xpath>
+                <xpath expr="//notebook/page[@name='accounting']/group" position="inside">
+                    <group name="accounting_entries">
+                        <field invisible="1" name="currency_id" can_create="true" can_write="true" modifiers="{'invisible':true,'readonly':true}"/>
+                        <!-- <field name="property_account_receivable_id" can_create="true" can_write="true" modifiers="{'invisible':[['access_field_flag','=',false]],'required':true}"/>
+                        <field name="property_account_payable_id" can_create="true" can_write="true" modifiers="{'invisible':[['access_field_flag','=',false]],'required':true}"/> -->
+                    </group>
+                </xpath>
+                <xpath expr="//notebook" position="inside">
+                    <page name="mail_verification_details" string="Mail Verification Details">
+                        <group>
+                            <group>
+                                <field name="result" readonly="1" />
+                                <field name="fail_reason" readonly="1" />
+                                <field name="mail_risk" readonly="1" />
+                            </group>
+                        </group>
+                    </page>
+                </xpath>
+                <div name="button_box" position="inside">
+
+                    <!-- <button name="action_website_activity" type="object" icon="fa-history">
+                        <div class="o_field_widget o_stat_info">
+                        Website Activity
+                        </div>
+                    </button> -->
+
+                    <button name="action_customer_order" type="object" icon="fa-dollar">
+                        <div class="o_field_widget o_stat_info">
+                        Customers Orders
+                        </div>
+                    </button>
+                    <button name="action_customer" type="object" icon="fa-users">
+                        <div class="o_field_widget o_stat_info">
+                        Customers
+                        </div>
+                    </button>
+
+                </div>
+
+                <xpath expr="//sheet/div[hasclass('oe_button_box')]" position="after">
+                    <field name="mailgun_verification_status" invisible="1"/>
+                    <widget name="web_ribbon" title="MG Approved" attrs="{'invisible': [('mailgun_verification_status','=','rejected')]}"/>
+                    <widget name="web_ribbon" bg_color="bg-danger" title="MG Rejected" attrs="{'invisible': [('mailgun_verification_status','=','approved')]}"/>
+                </xpath>
+                <xpath expr="//div[hasclass('oe_button_box')]" position="inside">
+                    <button name="action_contact_campaign" type="object" class="oe_stat_button" icon="fa-envelope">
+                        <div class="o_field_widget o_stat_info">
+                        Mail Campaigns
+                        </div>
+                    </button>
+                </xpath>
+                <xpath expr="//group[@name='container_row_stock']" position="after">
+                    <group string="Localization" attrs="{'invisible':[('is_salesmanager','=',False),('is_salesperson','=',False)]}">
+                        <field name="is_salesmanager" invisible="1"/>
+                        <field name="is_salesperson" invisible="1"/>
+                        <field name="designeted_country_ids" widget="many2many_tags"/>
+                        <field name="notify_salesperson_country_ids" widget="many2many_tags"/>
+                        <field name="territory"/>
+                    </group>
+                </xpath>
+            </field>
+        </record>
+
+        <!-- <record id="action_website_new_partners_spt" model="ir.actions.act_window">
+            <field name="name">New Signups</field>
+            <field name="res_model">res.partner</field>
+            <field name="view_mode">tree,form</field>
+            <field name="domain">[('customer_type','=','b2c'),('signup_from_website','=',True)]</field>
+        </record> -->
+        <record id="res_partner_website_filter_inherit_srearch_view_spt" model="ir.ui.view">
+            <field name="name">res.partner.website_filter.inherit.srearch.view.spt</field>
+            <field name="model">res.partner</field>
+            <field name="inherit_id" ref="base.view_res_partner_filter"/>
+            <field name="arch" type="xml">
+                <filter name="inactive" position="before">
+                    <filter name="signup_from_website" string="Signup From Website" domain="[('signup_from_website', '=', True)]"/>
+                    <separator/>
+                </filter>
+            </field>
+        </record>
+
+        <record id="action_campaign_template" model="ir.actions.act_window">
+            <field name="name">Campaign Templates</field>
+            <field name="res_model">mailing.mailing</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+        <menuitem id="reporting_menu" name="Reporting" parent="contacts.menu_contacts"/>
+        <!-- <menuitem action="action_website_new_partners_spt" id="menu_website_new_partners_spt" name="New Signups" parent="reporting_menu" groups="base.group_system,tzc_sales_customization_spt.group_sales_manager_spt" sequence='2'/> -->
+        <menuitem action="action_create_contact_report" id="menu_contact_report" name="Contact Detail" parent="reporting_menu" groups="base.group_system" />
+        <menuitem id="contacts.res_partner_menu_config" name="Configuration" parent="contacts.menu_contacts" groups="base.group_system" sequence="200"/>
+
+        <menuitem id="mail_campaign_menu" name="Campaigns" action="marketing_automation.marketing_campaign_action" parent="contacts.menu_contacts" sequence="5000"/>
+        <menuitem id="campaign_templates_menu" name="Campaign Templates" action="action_campaign_template" parent="contacts.menu_contacts" sequence="6000"/>
+        <menuitem id="menu_mail_template" name="Manage Templates" action="action_contact_mail_template" parent="contacts.menu_contacts" sequence="6100"/>
+        <menuitem id="res_partner_industry_menu" name="Sectors of Activity" action="base.res_partner_industry_action" parent="contacts.res_partner_menu_config" sequence="4"/>
+
+        <menuitem id="menu_main_contacts" name="Contacts" parent="contacts.menu_contacts" sequence="1"/>
+        <menuitem action="action_internal_contact" id="menu_internal_contact" name="Internal Contacts" parent="menu_main_contacts" />
+        <menuitem id="contacts.res_partner_menu_contacts" name="Contacts" action="contacts.action_contacts" parent="menu_main_contacts" sequence="1"/>
+
+
+        <record id="tzc_res_partner_inherit_tree_view_spt" model="ir.ui.view">
+            <field name="name">tzc.res.partner.inherit.tree.view.spt</field>
+            <field name="model">res.partner</field>
+            <field name="inherit_id" ref="base.view_partner_tree"/>
+            <field name="arch" type="xml">
+                <xpath expr="//tree" position="attributes">
+                    <attribute name="default_order">last_order_date desc, create_date desc</attribute>
+                    <attribute name="delete">0</attribute>
+                </xpath>
+                <xpath expr="//tree" position="inside">
+                    <field name='updated_on' string="Last Updated On" optional="show"/>
+                    <field name='updated_by' string="Last Updated By" optional="show"/>
+                    <field name='is_salesperson' invisible="1"/>
+                    <!-- <field name='catalog_count' invisible="1"/> -->
+                    <field name="name_get_partner" invisible="1"/>
+                    <field name="access_field_flag" />
+                </xpath>
+                <field name="vat" position="attributes">
+                    <attribute name="optional">show</attribute>
+                </field>
+                <xpath expr="//field[@name='display_name']" position="before">
+                    <field name="internal_id" string="Internal ID" optional="show"/>
+                </xpath>
+                <xpath expr="//field[@name='email']" position="after">
+                    <!-- <field name="last_logged_on" optional="show"/> -->
+                    <field name="last_order_id" optional="show"/>
+                    <field name="last_order_date" optional="show"/>
+                    <field name="last_order_value" optional="show"/>
+                </xpath>
+                <xpath expr="//field[@name='display_name']" position="attributes">
+                    <attribute name="optional">show</attribute>
+                    <attribute name="string">Name/City/Country</attribute>
+                </xpath>
+                <xpath expr="//field[@name='display_name']" position="after">
+                    <field name="contact_name_spt" optional="show"/>
+                    <!-- <field name="city" optional="show"/>
+                <field name="state_id" optional="show"/>
+                <field name="country_id" optional="show"/> -->
+                </xpath>
+                <xpath expr="//field[@name='user_id']" position="after">
+                    <!-- <field name="sale_order_count" string="#Orders" optional="show"/> -->
+                    <field name="total_invoiced_count" string="#Invoices" optional="show"/>
+                    <field name="customer_type" string="Status" optional="show"/>
+                    <field name="user_state" string="User Status" optional="show"/>
+                </xpath>
+                <xpath expr="//field[@name='is_company']" position="after">
+                    <field name="is_company" invisible="0" optional="show"/>
+                    <field name="is_customer" invisible="context.get('supplier_spt', False)" optional="show"/>
+                    <field name="is_salesmanager" optional="show"/>
+                    <field name="is_vendor" invisible="context.get('customer_spt', False)" optional="show"/>
+                    <field name="is_email_verified" readonly="0" optional="show"/>
+                    <field name="is_granted_portal_access" readonly="0" optional="show"/>
+                    <!-- <field name="catalog_count" string="#Catalog" optional="show"/> -->
+                    <field name="designeted_country_ids" invisible="1" />
+                </xpath>
+                <xpath expr="//field[@name='vat']" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </xpath>
+
+                <field name="user_id" position="attributes">
+                    <attribute name="invisible">0</attribute>
+                    <attribute name="optional">show</attribute>
+                </field>
+                <field name="is_company" position="attributes">
+                    <attribute name="optional">show</attribute>
+                </field>
+                <field name="city" position="attributes">
+                    <attribute name="optional">show</attribute>
+
+                </field>
+                <field name="state_id" position="attributes">
+                    <attribute name="optional">show</attribute>
+                </field>
+                <field name="country_id" position="attributes">
+                    <attribute name="optional">show</attribute>
+                </field>
+
+                <xpath expr="//field[@name='city']" position="before">
+                    <field name="street" optional="show"/>
+                    <field name="street2" optional="show"/>
+                </xpath>
+
+            </field>
+        </record>
+        <record id="contacts.action_contacts" model="ir.actions.act_window">
+            <field name="view_mode">tree,form,kanban</field>
+        </record>
+        <record id="contacts.action_contacts_view_kanban" model="ir.actions.act_window.view">
+            <field name="sequence" eval="4"/>
+            <field name="view_mode">kanban</field>
+            <field name="view_id" ref="base.res_partner_kanban_view"/>
+            <field name="act_window_id" ref="contacts.action_contacts"/>
+        </record>
+
+        <record id="tzc_internal_contacts_tree_view_spt" model="ir.ui.view">
+            <field name="name">tzc.internal.contacts.tree.view.spt</field>
+            <field name="model">res.partner</field>
+            <field name="arch" type="xml">
+                <tree default_order='last_order_date desc, create_date desc' delete="false">
+                    <field name="internal_id" optional="show" string="Internal ID"/>
+                    <field name="display_name" optional="show" string="Name"/>
+                    <field name="contact_name_spt" optional="show"/>
+                    <field name="city" optional="show"/>
+                    <field name="state_id" optional="show"/>
+                    <field name="territory" optional="show"/>
+                    <field name="country_id" optional="show"/>
+                    <field name="phone" optional="show"/>
+                    <field name="email" optional="show"/>
+                    <!-- <field name="last_logged_on" optional="show"/> -->
+                    <field name="designeted_country_ids" widget="many2many_tags" optional="show" groups="tzc_sales_customization_spt.group_sales_manager_spt"/>
+                    <field name="notify_salesperson" invisible="1"/>
+                    <field name="notify_salesperson_country_ids" widget="many2many_tags" optional="show" attrs="{'invisible': [('notify_salesperson', '=', False)]}"/>
+                    <field name="user_id" optional="show"/>
+                    <field name="internal_contacts_ids" optional="show" widget="many2many_tags" groups="tzc_sales_customization_spt.group_sales_manager_spt"/>
+                    <field name="sale_order_count" optional="show" string="#Orders"/>
+                    <field name="total_invoiced_count" optional="show" string="#Invoices"/>
+                    <field name="customer_type" optional="show" string="Status"/>
+                    <field name="user_state" string="User Status" optional="show"/>
+                    <field name="is_company" optional="show"/>
+                    <field name="is_customer" optional="show"/>
+                    <field name="is_vendor" optional="show"/>
+                    <field name="is_email_verified" optional="show"/>
+                    <field name="is_granted_portal_access" optional="show"/>
+                    <!-- <field name="catalog_count" optional="show" string="#Catalog"/> -->
+                </tree>
+            </field>
+        </record>
+
+    </data>
+</odoo>

@@ -1,0 +1,110 @@
+<?xml version='1.0' encoding='utf-8'?>
+<odoo>
+    <data>
+
+        <record id="multi_website_email_template" model="mail.template">
+            <field name="name">Rest Password Email</field>
+            <field name="model_id" ref="kits_multi_website.model_kits_multi_website_customer" />
+            <field name="email_from">${(object.env.user.partner_id.email and '%s &lt;%s&gt;' % (object.env.user.partner_id.name, object.env.user.partner_id.email) or '')|safe}</field>
+            <field name="email_to">${object.email}</field>
+            <field name="subject">${object.display_name} Reset Password Link</field>
+            <field name="lang">${$object.env.user.lang}</field>
+            <field name="auto_delete" eval="False" />
+            <field name="body_html" type="html">
+
+                <div style="margin: 0px; padding: 0px;">
+                    <table border="0" cellpadding="0" cellspacing="0" style="padding-top: 16px; background-color: #F1F1F1; font-family:Verdana, Arial,sans-serif; color: #454748; width: 100%; border-collapse:separate;">
+                        <tr>
+                            <td align="center">
+                                <table border="0" cellpadding="0" cellspacing="0" width="590" style="padding: 0px 0px 0px 16px; background-color: white; color: #454748; border-collapse:separate;">
+                                    <tbody>
+                                        <!-- HEADER -->
+                                        <tr>
+                                            <td align="center" style="min-width: 590px;">
+                                                <table border="0" cellpadding="0" cellspacing="0" width="590" style="min-width: 590px; background-color: white; padding: 0px 8px 0px 8px; border-collapse:separate;">
+                                                    <tr>
+                                                        <td valign="middle" style="width: 245px;">
+                                                            <span style="font-size: 20px; font-weight: bold;">
+                                                            ${object.display_name}
+                                                            </span>
+                                                        </td>
+                                                        <td valign="middle" style="width: 145px;" align="right">
+                                                            <img src="/web/image?model=kits.b2c.website&amp;id=${object.website_id.logo_public_url[-1]}&amp;field=logo" style="padding: 0px; margin: 0px; height: auto; width: 112px;" alt="${object.display_name}"/>
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td colspan="2" style="text-align:center;">
+                                                            <hr width="100%" style="background-color:rgb(204,204,204);border:medium none;clear:both;display:block;font-size:0px;min-height:1px;line-height:0; margin:0px 0px 16px 0px;"/>
+                                                        </td>
+                                                    </tr>
+                                                </table>
+                                            </td>
+                                        </tr>
+                                        <!-- CONTENT -->
+                                        <tr>
+                                            <td align="center" style="min-width: 590px;">
+                                                <table border="0" cellpadding="0" cellspacing="0" width="590" style="min-width: 590px; background-color: white; padding: 0px 8px 0px 8px; border-collapse:separate;">
+                                                    <tr>
+                                                        <td valign="top" style="font-size: 13px;">
+                                                            <div>
+                                                                <p style="margin-top:0px;">Dear ${object.display_name},</p>
+                                                                <p>A password reset was requested for the teameto.com account linked to this email. You may change your password by following this link which will remain valid for 1 hour:<br/>
+                                                                <div style="margin: 16px 0px 16px 0px;">
+                                                                    <a href="${object.reset_password_url}" style="background-color: #7693f8; padding: 8px 16px 8px 16px; text-decoration: none; color: #fff; border-radius: 5px; font-size:13px;">
+                                Change password
+                                                                    </a>
+                                                                </div>
+                        If you did not request a password reset, you can simply ignore this email.</p>
+                                                            <p>Thank you,<br/>
+ETO Support</p>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td style="text-align:center;">
+                                                        <hr width="100%" style="background-color:rgb(204,204,204);border:medium none;clear:both;display:block;font-size:0px;min-height:1px;line-height:0; margin: 16px 0px 16px 0px;"/>
+                                                    </td>
+                                                </tr>
+                                            </table>
+                                        </td>
+                                    </tr>
+                                    <!-- FOOTER -->
+
+                                    <tr>
+                                        <td align="center" style="min-width: 590px; padding: 0 8px 0 8px; font-size:11px;">
+                                            <b>My Company (San Francisco)</b>
+                                            <br />
+                                            <div style="color: #999999;">
+                                                        +1 (650) 691-3277 |
+                                                <a style="text-decoration:none; color: #999999;" href="mailto:info@yourcompany.com">info@yourcompany.com</a>
+                                                        |
+                                                <a style="text-decoration:none; color: #999999;" href="http://www.example.com">http://www.example.com</a>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </td>
+                    </tr>
+                    <!-- POWERED BY -->
+                    <tr>
+                        <td align="center" style="min-width: 590px;">
+                            <table border="0" cellpadding="0" cellspacing="0" width="590" style="min-width: 590px; background-color: #F1F1F1; color: #454748; padding: 8px; border-collapse:separate;">
+                                <tr>
+                                    <td style="text-align: center; font-size: 13px;">
+        Powered by <a target="_blank" href="www.teameto.com" style="color: #7693f8;">ETO</a>
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                </table>
+
+
+
+
+            </div>
+        </field>
+    </record>
+</data>
+</odoo>

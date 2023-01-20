@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="kits_sales_commission_notify_salesperson_commission_change" model="mail.template">
+        <field name="name">Notify User about Commission Change</field>
+        <field name="subject">Commission rule changed by ${object.env.user.name}.</field>
+        <field name="email_from">"ETO-Support" &lt;${(object.company_id.catchall or user.email)|safe}&gt;</field>
+        <!-- <field name="email_from">${object.env.user.email | safe}</field> -->
+        <field name="email_to">${object.partner_id.email | safe}</field>
+        <field name="model_id" ref="model_res_users"/>
+        <field name="auto_delete" eval="False"/>
+        <field name="lang">${object.partner_id.lang}</field>
+        <field name="body_html" type="html">
+            <table border="0" cellpadding="0" cellspacing="0" style="padding-top: 16px; background-color: #F1F1F1; font-family:Verdana, Arial,sans-serif; color: #454748; width: 100%; border-collapse:separate;">
+                <tr>
+                    <td align="center">
+                        <table border="0" cellpadding="0" cellspacing="0" width="590" style="padding: 16px; background-color: white; color: #454748; border-collapse:separate;">
+                            <tbody>
+                                <!-- HEADER -->
+                                <tr>
+                                    <td align="center" style="min-width: 590px;">
+                                        <t>
+                                            %if object.env.cr.dbname != 'eto_production':
+                                            <div class="corner-ribbon" style="top: 5%;position:absolute;width: 165px;font-weight: bold;color: #dc0e0e;font-size: 36px;text-align: center;">TEST</div>
+                                            % endif
+                                        </t>
+                                        <table border="0" cellpadding="0" cellspacing="0" width="590" style="min-width: 590px; background-color: white; padding: 0px 8px 0px 8px; border-collapse:separate;">
+                                            <tr>
+                                                <td valign="middle" style="width: 245px;">
+                                                    <!-- <span style="font-size: 10px;">Your Order</span>
+                                                    <br/> -->
+                                                    <span style="font-size: 20px; font-weight: bold;">
+                                                        ${object.name}
+                                                    </span>
+                                                </td>
+                                                <td valign="middle" style="width: 145px;" align="right">
+                                                    <img src="/web/image?model=res.company&amp;id=1&amp;field=logo" style="padding: 0px; margin: 0px; height: auto; width: 280px;" alt="${object.company_id.name}"/>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td colspan="2" style="text-align:center;">
+                                                    <hr width="100%" style="background-color:rgb(204,204,204);border:medium none;clear:both;display:block;font-size:0px;min-height:1px;line-height:0; margin:16px 0px 16px 0px;"/>
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                </tr>
+                                <!-- CONTENT -->
+                                <tr>
+                                    <td align="center" style="min-width: 590px;">
+                                        <table border="0" cellpadding="0" cellspacing="0" width="590" style="min-width: 590px; background-color: white; padding: 0px 8px 0px 8px; border-collapse:separate;">
+                                            <tr>
+                                                <td valign="top" style="font-size: 13px;">
+                                                    <p style="margin-top:0px;">Hello ${object.name},</p>
+                                                    % set rule = object.env.context.get('rule_name')
+                                                    % set orders = object.env.context.get('updated_orders')
+                                                    <p>Your commission rule has been updated by ${object.env.user.name or 'Administrator'}.
+                                                        % if orders and rule:
+                                                            <br/>Your commission in following invoices are updated according to new rule "${rule}" :
+                                                            ${orders}
+                                                        % endif
+                                                    </p>
+                                                    <p style="margin-bottom:0px;">Thank you,<br/>
+                                                    ETO Support</p>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td style="text-align:center;">
+                                                    <hr width="100%" style="background-color:rgb(204,204,204);border:medium none;clear:both;display:block;font-size:0px;min-height:1px;line-height:0; margin: 16px 0px 16px 0px;"/>
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                </tr>
+                                <!-- FOOTER -->
+                                <tr>
+                                    <td align="center" style="min-width: 590px;">
+                                        <table border="0" cellpadding="0" cellspacing="0" width="590" style="min-width: 590px; background-color: white; font-size: 11px; padding: 0px 8px 0px 8px; border-collapse:separate;">
+                                            <tr>
+                                                <td valign="middle" align="left">
+                                                        ${object.company_id.name}
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td valign="middle" align="left" style="opacity: 0.7;">
+                                                        ${object.company_id.phone}
+                                                        % if object.company_id.email
+                                                        |                                                    <a href="'mailto:%s' % ${object.company_id.email}" style="text-decoration:none; color: #454748;">${object.company_id.email}</a>
+                                                        % endif
+                                                        % if object.company_id.website
+                                                            |                                                    <a href="'%s' % ${object.company_id.website}" style="text-decoration:none; color: #454748;">
+                                                            ${object.company_id.website}
+                                                    </a>
+                                                        % endif
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </td>
+                </tr>
+                <!-- POWERED BY -->
+                <tr>
+                    <td align="center" style="min-width: 590px;">
+                        <table border="0" cellpadding="0" cellspacing="0" width="590" style="min-width: 590px; background-color: #F1F1F1; color: #454748; padding: 8px; border-collapse:separate;">
+                            <tr>
+                                <td style="text-align: center; font-size: 13px;">
+                                    Powered by <a target="_blank" href="www.teameto.com" style="color: #7693f8;">ETO</a>
+                                </td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+            </table>
+        </field>
+    </record>
+
+</odoo>

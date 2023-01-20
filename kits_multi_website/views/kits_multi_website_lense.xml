@@ -1,0 +1,69 @@
+<?xml version='1.0' encoding='utf-8'?>
+<odoo>
+    <data>
+
+        <record id="kits_multi_website_lense_form_view" model="ir.ui.view">
+            <field name="name">kits.multi.website.lense.form.view</field>
+            <field name="model">kits.multi.website.lense</field>
+            <field name="arch" type="xml">
+                <form>
+
+                    <sheet>
+                        <field name="image_icon_url_icon" widget="image" class="oe_avatar" options="{'zoom': true,'preview_image': 'image_icon_url_icon'}"/>
+                        <group>
+                            <group>
+                                <field name="name" required="1"/>
+                                <field name="field_type" required="1"/>
+                                <field name="image_icon_url" required="1"/>
+                                <field name="website_id"  invisible="context.get('show_website_id',False)"  options="{'no_open': True,'no_create': True}"/>
+                            </group>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="kits_multi_website_lense_tree_view" model="ir.ui.view">
+            <field name="name">kits.multi.website.lense.tree.view</field>
+            <field name="model">kits.multi.website.lense</field>
+            <field name="arch" type="xml">
+                <tree editable="bottom">
+                    <field name="image_icon_url_icon" widget="image" class="oe_avatar" options="{'zoom': true,'preview_image': 'image_icon_url_icon','size':[100,100]}"/>
+                    <field name="image_icon_url" required="1" />
+                    <field name="name" required="1" />
+                    <field name="field_type" required="1"/>
+                    <field name="website_id"  invisible="context.get('show_website_id',False)"  options="{'no_open': True,'no_create': True}"/>
+
+                </tree>
+            </field>
+        </record>
+
+        <record id="kits_multi_website_lense_search_view" model="ir.ui.view">
+            <field name="name">kits.multi.website.lense.search.view</field>
+            <field name="model">kits.multi.website.lense</field>
+            <field name="arch" type="xml">
+                <search>
+                    <field name="name" />
+                    <filter name="boolean" string="Boolean" domain="[('field_type','=','boolean')]"/>
+                    <filter name="field_type" string="Character" domain="[('field_type','=','Char')]"/>
+
+                    <group string="Group By">
+                        <filter name="website_id" string="Website" context="{'group_by': 'website_id'}"/>
+                        <filter name="field_type" string="Field Type" context="{'group_by': 'field_type'}"/>
+
+                    </group>
+
+                </search>
+            </field>
+        </record>
+
+
+
+        <record id="kits_multi_website_lense_action" model="ir.actions.act_window">
+            <field name="name">Lenses</field>
+            <field name="res_model">kits.multi.website.lense</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+    </data>
+</odoo>

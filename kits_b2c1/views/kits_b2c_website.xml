@@ -1,0 +1,83 @@
+<?xml version='1.0' encoding='utf-8'?>
+<odoo>
+    <data>
+
+        <record id="website_kits_b2c1" model="kits.b2c.website">
+            <field name="name">B2C1</field>
+            <field name="website_name">b2c1</field>
+        </record>
+
+        <record id="inherit_b2c1_kits_b2c_website_view_form" model="ir.ui.view">
+            <field name="name">inherit.b2c1.kits.b2c.website.view.form</field>
+            <field name="model">kits.b2c.website</field>
+            <field name="inherit_id" ref="kits_multi_website.kits_b2c_website_form_view"/>
+            <field name="arch" type="xml">
+                <xpath expr="//sheet/notebook/page[@name='seo']" position="inside">
+                    <group>
+                        <group>
+                            <field name="shop_page_title" />
+                            <field name="shop_page_keyword" />
+                            <field name="shop_page_description" />
+                            <field name="canonical_url" />
+                        </group>
+                    </group>
+                </xpath>
+                <xpath expr="//sheet/notebook/page[@name='seo']" position="before">
+                    <page name="footer" string="Footer Info.">
+                        <group attrs="{'invisible': [('website_name', '!=', 'b2c1')]}">
+                            <group string="Footer Details">
+                                <field name="contact" widget="phone"/>
+                                <field name="company_email" />
+                            </group>
+                        </group>
+                    </page>
+                    <page name="icons" string="Icon Info.">
+                        <group attrs="{'invisible': [('website_name', '!=', 'b2c1')]}">
+                            <group>
+                                <group string="Gender Images">
+                                    <field name="men_image" widget="image" options="{'zoom': true,'preview_image':'men_image', 'size' : [50,50]}"/>
+                                    <field name="women_image" widget="image" options="{'zoom': true,'preview_image':'women_image', 'size' : [50,50]}"/>
+                                    <field name="kids_image" widget="image" options="{'zoom': true,'preview_image':'kids_image', 'size' : [50,50]}"/>
+                                </group>
+                                <group>
+                                    <field name="facebook_icon" widget="image" options="{'zoom': true,'preview_image':'facebook_icon', 'size' : [50,50]}"/>
+                                    <field name="twitter_icon" widget="image" options="{'zoom': true,'preview_image':'twitter_icon', 'size' : [50,50]}"/>
+                                    <field name="mail_icon" widget="image" options="{'zoom': true,'preview_image':'mail_icon', 'size' : [50,50]}"/>
+                                </group>
+                                <group>
+                                    <field name="instagram_icon" widget="image" options="{'zoom': true,'preview_image':'instagram_icon', 'size' : [50,50]}"/>
+                                    <field name="youtube_icon" widget="image" options="{'zoom': true,'preview_image':'youtube_icon', 'size' : [50,50]}"/>
+                                    <field name="contact_icon" widget="image" options="{'zoom': true,'preview_image':'contact_icon', 'size' : [50,50]}"/>
+                                </group>
+                            </group>
+                            <group invisible="0">
+                                <group>
+                                    <field name="contact_icon_url" widget="url" />
+                                    <field name="mail_icon_url" widget="url"/>
+                                    <field name="facebook_icon_url" widget="url" />
+                                    <field name="men_image_url" widget="url" />
+                                    <field name="women_image_url" widget="url" />
+                                    <field name="kids_image_url" widget="url" />
+                                </group>
+                                <group>
+                                    <field name="twitter_icon_url" widget="url" />
+                                    <field name="instagram_icon_url" widget="url" />
+                                    <field name="youtube_icon_url" widget="url" />
+                                </group>
+                            </group>
+                        </group>
+                    </page>
+                    <page name="cookies_policy" string="Cookies Policy">
+                        <group>
+                            <group>
+                                <field name="cookies_policy_url" />
+                                <field name="cookies_policy" />
+                            </group>
+                        </group>
+                    </page>
+                </xpath>
+            </field>
+        </record>
+
+    </data>
+</odoo>

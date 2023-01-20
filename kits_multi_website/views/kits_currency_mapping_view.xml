@@ -1,0 +1,41 @@
+<?xml version='1.0' encoding='utf-8'?>
+<odoo>
+    <data>
+
+        <record id="kits_currency_mapping_form_view" model="ir.ui.view">
+            <field name="name">kits.currency.mapping.form.view</field>
+            <field name="model">kits.currency.mapping</field>
+            <field name="arch" type="xml">
+                <form>
+                    <sheet>
+                        <group>
+                            <group>
+                                <field name="currency_id" />
+                            </group>
+                            <group>
+                                <field name="currency_rate" />
+                            </group>
+                        </group>
+                    </sheet>
+                </form> 
+            </field>
+        </record>
+
+        <record id="kits_currency_mapping_tree_view" model="ir.ui.view">
+            <field name="name">kits.currency.mapping.tree.view</field>
+            <field name="model">kits.currency.mapping</field>
+            <field name="arch" type="xml">
+                <tree editable="bottom">
+                    <field name="currency_id" required="1"/>
+                    <field name="currency_rate" required="1"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="kits_currency_mapping_action" model="ir.actions.act_window">
+            <field name="name">Currencies</field>
+            <field name="res_model">kits.currency.mapping</field>
+            <field name="view_mode">tree</field>
+        </record>
+    </data>
+</odoo>

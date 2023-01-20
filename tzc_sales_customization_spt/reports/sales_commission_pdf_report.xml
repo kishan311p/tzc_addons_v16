@@ -1,0 +1,275 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="sales_commission_report" name="Sales Commission">
+        <t t-set="users" t-value="doc.get_users()"/>
+        <t t-foreach="users" t-as="user">
+            <t t-set="sale_person" t-value="users[user]"/>
+            <t t-call="web.external_layout">
+                <div class="page">
+                    <div class="oe_structure"/>
+                    <div>
+                        <strong>
+                            <span t-esc="sale_person.get('name')"/>
+                        </strong>
+                        <br/>
+                        <t t-if="sale_person.get('street')">
+                            <span t-esc="sale_person.get('street')"/>
+                            ,<br/>
+                        </t>
+                        <t t-if="sale_person.get('street2')">
+                            <span t-esc="sale_person.get('street2')"/>
+,                            <br/>
+                        </t>
+                        <t t-if="sale_person.get('city')">
+                            <span t-esc="sale_person.get('city')"/>
+,                            <br/>
+                        </t>
+                        <t t-if="sale_person.get('state')">
+                            <span t-esc="sale_person.get('state')"/>
+,
+                        </t>
+                        <t t-if="sale_person.get('country')">
+                            <span t-esc="sale_person.get('country')"/>
+                            <br/>
+                        </t>
+                        <t t-if="sale_person.get('phone')">
+                            Tel: <span t-esc="sale_person.get('phone')"/>
+                        <br/>
+                        </t>
+                        <t t-if="sale_person.get('email')">
+                            Email:
+                            <span t-esc="sale_person.get('email')" />
+                            <br />
+                        </t>
+                    </div>
+                    <br />
+                    <div class="row mt20 mb20" id="informations">
+                        <div t-if="doc.start_date" class="col-auto mw-100 mb-2">
+                            <strong>Start Date</strong>
+                            <p class="m-0" t-esc="sale_person.get('start_date')" />
+                        </div>
+                        <div t-if="doc.end_date" class="col-auto mw-100 mb-2">
+                            <strong>End Date</strong>
+                            <p class="m-0" t-esc="sale_person.get('end_date')" />
+                        </div>
+                        <div class="col-6 mw-100 mb-2">
+                            <strong>Commission Type</strong>
+                            <br />
+                            <t t-esc="sale_person.get('commission_rule')" />
+                        </div>
+                    </div>
+                    <div>
+                        <table class="table table-sm o_main_table" style="width:100%;">
+                            <thead>
+                                <tr>
+                                    <th style="width:8%">Date</th>
+                                    <th>Order</th>
+                                    <th>Invoice</th>
+                                    <th>Customer</th>
+                                    <th class="text-center">Country</th>
+                                    <th class="text-center">Territory</th>
+                                    <th class="text-center">Quantity</th>
+                                    <th style="width:7%;">Currency</th>
+                                    <th class="text-center">Gross Sale</th>
+                                    <th class="text-center">Discount</th>
+                                    <th class="text-center">Tax</th>
+                                    <th class="text-center">Net Sale</th>
+                                    <th>Commission</th>
+                                    <th class="text-center">Commission Status</th>
+                                </tr>
+                            </thead>
+                            <!-- <body style="font-size:10px !important;"> -->
+                                <t t-set="report_table_lines" t-value="sale_person.get('lines')" />
+                                <t t-set="qty" t-value="0" />
+                                <t t-foreach="report_table_lines" t-as="o">
+                                    <t t-if="o.get('commission')">
+                                        <tr>
+                                            <td>
+                                                <span t-esc="o.get('date')" />
+                                            </td>
+                                            <td>
+                                                <span t-esc="o.get('sale_order')" />
+                                            </td>
+                                            <td>
+                                                <span t-esc="o.get('invoice_order')" />
+                                            </td>
+                                            <td>
+                                                <span t-esc="o.get('customer')" />
+                                            </td>
+                                            <td class="text-center">
+                                                <span t-esc="o.get('country')" />
+                                            </td>
+                                            <td class="text-center">
+                                                <span t-esc="o.get('territory')" />
+                                            </td>
+                                            <td class="text-center">
+                                                <span t-esc="o.get('qty')" />
+                                                <t t-set="qty" t-value="qty + o.get('qty')" />
+                                            </td>
+                                            <td class="text-right">
+                                                <span t-esc="o.get('currency')" />
+                                            </td>
+                                            <td class="text-right">
+                                                $
+                                                <span t-esc="'{:,.2f}'.format(o.get('gross_sale'))" />
+                                            </td>
+                                            <td class="text-right">
+                                                $
+                                                <span t-esc="'{:,.2f}'.format(o.get('discount'))" />
+                                            </td>
+                                            <td class="text-right">
+                                                $<span t-esc="'{:,.2f}'.format(o.get('tax'))" />
+                                            </td>
+                                            <td class="text-right">
+                                                $
+                                                <span t-esc="'{:,.2f}'.format(o.get('net_sale'))" />
+                                            </td>
+                                            <td class="text-right">
+                                                $
+                                                <span t-esc="'{:,.2f}'.format(o.get('commission'))" />
+                                            </td>
+                                            <td class="text-center">
+                                                <span t-esc="o.get('commission_is')" />
+                                            </td>
+                                        </tr>
+                                    </t>
+                                </t>
+                                <t>
+                                    <tr>
+                                        <td colspan="14" style="padding: 0;">
+                                            <hr style="border-top:2px solid black;padding: 0px;margin: 0px;" />
+                                        </td>
+                                    </tr>
+                                </t>
+                                <t t-set="currency_dict" t-value="doc.get_currency_total(report_table_lines)" />
+                                <t t-set="show_qty" t-value="True" />
+                                <t t-foreach="currency_dict" t-as="c">
+                                    <tr style="font-weight: bold;">
+                                        <td />
+                                        <td />
+                                        <td />
+                                        <td />
+                                        <td />
+                                        <td />
+                                        <t t-if="show_qty">
+                                            <td class="text-center">
+                                                <t t-esc="qty" />
+                                                <t t-set="show_qty" t-value="False" />
+                                            </td>
+                                        </t>
+                                        <t t-else="else">
+                                            <td />
+                                        </t>
+                                        <td>
+                                            Total (
+                                            <span t-esc="c" />
+                                            )
+                                        </td>
+                                        <td class="text-right">
+                                            $
+                                            <span t-esc="'{:,.2f}'.format(currency_dict[c]['gross_sale'])" />
+                                        </td>
+                                        <td class="text-right">
+                                            $
+                                            <span t-esc="'{:,.2f}'.format(currency_dict[c]['discount'])" />
+                                        </td>
+                                        <td class="text-right">
+                                            $
+                                            <span t-esc="'{:,.2f}'.format(currency_dict[c]['tax'])" />
+                                        </td>
+                                        <td class="text-right">
+                                            $
+                                            <span t-esc="'{:,.2f}'.format(currency_dict[c]['net_sale'])" />
+                                        </td>
+                                        <td class="text-right">
+                                            $
+                                            <span t-esc="'{:,.2f}'.format(currency_dict[c]['commission'])" />
+                                        </td>
+                                    </tr>
+                                </t>
+                                <t t-set="paid_unpaid_total" t-value="doc.get_paid_unpaid_commision_total(report_table_lines)" />
+                                <t t-foreach="paid_unpaid_total" t-as="total">
+                                    <tr style="font-weight: bold;">
+                                        <td />
+                                        <td />
+                                        <td />
+                                        <td />
+                                        <td />
+                                        <td />
+                                        <td />
+                                        <td />
+                                        <td />
+                                        <td />
+                                        <td />
+                                        <t t-if="doc.commission_is == 'is_paid'">
+                                            <td class="text-right">
+                                                Paid commission (
+                                                <span t-esc="total" />
+                                                )
+                                            </td>
+                                            <td class="text-right">
+                                                $
+                                                <span t-esc="paid_unpaid_total[total]['paid']" />
+                                            </td>
+                                        </t>
+                                        <t t-if="doc.commission_is == 'is_unpaid'">
+                                            <td class="text-right">
+                                                Unpaid commission (
+                                                <span t-esc="total" />
+                                                )
+                                            </td>
+                                            <td class="text-right">
+                                                $
+                                                <span t-esc="paid_unpaid_total[total]['unpaid']" />
+                                            </td>
+                                        </t>
+                                        <t t-if="doc.commission_is == 'all'">
+                                            <td class="text-right">
+                                                Paid commission (
+                                                <span t-esc="total" />
+                                                )
+                                            </td>
+                                            <td class="text-right">
+                                                $
+                                                <span t-esc="paid_unpaid_total[total]['paid']" />
+                                            </td>
+                                            <tr style="font-weight: bold;">
+                                                <td />
+                                                <td />
+                                                <td />
+                                                <td />
+                                                <td />
+                                                <td />
+                                                <td />
+                                                <td />
+                                                <td />
+                                                <td />
+                                                <td />
+                                                <td class="text-right">
+                                                    Unpaid commission (
+                                                    <span t-esc="total" />
+                                                    )
+                                                </td>
+                                                <td class="text-right">
+                                                    $
+                                                    <span t-esc="paid_unpaid_total[total]['unpaid']" />
+                                                </td>
+                                            </tr>
+                                        </t>
+                                    </tr>
+                                </t>
+                            <!-- </body> -->
+                        </table>
+                    </div>
+                </div>
+            </t>
+        </t>
+    </template>
+    <template id="sales_commission_pdf_report">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="doc">
+                <t t-call="tzc_sales_customization_spt.sales_commission_report" />
+            </t>
+        </t>
+    </template>
+</odoo>

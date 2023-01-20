@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<odoo>
+    <data noupdate="1">
+        <record id="usd_public_pricelist_spt" model="product.pricelist">
+            <field name="name">Public Pricelist (USD)</field>
+            <!-- <field name="currency_id" eval="[(4, ref('base.CAD'))]"/> -->
+        </record>
+    </data>
+</odoo>

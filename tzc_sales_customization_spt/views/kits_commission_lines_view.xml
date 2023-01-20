@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <data>
+        <record id="kits_commission_lines_form_view" model="ir.ui.view">
+            <field name="name">kits.commission.lines.form.view</field>
+            <field name="model">kits.commission.lines</field>
+            <field name="arch" type="xml">
+                <form create='false' edit="false" duplicate="false">
+                    <sheet>
+                        <div>
+                            <h3>
+                                <field name="name" readonly="1"/>
+                            </h3>
+                        </div>
+                        <group>
+                            <group>
+                                <field name="commission_for" required="1" attrs="{'readonly':[('create_type','=','by_system')]}" />
+                                <field name="user_id" required="1" attrs="{'readonly':[('create_type','=','by_system')]}" options="{'no_create':True,'no_open':True}" />
+                            </group>
+                            <group>
+                                <field name="invoice_id" options="{'no_create':True,'no_open':True}" readonly="1"/>
+                                <field name="rule_id" options="{'no_create':True,'no_open':True}" readonly="1" force_save="1"/>
+                                <field name="amount" required="1" attrs="{'readonly':[('create_type','=','by_system')]}" />
+                                <field name="create_type" readonly="1"/>
+                            </group>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="kits_commission_lines_tree_view" model="ir.ui.view">
+            <field name="name">kits.commission.lines.tree.view</field>
+            <field name="model">kits.commission.lines</field>
+            <field name="arch" type="xml">
+                <tree create="false" edit="false" decoration-danger="create_type == 'manual'" decoration-info="create_type == 'by_system'" decoration-muted="state == 'cancel'">
+                    <field name="create_type" invisible="1" />
+                    <field name="state" invisible="1" />
+                    <field name="name" attrs="{'readonly':[('create_type','=','by_system')]}"/>
+                    <field name="user_id" attrs="{'readonly':[('create_type','=','by_system')]}"/>
+                    <field name="commission_for" attrs="{'readonly':[('create_type','=','by_system')]}"/>
+                    <field name="amount" sum="Total" attrs="{'readonly':[('create_type','=','by_system')]}"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="action_kits_commission_lines" model="ir.actions.act_window">
+            <field name="name">Commission Lines</field>
+            <field name="res_model">kits.commission.lines</field>
+            <field name="view_mode">tree,form</field>
+            <field name="domain">[('state','!=','cancel')]</field>
+        </record>
+
+        <menuitem id="menu_kits_commission_lines" name="Commission Lines" parent="sale.menu_sale_config" action="action_kits_commission_lines" sequence="1"/>
+    </data>
+
+</odoo>

@@ -1,0 +1,352 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="0">
+        <record id="SPHERICAL" model="kits.eye.data.name">
+            <field name="name">SPHERICAL</field>
+        </record>
+        <record id="CYLINDRICAL" model="kits.eye.data.name">
+            <field name="name">CYLINDRICAL</field>
+        </record>
+        <record id="AXIS" model="kits.eye.data.name">
+            <field name="name">AXIS</field>
+        </record>
+        <record id="AP" model="kits.eye.data.name">
+            <field name="name">AP</field>
+        </record>
+        <record id="kits_b2c1_sale_order_placed_email" model="mail.template">
+            <field name="name">Order Placed</field>
+            <field name="email_from">${(object.write_uid.partner_id.email and '%s &lt;%s&gt;' % (object.write_uid.partner_id.name, object.write_uid.email) or '')|safe}</field>
+            <field name="email_to">${(object.customer_id.email and '%s &lt;%s&gt;' % (object.customer_id.firstname +' '+ object.customer_id.lastname , object.customer_id.email) or '')|safe}</field>
+            <field name="subject">${object.write_uid.company_id.name} has sent you an exclusive sale order(${object.name or 'n/a' })</field>
+            <field name="model_id" ref="model_kits_multi_website_sale_order"/>
+            <field name="reply_to">${(object.write_uid.company_id.catchall,object.write_uid.email)|safe}</field>
+            <field name="auto_delete" eval="False"/>
+            <field name="body_html" type="html">
+                <table border="0" cellpadding="0" cellspacing="0" style="padding-top: 16px; background-color: #F1F1F1; font-family:Verdana, Arial,sans-serif; color: #454748; width: 100%; border-collapse:separate;">
+                    <tr>
+                        <td align="center">
+                            <table border="0" cellpadding="0" cellspacing="0" style="padding: 16px; background-color: white; color: #454748; border-collapse:separate;">
+                                <tbody>
+                                    <!-- HEADER -->
+                                    <tr>
+                                        <td align="center" style="min-width:1000px;">
+                                            <t>
+                                            % if object.env.cr.dbname != 'eto_production':
+                                                <div class="corner-ribbon" style="top: 5%;position:absolute;width: 165px;font-weight: bold;color: #dc0e0e;font-size: 36px;text-align: center;">TEST</div>
+                                            % endif
+                                            </t>
+                                            <table border="0" cellpadding="0" cellspacing="0" style="min-width: 1000px; background-color: white; padding: 0px 8px 0px 8px;border-collapse:separate;width:100%;">
+                                                <tr>
+                                                    <td valign="middle" style="width: 345px;">
+                                                        <!-- <span style="font-size: 10px;">Your Order</span>
+                                                        <br/> -->
+                                                        <span style="font-size: 20px; font-weight: bold;">
+                                                            ${object.name}
+                                                        </span>
+                                                    </td>
+                                                    <td valign="middle" style="width: 145px;" align="right">
+                                                        <img src="/web/image?model=res.company&amp;id=1&amp;field=logo" style="padding: 0px; margin: 0px; height: auto; width: 280px;" alt="${object.write_uid.company_id.name}"/>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td colspan="2" style="text-align:center;">
+                                                        <hr width="100%" style="background-color:rgb(204,204,204);border:medium none;clear:both;display:block;font-size:0px;min-height:1px;line-height:0; margin:16px 0px 16px 0px;width:100%;"/>
+                                                    </td>
+                                                </tr>
+                                            </table>
+                                        </td>
+                                    </tr>
+                                    <!-- CONTENT -->
+                                    <td align="center" style="min-width: 590px;">
+                                        <table border="0" cellpadding="0" cellspacing="0" style="min-width: 590px; background-color: white; padding: 0px 8px 0px 8px; border-collapse:separate;width:100%;">
+                                            <tr>
+                                                <td valign="top" style="font-size: 13px;">
+
+                                                    <p style="margin-top:0px;">
+                                                        Dear ${object.customer_id.fristname} ${object.customer_id.lastname},
+                                                    </p>
+                                            
+                                                    <center>
+                                                        <a href="${object.website_id.url}/myaccount?id=2&amp;name=${object.name}" style="background-color:#7693f8 !important; padding: 20px; text-decoration: none; color: #fff; border-radius: 5px; font-size: 16px;" class="o_default_snippet_text">
+                                                            View Order
+                                                        </a>
+                                                    </center>
+                                                    <br/>
+                                                    <br/>
+                                                    <!-- <br/> -->
+                                                    <table style="border: 1px solid #dbdde0;border-collapse:collapse;width: 100%;">
+                                                        <thead>
+                                                            <tr>
+                                                                <th style="padding: 10px;width: 20%;" colspan="2">
+                                                                    <img src="/web/image?model=res.company&amp;id=1&amp;field=logo" style="height: 30px;" alt="Logo"/>
+                                                                </th>
+                                                                <th style="padding: 10px;text-align: center;width: 20%;">Product</th>
+                                                               
+                                                                <th style="padding: 10px;text-align: center;width: 8%;">Qty</th>
+                                                              
+                                                                <th style="padding: 10px;text-align: center;width: 8%;">Price <br/>(<span>${object.currency_id.name}</span>)
+                                                                    
+                                                                </th>
+                                                                <th style="padding: 10px;text-align: center;width: 8%;">Subtotal <br/>(<span>${object.currency_id.name}</span>)
+                                                                </th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                            % for line in object.sale_order_line_ids:
+                                                            % if not line.is_shipping_product:
+                                                            <tr>
+                                                                <td style="border: 1px solid #dbdde0; padding: 10px;">
+                                                                    %if line.product_id.sale_type:
+                                                                    <style>
+                                                                        .te_ribbon-wrapper kits_ribbon #style_3.label_div {
+                                                                            display: inline-block;
+                                                                            width: auto;
+                                                                            font-size: 0.8125rem;
+                                                                            background-color: #353e47;
+                                                                            position: absolute;
+                                                                            top: 10px;
+                                                                            right: unset;
+                                                                            bottom: unset;
+                                                                            left: 0px;
+                                                                            z-index: 1;
+                                                                            overflow: hidden;
+                                                                            @media (max-width:767px){
+                                                                                font-size: 0.0125rem;
+                                                                            }
+                                                                        }
+                                                                        .te_ribbon-wrapper kits_ribbon #style_3.label_div .te_label_name.te_label_name_wish {
+                                                                            padding: 2px 4px !important;
+                                                                        }
+                                                                        .te_ribbon-wrapper kits_ribbon #style_3.label_div .te_label_name.te_label_name_wish:before {
+                                                                            //content: "\f02b";
+                                                                            font-family: FontAwesome;
+                                                                            margin-right: 5px;
+                                                                            font-size: 8px;
+                                                                        }
+                                                                    </style>
+                                                                     %if line.product_id.sale_type  == 'clearance':
+                                                                    <div class="te_ribb on-wrapper" style="color:white">
+                                                                        <span class="style_3 label_div kits_label_name" id="style_3" style="background-color:#990000;font-weight: bold;top: auto !important;left: 24px !important;font-size: 12px;">
+                                                                            <span class="p-1 te_label_name te_label_name_wish">Clearance</span>
+                                                                        </span>
+                                                                    </div>            
+                                                                    % endif
+                                                                     %if line.product_id.sale_type  == 'on_sale':
+                                                                    <div class="te_ribb on-wrapper kits_ribbon" style="color:white">
+                                                                        <span class="style_3 label_div" id="style_3" style="background-color:#e50000;font-weight: bold;top: auto !important;left: 24px !important;font-size: 12px;">
+                                                                            <span class="p-1 te_label_name te_label_name_wish">Sale</span>
+                                                                        </span>
+                                                                    </div>
+                                                        
+                                                                    % endif
+                                                                    % endif
+                                                                   
+                                                                    <img width="250px" src="${line.product_id.image_url}"/>
+                                                                </td>
+                                                                <td style="border: 1px solid #dbdde0; padding: 10px;">
+                                                                    <img width="250px" src="${line.product_id.image_secondary_url}"/>
+                                                                </td>
+                                                                <!--name-->
+                                                                <td style="text-align: center; border: 1px solid #dbdde0; padding: 10px;text-transform: capitalize;">
+                                                                    <!-- <p>
+                                                                        ${line.product_id.variant_name}
+                                                                    </p> -->
+                                                                    <p>
+                                                                        % if line.product_id.brand:
+                                                                            ${line.product_id.brand.name}
+                                                                        % else:
+                                                                            N/A
+                                                                        % endif
+                                                                        <br/>
+                                                                        % if line.product_id.model:
+                                                                            ${line.product_id.model.name}
+                                                                        % else:
+                                                                            N/A
+                                                                        % endif
+                                                                        
+                                                                        % if line.product_id.color_code:
+                                                                            ${line.product_id.color_code.name}
+                                                                        % else:
+                                                                            00
+                                                                        % endif
+
+                                                                        % if line.product_id.eye_size:
+                                                                            ${line.product_id.eye_size.name}
+                                                                        % else:
+                                                                            00
+                                                                        % endif
+
+                                                                        % if line.product_id.bridge_size:
+                                                                            ${line.product_id.bridge_size.name}
+                                                                        % else:
+                                                                            00
+                                                                        % endif
+
+                                                                        % if line.product_id.temple_size:
+                                                                            ${line.product_id.temple_size.name}
+                                                                        % else:
+                                                                            00
+                                                                        % endif
+
+                                                                        % if line.product_id.categ_id:
+                                                                            (${line.product_id.categ_id.name})
+                                                                        % endif
+                                                                    </p>
+                                                                    <br/>
+                                                                    <div>
+                                                                        <div>
+                                                                    <p style="font-size: 10px;">
+                                                                        <span>
+                                                                            Retail Price: ${"%.2f" % line.product_id.price_msrp}<br/>
+                                                                            Wholesale Price: ${"%.2f" % line.product_id.price_wholesale}
+                                                                        </span>
+                                                                    </p>
+                                                                        </div>
+                                                                    </div>
+                                                                </td>
+                                                              
+                                                                <td style="text-align: center; border: 1px solid #dbdde0; padding: 10px;">
+                                                                    <p >
+                                                                        % if line.quantity:
+                                                                            ${'%.0f'%line.quantity}
+                                                                        % endif
+                                                                        % if not line.quantity:
+                                                                            -
+                                                                        % endif
+                                                                    </p>
+                                                                </td>
+                                                                <td style="text-align: center; border: 1px solid #dbdde0; padding: 10px;">
+                                                                    <p style="color: #ff0000;text-decoration:line-through;">
+                                                                        <b style="color:#454748;">
+                                                                        % if line.unit_price:
+                                                                            ${object.currency_id.symbol}
+                                                                            ${'%.2f'%(line.unit_price+line.glass_price)}
+                                                                        % endif
+                                                                         % if not line.unit_price and not line.glass_price:
+                                                                            ${object.currency_id.symbol}
+                                                                            0.00
+                                                                        % endif
+                                                                        </b>
+                                                                     % if line.promo_code_amount:
+                                                                    <p style="white-space: nowrap;color:#ff0000;">
+                                                                        ${object.currency_id.symbol}
+                                                                            ${'%.2f'%((line.discounted_unit_price + line.discounted_glass_price))}
+                                                                    </p>
+                                                                    % endif
+                                                                        
+                                                                    </p>
+                                                                    <p style="color: #454748;">
+                                                                        <b>
+                                                                         % if line.discounted_unit_price:
+                                                                        ${object.currency_id.symbol}                                                                     
+                                                                            ${'%.2f'%((line.discounted_unit_price + line.discounted_glass_price)-line.promo_code_amount)}
+                                                                        % endif
+                                                                         % if not line.discounted_unit_price and not line.discounted_glass_price:
+                                                                        ${object.currency_id.symbol}
+                                                                            0.00
+                                                                        % endif
+                                                                        </b>
+                                                                    </p>
+                                                                </td>
+                                                                <td style="text-align: center; border: 1px solid #dbdde0; padding: 10px;">
+                                                                    <p >
+                                                                        ${object.currency_id.symbol}
+                                                                        % if line.subtotal:
+                                                                            ${'%.2f'%line.subtotal}
+                                                                        % endif
+                                                                         % if not line.subtotal:
+                                                                            0.00
+                                                                        % endif
+                                                                    </p>
+                                                                </td>
+                                                            </tr>
+                                    % endif
+                                % endfor
+                                                        </tbody>
+                                                    </table>
+
+
+                                                    <br/>
+                                                    <br/>
+                                                    <center>
+                                                        <a href="${object.website_id.url}/myaccount?id=2&amp;name=${object.name}" style="background-color:#7693f8 !important; padding: 20px; text-decoration: none; color: #fff; border-radius: 5px; font-size: 16px;" class="o_default_snippet_text">
+                                                            View Order
+                                                        </a>
+                                                        <br/>
+                                                        <br/>
+                                                        <br/>
+                                                    </center>
+                                                    <br/>
+                                                    <p>
+                        You can reply to this email if you have any questions, or reach out to your Account Manager for more help.
+                                                    </p>
+                                                    <!-- <br/> -->
+                                                    <p style="margin-bottom:0px;">Thank you,</p>
+                                                    <p style="color:#888888;margin:0px;">
+                        % if object.write_uid and object.write_uid.name:
+                            ${object.write_uid.name | safe}
+                        % else
+                            ETO Support
+                        % endif
+                                                    </p>
+                                                    <!-- <br/> -->
+                                                    <p>
+                                                        % if object.write_uid.signature:
+                                                            ${object.write_uid.signature | safe}
+                                                        % endif
+                                                    </p>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td style="text-align:center;">
+                                                    <hr width="100%" style="background-color:rgb(204,204,204);border:medium none;clear:both;display:block;font-size:0px;min-height:1px;line-height:0; margin: 16px 0px 16px 0px;"/>
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                    <!-- FOOTER -->
+                                    <tr>
+                                        <td align="left" style="min-width: 100%">
+                                            <table border="0" cellpadding="0" cellspacing="0" width="590" style="min-width: 90px; background-color: white; font-size: 11px; padding: 0px 8px 0px 8px; border-collapse:separate;">
+                                                <tr>
+                                                    <td valign="middle" align="left">
+                                                        ${object.write_uid.company_id.name}
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td valign="middle" align="left" style="opacity: 0.7;">
+                                                        ${object.write_uid.company_id.phone}
+                                                        % if object.write_uid.company_id.email
+                                                        |                                                        <a href="'mailto:%s' % ${object.write_uid.company_id.email}" style="text-decoration:none; color: #454748;">${object.write_uid.company_id.email}</a>
+                                                        % endif
+                                                        % if object.write_uid.company_id.website
+                                                            |                                                        <a href="'%s' % ${object.write_uid.company_id.website}" style="text-decoration:none; color: #454748;">
+                                                            ${object.write_uid.company_id.website}
+                                                        </a>
+                                                        % endif
+                                                    </td>
+                                                </tr>
+                                            </table>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </td>
+                    </tr>
+                    <!-- POWERED BY -->
+                    <tr>
+                        <td align="center" style="min-width: 100%">
+                            <table border="0" cellpadding="0" cellspacing="0" width="590" style="min-width: 100%; background-color: #F1F1F1; color: #454748; padding: 8px; border-collapse:separate;">
+                                <tr>
+                                    <td style="text-align: center; font-size: 13px;">
+                                    Powered by <a target="_blank" href="www.teameto.com" style="color: #7693f8;">ETO</a>
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                </table>
+            </field>
+        </record>
+    </data>
+</odoo>

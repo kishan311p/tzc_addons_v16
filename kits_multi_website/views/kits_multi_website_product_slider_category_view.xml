@@ -1,0 +1,25 @@
+<?xml version='1.0' encoding='utf-8'?>
+<odoo>
+    <data>
+
+        <record id="kits_multi_website_product_slider_category_form_view" model="ir.ui.view">
+            <field name="name">kits.multi.website.product.slider.category.form.view</field>
+            <field name="model">kits.multi.website.product.slider.category</field>
+            <field name="arch" type="xml">
+                <tree editable="bottom">
+                    <field name="sequence" widget="handle"/>
+                    <field name="name" required="1"/>
+                    <field name="website_id" required="1" options="{'no_open': True,'no_create': True}"/>
+                    <field name="limit" required="1"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="kits_multi_website_product_slider_category_action" model="ir.actions.act_window">
+            <field name="name">Product Slider Category</field>
+            <field name="res_model">kits.multi.website.product.slider.category</field>
+            <field name="view_mode">tree</field>
+        </record>
+
+    </data>
+</odoo>

@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="kits_other_request_reason" model="kits.multi.website.return.request.reason">
+            <field name="name">Other Reason</field>
+        </record>
+        <record id="kits_multi_website_return_request_reason_view_form" model="ir.ui.view">
+            <field name="name">kits.multi.website.return.request.reason.view.form</field>
+            <field name="model">kits.multi.website.return.request.reason</field>
+            <field name="arch" type="xml">
+                <form>
+                    <sheet>
+                        <group>
+                            <group>
+                                <field name="name"/>
+                            </group>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+        <record id="kits_multi_website_return_request_reason_view_tree" model="ir.ui.view">
+            <field name="name">kits.multi.website.return.request.reason.view.tree</field>
+            <field name="model">kits.multi.website.return.request.reason</field>
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="name"/>
+                </tree>
+            </field>
+        </record>
+        <record id="kits_multi_website_return_request_reason_action" model="ir.actions.act_window">
+            <field name="name">Return request reason </field>
+            <field name="res_model">kits.multi.website.return.request.reason</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+    </data>
+</odoo>

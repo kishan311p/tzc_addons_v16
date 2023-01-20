@@ -1,0 +1,21 @@
+<?xml version='1.0' encoding='utf-8'?>
+<odoo>
+    <data>
+        <record id="kits_read_file_error_message_form_view" model="ir.ui.view">
+            <field name="name">kits.read.file.error.message.form.view</field>
+            <field name="model">kits.read.file.error.message</field>
+            <field name="arch" type="xml">
+                <form>
+                    <sheet>
+                       <h4 style="color:#ff0000">You are trying to process error generated file. Do you  want to continue with this?  </h4>
+                    </sheet>
+                    <footer>
+                        <button string="Process" name="action_process" type="object" class="oe_highlight"/>
+                        <button string="Cancel" class="btn-secondary" special="cancel" />
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+    </data>
+</odoo>

@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="0">
+        <!-- Email template -->
+        <record id="tzc_mail_template_customer_approve_spt" model="mail.template">
+            <field name="name">Customer Approve Email</field>
+            <field name="email_from">"ETO-Support" &lt;{{(object.company_id.catchall_email or user.email)}}&gt;</field>
+            <!-- <field name="email_from">${object.user_id.email_formatted | safe}</field> -->
+            <field name="subject">Your request is approved.</field>
+            <field name="email_to">{{(object.email or '')}}</field>
+            <field name="partner_to">{{object.id}}</field>
+            <field name="model_id" ref="base.model_res_partner"/>
+            <field name="auto_delete" eval="False"/>
+            <!-- <field name="report_template" ref="tzc_sales_customization_spt.action_report_saleorder_catalog_spt"/>
+            <field name="report_name">Catalog ${(object.name or '')}</field> -->
+            <field name="lang">{{object.lang}}</field>
+            <field name="body_html" type="html">
+                <div>
+                    <p style="margin-top:0px;">Dear <t t-out="object.name or ''"></t>
+                        <br/>
+                        <br/>
+                    </p>
+                    <!-- <br/> -->
+                    <p>Congratulations! Your account has been verified! Your savings start now!
+                        <br/>
+                    You can now access the Everything Optical (ETO) wholesale website and place orders directly.<br/>
+To login, you must use the email and password used when you registered your account.
+                    If you need any assistance, you may contact your Account Manager or you may email us at <a href="mailto:support@teameto.com">support@teameto.com</a>.
+                </p>
+                <!-- <br/> -->
+                <p style="margin-bottom:0px;">
+                        Thank you,
+                    <br/>
+                        ETO Support
+                </p>
+            </div>
+
+        </field>
+    </record>
+    <record id="email_template_partner" model="mail.template">
+        <field name="name">Partner Mass Mail</field>
+        <field name="model_id" ref="base.model_res_partner"/>
+        <field name="partner_to">{{object.id}}</field>
+        <!-- <field name="user_signature" eval="True"/> -->
+        <field name="auto_delete" eval="True"/>
+        <field name="lang">{{object.lang}}</field>
+    </record>
+    <record id="mail_email_template_partner" model="mail.template">
+        <field name="name">Partner Mass Mail</field>
+        <field name="model_id" ref="base.model_res_partner"/>
+        <field name="partner_to">{{object.id}}</field>
+        <field name="auto_delete" eval="True"/>
+        <field name="lang">{{object.lang}}</field>
+        <field name="body_html" type="html">
+            <br/>
+            <br/>
+            <br/>
+        </field>
+    </record>
+</data>
+</odoo>

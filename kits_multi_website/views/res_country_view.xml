@@ -1,0 +1,18 @@
+<?xml version='1.0' encoding='utf-8'?>
+<odoo>
+    <data>
+
+        <record id="inherit_multi_website_res_country_form_view" model="ir.ui.view">
+            <field name="name">inherit.multi.website.res.country.form.view</field>
+            <field name="model">res.country</field>
+            <field name="inherit_id" ref="base.view_country_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='code']" position="after">
+                    <field name="language"  />
+                    <field name="shipping_cost"  />
+                </xpath>
+            </field>
+        </record>
+
+    </data>
+</odoo>

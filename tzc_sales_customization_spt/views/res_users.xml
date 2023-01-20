@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="res_users_salesmanager_inherit_form_view_spt" model="ir.ui.view">
+        <field name="name">res.users.salesmanager.inherit_form.view.spt</field>
+        <field name="model">res.users</field>
+        <field name="inherit_id" ref="base.view_users_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//sheet/notebook/page[@name='access_rights']/group[1]" position="after">
+                <field name="is_salesperson" invisible="1"/>
+                <field name="is_sales_manager" invisible="1"/>
+                <field name="is_user_internal" invisible="1"/>
+                <field name="show_country_ids" invisible="1"/>
+                <group string="Sales Persons"  groups="tzc_sales_customization_spt.group_sales_manager_spt"  attrs="{'invisible':[('show_contact_allowed_countries','=',False)]}">
+                    <field name="allow_user_ids" options="{'no_create':True}" widget="many2many_tags" domain="[('is_salesperson','=',True)]"/>
+                    <field name="show_contact_allowed_countries" invisible="1" />
+                </group>
+            </xpath>
+            <xpath expr="//group/field[@name='partner_id']" position="after">
+                <field name="is_warehouse" />
+                <field name="is_email_verified" />
+                <field name="internal_salesperson_id"/>
+                <field name="is_salesperson"/>
+                <field name="commission_rule_id" domain="[('commission_for','=','sales_person')]" attrs="{'invisible': [('is_salesperson', '=', False)]}" readonly="1" />
+            </xpath>
+            <xpath expr="//notebook" position="inside">
+                <page name="page_hidden_menus" string="Hidden menus">
+                    <field name="hidden_menu_ids">
+                        <tree>
+                            <field name="display_name"/>
+                        </tree>
+                    </field>
+                </page>
+            </xpath>
+            <xpath expr="//header" position="inside">
+                <button name="action_change_salesperson_rule" type="object" string="Change Salesperson Commission" attrs="{'invisible':[('is_salesperson','=',False)]}" />
+                <button name="action_change_salesmanager_rule" type="object" string="Change Sales Manager Commission" attrs="{'invisible':[('is_sales_manager','=',False)]}" />
+            </xpath>
+            <xpath expr="//form" position="attributes">
+                <attribute name="delete">false</attribute>
+            </xpath>
+            <xpath expr="//sheet/notebook/page[@name='security']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+            <xpath expr="//div[3]/group/field[@name='partner_id']" position="replace">
+                <field name="partner_id" string="Contact"/>
+            </xpath>
+            <xpath expr="//div[@role='status']/button[hasclass('btn-close')]" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+            <xpath expr="//div[@name='button_box']" position="inside">
+                <button name="action_user_customer" type="object" class="oe_stat_button" icon="fa-address-book" attrs="{'invisible':[('is_user_internal','=',False)]}">
+                    <field string="Customers" name="customer_count" widget="statinfo"/>
+                </button>
+            </xpath>
+            <!-- <xpath expr="//notebook" position="inside">
+                <page name="token" string="Token">
+                    <field name="token_ids" />
+                </page>
+            </xpath> -->
+            <xpath expr="//sheet" position="after">
+                <div class="oe_chatter">
+                    <field name="message_follower_ids" widget="mail_followers"/>
+                    <field name="message_ids" widget="mail_thread"/>
+                </div>
+            </xpath>
+            <xpath expr="//sheet/notebook/page[@name='preferences']/group[@name='messaging']/field[@name='notification_type']" position="after">
+                <field name="alias_id"/>
+                <field name="alias_contact" attrs="{'invisible': [('alias_id', '=', False)]}"/>
+            </xpath>
+            <xpath expr="//sheet/notebook/page[2]/group[1]/group[1]/div[1]" position="after">
+                <field name="manager_id" options="{'no_create':True}"/>
+                <field name="country_ids" widget="many2many_tags" attrs="{'invisible': [('show_country_ids', '=', False)]}"/>
+                <field name="show_contact_allowed_countries" invisible="1" />
+                <field name="contact_allowed_countries" widget="many2many_tags" options="{'no_create':True,'no_create_edit':True}" attrs="{'invisible':[('show_contact_allowed_countries','=',False)]}"/>
+                <field name="manager_country_ids" widget="many2many_tags" readonly="1"/>
+            </xpath>
+        </field>
+    </record>
+    <record id="tzc_customization_inherit_res_users_tree_view" model="ir.ui.view">
+        <field name="name">tzc.customization.inherit.res.users.tree.view</field>
+        <field name="model">res.users</field>
+        <field name="inherit_id" ref="base.view_users_tree"/>
+        <field name="arch" type="xml">
+
+            <field name='login_date' position="after">
+                <field name='signup_user_ip' optional="show"/>
+            </field>
+            <xpath expr="//tree" position="attributes">
+                <attribute name="delete">false</attribute>
+            </xpath>
+            <field name="name" position="attributes">
+                <attribute name="optional">show</attribute>
+            </field>
+            <field name="lang" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </field>
+            <xpath expr="//field[@name='name']" position="before">
+                <field name="internal_id" string="Internal ID" optional="show"/>
+            </xpath>
+            <field name="name" position="after">
+                <field name="contact_name_spt" optional="show"/>
+            </field>
+            <field name="login" position="attributes">
+                <attribute name="string">Email</attribute>
+                <attribute name="optional">show</attribute>
+            </field>
+            <field name="login_date" position="attributes">
+                <attribute name="string">Last Logged on</attribute>
+                <attribute name="optional">show</attribute>
+            </field>
+            <field name="login_date" position="after">
+                <field name="last_order_id" optional="show"/>
+                <field name="last_order_date" optional="show"/>
+                <field name="last_order_value" optional="show"/>
+                <field name="country_id" optional="show"/>
+                <field name="user_id" string="Salesperson" optional="show"/>
+                <field name="sale_order_count" string="#Orders" optional="show"/>
+                <field name="total_invoiced_count" string="#Invoices" optional="show"/>
+                <field name="customer_type" string="Status" optional="show"/>
+                <field name="is_salesperson" optional="show"/>
+                <field name="is_sales_manager" optional="show"/>
+            </field>
+        </field>
+    </record>
+    <record id="res_users_add_custom_fillter_inherit_search_view_spt" model="ir.ui.view">
+        <field name="name">res.users.inherit_search.view.spt</field>
+        <field name="model">res.users</field>
+        <field name="inherit_id" ref="base.view_users_search"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='share']" position="after">
+                <filter name="accepted_invitation" string="Logged Users" domain="[('share','=',True),('state','=','active')]"/>
+                <filter name="not_accepted_invitation" string="Not Confirmed" domain="[('share','=',True),('state','=','New')]"/>
+                <group expand="0" string="Group By">
+                    <filter name="salespeson" context="{'group_by':'user_id'}" string="Salespeson" />
+                </group>
+            </xpath>
+        </field>
+    </record>
+</odoo>

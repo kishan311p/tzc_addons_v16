@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="portal_wizard_inherit_form_view_spt" model="ir.ui.view">
+        <field name="name">portal.wizard.inherit_form.view.spt</field>
+        <field name="model">portal.wizard</field>
+        <field name="inherit_id" ref="portal.wizard_view"/>
+        <field name="arch" type="xml">
+            <field name="user_ids" position="before">
+                <label for="set_all_portal"/>
+
+                <field name="set_all_portal" />
+
+            </field>
+            <!-- <xpath expr="//form/field[@name='user_ids']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath> -->
+            <xpath expr="//form/field[@name='user_ids']/tree/field[@name='partner_id']" position="after">
+                <field name="user_selected" />
+            </xpath>
+            <xpath expr="//form/field[@name='user_ids']/tree/field[@name='login_date']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+            <xpath expr="//form/footer" position="inside">
+                <button string="Apply" name="action_apply" type="object" class="btn-primary"/>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>

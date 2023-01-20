@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <record id="action_product_color_spt" model="ir.actions.act_window">
+            <field name="view_mode">tree,form</field>
+            <field name="name">Product Color</field>
+            <field name="res_model">product.color.spt</field>
+        </record>
+
+        <record id="product_color_from_view_spt" model="ir.ui.view">
+            <field name="name">product.color.from.view.spt</field>
+            <field name="model">product.color.spt</field>
+            <field name="arch" type="xml">
+                <form create="0" edit="0">
+                    <sheet>
+                        <div class="oe_button_box" name="button_box">
+                            <!-- <field name="is_published" invisible="1" modifiers="{'invisible':true}"/> -->
+                            <!-- <button type="object" name="is_publish_color"  groups="base.group_system"   style="color:#f06767;" class="oe_stat_button" icon="fa-product-hunt" attrs="{'invisible':[('is_published','=',True)]}" modifiers="{'invisible':[['is_published','=',true]]}" options="{}">
+                                <span modifiers="{}">
+                                    Unpublished
+                                </span>
+                            </button>
+                            <button type="object" name="is_unpublish_color"  groups="base.group_system"   style="color:#00b115;" class="oe_stat_button" icon="fa-product-hunt" attrs="{'invisible':[('is_published','=',False)]}" modifiers="{'invisible':[['is_published','=',false]]}" options="{}">
+                                <span modifiers="{}">
+                                    Published
+                                </span>
+                            </button> -->
+                            <button name="action_open_primary_color_products_spt" type="object" class="oe_stat_button" icon="fa-cubes">
+                                <field name="primary_color_products" string="Primary Color" widget="statinfo"/>
+                            </button>
+                            <button name="action_open_secondarycolor_products_spt" type="object" class="oe_stat_button" icon="fa-cubes">
+                                <field name="secondary_color_products" string="Secondary Color" widget="statinfo"/>
+                            </button>
+                        </div>
+
+                        <group>
+                            <group>
+                                <field name="name" />
+                            </group>
+                            <group>
+                                <field name="color" nolabel='1' widget="color"/>
+
+                            </group>
+                        </group>
+                        <group>
+                            <field name="eyeglass_avl_colour"/>
+                            <field name="sunglass_avl_colour"/>
+                            <field name="new_arrival_avl_colour"/>
+                            <field name="sale_avl_colour"/>
+                        </group>
+
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="product_color_tree_view_spt" model="ir.ui.view">
+            <field name="name">product.color.tree.view.spt</field>
+            <field name="model">product.color.spt</field>
+            <field name="arch" type="xml">
+                <tree default_order="name" create="0" edit="0">
+                    <field name="name"/>
+                    <!-- <field name="is_published"/> -->
+                    <field name="eyeglass_avl_colour"/>
+                    <field name="sunglass_avl_colour"/>
+                    <field name="new_arrival_avl_colour"/>
+                    <field name="sale_avl_colour"/>
+                </tree>
+            </field>
+        </record>
+
+        <menuitem name="Color" action="action_product_color_spt" id="menu_action_product_color_spt" parent="menu_action_product_custom_spt" sequence="1"/>
+
+    </data>
+</odoo>

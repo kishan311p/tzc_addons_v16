@@ -1,0 +1,352 @@
+<?xml version='1.0' encoding='utf-8'?>
+<odoo>
+    <data noupdate="0">
+        <!-- <record id="refresh_product_image" model="ir.actions.server">
+            <field name="name">Refresh Images</field>
+            <field name="model_id" ref="model_product_product"/>
+            <field name="state">code</field>
+            <field name="code">action = env.get('product.product').refresh_product_image()</field>
+        </record> -->
+        <record id="action_internal_contact" model="ir.actions.server">
+            <field name="name">Internal Contact</field>
+            <field name="model_id" ref="model_res_partner"/>
+            <field name="state">code</field>
+            <field name="code">action =  env.get('res.partner').action_internal_contact()</field>
+        </record>
+        <record id="refresh_product_image" model="ir.actions.server">
+            <field name="name">Refresh Images</field>
+            <field name="model_id" ref="product.model_product_product"/>
+            <field name="binding_model_id" ref="product.model_product_product" />
+            <field name="state">code</field>
+            <field name="code">action = env.get('product.product').refresh_product_image()</field>
+        </record>
+        <record model="ir.actions.server" id="action_create_package_product">
+            <field name="name">Create Package</field>
+            <field name="model_id" ref="product.model_product_product"/>
+            <field name="binding_model_id" ref="product.model_product_product" />
+            <field name="groups_id" eval="[(4,ref('base.group_system'))]" />
+            <field name="state">code</field>
+            <field name="code">
+            if records:
+                action = records.action_create_bundal_product()
+            </field>
+        </record>
+        <record model="ir.actions.server" id="action_set_on_sale_price_spt">
+            <field name="name">Set On sale</field>
+            <field name="model_id" ref="product.model_product_product"/>
+            <field name="binding_model_id" ref="product.model_product_product" />
+            <field name="groups_id" eval="[(4, ref('base.group_system'))]"/>
+            <field name="state">code</field>
+            <field name="code">
+            if records:
+                action = records.action_open_on_sale_wizard()
+            </field>
+        </record>
+        <record model="ir.actions.server" id="action_remove_on_sale_price_spt">
+            <field name="name">Remove from on sale</field>
+            <field name="model_id" ref="product.model_product_product"/>
+            <field name="binding_model_id" ref="product.model_product_product" />
+            <field name="groups_id" eval="[(4,ref('base.group_system'))]"/>
+            <field name="state">code</field>
+            <field name="code">
+            if records:
+                action = records.action_remove_on_sale()
+            </field>
+        </record>
+        <record model="ir.actions.server" id="action_set_clearance_price_spt">
+            <field name="name">Set Clearance</field>
+            <field name="model_id" ref="product.model_product_product"/>
+            <field name="binding_model_id" ref="product.model_product_product" />
+            <field name="groups_id" eval="[(4, ref('base.group_system'))]"/>
+            <field name="state">code</field>
+            <field name="code">
+            if records:
+                action = records.action_open_clearance_wizard()
+            </field>
+        </record>
+        <record model="ir.actions.server" id="action_remove_clearance_price_spt">
+            <field name="name">Remove from on clearance</field>
+            <field name="model_id" ref="product.model_product_product"/>
+            <field name="binding_model_id" ref="product.model_product_product" />
+            <field name="groups_id" eval="[(4, ref('base.group_system'))]"/>
+            <field name="state">code</field>
+            <field name="code">
+            if records:
+                action = records.action_remove_on_sale()
+            </field>
+        </record>
+        <record model="ir.actions.server" id="action_product_published_spt">
+            <field name="groups_id" eval="[(4, ref('base.group_system'))]"/>
+            <field name="name">Published</field>
+            <field name="model_id" ref="product.model_product_product"/>
+            <field name="binding_model_id" ref="product.model_product_product" />
+            <field name="state">code</field>
+            <field name="code">
+            if records:
+                action = records.action_product_published_spt()
+            </field>
+        </record>
+
+        <record model="ir.actions.server" id="action_unproduct_published_spt">
+            <field name="groups_id" eval="[(4, ref('base.group_system'))]"/>
+            <field name="name">Unpublished</field>
+            <field name="model_id" ref="product.model_product_product"/>
+            <field name="binding_model_id" ref="product.model_product_product" />
+            <field name="state">code</field>
+            <field name="code">
+            if records:
+                action = records.action_product_unpublished_spt()
+            </field>
+        </record>
+
+        <record model="ir.actions.server" id="action_add_in_new_arrivals">
+            <field name="name">Add In New Arrivals</field>
+            <field name="model_id" ref="product.model_product_product"/>
+            <field name="binding_model_id" ref="product.model_product_product" />
+            <field name="groups_id" eval="[(4, ref('base.group_system'))]"/>
+            <field name="state">code</field>
+            <field name="code">
+            if records:
+                action = records.action_add_in_new_arrivals()
+            </field>
+        </record>
+        <record model="ir.actions.server" id="action_remove_from_new_arrivals">
+            <field name="name">Remove From New Arrivals</field>
+            <field name="model_id" ref="product.model_product_product"/>
+            <field name="binding_model_id" ref="product.model_product_product" />
+            <field name="groups_id" eval="[(4, ref('base.group_system'))]"/>
+            <field name="state">code</field>
+            <field name="code">
+            if records:
+                action = records.action_remove_from_new_arrivals()
+            </field>
+        </record>
+        <record id="action_product_add_new_price" model="ir.actions.server">
+            <field name="name">Add to Price Drop</field>
+            <field name="model_id" ref="model_product_product"/>
+            <field name="binding_model_id" ref="model_product_product"/>
+            <field name="state">code</field>
+            <field name="code">
+            if records:
+                action = records.action_add_to_new_price()
+            </field>
+        </record>
+        
+        <record id="action_product_remove_new_price" model="ir.actions.server">
+            <field name="name">Remove to Price Drop</field>
+            <field name="model_id" ref="model_product_product"/>
+            <field name="binding_model_id" ref="model_product_product"/>
+            <field name="state">code</field>
+            <field name="code">
+            if records:
+                action = records.action_remove_to_new_price()
+            </field>
+        </record>
+        <record model="ir.actions.server" id="action_set_eto_product_template_spt">
+            <field name="name">Set Flash Sales Method</field>
+            <field name="model_id" ref="product.model_product_product"/>
+            <field name="binding_model_id" ref="product.model_product_product" />
+            <field name="state">code</field>
+            <field name="groups_id" eval="[(4, ref('base.group_system'))]"/>
+            <field name="code">
+                action = records.action_open_eto_method_wizard()
+            </field>
+        </record>
+        <record model="ir.actions.server" id="action_edit_products_spt">
+            <field name="name">Edit Products</field>
+            <field name="model_id" ref="product.model_product_product"/>
+            <field name="binding_model_id" ref="product.model_product_product" />
+            <field name="state">code</field>
+            <field name="groups_id" eval="[(4, ref('base.group_system')),(4, ref('stock.group_stock_manager'))]"/>
+            <field name="code">
+                action = records.action_edit_products()
+            </field>
+        </record>
+        <record id="action_product_data" model="ir.actions.server">
+            <field name="name">All Product Export</field>
+            <field name="model_id" ref="model_product_product"/>
+            <field name="state">code</field>
+            <field name="code">action = env.get('product.product').action_product_data()</field>
+        </record>
+        <record id="model_sale_order_action_share" model="ir.actions.server">
+            <field name="groups_id" eval="[(4, ref('tzc_sales_customization_spt.group_cancel_picking_rule_spt'))]"/>
+            <field name="name">Cancel Picking Order</field>
+            <field name="model_id" ref="stock.model_stock_picking"/>
+            <field name="binding_model_id" ref="stock.model_stock_picking"/>
+            <field name="state">code</field>
+            <field name="code">action = records.all_picking_cancle_spt()</field>
+        </record>
+
+
+
+        <!-- <record id="action_paid_invoice" model="ir.actions.server">
+            <field name="name">Mark as Paid</field>
+            <field name="model_id" ref="model_account_move"/>
+            <field name="binding_model_id" ref="model_account_move"/>
+            <field name="state">code</field>
+            <field name="code">
+                if records:
+                    action = records.action_invoice_pay()
+            </field>
+        </record>
+        <record id="action_unpay_invoice" model="ir.actions.server">
+            <field name="name">Mark as Unpaid</field>
+            <field name="model_id" ref="model_account_move"/>
+            <field name="binding_model_id" ref="model_account_move"/>
+            <field name="state">code</field>
+            <field name="code">
+                if records:
+                    action = records.action_invoice_unpay()
+            </field>
+        </record> -->
+
+        <record id="model_res_user_action_sent_mail_spt" model="ir.actions.server">
+            <field name="groups_id" eval="[(4, ref('base.group_system'))]"/>
+            <field name="name">Send Bulk Mails </field>
+            <field name="model_id" ref="base.model_res_users"/>
+            <field name="binding_model_id" ref="base.model_res_users"/>
+            <field name="state">code</field>
+            <field name="code">
+            if records:
+                action = records.action_sent_mail_spt()</field>
+        </record>
+        <record id="action_partner_email_varification" model="ir.actions.server">
+            <field name="name">Mailgun Verification</field>
+            <field name="binding_model_id" ref="base.model_res_partner"/>
+            <field name="model_id" ref="base.model_res_partner"/>
+            <field name="state">code</field>
+            <field name="code">
+                if records:
+                    action = records.action_contact_mailgun_verification()
+            </field>
+        </record>
+        <record id="action_grant_portal_access_spt" model="ir.actions.server">
+            <field name="groups_id" eval="[(4,ref('base.group_system')),(4, ref('tzc_sales_customization_spt.group_sales_manager_spt'))]"/>
+            <field name="name">Grant Portal Access</field>
+            <field name="binding_model_id" ref="portal.model_res_partner"/>
+            <field name="model_id" ref="base.model_res_partner"/>
+            <field name="state">code</field>
+            <field name="code">
+            if records:
+                action = records.action_grant_portal_access_spt()</field>
+        </record>
+        <record id="portal.partner_wizard_action_create_and_open" model="ir.actions.server">
+            <field name="binding_model_id" eval='False'/>
+        </record>
+
+        <record id="model_res_partner_action_open_pricelist_wizard_spt" model="ir.actions.server">
+            <field name="groups_id" eval="[(4, ref('base.group_system'))]"/>
+            <field name="name">Set Pricelist</field>
+            <field name="model_id" ref="base.model_res_partner"/>
+            <field name="binding_model_id" ref="base.model_res_partner"/>
+            <field name="state">code</field>
+            <field name="code">action = records.action_open_pricelist_wizard()</field>
+        </record>
+
+
+        <record id="model_res_partner_action_open_eto_wizard_spt" model="ir.actions.server">
+            <field name="groups_id" eval="[(4, ref('base.group_system')),(4,ref('tzc_sales_customization_spt.group_sales_manager_spt'))]"/>
+            <field name="name">Set ETO</field>
+            <field name="model_id" ref="base.model_res_partner"/>
+            <field name="binding_model_id" ref="base.model_res_partner"/>
+            <field name="state">code</field>
+            <field name="code">action = records.action_open_eto_wizard()</field>
+        </record>
+
+        <record model="ir.actions.server" id="action_set_salesperson_verify_email">
+            <field name="name">Verify Email</field>
+            <field name="model_id" ref="base.model_res_partner"/>
+            <field name="binding_model_id" ref="base.model_res_partner" />
+            <!-- <field name="groups_id" eval="[(4,ref('base.group_system'))]"/> -->
+            <field name="state">code</field>
+            <field name="code">
+                action = records.action_verify_email()
+            </field>
+        </record>
+
+        <record model="ir.actions.server" id="action_change_password_of_related_user">
+            <field name="name">Change Password</field>
+            <field name="groups_id" eval="[(4,ref('base.group_system')),(4, ref('tzc_sales_customization_spt.group_sales_manager_spt'))]"/>
+            <field name="model_id" ref="base.model_res_partner"/>
+            <field name="binding_model_id" ref="base.model_res_partner" />
+            <field name="state">code</field>
+            <field name="code">
+                action = records.action_change_password_of_related_user()
+            </field>
+        </record>
+
+        <record id="action_partner_mass_mail" model="ir.actions.server">
+            <field name="name">Send Email</field>
+            <field name="model_id" ref="model_res_partner"/>
+            <field name="binding_model_id" ref="model_res_partner"/>
+            <field name="state">code</field>
+            <field name="code">
+                if records:
+                    action = records.action_contact_mass_mailing()
+            </field>
+        </record>
+        <record id="action_res_partner_delete" model="ir.actions.server">
+            <field name="groups_id" eval="[(4, ref('base.group_system')),(4, ref('tzc_sales_customization_spt.group_sales_manager_spt'))]"/>
+            <field name="name">Delete</field>
+            <field name="model_id" ref="base.model_res_partner"/>
+            <field name="binding_model_id" ref="base.model_res_partner"/>
+            <field name="state">code</field>
+            <field name="code">action = records.action_delete_partner()</field>
+        </record>
+
+        <record id="action_create_contact_report" model="ir.actions.server">
+            <field name="name">Contact Detail</field>
+            <field name="model_id" ref="model_res_partner"/>
+            <field name="state">code</field>
+            <field name="code">action = env.get('res.partner').action_create_contact_report()</field>
+        </record>
+
+        <record id="action_contact_mail_template" model="ir.actions.server">
+            <field name="name">Manage Templates</field>
+            <field name="model_id" ref="model_res_partner"/>
+            <field name="state">code</field>
+            <field name="code">action = env.get('res.partner').action_contact_mail_template()</field>
+        </record>
+        <record id="auth_totp.action_disable_totp" model="ir.actions.server">
+            <field name="binding_model_id" eval="False" />
+        </record>
+        <record id="auth_signup.action_send_password_reset_instructions" model="ir.actions.server">
+            <field name="binding_model_id" eval="False" />
+        </record>
+        <record id="auth_totp_mail.action_invite_totp" model="ir.actions.server">
+            <field name="binding_model_id" eval="False" />
+        </record>
+
+        <record id="action_unarchive_users" model="ir.actions.server">
+            <field name="name">Unarchive</field>
+            <field name="model_id" ref="model_res_users"/>
+            <field name="binding_model_id" ref="model_res_users"/>
+            <field name="state">code</field>
+            <field name="code">
+            if records:
+                action = records.action_unarchive_uers()
+            </field>
+        </record>
+
+        <record id="action_res_user_delete" model="ir.actions.server">
+            <field name="groups_id" eval="[(4, ref('base.group_system')),(4, ref('tzc_sales_customization_spt.group_sales_manager_spt'))]"/>
+            <field name="name">Delete</field>
+            <field name="model_id" ref="base.model_res_users"/>
+            <field name="binding_model_id" ref="base.model_res_users"/>
+            <field name="state">code</field>
+            <field name="code">action = records.action_delete_user()</field>
+        </record>
+
+        <record model="ir.actions.server" id="account_followup.action_account_reports_customer_statements_do_followup">
+            <field name="name">Process follow-ups</field>
+            <field name="model_id" ref="model_res_partner"/>
+            <field name="groups_id" eval="[(4, ref('base.group_system'))]"/>
+            <field name="binding_model_id" ref="model_res_partner" />
+            <field name="state">code</field>
+            <field name="code">
+                if records:
+                    action = records.execute_followup()
+            </field>
+        </record>
+    </data>
+</odoo>

@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <data>
+        <record id="kits_warning_wizard_form_view" model="ir.ui.view">
+            <field name="name">kits.warning.wizard.form.view</field>
+            <field name="model">kits.warning.wizard</field>
+            <field name="arch" type="xml">
+                <form>
+                    <sheet>
+                        <div>
+                            <field name="message" readonly="1" />
+                        </div>
+                    </sheet>
+                    <footer>
+                        <button special="cancel" type="object" string="Cancel" />
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+        <record id="kits_warning_wizard_unpublished_product_form_view" model="ir.ui.view">
+            <field name="name">kits.warning.wizard.unpublished.product.form.view</field>
+            <field name="model">kits.warning.wizard</field>
+            <field name="arch" type="xml">
+                <form>
+                    <sheet>
+                        <group>
+                            <group>
+                                <field name="package_name" required="1" />
+                            </group>
+                            <group>
+                                <field name="pacakge_seo_name" required="1" />
+                            </group>
+                        </group>
+                        <notebook>
+                            <page name="allowed_products" string="Available Products"
+                                attrs="{'invisible':[('allowed_products','=',[])]}">
+                                <field name="allowed_products"
+                                    options="{'no_create':True,'no_create_edit':True,'no_open':True}"
+                                    readonly="1" style="pointer-events:none;">
+                                    <tree limit="10000">
+                                        <field name="variant_name" />
+                                        <field name="default_code" />
+                                        <field name="barcode" />
+                                        <field name="available_qty_spt" />
+                                        <field name="is_published_spt" />
+                                    </tree>
+                                </field>
+                            </page>
+                            <page name="out_of_stock_products" string="Out of Stock Products"
+                                attrs="{'invisible':[('out_of_stock_products','=',[])]}">
+                                <field name="out_of_stock_products"
+                                    options="{'no_create':True,'no_create_edit':True,'no_open':True}"
+                                    readonly="1" style="pointer-events:none;">
+                                    <tree limit="10000">
+                                        <field name="variant_name" />
+                                        <field name="default_code" />
+                                        <field name="barcode" />
+                                        <field name="available_qty_spt" />
+                                        <field name="is_published_spt" />
+                                    </tree>
+                                </field>
+                            </page>
+                            <page name="unpublished_products" string="Unpublished Products"
+                                attrs="{'invisible':[('unpublished_products','=',[])]}">
+                                <field name="unpublished_products"
+                                    options="{'no_create':True,'no_create_edit':True,'no_open':True}"
+                                    readonly="1" style="pointer-events:none;">
+                                    <tree limit="10000">
+                                        <field name="variant_name" />
+                                        <field name="default_code" />
+                                        <field name="barcode" />
+                                        <field name="available_qty_spt" />
+                                        <field name="is_published_spt" />
+                                    </tree>
+                                </field>
+                            </page>
+                        </notebook>
+                    </sheet>
+                    <footer>
+                        <button name="action_process" type="object" class="oe_highlight"
+                            string="Create Package" />
+                    </footer>
+                </form>
+            </field>
+        </record>
+    </data>
+
+</odoo>

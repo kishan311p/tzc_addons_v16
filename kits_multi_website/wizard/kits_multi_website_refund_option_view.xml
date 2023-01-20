@@ -1,0 +1,35 @@
+<?xml version='1.0' encoding='utf-8'?>
+<odoo>
+    <data>
+
+        <record id="kits_multi_website_refund_option_form_view" model="ir.ui.view">
+            <field name="name">kits.multi.website.refund.option.form.view</field>
+            <field name="model">kits.multi.website.refund.option</field>
+            <field name="arch" type="xml">
+                <form>
+                    <sheet>
+                        <p>
+                            <b>
+                                <h3>In which of the following option you want your money to be refunded?</h3>
+                            </b>
+                        </p>
+                        <group>
+                            <group>
+                                <field name="return_request_id" invisible="1" />
+                                <field name="refund_option" required="1" />
+                            </group>
+                            <group>
+                                <field name="amount" required="1" />
+                            </group>
+                        </group>
+                    </sheet>
+                    <footer>
+                        <button string="Process Refund" name="action_process_refund" type="object" class="oe_highlight"/>
+                        <button string="Cancel" special="cancel" class="btn-secondary"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+    </data>
+</odoo>

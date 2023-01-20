@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="kits_bulk_discount_on_package_products_form_view" model="ir.ui.view">
+            <field name="name">kits.bulk.discount.on.package.products.form.view</field>
+            <field name="model">kits.bulk.discount.on.package.products</field>
+            <field name="arch" type="xml">
+                <form>
+                    <sheet>
+                        <field name="is_additional_discount" invisible="1"/>
+                        <group>
+                            <group>
+                                <field name="discount_on" />
+                                <field name="sale_type" groups="base.group_system" />
+                            </group>
+                            <group attrs="{'invisible':[('is_additional_discount','=',True)]}">
+                                <field name="discount_based_on" />
+                                <field name="price" attrs="{'invisible':[('discount_based_on','=','discount_percentage')]}"/>
+                                <field name="discount_percentage" attrs="{'invisible':[('discount_based_on','!=','discount_percentage')]}"/>
+                            </group>
+                        </group>
+                        <group attrs="{'invisible':[('discount_on','!=','on_brand')]}">
+                            <field name="brand_ids" widget="many2many_tags" options="{'no_create':True,'no_create_edit':True}" string="Brand" />
+                        </group>
+                        <group>
+                            <field name="categ_ids" widget="many2many_tags" options="{'no_create':True,'no_create_edit':True}" string="Category" />
+                        </group>
+                        <group>
+                            <group string="Additional Discount" groups="base.group_system">
+                                <field name="is_additional_discount" />
+                                <field name="additional_discount" attrs="{'invisible':[('is_additional_discount','=',False)]}" />
+                            </group>
+                        </group>
+                    </sheet>
+                    <footer>
+                        <button name="action_process" type="object" string="Process" class="oe_highlight"/>
+                        <button special="cancel" type="object" string="Cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+    </data>
+</odoo>

@@ -1,0 +1,6 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_all_product_import_line_spt,access.all.product.import.line.spt,model_product_import_line_spt,,1,1,1,1
+access_all_product_import_spt,access.all.product.import.spt,model_product_import_spt,,1,1,1,1
+access_kits_read_file_error_message,access.kits.read.file.error.message,model_kits_read_file_error_message,,1,1,1,1
+access_product_import_by_sku_wizard,access.product.import.by.sku.wizard,model_product_import_by_sku_wizard,,1,1,1,1
+

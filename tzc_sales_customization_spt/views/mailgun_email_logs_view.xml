@@ -1,0 +1,95 @@
+<?xml version='1.0' encoding='utf-8'?>
+<odoo>
+    <data>
+        <record id="mailgun_email_logs_view_form" model="ir.ui.view">
+            <field name="name">mailgun.email.logs.view.form</field>
+            <field name="model">mailgun.email.logs</field>
+            <field name="arch" type="xml">
+                <form create="false" edit="false">
+                    <header>
+                        <field name="state" widget="statusbar" />
+                    </header>
+                    <sheet>
+                        <div class="oe_title">
+                            <label for="subject"/>
+                            <h1><field name="subject" /></h1>
+                        </div>
+                        <group>
+                            <group>
+                                <field name="date" />
+                                <field name="email_from" />
+                                <field name="email_to" />
+                                <field name="reply_to" />
+                            </group>
+                        </group>
+                        <notebook>
+                            <page string="Email Body">
+                                <field name="body" />
+                            </page>
+                            <page string="Email Status">
+                                <group>
+                                    <group>
+                                        <field name="sent" />
+                                        <field name="received" />
+                                        <!-- <field name="opened" />
+                                            <field name="clicked" /> -->
+                                        </group>
+                                        <group>
+                                            <field name="failed" />
+                                            <field name="failed_mailgun" />
+                                        </group>
+                                </group>
+                            </page>
+                            <page string="Other Info">
+                                <group>
+                                    <field name="message_id" />
+                                    <!-- <field name="message" />
+                                    <field name="status" /> -->
+                                </group>
+                            </page>
+                        </notebook>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+        <record id="mailgun_email_logs_view_tree" model="ir.ui.view">
+            <field name="name">mailgun.email.logs.view.tree</field>
+            <field name="model">mailgun.email.logs</field>
+            <field name="arch" type="xml">
+                <tree create="false" edit="false" default_order="date desc">
+                    <field name="date" />
+                    <field name="email_to" />
+                    <field name="email_from" />
+                    <field name="subject" />
+                    <!-- <field name="message" />
+                    <field name="status" /> -->
+                </tree>
+            </field>
+        </record>
+        <record id="mailgun_email_logs_action" model="ir.actions.act_window">
+            <field name="name">Mailgun Email Logs</field>
+            <field name="res_model">mailgun.email.logs</field>
+            <field name="context">{"search_default_fail_state":1}</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+        <record id="mailgun_email_logs_search_view" model="ir.ui.view">
+            <field name="name">mailgun.email.logs.search.view</field>
+            <field name="model">mailgun.email.logs</field>
+            <field name="arch" type="xml">
+                <search>
+                    <filter name="sent_state" string="Sent" domain="[('state', '=', 'sent')]"/>
+                    <filter name="fail_state" string="Failed" domain="[('state', '=', 'fail')]"/>
+
+                    <group string="Group By">
+                        <filter string="State" name="state" context="{'group_by': 'state'}"/>
+                    </group>
+
+                    <field name="state"/>
+                </search>
+
+            </field>
+        </record>
+
+        <menuitem id="mailgun_email_logs_menu" name="Mailgun Email Logs" action="mailgun_email_logs_action" parent="contacts.menu_contacts" groups="base.group_system,tzc_sales_customization_spt.group_marketing_user,base.group_user" sequence="6500"/>
+    </data>
+</odoo>

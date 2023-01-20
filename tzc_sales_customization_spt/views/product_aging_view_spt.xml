@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <record id="action_product_aging_spt" model="ir.actions.act_window">
+        <field name="view_mode">tree,form</field>
+            <field name="name">Aging</field>
+            <field name="res_model">product.aging.spt</field>
+        </record>
+
+        <record id="product_aging_from_view_spt" model="ir.ui.view">
+            <field name="name">product.aging.from.view.spt</field>
+            <field name="model">product.aging.spt</field>
+            <field name="arch" type="xml">
+                <form create="0" edit="0">
+                    <sheet>
+                        <div class="oe_button_box" name="button_box">
+                            <button name="action_open_aging_spt" type="object" class="oe_stat_button" icon="fa-cubes">
+                                <field name="products_count" string="Products" widget="statinfo"/>
+                            </button>
+                        </div>
+
+                        <group>
+                            <group>
+                                <field name="name"/>
+                            </group>
+
+                        </group>
+
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="product_aging_tree_view_spt" model="ir.ui.view">
+            <field name="name">product.aging.tree.view.spt</field>
+            <field name="model">product.aging.spt</field>
+            <field name="arch" type="xml">
+                <tree default_order="name" create="0" edit="0">
+                    <field name="name"/>
+                </tree>
+            </field>
+        </record>
+
+    <menuitem name="Aging" action="action_product_aging_spt" id="menu_action_product_aging_spt" parent="menu_action_product_custom_spt" sequence="1"/>
+
+    </data>
+</odoo>
+

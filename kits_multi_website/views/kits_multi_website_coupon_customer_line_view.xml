@@ -1,0 +1,17 @@
+<?xml version='1.0' encoding='utf-8'?>
+<odoo>
+    <data>
+        
+        <record id="kits_multi_website_coupon_customer_line_tree_view" model="ir.ui.view">
+            <field name="name">kits.multi.website.coupon.customer.line.tree.view</field>
+            <field name="model">kits.multi.website.coupon.customer.line</field>
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="customer_id" options="{'no_open': True,'no_create': True}"  />
+                    <field name="coupon_used_count" />
+                </tree>
+            </field>
+        </record>
+
+    </data>
+</odoo>

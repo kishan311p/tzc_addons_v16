@@ -1,0 +1,25 @@
+<?xml version='1.0' encoding='utf-8'?>
+<odoo>
+    <data>
+        <record id="action_sales_commission_pdf_report" model="ir.actions.report">
+            <field name="name">Sales Commission Report</field>
+            <field name="model">sales.commission.report.wizard</field>
+            <field name="report_type">qweb-pdf</field>
+            <field name="report_name">tzc_sales_customization_spt.sales_commission_pdf_report</field>
+            <field name="report_file">tzc_sales_customization_spt.sales_commission_pdf_report</field>
+            <field name="paperformat_id" ref="tzc_sales_customization_spt.sales_commission_landscape_paperformat"/>
+        </record>
+        <!-- <report 
+        id="action_sales_commission_pdf_report" 
+        model="sales.commission.report.wizard" 
+        string="Sales Commission Report" 
+        report_type="qweb-pdf" 
+        name="tzc_sales_customization_spt.sales_commission_pdf_report" 
+        file="tzc_sales_customization_spt.sales_commission_pdf_report" 
+        menu="False" 
+        />
+        <record id="action_sales_commission_pdf_report" model="ir.actions.report">
+            <field name="paperformat_id" ref="tzc_sales_customization_spt.sales_commission_landscape_paperformat"/>
+        </record> -->
+    </data>
+</odoo>

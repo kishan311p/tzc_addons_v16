@@ -1,0 +1,92 @@
+<?xml version='1.0' encoding='utf-8'?>
+<odoo>
+    <data>
+
+        <record id="kits_free_shipping_rule_form_view" model="ir.ui.view">
+            <field name="name">kits.free.shipping.rule.form.view</field>
+            <field name="model">kits.free.shipping.rule</field>
+            <field name="arch" type="xml">
+                <form>
+                    <sheet>
+                        <group>
+                            <group string="Rule Information">
+                                <field name="name" required="1" />
+                                <field name="country_ids" widget="many2many_tags" options="{'no_open': True,'no_create': True}" />
+                            </group>
+                            <group string="Validity">
+                                <field name="start_date" />
+                                <field name="end_date" />
+                                <field name="website_id" options="{'no_open': True,'no_create': True}"/>
+                            </group>
+                        </group>
+                        <group>
+                            <group>
+
+                            </group>
+                        </group>
+                        <notebook>
+                            <page name="line" string="Free Shipping Rule">
+                                <group>
+                                    <group>
+                                        <field name="free_shipping_days" />
+                                    </group>
+                                </group>
+                                <field name="shipping_rule_ids">
+                                    <tree editable="bottom">
+                                        <field name="name" />
+                                        <field name="amount_from" />
+                                        <field name="amount_to" />
+                                        <field name="amount" />
+                                    </tree>
+                                </field>
+                            </page>
+                            <page name="paid_shipping_rule" string="Paid Shipping Rule">
+                                <field name="paid_shipping_rule_ids">
+                                    <tree editable="bottom">
+                                        <field name="name" required="1"/>
+                                        <field name="days" required="1"/>
+                                        <field name="amount" required="1"/>
+                                    </tree>
+                                </field>
+                            </page>
+                        </notebook>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="kits_free_shipping_rule_tree_view" model="ir.ui.view">
+            <field name="name">kits.free.shipping.rule.tree.view</field>
+            <field name="model">kits.free.shipping.rule</field>
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="name" />
+                    <field name="start_date" />
+                    <field name="end_date" />
+                    <field name="website_id" options="{'no_open': True,'no_create': True}"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="kits_free_shipping_rule_search_view" model="ir.ui.view">
+            <field name="name">kits.free.shipping.rule.search.view</field>
+            <field name="model">kits.free.shipping.rule</field>
+            <field name="arch" type="xml">
+                <search>
+                    <field name="name" />
+                    <field name="website_id" options="{'no_open': True,'no_create': True}"/>
+                    <group expand="0" string="Group By">
+                        <filter name="website_id" string="Website" context="{'group_by': 'website_id'}"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+
+        <record id="kits_free_shipping_rule_action" model="ir.actions.act_window">
+            <field name="name">Shipping Rule</field>
+            <field name="res_model">kits.free.shipping.rule</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+    </data>
+</odoo>

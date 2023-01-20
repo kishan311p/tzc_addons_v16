@@ -1,0 +1,200 @@
+<?xml version='1.0' encoding='utf-8'?>
+<odoo>
+    <data>
+
+        <record id="kits_multi_website_customer_form_view" model="ir.ui.view">
+            <field name="name">kits.multi.website.customer.form.view</field>
+            <field name="model">kits.multi.website.customer</field>
+            <field name="arch" type="xml">
+                <form duplicate="0">
+                    <div class="alert alert-success text-center o_form_header" attrs="{'invisible': [('reset_password_url', '=', False)]}" role="status">
+                        <a class="close" data-dismiss="alert" href="#" aria-label="Close">x</a>
+                        <div>
+                            <strong>A password reset has been requested for this user. An email containing the following link has been sent:</strong>
+                        </div>
+                        <div>
+                            <field name="reset_password_url" readonly="1" widget="url"/>
+                        </div>
+                        <span>
+                                URL is valid till: 
+                            <field name="url_validity" readonly="1" />
+                        </span>
+                    </div>
+                    <sheet>
+                        <div class="oe_button_box" name="button_box">
+                            <button type="object" class="oe_stat_button" name="action_open_wallet_logs" icon="fa-money">
+                                <div class="o_field_widget o_stat_info">
+                                    <span class="o_stat_value">
+                                        <field name="wallet_amount" widget="monetary"/>
+                                    </span>
+                                    <span class="o_stat_text">
+						                Wallet Amount
+                                    </span>
+                                </div>
+                            </button>
+                            <button type="object" class="oe_stat_button" name="action_show_recent_views" icon="fa-eye">
+                                <div class="o_field_weidget o_stat_info">
+                                    <span class="o_state_value">
+                                        <field name="recent_view_count" />
+                                    </span>
+                                    <span class="o_stat_text">
+                                        Recent Viewed
+                                    </span>
+                                </div>
+                            </button>
+                            <button type="object" class="oe_stat_button" name="action_show_wishlist" icon="fa-heart">
+                                <div class="o_field_weidget o_stat_info">
+                                    <span class="o_state_value">
+                                        <field name="wishlist_count" />
+                                    </span>
+                                    <span class="o_stat_text">
+                                        Wishlist
+                                    </span>
+                                </div>
+                            </button>
+                        </div>
+                        <group>
+                            <group>
+                                <field name="firstname" required="1" />
+                                <field name="lastname" />
+                                <field name="contact_no"/>
+                                <field name="email" required="1" />
+                                <field name="token" invisible="1" />
+                                <field name="password" invisible="1" password="True"/>
+                                <field name="reset_password_url" widget="url" invisible="1" />
+                                <field name="sign_up_verified"/>
+                            </group>
+                            <group>
+                                <field name="dob" />
+                                <field name="gender" />
+                                <field name="country_id" string="Profile Country"/>
+                                <field name="currency_id" options="{'no_open': True,'no_create': True}" force_save="1"/>
+                                <field name="website_id"  invisible="context.get('show_website_id',False)"  options="{'no_open': True,'no_create': True}"/>
+                                <field name="property_account_position_id" />
+                                <field name="preferred_language" required="1"/>
+                                <field name="preferred_currency_id" required="1" options="{'no_open': True,'no_create': True}" />
+                            </group>
+                        </group>
+                        <notebook>
+                            <page name="address" string="Addresses">
+                                <field name="address_ids">
+                                    <kanban class="o_kanban_mobile">
+                                        <field name="street" />
+                                        <field name="street2" />
+                                        <field name="city" />
+                                        <field name="state_id" />
+                                        <field name="zip" />
+                                        <field name="country_id" />
+                                        <templates>
+                                            <t t-name="kanban-box">
+                                                <div t-attf-class="oe_kanban_card oe_kanban_global_click">
+                                                    <div class="row">
+                                                        <span class="col-5">
+                                                            <field name="street" />
+                                                        </span>
+                                                        <span class="col-7" style="float:right">
+                                                            <field name="street2" />
+                                                        </span>
+                                                    </div>
+                                                    <div class="row">
+                                                        <span class="col-4">
+                                                            <field name="city"/>
+                                                        </span>
+                                                        <span class="col-4">
+                                                            <field name="state_id" />
+                                                        </span>
+                                                        <span class="col-4">
+                                                            <field name="zip" />
+                                                        </span>
+                                                    </div>
+                                                    <div>
+                                                        <span>
+                                                            <field name="country_id" />
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            </t>
+                                        </templates>
+                                    </kanban>
+                                </field>
+                            </page>
+                            <page name="customer_token_lines" string="Customer Token Lines" groups="base.group_system">
+                                <field name="customer_token_line_ids" readonly="1">
+                                    <tree editable="bottom">
+                                        <field name="token" />
+                                        <field name="token_validity" />
+                                    </tree>
+                                </field>
+                            </page>
+                        </notebook>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="kits_multi_website_customer_tree_view" model="ir.ui.view">
+            <field name="name">kits.multi.website.customer.tree.view</field>
+            <field name="model">kits.multi.website.customer</field>
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="firstname" />
+                    <field name="lastname" />
+                    <field name="email" required="1" />
+                    <field name="contact_no" />
+                    <field name="currency_id" force_save="1"/>
+                    <field name="website_id"  invisible="context.get('show_website_id',False)"  options="{'no_open': True,'no_create': True}" />
+                </tree>
+            </field>
+        </record>
+
+        <record id="kits_multi_website_customer_search_view" model="ir.ui.view">
+            <field name="name">kits.multi.website.customer.search.view</field>
+            <field name="model">kits.multi.website.customer</field>
+            <field name="arch" type="xml">
+                <search>
+                    <field name="firstname" />
+                    <field name="lastname" />
+                    <field name="contact_no" />
+                    <filter name="is_guest" string="Guest" domain="[('is_guest','=',True)]" />
+                    <group expand="0" string="Group By">
+                        <filter name="website_id" string="Website" context="{'group_by': 'website_id'}"/>
+                        <filter name="currency_id" string="Currency" context="{'group_by': 'currency_id'}"/>
+                        <filter name="country_id" string="State" context="{'group_by': 'country_id'}"/>
+                        <filter name="state_id" string="State" context="{'group_by': 'state_id'}"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+
+        <record id="kits_multi_website_customer_action" model="ir.actions.act_window">
+            <field name="name">Customers</field>
+            <field name="res_model">kits.multi.website.customer</field>
+            <field name="view_mode">tree,form</field>
+            <field name="context">{'copy':False}</field>
+        </record>
+
+
+        <record id="kits_multi_website_address_tree_view" model="ir.ui.view">
+            <field name="name">kits.multi.website.address.tree.view</field>
+            <field name="model">kits.multi.website.address</field>
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="customer_id" />
+                    <field name="name" />
+                    <field name="phone" />
+                    <field name="street" />
+                    <field name="street2" />
+                    <field name="city" />
+                    <field name="state_id" />
+                    <field name="country_id" />
+                    <field name="zip" />
+                    <field name="is_delivery_address_default" />
+                    <field name="is_invoice_address_default" />
+
+                </tree>
+            </field>
+        </record>
+
+
+    </data>
+</odoo>

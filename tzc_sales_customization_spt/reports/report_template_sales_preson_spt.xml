@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="report_sales_preson_document">
+        <t t-call="web.external_layout">
+            <div class="oe_structure"/>
+            <br/>
+            <h4>
+                <strong>
+                    <span t-if="user.name" t-field="user.name" />
+                </strong>
+                
+            </h4>
+            <div class="text-left">
+                    <span t-if="user.street" t-field="user.street" />
+                    <span t-if="user.street2" t-field="user.street2" /><br/>
+                    <span t-if="user.city" t-field="user.city" />
+                    <span t-if="user.state_id.name" t-field="user.state_id.name" /><br/>
+                    <span t-if="user.country_id.name" t-field="user.country_id.name" />
+                    <span t-if="user.zip" t-field="user.zip" /><br/>
+                    Tel:-<span t-if="user.phone" t-field="user.phone" /><br/>
+                    Email:-<span t-if="user.email" t-field="user.email" />
+
+            </div>
+            <br/>
+            <table class="table">
+                <thead>
+                    <tr>
+
+                        <th style="padding: 10px;text-align: center;">Sale Order</th>
+                        <th style="padding: 10px;text-align: center;">Customers</th>
+                        <th style="padding: 10px;text-align: center;">Date</th>
+                        <th style="padding: 10px;text-align: center;">Medium</th>
+                        <th style="padding: 10px;text-align: center;">Total</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <t t-foreach="doc.get_report_data(user)" t-as="line">
+                        <tr>
+                            <td style="text-align: center; border: 1px solid #dbdde0; padding: 10px;">
+                                <span t-if="line.name" t-field="line.name" />
+                            </td>
+                            <td style="text-align: center; border: 1px solid #dbdde0; padding: 10px;">
+                                <span t-if="line.partner_id.name" t-field="line.partner_id.name" />
+                            </td>
+                            <td style="text-align: center; border: 1px solid #dbdde0; padding: 10px;">
+                                <span t-if="line.date_order" t-field="line.date_order" />
+                            </td>
+                            <td style="text-align: center; border: 1px solid #dbdde0; padding: 10px;">
+                                <span t-esc = "line.source_spt"/>
+                                <!-- <span t-if="line.catalog_id">Catalog</span>
+                                <span t-if="line.website_id">Website</span>
+                                <span t-if="doc.env['pos.order'].search([('sale_order_id','=',line.id)])">
+                                POS Order</span>
+                                <span t-if="not doc.env['pos.order'].search([('sale_order_id','=',line.id)]) and not line.website_id and not line.catalog_id">
+                                Normal</span> -->
+
+                            </td>
+                            <td style="text-align: right; border: 1px solid #dbdde0; padding: 10px;">
+                                <span t-if="line.amount_total" t-field="line.amount_total" />
+                            </td>
+                        </tr>
+
+                    </t>
+                </tbody>
+            </table>
+
+
+            <div class="oe_structure"/>
+
+        </t>
+    </template>
+
+
+    <template id="report_template_sales_preson_spt">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="doc">
+                <t t-foreach="doc.user_ids" t-as="user">
+
+                    <t t-call="tzc_sales_customization_spt.report_sales_preson_document" />
+                </t>
+            </t>
+        </t>
+    </template>
+
+</odoo>

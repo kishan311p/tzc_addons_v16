@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <data>
+        <record id="kits_replace_sales_manager_wizard_form_view" model="ir.ui.view">
+            <field name="name">kits.replace.sales.manager.wizard.form.view</field>
+            <field name="model">kits.replace.sales.manager.wizard</field>
+            <field name="arch" type="xml">
+                <form>
+                    <sheet>
+                        <group>
+                            <group>
+                                <field name="old_manager_id" required="1" context="{'active_test': False}" options="{'no_create':True}" />
+                            </group>
+                            <group>
+                                <field name="new_manager_id" attrs="{'readonly':[('old_manager_id','=',False)]}" options="{'no_create':True}" required="1" />
+                            </group>
+                        </group>
+                        <group>
+                            <group>
+                                <field name="do_archive" />
+                            </group>
+                        </group>
+                    </sheet>
+                    <footer>
+                        <button name="action_process" type="object" string="Process" class="oe_highlight" />
+                        <button special="cancel" type="object" string="Cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+        <record id="action_open_replace_manager_wizard" model="ir.actions.act_window">
+            <field name="name">Replace Sales Manager</field>
+            <field name="res_model">kits.replace.sales.manager.wizard</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+        </record>
+
+        <menuitem id="menu_replace_manager_wizard" name="Replace Sales Manager" action="action_open_replace_manager_wizard" groups="base.group_system" parent="contacts.res_partner_menu_config" sequence="10"/>
+    </data>
+
+</odoo>

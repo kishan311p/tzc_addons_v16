@@ -1,0 +1,3 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_kits_b2c1_website_page,access.kits.b2c1.website.page,model_kits_b2c1_website_page,,1,1,1,1
+access_kits_b2c1_website_menu,access.kits.b2c1.website.menu,model_kits_b2c1_website_menu,,1,1,1,1

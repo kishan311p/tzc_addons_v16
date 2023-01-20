@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="ir_cron_unpublished_product_from_website_spt" model="ir.cron">
+        <field name="name">Website Product Publish/Unpublish</field>
+        <field name="interval_number">4</field>
+        <field name="interval_type">hours</field>
+        <field name="numbercall">-1</field>
+        <field name="doall" eval="False"/>
+        <field name="model_id" ref="product.model_product_product"/>
+        <field name="code">model.unpublished_product_from_website_spt()</field>
+        <field name="state">code</field>
+    </record>
+
+    <record id="ir_cron_remove_new_arrival_product" model="ir.cron">
+        <field name="name">Remove New Arrivals</field>
+        <field name="interval_number">1</field>
+        <field name="interval_type">days</field>
+        <field name="numbercall">-1</field>
+        <field name="doall" eval="False"/>
+        <field name="model_id" ref="product.model_product_product"/>
+        <field name="state">code</field>
+        <field name="code">model.cron_remove_new_arrival_product()</field>
+    </record>
+
+    <record id="ir_cron_on_consignment_product_notification_to_admin" model="ir.cron">
+        <field name="name">On Consignment Product Notification</field>
+        <field name="interval_number">1</field>
+        <field name="interval_type">days</field>
+        <field name="numbercall">-1</field>
+        <field name="doall" eval="False"/>
+        <field name="active" eval="False"/>
+        <field name="model_id" ref="product.model_product_product"/>
+        <field name="state">code</field>
+        <field name="code">model.cron_notify_on_consignment_product()</field>
+    </record>
+</odoo>

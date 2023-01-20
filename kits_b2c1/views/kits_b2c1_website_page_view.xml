@@ -1,0 +1,322 @@
+<?xml version='1.0' encoding='utf-8'?>
+<odoo>
+    <data>
+
+        <record id="kits_b2c1_website_page_form_view" model="ir.ui.view">
+            <field name="name">kits.b2c1.website.page.form.view</field>
+            <field name="model">kits.b2c1.website.page</field>
+            <field name="arch" type="xml">
+                <form>
+                    <sheet>
+                        <div>
+                            <h1>
+                                <field name="name" />
+                            </h1>
+                        </div>
+                        <group>
+                            <group>
+                                <field name="page_type" />
+                                <field name="website_id" />
+                            </group>
+                        </group>
+                        <notebook attrs="{'invisible': [('page_type', 'in', [False,'about_us','header','footer'])]}">
+                            <page name="homepage_banner_main_images" string="Homepage Banner Main Images">
+                                <div style="color:red;text-align:left;font-size: 18px;" attrs="{'invisible':[('page_type','!=','homepage')]}">Desktop Image size should be 2880 × 540 px</div>
+                                <div style="color:red;text-align:right;font-size: 18px;margin-top: -27px;margin-right: 608px;" attrs="{'invisible':[('page_type','!=','homepage')]}">Mobile Image size should be 960 × 540 px</div>
+                                <field name="homepage_banner_main_image_ids">
+                                    <tree editable="bottom">
+                                        <field name="image" widget="image" options="{'zoom': true,'preview_image':'image', 'size': [75,75]}"/>
+                                        <field name="image_public_url" widget="url"/>
+                                        <field name="mobile_image" widget="image" options="{'zoom': true,'preview_image':'mobile_image', 'size': [75,75]}"/>
+                                        <field name="mobile_image_public_url" widget="url"/>
+                                        <field name="redirect_url" widget="url"/>
+                                    </tree>
+                                </field>
+                            </page>
+                            <page name="eyelgass_banner_images" string="Eyeglass Banner Images">
+                                <div style="color:red;text-align:center;font-size: 18px;" attrs="{'invisible':[('page_type','!=','homepage')]}">All Image size should be 705 × 226 px</div>
+                                <group>
+                                    <group>
+                                        <field name="eyeglass_banner_image_category" />
+                                    </group>
+                                </group>
+                                <group>
+                                    <group>
+                                        <field name="eyeglass_banner_image_1" height="75px" options="{'zoom': true,'preview_image':'eyeglass_banner_image_1', 'size': [75,75]}"/>
+                                        <field name="eyeglass_banner_image_1_url" />
+                                        <field name="eyeglass_banner_image_gender_1" />
+                                    </group>
+                                    <group>
+                                        <field name="eyeglass_banner_image_2" widget="image"  options="{'zoom': true,'preview_image':'eyeglass_banner_image_2', 'size': [75,75]}"/>
+                                        <field name="eyeglass_banner_image_2_url" />
+                                        <field name="eyeglass_banner_image_gender_2" />
+                                    </group>
+                                </group>
+                                <group invisible="0">
+                                    <group>
+                                        <field name="eyeglass_banner_image_1_public_url" widget="url" />
+                                    </group>
+                                    <group>
+                                        <field name="eyeglass_banner_image_2_public_url" widget="url"/>
+                                    </group>
+                                </group>
+                            </page>
+                            <page name="images" string="Images">
+                                <div style="color:red;text-align:left;font-size: 18px;" attrs="{'invisible':[('page_type','!=','homepage')]}">Image size should be 1380 × 401 px</div>
+                                <div style="color:red;text-align:right;font-size: 18px;margin-top: -27px;margin-right: 598px;" attrs="{'invisible':[('page_type','!=','homepage')]}">Image size should be 480 × 400 px</div>
+                                <group>
+                                    <group name="images_1" string="Images 1">
+                                        <field name="image_1" widget="image" options="{'zoom': true,'preview_image':'image_1', 'size': [75,75]}"/>
+                                        <field name="image_1_url" />
+                                    </group>
+                                    <group name="images_2" string="Images 2">
+                                        <field name="image_2" widget="image" options="{'zoom': true,'preview_image':'image_2', 'size': [75,75]}"/>
+                                        <field name="image_2_url" />
+                                    </group>
+                                </group>
+                                <group invisible="0">
+                                    <group>
+                                        <field name="image_1_public_url" widget="url" />
+                                    </group>
+                                    <group>
+                                        <field name="image_2_public_url" widget="url" />
+                                    </group>
+                                </group>
+                            </page>
+                            <page name="sunglass_banner_images" string="Sunglass Banner Images">
+                                <div style="color:red;text-align:center;font-size: 18px;" attrs="{'invisible':[('page_type','!=','homepage')]}">All Image size should be 705 × 226 px</div>
+                                <group>
+                                    <group style="align-items:center;justify-content:center;">
+                                        <field name="sunglass_banner_image_category" />
+                                    </group>
+                                </group>
+                                <group>
+                                    <group>
+                                        <field name="sunglass_banner_image_1" widget="image" options="{'zoom': true,'preview_image':'sunglass_banner_image_1', 'size': [75,75]}"/>
+                                        <field name="sunglass_banner_image_1_url" />
+                                        <field name="sunglass_banner_image_gender_1" />
+                                    </group>
+                                    <group>
+                                        <field name="sunglass_banner_image_2" widget="image" options="{'zoom': true,'preview_image':'sunglass_banner_image_2', 'size': [75,75]}"/>
+                                        <field name="sunglass_banner_image_2_url" />
+                                        <field name="sunglass_banner_image_gender_2" />
+                                    </group>
+                                </group>
+                                <group invisible="0">
+                                    <group>
+                                        <field name="sunglass_banner_image_1_public_url" widget="url" />
+                                    </group>
+                                    <group>
+                                        <field name="sunglass_banner_image_2_public_url" widget="url" />
+                                    </group>
+                                </group>
+                            </page>
+                            <page name="guide_images" string="Guide Images">
+                                <div style="color:red;text-align:center;font-size: 18px;" attrs="{'invisible':[('page_type','!=','homepage')]}">All Image size should be 349 × 322 px</div>
+                                <group>
+                                    <group>
+                                        <field name="guide_image_1" widget="image"  options="{'zoom': true,'preview_image':'guide_image_1', 'size': [75,75]}"/>
+                                        <field name="guide_image_1_url" />
+                                        <field name="guide_image_1_name" />
+                                        <field name="guide_image_2" widget="image"  options="{'zoom': true,'preview_image':'guide_image_2', 'size': [75,75]}"/>
+                                        <field name="guide_image_2_url" />
+                                        <field name="guide_image_2_name" />
+                                    </group>
+                                    <group>
+                                        <field name="guide_image_3" widget="image" options="{'zoom': true,'preview_image':'guide_image_3', 'size': [75,75]}"/>
+                                        <field name="guide_image_3_url" />
+                                        <field name="guide_image_3_name" />
+                                    </group>
+                                </group>
+                                <group invisible="0">
+                                    <group>
+                                        <field name="guide_image_1_public_url" widget="url" />
+                                        <field name="guide_image_2_public_url" widget="url" />
+                                    </group>
+                                    <group>
+                                        <field name="guide_image_3_public_url" widget="url" />
+                                    </group>
+                                </group>
+                                <group>
+                                    <group>
+                                        <field name="guide_section_name" />
+                                    </group>
+                                    <group>
+                                        <field name="guide_section_description" />
+                                    </group>
+                                </group>
+                            </page>
+                            <page name="ad_images" string="Ad Images">
+                                <div style="color:red;text-align:center;font-size: 18px;" attrs="{'invisible':[('page_type','!=','homepage')]}">All Image size should be 860 × 114 px</div>
+                                <group>
+                                    <group>
+                                        <field name="ad_image_1" widget="image" options="{'zoom': true,'preview_image':'ad_image_1', 'size': [75,75]}"/>
+                                        <field name="ad_image_1_url" />
+                                    </group>
+                                    <group>
+                                        <field name="ad_image_2" widget="image" options="{'zoom': true,'preview_image':'ad_image_2', 'size': [75,75]}"/>
+                                        <field name="ad_image_2_url" />
+                                    </group>
+                                </group>
+                                <group invisible="0">
+                                    <group>
+                                        <field name="ad_image_1_public_url" widget="url" />
+                                    </group>
+                                    <group>
+                                        <field name="ad_image_2_public_url" widget="url" />
+                                    </group>
+                                </group>
+                            </page>
+                            <page name="offer_images" string="Offer Images">
+                                <div style="color:red;text-align:center;font-size: 18px;" attrs="{'invisible':[('page_type','!=','homepage')]}">All Image size should be 280 × 220 px</div>
+                                <group>
+                                    <group>
+                                        <field name="offer_main_image" widget="image"  options="{'zoom': true,'preview_image':'offer_main_image', 'size': [75,75]}"/>
+                                        <field name="offer_main_image_url" />
+                                        <field name="offer_image_1" widget="image" options="{'zoom': true,'preview_image':'offer_image_1', 'size': [75,75]}"/>
+                                        <field name="offer_image_1_url" />
+                                    </group>
+                                    <group>
+                                        <field name="offer_image_2" widget="image" options="{'zoom': true,'preview_image':'offer_image_2', 'size': [75,75]}"/>
+                                        <field name="offer_image_2_url" />
+                                        <field name="offer_image_3" widget="image"  options="{'zoom': true,'preview_image':'offer_image_3', 'size': [75,75]}"/>
+                                        <field name="offer_image_3_url" />
+                                    </group>
+                                </group>
+                                <group invisible="0">
+                                    <group>
+                                        <field name="offer_main_image_public_url" widget="url" />
+                                        <field name="offer_image_1_public_url" widget="url" />
+                                    </group>
+                                    <group>
+                                        <field name="offer_image_2_public_url" widget="url" />
+                                        <field name="offer_image_3_public_url" widget="url" />
+                                    </group>
+                                </group>
+                            </page>
+                            <page name="lens_feature_images" string="Lens Feature Images">
+                                <div style="color:red;text-align:center;font-size: 18px;" attrs="{'invisible':[('page_type','!=','homepage')]}">All Image size should be 127 × 100 px</div>
+                                <group>
+                                    <group>
+                                        <field name="lens_feature_image_1_name" />
+                                        <field name="lens_feature_image_1" widget="image"  options="{'zoom': true,'preview_image':'lens_feature_image_1', 'size': [75,75]}"/>
+                                        <field name="lens_feature_image_1_url" />
+                                        <field name="lens_feature_image_2_name" />
+                                        <field name="lens_feature_image_2" widget="image"  options="{'zoom': true,'preview_image':'lens_feature_image_2', 'size': [75,75]}"/>
+                                        <field name="lens_feature_image_2_url" />
+                                        <field name="lens_feature_image_3_name" />
+                                        <field name="lens_feature_image_3" widget="image"  options="{'zoom': true,'preview_image':'lens_feature_image_3', 'size': [75,75]}"/>
+                                        <field name="lens_feature_image_3_url" />
+                                        <field name="lens_feature_image_4_name" />
+                                        <field name="lens_feature_image_4" widget="image" options="{'zoom': true,'preview_image':'lens_feature_image_4', 'size': [75,75]}"/>
+                                        <field name="lens_feature_image_4_url" />
+                                    </group>
+                                    <group>
+                                        <field name="lens_feature_image_5_name" />
+                                        <field name="lens_feature_image_5" widget="image" options="{'zoom': true,'preview_image':'lens_feature_image_5', 'size': [75,75]}"/>
+                                        <field name="lens_feature_image_5_url" />
+                                        <field name="lens_feature_image_6_name" />
+                                        <field name="lens_feature_image_6" widget="image" options="{'zoom': true,'preview_image':'lens_feature_image_6', 'size': [75,75]}"/>
+                                        <field name="lens_feature_image_6_url" />
+                                        <field name="lens_feature_image_7_name" />
+                                        <field name="lens_feature_image_7" widget="image" options="{'zoom': true,'preview_image':'lens_feature_image_7', 'size': [75,75]}"/>
+                                        <field name="lens_feature_image_7_url" />
+                                        <field name="lens_feature_image_8_name" />
+                                        <field name="lens_feature_image_8" widget="image" options="{'zoom': true,'preview_image':'lens_feature_image_8', 'size': [75,75]}"/>
+                                        <field name="lens_feature_image_8_url" />
+                                    </group>
+                                </group>
+                                <group invisible="0">
+                                    <group>
+                                        <field name="lens_feature_image_1_public_url" widget="url" />
+                                        <field name="lens_feature_image_2_public_url" widget="url" />
+                                        <field name="lens_feature_image_3_public_url" widget="url" />
+                                        <field name="lens_feature_image_4_public_url" widget="url" />
+                                    </group>
+                                    <group>
+                                        <field name="lens_feature_image_5_public_url" widget="url" />
+                                        <field name="lens_feature_image_6_public_url" widget="url" />
+                                        <field name="lens_feature_image_7_public_url" widget="url" />
+                                        <field name="lens_feature_image_8_public_url" widget="url" />
+                                    </group>
+                                </group>
+                                <group>
+                                    <group>
+                                        <field name="lens_feature_section_name" />
+                                    </group>
+                                    <group>
+                                        <field name="lens_feature_section_description" />
+                                    </group>
+                                </group>
+                            </page>
+                            <page name="aspect_images" string="Aspect Images">
+                                <div style="color:red;text-align:center;font-size: 18px;" attrs="{'invisible':[('page_type','!=','homepage')]}">All Image size should be 51 × 50 px</div>
+                                <group>
+                                    <group>
+                                        <field name="aspect_image_1_name" />
+                                        <field name="aspect_image_1" widget="image" options="{'zoom': true,'preview_image':'aspect_image_1', 'size': [75,75]}"/>
+                                        <field name="aspect_image_1_url" />
+                                        <field name="aspect_image_2_name" />
+                                        <field name="aspect_image_2" widget="image" options="{'zoom': true,'preview_image':'aspect_image_2' , 'size': [75,75]}"/>
+                                        <field name="aspect_image_2_url" />
+                                        <field name="aspect_image_3_name" />
+                                        <field name="aspect_image_3" widget="image" options="{'zoom': true,'preview_image':'aspect_image_3' , 'size': [75,75]}"/>
+                                        <field name="aspect_image_3_url" />
+                                    </group>
+                                    <group>
+                                        <field name="aspect_image_4_name" />
+                                        <field name="aspect_image_4" widget="image" options="{'zoom': true,'preview_image':'aspect_image_4' , 'size': [75,75]}"/>
+                                        <field name="aspect_image_4_url" />
+                                        <field name="aspect_image_5_name" />
+                                        <field name="aspect_image_5" widget="image" options="{'zoom': true,'preview_image':'aspect_image_5' , 'size': [75,75]}"/>
+                                        <field name="aspect_image_5_url" />
+                                    </group>
+                                </group>
+                                <group invisible="0">
+                                    <group>
+                                        <field name="aspect_image_1_public_url" widget="url" />
+                                        <field name="aspect_image_2_public_url" widget="url" />
+                                        <field name="aspect_image_3_public_url" widget="url" />
+                                    </group>
+                                    <group>
+                                        <field name="aspect_image_4_public_url" widget="url" />
+                                        <field name="aspect_image_5_public_url" widget="url" />
+                                    </group>
+                                </group>
+                            </page>
+                            <page name="meta_data" string="Meta data">
+                                <group>
+                                    <group>
+                                        <field name="homepage_title" />
+                                        <field name="homepage_keyword" />
+                                        <field name="homepage_description" />
+                                    </group>                                   
+                                </group>
+                            </page>
+                            
+                        </notebook>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="kits_b2c1_website_page_tree_view" model="ir.ui.view">
+            <field name="name">kits.b2c1.website.page.tree.view</field>
+            <field name="model">kits.b2c1.website.page</field>
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="page_type" />
+                    <field name="website_id" invisible="context.get('show_website_id',False)"  options="{'no_open': True,'no_create': True}" />
+
+                </tree>
+            </field>
+        </record>
+
+        <record id="kits_b2c1_website_page_action" model="ir.actions.act_window">
+            <field name="name">Website Pages</field>
+            <field name="res_model">kits.b2c1.website.page</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+    </data>
+</odoo>

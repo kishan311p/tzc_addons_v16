@@ -1,0 +1,28 @@
+<?xml version='1.0' encoding='utf-8'?>
+<odoo>
+    <data>
+        <record id="free_shipping_rule" model="kits.free.shipping.rule">
+            <field name="free_shipping_days">10</field>
+            <field name="name">Apply if country rule not found</field>
+            <field name="website_id" ref="kits_b2c1.website_kits_b2c1" />
+        </record>
+        <record id="damage" model="kits.multi.website.return.request.reason">
+            <field name="name">Damage</field>
+            <field name="website_id" ref="kits_b2c1.website_kits_b2c1" />
+        </record>
+        <record id="color_not_match_with_website" model="kits.multi.website.return.request.reason">
+            <field name="name">Color not match with website</field>
+            <field name="website_id" ref="kits_b2c1.website_kits_b2c1" />
+        </record>
+        <record id="not_fit_on_face" model="kits.multi.website.return.request.reason">
+            <field name="name">Not fit on face</field>
+            <field name="website_id" ref="kits_b2c1.website_kits_b2c1" />
+        </record>
+        <record id="other_reason" model="kits.multi.website.return.request.reason">
+            <field name="name">Other reason</field>
+            <field name="website_id" ref="kits_b2c1.website_kits_b2c1" />
+        </record>
+    </data>
+</odoo>
+
+        

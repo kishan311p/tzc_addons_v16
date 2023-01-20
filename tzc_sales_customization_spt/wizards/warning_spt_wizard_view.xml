@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <data>
+        <record id="warning_wizard_spt_form_view" model="ir.ui.view">
+            <field name="name">warning.wizard.spt.form.view</field>
+            <field name="model">warning.spt.wizard</field>
+            <field name="priority">1</field>
+            <field name="arch" type="xml">
+                <form>
+                    <sheet>
+                        <div>
+                            <h3>  <field name="message" readonly="1"/>
+                            </h3>
+                        </div>
+                    </sheet>
+                    <footer>
+                        <button string="Download" type="object" name="get_file" class="oe_highlight"/>
+                        <button string="Cancel" type="object" special="cancel" class="oe_highlight"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+        <record id="res_partner_email_verify_warnig_wizard_spt_form_view" model="ir.ui.view">
+            <field name="name">res.partner.email.verify.warning.wizard.spt.form.view</field>
+            <field name="model">warning.spt.wizard</field>
+            <field name="arch" type="xml">
+                <form>
+                    <sheet>
+                        <field name="success_partner_ids" invisible="1" />
+                        <field name="failed_partner_ids" invisible="1" />
+                        <h3>
+                            <field name="verify_mail_success" nolable="1" readonly="1" attrs="{'invisible':[('success_partner_ids','=',[])]}"/>
+                        </h3>
+                        <br/>
+                        <div class="d-flex">
+                            <h3>
+                                <field name="verify_mail_failed" nolable="1" readonly="1" attrs="{'invisible':[('failed_partner_ids','=',[])]}"/>
+                            </h3>
+                            <button string="Export" name="action_verify_email" type="object" class="oe_highlight" attrs="{'invisible':[('failed_partner_ids','=',[])]}"/>
+                        </div>
+                        <field name="failed_partner_ids" nolable="1" readonly="1" attrs="{'invisible':[('failed_partner_ids','=',[])]}">
+                            <tree>
+                                <field name="name" />
+                                <field name="email" />
+                            </tree>
+                        </field>
+                    </sheet>
+                    <footer>
+                        <button special="cancel" type="object" string="Close" />
+                    </footer>
+                </form>
+            </field>
+        </record>
+    </data>
+
+</odoo>

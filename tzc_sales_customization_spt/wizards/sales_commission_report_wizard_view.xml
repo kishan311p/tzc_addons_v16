@@ -1,0 +1,119 @@
+<?xml version='1.0' encoding='utf-8'?>
+<odoo>
+    <data>
+        <record id="sales_commission_report_for_sales_person_wizard_form_view" model="ir.ui.view">
+            <field name="name">sales.commission.report.for.sales.person.wizard.form.view</field>
+            <field name="model">sales.commission.report.wizard</field>
+            <field name="arch" type="xml">
+                <form>
+                    <sheet>
+                        <group>
+                            <group>
+                                <field name="start_date"/>
+                            </group>
+                            <group>
+                                <field name="end_date"/>
+                                <field name="apply_groups" invisible="1"/>
+                            </group>
+                        </group>
+                        <group attrs="{'invisible':[('apply_groups','!=','sales_manager')]}">
+                            <field name="commission_for" widget="radio" readonly="0"/>
+                            <field name="commission_is" widget="radio" required="1"/>
+                            <field name="sales_person_ids" widget="many2many_tags" options="{'no_create':True,'no_create_edit':True}"  attrs="{'required':[('commission_for','=','sales_person')],'invisible':[('commission_for','=','sales_manager')]}" readonly="0"/>
+                            <field name="sales_manager_ids" widget="many2many_tags" options="{'no_create':True,'no_create_edit':True}" attrs="{'required':[('commission_for','=','sales_manager')],'invisible':[('commission_for','=','sales_person')]}" readonly="1"/>
+                        </group>
+                        <group attrs="{'invisible':[('apply_groups','!=','sales_person')]}">
+                            <field name="commission_for" widget="radio" readonly="1"/>
+                            <field name="commission_is" widget="radio" required="1"/>
+                            <field name="sales_person_ids" widget="many2many_tags" options="{'no_create':True,'no_create_edit':True}"  attrs="{'required':[('commission_for','=','sales_person')],'invisible':[('commission_for','=','sales_manager')]}" readonly="1"/>
+                            <field name="sales_manager_ids" widget="many2many_tags" options="{'no_create':True,'no_create_edit':True}" attrs="{'required':[('commission_for','=','sales_manager')],'invisible':[('commission_for','=','sales_person')]}" readonly="1"/>
+                        </group>
+                        <group attrs="{'invisible':[('apply_groups','!=','admin')]}">
+                            <field name="commission_for" widget="radio"/>
+                            <field name="commission_is" widget="radio" required="1"/>
+                            <field name="sales_person_ids" widget="many2many_tags" options="{'no_create':True,'no_create_edit':True}"  attrs="{'required':[('commission_for','=','sales_person')],'invisible':[('commission_for','=','sales_manager')]}"/>
+                            <field name="sales_manager_ids" widget="many2many_tags" options="{'no_create':True,'no_create_edit':True}" attrs="{'required':[('commission_for','=','sales_manager')],'invisible':[('commission_for','=','sales_person')]}"/>
+                        </group>
+                        <!-- <group>
+                            <field name="commission_for" widget="radio" readonly="1"/>
+                            <field name="commission_is" widget="radio" required="1"/>
+                        </group>
+                        <group attrs="{'invisible':[('commission_for','=','sales_manager')]}">
+                            <field name="sales_person_ids" widget="many2many_tags" options="{'no_create':True,'no_create_edit':True}"  attrs="{'required':[('commission_for','=','sales_person')]}" readonly="1"/>
+                        </group>
+                        <group attrs="{'invisible':[('commission_for','=','sales_person')]}">
+                            <field name="sales_manager_ids" widget="many2many_tags" options="{'no_create':True,'no_create_edit':True}" attrs="{'required':[('commission_for','=','sales_manager')]}"/>
+                        </group> -->
+                    </sheet>
+                    <footer>
+                        <button string="Download PDF Report" name="action_pdf_report" type="object" class="oe_highlight"/>
+                        <button string="Download Excel Report" name="action_xls_report" type="object" class="oe_highlight"/>
+                        <button string="Cancel" class="btn-secondary" special="cancel" />
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+        <record id="action_sales_commission_report" model="ir.actions.act_window">
+            <field name="view_mode">form</field>
+            <field name="name">Sales Commission Report</field>
+            <field name="res_model">sales.commission.report.wizard</field>
+            <field name="target">new</field>
+        </record>
+
+        <menuitem name="Sales Commission Report" action="action_sales_commission_report" id="menu_action_sales_commission_report" parent="sale.menu_sale_report" sequence="4" groups="base.group_system,tzc_sales_customization_spt.group_sales_manager_spt,tzc_sales_customization_spt.group_partner_access_salesperson"/>
+
+        <!-- <record id="inherit_sales_commission_report_for_sales_manager_wizard_form_view" model="ir.ui.view">
+            <field name="name">inherit.sales.commission.report.for.sales.manager.wizard.form.view</field>
+            <field name="model">sales.commission.report.wizard</field>
+            <field name="priority">20</field>
+            <field name="groups_id" eval="[(4, ref('tzc_sales_customization_spt.group_sales_manager_spt'))]"/>
+            <field name="inherit_id" ref="tzc_sales_customization_spt.sales_commission_report_for_sales_person_wizard_form_view"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='commission_for']" position="attributes">
+                    <attribute name="readonly">0</attribute>
+                </xpath>
+                <xpath expr="//field[@name='sales_person_ids']" position="attributes">
+                    <attribute name="readonly">0</attribute>
+                </xpath> 
+                <xpath expr="//field[@name='sales_manager_ids']" position="attributes">
+                    <attribute name="readonly">1</attribute>
+                </xpath>
+            </field>
+        </record> -->
+        <!-- <record id="inherit_sales_commission_report_for_sales_person_wizard_form_view" model="ir.ui.view">
+            <field name="name">inherit.sales.commission.report.for.sales.person.wizard.form.view</field>
+            <field name="model">sales.commission.report.wizard</field>
+            <field name="priority">15</field>
+            <field name="groups_id" eval="[(4, ref('sales_team.group_sale_salesman'))]"/>
+            <field name="inherit_id" ref="tzc_sales_customization_spt.sales_commission_report_for_sales_person_wizard_form_view"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='commission_for']" position="attributes">
+                    <attribute name="readonly">1</attribute>
+                </xpath>
+                <xpath expr="//field[@name='sales_person_ids']" position="attributes">
+                    <attribute name="readonly">1</attribute>
+                </xpath>
+            </field>
+        </record>
+        <record id="inherit_sales_commission_report_for_admin_wizard_form_view" model="ir.ui.view">
+            <field name="name">inherit.sales.commission.report.for.admin.wizard.form.view</field>
+            <field name="model">sales.commission.report.wizard</field>
+            <field name="priority">25</field>
+            <field name="groups_id" eval="[(4, ref('base.group_system'))]"/>
+            <field name="inherit_id" ref="tzc_sales_customization_spt.sales_commission_report_for_sales_person_wizard_form_view"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='commission_for']" position="attributes">
+                    <attribute name="readonly">0</attribute>
+                </xpath>
+                <xpath expr="//field[@name='sales_person_ids']" position="attributes">
+                    <attribute name="readonly">0</attribute>
+                </xpath>
+                <xpath expr="//field[@name='sales_manager_ids']" position="attributes">
+                    <attribute name="readonly">0</attribute>
+                </xpath>
+            </field>
+        </record> -->
+
+    </data>
+</odoo>

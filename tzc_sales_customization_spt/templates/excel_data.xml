@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="template_export_product">
+        <table id="product_export_table">
+            <thead>
+                <tr>
+                    <th>SKU</th>
+                    <th>Name</th>
+                    <th>Brand</th>
+                    <th>Model</th>
+                    <th>Manufacturing Color Code</th>
+                    <th>Eye Size</th>
+                    <th>Category</th>
+                    <th>Total Qty</th>
+                    <th>Available Qty</th>
+                    <th>Reserved Qty</th>
+                    <th>Price</th>
+                    <th>Barcode</th>
+                    <th>Image</th>
+                    <th>Image 2</th>
+                    <th>Is Published</th>
+                    <th>Image Set</th>
+                    <th>Color Name</th>
+                    <th>Secondary Color Name</th>
+                    <th>Temporary Out Of Stock</th>
+                    <th>Manufacturer Color Code</th>
+                    <th>Bridge Size</th>
+                    <th>Temple Size</th>
+                    <th>Lence Color Name</th>
+                    <th>Rim Type</th>
+                    <th>Shape</th>
+                    <th>Material</th>
+                    <th>Flex Hinges</th>
+                    <th>Weight</th>
+                    <th>Gender</th>
+                    <th>Create Date</th>
+                    <th>Modify Date</th>
+                    <th>Country of Origin</th>
+                    <th>#Open Orders</th>
+                    <th>#Orders</th>
+                    <th>Is Forcefully Unpublished</th>
+                </tr>
+                
+            </thead>
+            <tbody>
+                <t t-foreach="list_of_files" t-as="a">
+                    <tr>
+                        <td>
+                            <t t-esc="a[0]"/>
+                        </td>
+                        <td>
+                            <t t-esc="a[1]"/>
+                        </td>
+                        <td>
+                            <t t-esc="a[2]"/>
+                        </td>
+                        <td>
+                            <t t-esc="a[3]"/>
+                        </td>
+                        <td>
+                            <t t-esc="a[4]"/>
+                        </td>
+                        <td>
+                            <t t-esc="a[5]"/>
+                        </td>
+                        <td>
+                            <t t-esc="a[6]"/>
+                        </td>
+                        <td>
+                            <t t-esc="a[7]"/>
+                        </td>
+                        <td>
+                            <t t-esc="a[8]"/>
+                        </td>
+                        <td>
+                            <t t-esc="a[9]"/>
+                        </td>
+                        <td>
+                            <t t-esc="a[10]"/>
+                        </td>
+                        <td>
+                            <t t-esc="a[11]"/>
+                        </td>
+                        <td>
+                            <t t-esc="a[12]"/>
+                        </td>
+                        <td>
+                            <t t-esc="a[13]"/>
+                        </td>
+                        <td>
+                            <t t-esc="a[14]"/>
+                        </td>
+                        <td>
+                            <t t-esc="a[15]"/>
+                        </td>
+                        <td>
+                            <t t-esc="a[16]"/>
+                        </td>
+                        <td>
+                            <t t-esc="a[17]"/>
+                        </td>
+                        <td>
+                            <t t-esc="a[18]"/>
+                        </td>
+                        <td>
+                            <t t-esc="a[19]"/>
+                        </td>
+                        <td>
+                            <t t-esc="a[20]"/>
+                        </td>
+                        <td>
+                            <t t-esc="a[21]"/>
+                        </td>
+                        <td>
+                            <t t-esc="a[22]"/>
+                        </td>
+                        <td>
+                            <t t-esc="a[23]"/>
+                        </td>
+                        <td>
+                            <t t-esc="a[24]"/>
+                        </td>
+                        <td>
+                            <t t-esc="a[25]"/>
+                        </td>
+                        <td>
+                            <t t-esc="a[26]"/>
+                        </td>
+                        <td>
+                            <t t-esc="a[27]"/>
+                        </td>
+                        <td>
+                            <t t-esc="a[28]"/>
+                        </td>
+                        <td>
+                            <t t-esc="a[29]"/>
+                        </td>
+                        <td>
+                            <t t-esc="a[30]"/>
+                        </td>
+                        <td>
+                            <t t-esc="a[31]"/>
+                        </td>
+                        <td>
+                            <t t-esc="a[32]"/>
+                        </td>
+                        <td>
+                            <t t-esc="a[33]"/>
+                        </td>
+                        <td>
+                            <t t-esc="a[34]"/>
+                        </td>
+                    </tr>
+                </t>
+            </tbody>
+        </table>
+    </template>
+</odoo>

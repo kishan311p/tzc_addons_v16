@@ -1,0 +1,120 @@
+<?xml version="1.0" ?>
+<odoo>
+	<data>
+		<record id="product_import_form_view_spt" model="ir.ui.view">
+			<field name="name">product.import.form.view.spt</field>
+			<field name="model">product.import.spt</field>
+			<field name="arch" type="xml">
+				<form>
+					<header>
+					
+						<button name="read_opration_process_check_error_file" string='Process' type="object" class="oe_highlight" attrs="{'invisible':['|',('data_on','in',['image_change','update','delete']),('state','in',['done','draft'])]}"/>
+						<button name="action_update_product_check_error_file" string='Process' type="object" class="oe_highlights" attrs="{'invisible':['|',('data_on','in',['image_change','create','delete']),('state','in',['done','draft'])]}"/>
+						<button name="file_read_opration" string='Read File' type="object" class="oe_stat_button" attrs="{'invisible':['|',('state','=','done'),('data_on','=','image_change')]}"/>
+						<button name="action_reset_to_draft" string='Reset To Draft' type="object" class="oe_stat_button" attrs="{'invisible':[('state','!=','process')]}"/>
+						
+						<button name="action_delete_product_process_check_error_file" string='Process' class="oe_highlight" type="object" attrs="{'invisible':['|',('data_on','!=','delete'),('state','in',['done','draft'])]}"/>
+						<button string="Process" name="action_product_image_path_change" type="object" class="oe_highlight"  attrs="{'invisible': ['|',('data_on','!=','image_change'),('state','=','done')]}" />
+						<button name="action_cancel_qty" string='reset qty' type="object" class="oe_stat_button"  attrs="{'invisible':['|',('state','!=','done'),('data_on','in',['create','delete'])]}"/>
+						<field name='state' widget='statusbar' />
+					</header>
+					<sheet>
+
+						<div class="oe_button_box" name="button_box">
+							<button name="action_genrate_product_report" type="object" class="oe_stat_button" icon="fa-file">
+								<div class="o_form_field o_stat_info">
+									<span class="o_stat_text">
+										Report Download
+									</span>
+								</div>
+							</button>
+							<button name="action_view_products_variants" type="object" class="oe_stat_button" icon="fa-product-hunt">
+								<div class="o_form_field o_stat_info">
+									<span class="o_stat_value">
+										<field name="number_of_product_variant" />
+									</span>
+									<span class="o_stat_text">
+										Product variants
+									</span>
+								</div>
+							</button>
+						</div>
+						<div class="oe_title">
+							<h1>
+								<field name="name" readonly="1" />
+							</h1>
+						</div>
+						<group>
+							<group>
+								<field name="attach_file_name" invisible='1' />
+								<field name="data_on" widget="radio" />
+								<field name="based_on_categories" attrs="{'invisible': [('data_on','=','image_change')]}" />
+								<field name="attach_file" filename="attach_file_name" required='1' />
+								<field name="read_time_file_name" invisible='1' />
+								<field name="read_time" filename="read_time_file_name" required='0' readonly='1' attrs="{'invisible': [('data_on','=','image_change')]}"/>
+							</group>
+							<group>
+								<field name="qty_add_in_pro_qty" attrs="{'invisible': [('data_on','!=','update')]}"/>
+								<field name="add_reserved_qty" attrs="{'invisible': [('data_on','!=','update')],'readonly':[('qty_add_in_pro_qty','=',True)]}"/>
+								<!-- <field name="column_name"/> -->
+								<field name="run_time_file_name" invisible='1' />
+								<field name="run_time" filename="run_time_file_name" required='0' readonly='1' />
+								<field name="create_date"/>
+								<field name="delete_product_name" invisible='1' />
+								<field name="delete_product_result" filename="delete_product_name"  attrs="{'invisible': ['|','&amp;',('data_on','in',['delete']),('state','!=','done'),('data_on','not in',['delete']),('state','in',['done','draft','process'])]}" required='0' readonly='1' />
+							</group>
+						</group>
+						<notebook>
+							<page string='Product Lines'>
+								<field name='import_line_ids' mode="tree" attrs="{'readonly':[('state','!=','draft')]}"  context="{'active_test': False}">
+									<tree editable="bottom" >
+										<field name='name' />
+										<field name='default_code' />
+										<field name='barcode' />
+										<!-- <field name='active' />
+										<field name='sale_ok' />
+										<field name='purchase_ok' /> -->
+										<field name='list_price' />
+										<field name='price_msrp' />
+										<field name='standard_price' invisible="1"/>
+										<!-- <field name='type' /> -->
+										<field name='brand' />
+										<field name='model' />
+										<field name='color' />
+										<field name='eye_size' />
+										<!-- <field name='categ_id' />
+										<field name='image_url' />
+										<field name='image_secondary_url' /> -->
+									</tree>
+								</field>
+							</page>
+						</notebook>
+					</sheet>
+				</form>
+			</field>
+		</record>
+
+		<record id="product_import_tree_view_spt" model="ir.ui.view">
+			<field name="name">product.import.tree.view.spt</field>
+			<field name="model">product.import.spt</field>
+			<field name="arch" type="xml">
+				<tree default_order="create_date desc">
+					<field name="name" />
+					<field name="attach_file_name" />
+					<field name="create_date" />
+					<field name="state" />
+				</tree>
+			</field>
+		</record>
+
+		<record id="action_product_import_spt" model="ir.actions.act_window">
+			<field name="name">Product Import</field>
+			<field name="res_model">product.import.spt</field>
+			<field name="view_mode">tree,form</field>
+		</record>
+
+		<menuitem id="menu_main_product_import_spt" groups="base.group_system" name="Product Import" action="action_product_import_spt" parent='sale.product_menu_catalog' sequence="3"/>
+		<menuitem id="product_import_report_menu" name="Product Import Report" action="action_import_product_report" groups="base.group_system" parent="sale.menu_sale_report"/>
+		<menuitem id="menu_product_data" name="All Product Export" action="action_product_data" groups="base.group_system" parent="sale.menu_sale_report"/>
+	</data>
+</odoo>

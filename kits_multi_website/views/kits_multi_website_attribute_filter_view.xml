@@ -1,0 +1,92 @@
+<?xml version='1.0' encoding='utf-8'?>
+<odoo>
+    <data>
+
+        <record id="kits_multi_website_attribute_filter_form_view" model="ir.ui.view">
+            <field name="name">kits.multi.website.attribute.filter.form.view</field>
+            <field name="model">kits.multi.website.attribute.filter</field>
+            <field name="arch" type="xml">
+                <form>
+                    <sheet>
+                        <div>
+                            <h1>
+                                <field name="name" placeholder="Attribute Filter Name"/>
+                            </h1>
+                        </div>
+                        <group>
+                            <group>
+                                <field name="is_slider" />
+                                <field name="website_id" invisible="context.get('show_website_id',False)"  options="{'no_open': True,'no_create': True}"/>
+                                <field name="filter_section_description" />
+                            </group>
+                        </group>
+                        <group>
+                            <group string="Primary Filter">
+                                <field name="primary_attribute_filter_type" />
+                                <field name="gender_type" attrs="{'invisible': [('primary_attribute_filter_type', 'in', [False,'category','shape','brand','rim_type'])]}"/>
+                                <field name="brand_id" options="{'no_open': True,'no_create': True}" attrs="{'invisible': [('primary_attribute_filter_type', 'in', [False,'gender','category','shape','rim_type'])]}"/>
+                                <field name="shape_id" options="{'no_open': True,'no_create': True}" attrs="{'invisible': [('primary_attribute_filter_type', 'in', [False,'gender','category','brand','rim_type'])]}"/>
+                                <field name="rim_type_id" options="{'no_open': True,'no_create': True}" attrs="{'invisible': [('primary_attribute_filter_type', 'in', [False,'gender','category','brand','shape'])]}"/>
+                                <field name="category_id" options="{'no_open': True,'no_create': True}" attrs="{'invisible': [('primary_attribute_filter_type', 'in', [False,'gender','rim_type','brand','shape'])]}"/>
+                            </group>
+                        </group>
+                        <group>
+                            <group string="Secondary Filter" attrs="{'invisible': [('primary_attribute_filter_type', '=', False)]}">
+                                <field name="secondary_attribute_filter_type" />
+                            </group>
+                        </group>
+                        <notebook attrs="{'invisible': [('secondary_attribute_filter_type', '=', False)]}">
+                            <page name="attribute_filter_lines" string="Attribute Filter Lines">
+                                <field name="attribute_filter_line_ids">
+                                    <tree editable="bottom">
+                                        <field name="gender_type" attrs="{'column_invisible': ['|',('parent.primary_attribute_filter_type', '=', 'gender'),('parent.secondary_attribute_filter_type','in',[False,'category','shape','brand','rim_type'])]}"/>
+                                        <field name="brand_id" attrs="{'column_invisible': ['|',('parent.primary_attribute_filter_type', '=', 'brand'),('parent.secondary_attribute_filter_type','in',[False,'gender','category','shape','rim_type'])]}"/>
+                                        <field name="shape_id" attrs="{'column_invisible': ['|',('parent.primary_attribute_filter_type', '=', 'shape'),('parent.secondary_attribute_filter_type','in',[False,'gender','category','brand','rim_type'])]}"/>
+                                        <field name="rim_type_id" attrs="{'column_invisible': ['|',('parent.primary_attribute_filter_type', '=', 'rim_type'),('parent.secondary_attribute_filter_type','in',[False,'gender','category','brand','shape'])]}"/>
+                                        <field name="category_id" attrs="{'column_invisible': ['|',('parent.primary_attribute_filter_type', '=', 'category'),('parent.secondary_attribute_filter_type','in',[False,'gender','rim_type','brand','shape'])]}"/>
+                                        <field name="image_name"/>
+                                        <field name="image" widget="image"  options="{'zoom': true,'preview_image':'image', 'size':[50,50]}"/>
+                                        <field name="redirect_url" widget="url"/>
+                                        <field name="image_url" widget="url" invisible="0" />
+                                    </tree>
+                                </field>
+                            </page>
+                        </notebook>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="kits_multi_website_attribute_filter_tree_view" model="ir.ui.view">
+            <field name="name">kits.multi.website.attribute.filter.tree.view</field>
+            <field name="model">kits.multi.website.attribute.filter</field>
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="sequence" widget="handle"/>
+                    <field name="name" />
+                    <field name="website_id" options="{'no_open': True,'no_create': True}"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="kits_multi_website_attribute_filter_search_view" model="ir.ui.view">
+            <field name="name">kits.multi.website.attribute.filter.search.view</field>
+            <field name="model">kits.multi.website.attribute.filter</field>
+            <field name="arch" type="xml">
+                <search>
+                    <field name="name" />
+                    <group expand="0" string="Group By">
+                        <filter name="website_id" string="Website" context="{'group_by': 'website_id'}"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+
+        <record id="kits_multi_website_attribute_filter_action" model="ir.actions.act_window">
+            <field name="name">Attribute Filters</field>
+            <field name="res_model">kits.multi.website.attribute.filter</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+    </data>
+</odoo>

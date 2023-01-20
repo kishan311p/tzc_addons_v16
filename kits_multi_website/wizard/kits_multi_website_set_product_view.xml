@@ -1,0 +1,25 @@
+<?xml version='1.0' encoding='utf-8'?>
+<odoo>
+    <data>
+
+        <record id="kits_multi_website_set_product_form_view" model="ir.ui.view">
+            <field name="name">kits.multi.website.set.product.form.view</field>
+            <field name="model">kits.multi.website.set.product</field>
+            <field name="arch" type="xml">
+                <form>
+                    <sheet>
+                        <group>
+                            <field name="website_ids" widget="many2many_tags" options="{'no_open': True,'no_create':True}" />
+                            <field name="product_ids" widget="many2many_tags" invisible="1" />
+                        </group>
+                    </sheet>
+                    <footer>
+                        <button string="Set Products" name="action_set_product" type="object" class="oe_highlight"/>
+                        <button string="Cancel" special="cancel" class="btn-secondary"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+    </data>
+</odoo>

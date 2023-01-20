@@ -1,0 +1,34 @@
+<?xml version='1.0' encoding='utf-8'?>
+<odoo>
+    <data>
+
+        <menuitem id="main_menu_kits_b2c1" name="Onespex" web_icon="kits_b2c1,static/description/icon.png"  groups="kits_multi_website.kits_multi_website_group"/>
+        <menuitem id="menu_b2c1_sale_order" name="Sale Order" action="kits_b2c1_sale_order_action" parent="main_menu_kits_b2c1" sequence="1"/>
+        <menuitem id="menu_b2c1_invoice" name="Invoices" action="kits_b2c1_invoice_action" parent="main_menu_kits_b2c1" sequence="2"/>
+        <menuitem id="menu_kits_b2c1_customer" name="Customers" action="kits_b2c1_customer_action" parent="main_menu_kits_b2c1" sequence="3"/>
+        <menuitem id="menu_kits_b2c1_product" name="Products" action="kits_b2c1_product_action" parent="main_menu_kits_b2c1" sequence="4"/>
+        <menuitem id="kits_b2c1_return_request" name="Return Requests" action="kits_b2c1_return_request_action" parent="main_menu_kits_b2c1" sequence="5"/>
+
+        <!-- reporting -->
+        <menuitem id="menu_kits_b2c1_reporting" name="Reporting" parent="main_menu_kits_b2c1" sequence="6"/>
+        <menuitem id="menu_kits_b2c1_sales_report" name="Sales Report" action="kits_multi_website.kits_b2c_sales_report_action" parent="menu_kits_b2c1_reporting" sequence="1"/>
+        <menuitem id="kits_b2c1_wallet_transaction" name="Wallet Transactions" action="kits_b2c1_wallet_transaction_action" parent="menu_kits_b2c1_reporting" sequence="100"/>
+
+        <!-- configuration -->
+        <menuitem id="menu_kits_b2c1_configuration" name="Configuration" parent="main_menu_kits_b2c1" sequence="7"/>
+        <menuitem id="menu_b2c1_coupon" name="Coupons" action="kits_b2c1_coupon_action" parent="menu_kits_b2c1_configuration" sequence="1"/>
+        <menuitem id="menu_b2c1_free_shipping_rule" name="Shipping Rule" action="kits_b2c1_free_shipping_rule_action" parent="menu_kits_b2c1_configuration" sequence="2"/>
+        <menuitem id="menu_kits_b2c1_website_page_action" name="Website Pages" action="kits_b2c1_website_page_action" parent="menu_kits_b2c1_configuration" sequence="3"/>
+        <menuitem id="menu_kits_b2c1_website_menu_action" name="Website Menus" action="kits_b2c1_website_menu_action" parent="menu_kits_b2c1_configuration" sequence="4"/>
+        <menuitem id="menu_kits_b2c1_product_slider_category" name="Product Slider Categories" action="kits_b2c1_product_slider_category_action" parent="menu_kits_b2c1_configuration" sequence="5"/>
+        <menuitem id="menu_kits_b2c1_attribute_filter" name="Attribute Filters" action="kits_b2c1_attribute_filter_action" parent="menu_kits_b2c1_configuration" sequence="6"/>
+        <menuitem id="menu_kits_b2c1_kits_multi_website_glass_type_action" name="Glass Type" action="kits_b2c1_multi_website_glass_type_action" parent="menu_kits_b2c1_configuration" sequence="7"/>
+        <menuitem id="menu_kits_b2c1_kits_multi_website_power_type_action" name="Power Type" action="kits_b2c1_multi_website_power_type_action" parent="menu_kits_b2c1_configuration" sequence="6"/>
+
+
+        <menuitem id="menu_kits_b2c1_website_lense_action" name="Lenses" action="kits_b2c1_website_lense_action" parent="menu_kits_b2c1_configuration" sequence="10"/>
+        <menuitem id="menu_kits_b2c1_website_prescription_action" name="Prescription" action="kits_b2c1_website_prescription_action" parent="menu_kits_b2c1_configuration" sequence="11"/>
+        
+        <menuitem id="menu_kits_b2c1_kits_b2c1_return_request_reason_action" name="Product Request Reason" action="kits_b2c1_return_request_reason_action" parent="menu_kits_b2c1_configuration" sequence="20"/>
+    </data>
+</odoo>

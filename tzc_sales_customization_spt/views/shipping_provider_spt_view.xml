@@ -1,0 +1,23 @@
+<?xml version='1.0' encoding='utf-8'?>
+<odoo>
+    <data>
+        <record id="shipping_provider_view_tree" model="ir.ui.view">
+            <field name="name">shipping.provider.view.tree</field>
+            <field name="model">shipping.provider.spt</field>
+            <field name="arch" type="xml">
+                <tree editable="bottom">
+                    <field name="name" />
+                    <field name="provider" />
+                </tree>
+            </field>
+        </record>
+        <record id="shipping_provider_spt_action" model="ir.actions.act_window">
+            <field name="name">Shipping Provider</field>
+            <field name="res_model">shipping.provider.spt</field>
+            <field name="view_mode">tree</field>
+        </record>
+
+        <menuitem id="shipping_provider_menu" name="Shipping Provider" action="shipping_provider_spt_action" parent="stock.menu_stock_config_settings" groups="base.group_system"/>
+
+    </data>
+</odoo>

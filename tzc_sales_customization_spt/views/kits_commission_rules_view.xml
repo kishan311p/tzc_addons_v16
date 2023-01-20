@@ -1,0 +1,86 @@
+<?xml version='1.0' encoding='utf-8'?>
+<odoo>
+    <data>
+        <record id="kits_commisssion_rules_form_view" model="ir.ui.view">
+            <field name="name">kits.commisssion.rules.form.view</field>
+            <field name="model">kits.commission.rules</field>
+            <field name="arch" type="xml">
+                <form string="">
+                    <sheet>
+                        <div>
+                            <group>
+                                <group>
+                                    <field name="name" required="1"/>
+                                    <field name="commission_for" string="Commission For" widget="radio" required="1"/>
+                                    <field name="type" />
+                                </group>
+                                <group>
+                                    <field name="description" readonly="1" attrs="{'readonly':[(1,'=',1)]}"/>
+                                </group>
+                            </group>
+                            <div class="col-12" style="padding-left: 174px; padding-right: 0;">
+                                <div class="row o_settings_container" modifiers="{}">
+                                    <div class="col-12 col-lg-6 o_setting_box" modifiers="{}">
+                                        <div modifiers="{}" attrs="{'invisible': ['|',('type', 'in', ['list_price','fixed_list_price','lower_commission_rule']),('type', '=', False)]}">
+                                            <div class="row mt16 o_settings_container">
+                                                <div>
+                                                    <field name="over_commission_per" style="width: 30px;"/>
+                                                    <span class="oe_inline">
+                                                        % on items over $
+                                                    </span>
+                                                    <field name="over_product_price" style="width: 30px; margin-right: 8px;"/>
+                                                </div>
+                                            </div>
+                                            <div class="row mt16 o_settings_container">
+                                                <div>
+                                                    <field name="less_commission_per" style="width: 30px;"/>
+                                                    <span class="oe_inline">
+                                                        % on items less $
+                                                    </span>
+                                                    <field name="less_product_price" style="width: 30px; margin-right: 8px;"/>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div modifiers="{}" attrs="{'invisible': ['|',('type', 'in', ['on_item','condition_list_price','lower_commission_rule']),('type', '=', False)]}">
+                                            <div class="row mt16 o_settings_container">
+                                                <div>
+                                                    <field name="on_list_price" style="width: 30px;"/>
+                                                    <span class="oe_inline">
+                                                            % on list price
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div attrs="{'invisible':['|',('type', '!=', 'lower_commission_rule'),('type', '=', False)]}">
+                                            <group>
+                                                <field name="less_commission_per" string="Commission Percentage" />
+                                                <field name="less_product_price" string="Lower Commission Percentage"  />
+                                                <field name="on_list_price" string="Lower Commission"/>
+                                            </group>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+        <record id="kits_commission_rules_tree_view" model="ir.ui.view">
+            <field name="name">kits.commission.rules.tree.view</field>
+            <field name="model">kits.commission.rules</field>
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="name" />
+                    <field name="type" />
+                </tree>
+            </field>
+        </record>
+        <record id="action_kits_commission_rules" model="ir.actions.act_window">
+            <field name="name">Commission Rules</field>
+            <field name="res_model">kits.commission.rules</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+        <menuitem id="menu_commission_rules" name="Commission Rule" action="action_kits_commission_rules" sequence="1" parent="sale.menu_sale_config"/>
+    </data>
+</odoo>

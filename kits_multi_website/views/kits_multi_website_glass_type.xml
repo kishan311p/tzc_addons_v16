@@ -1,0 +1,81 @@
+<?xml version='1.0' encoding='utf-8'?>
+<odoo>
+    <data>
+
+        <record id="kits_multi_website_glass_type_form_view" model="ir.ui.view">
+            <field name="name">kits.multi.website.glass.type.form.view</field>
+            <field name="model">kits.multi.website.glass.type</field>
+            <field name="arch" type="xml">
+                <form>
+                    <sheet>
+                        <group>
+                            <group string="Glass Information">
+                                <field name="name" />
+                                <field name="power_type_id" required="1" options="{'no_create': True}" />
+                                <field name="price" />
+                                <field name="discounted_price" />
+                            </group>
+                            <group>
+                                <field name="website_id"  invisible="context.get('show_website_id',False)"  options="{'no_open': True,'no_create': True}"/>
+                            </group>
+
+                        </group>
+                        <notebook>
+                            <page name="lense_details" string="Lense Details">
+                                <field name="lense_details_ids">
+                                    <tree editable="bottom">
+                                    <field name="field_type" />
+                                        <field name="image_icon_url" widget="image" class="oe_avatar" options="{'zoom': true,'preview_image': 'image_icon_url','thumb_image':'image_icon_url','size':[100,100]}"/>
+                                        <field name="lense_id" domain="[('website_id','=',website_id)]" required="1" options="{'no_create': True}" />
+                                        <field name="is_boolean" string="  "  attrs="{'invisible': [('field_type', '=','char')]}"/>
+                                        <field name="value" attrs="{'required': [('field_type','=','char')],'invisible': [('field_type', '=','boolean')]}"/>
+                                        <field name="website_id"  invisible="context.get('show_website_id',False)"  required="1" options="{'no_open': True,'no_create': True}"/>
+                                    </tree>
+                                </field>
+
+                            </page>
+                        </notebook>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="kits_multi_website_glass_type_tree_view" model="ir.ui.view">
+            <field name="name">kits.multi.website.glass.type.tree.view</field>
+            <field name="model">kits.multi.website.glass.type</field>
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="name" />
+                    <field name="power_type_id" options="{'no_open': True,'no_create': True}" />
+                    <field name="price" />
+                    <field name="discounted_price" />
+                    <field name="website_id" invisible="context.get('show_website_id',False)"  required="1" options="{'no_open': True,'no_create': True}"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="kits_multi_website_glass_type_search_view" model="ir.ui.view">
+            <field name="name">kits.multi.website.glass.type.search.view</field>
+            <field name="model">kits.multi.website.glass.type</field>
+            <field name="arch" type="xml">
+                <search>
+                    <field name="name" />
+                   
+
+                    <group string="Group By">
+                        <filter name="website_id" string="Website" context="{'group_by': 'website_id'}"/>
+                        <filter name="power_type_id" string="Power Type" context="{'group_by': 'power_type_id'}"/>
+                      
+                    </group>
+                </search>
+            </field>
+        </record>
+
+        <record id="kits_multi_website_glass_type_action" model="ir.actions.act_window">
+            <field name="name">Glass Type</field>
+            <field name="res_model">kits.multi.website.glass.type</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+    </data>
+</odoo>

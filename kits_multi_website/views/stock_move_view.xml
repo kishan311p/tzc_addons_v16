@@ -1,0 +1,18 @@
+<?xml version='1.0' encoding='utf-8'?>
+<odoo>
+    <data>
+
+        <record id="inherit_multi_website_stock_move_form_view" model="ir.ui.view">
+            <field name="name">inherit.multi.website.stock.move.form.view</field>
+            <field name="model">stock.move</field>
+            <field name="inherit_id" ref="stock.view_move_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='company_id']" position="after">
+                    <field name="sale_order_id" invisible="1" />
+                    <field name="website_id"  invisible="context.get('show_website_id',False)"  options="{'no_open': True,'no_create': True}" />
+                </xpath>
+            </field>
+        </record>
+
+    </data>
+</odoo>

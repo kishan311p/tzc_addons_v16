@@ -1,0 +1,40 @@
+<?xml version='1.0' encoding='utf-8'?>
+<odoo>
+    <data>
+        <record id="kits_customers_report_wizard_form_view" model="ir.ui.view">
+            <field name="name">kits.customers.report.wizard.form.view</field>
+            <field name="model">kits.customers.report.wizard</field>
+            <field name="arch" type="xml">
+                <form>
+                    <sheet>
+                        <group>
+                            <group>
+                                <field name="start_date"/>
+                                <field name="all_fields"/>
+                            </group>
+                            <group>
+                                <field name="end_date"/>
+                            </group>
+                        </group>
+                    </sheet>
+                    <footer>
+                        <button string="Download Customer Report" name="action_customer_report" type="object" class="oe_highlight"/>
+                        <button string="Download Signup User Report" name="action_signup_user_xlsx_report" type="object" class="oe_highlight"/>
+                        <button string="Cancel" class="btn-secondary" special="cancel" />
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+        <record id="action_kits_customers_report" model="ir.actions.act_window">
+            <field name="name">User/Customer</field>
+            <field name="view_mode">form</field>
+            <field name="view_mode">form</field>
+            <field name="res_model">kits.customers.report.wizard</field>
+            <field name="target">new</field>
+        </record>
+
+        <menuitem name="User/Customer" action="action_kits_customers_report" id="menu_action_kits_customers_report" parent="reporting_menu" groups="base.group_system,tzc_sales_customization_spt.group_sales_manager_spt,marketing_automation.group_marketing_automation_user"/>
+
+    </data>
+</odoo>

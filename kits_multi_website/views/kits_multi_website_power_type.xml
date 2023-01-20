@@ -1,0 +1,65 @@
+<?xml version='1.0' encoding='utf-8'?>
+<odoo>
+    <data>
+
+        <record id="kits_multi_website_power_type_form_view" model="ir.ui.view">
+            <field name="name">kits.multi.website.power.type.form.view</field>
+            <field name="model">kits.multi.website.power.type</field>
+            <field name="arch" type="xml">
+                <form>
+                    <sheet>
+                        <field name="image_icon_url_icon" widget="image" class="oe_avatar" options="{'zoom': true,'preview_image': 'image_icon_url_icon'}"/>
+                        <group>
+                            <group>
+                                <field name="name" />
+                                <field name="image_icon_url" />
+                                <field name="is_power_glass" />
+                                <field name="decription" />
+                                <field name="website_id" invisible="context.get('show_website_id',False)"  options="{'no_open': True,'no_create': True}" />
+
+                            </group>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="kits_multi_website_power_type_tree_view" model="ir.ui.view">
+            <field name="name">kits.multi.website.power.type.tree.view</field>
+            <field name="model">kits.multi.website.power.type</field>
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="image_icon_url_icon" widget="image" class="oe_avatar" options="{'zoom': true,'preview_image': 'image_icon_url_icon'}"/>
+                    <field name="name" />
+                    <field name="is_power_glass" />
+                    <field name="website_id"  invisible="context.get('show_website_id',False)"  options="{'no_open': True,'no_create': True}" />
+                </tree>
+            </field>
+        </record>
+
+
+        <record id="kits_multi_website_power_type_search_view" model="ir.ui.view">
+            <field name="name">kits.multi.website.power.type.search.view</field>
+            <field name="model">kits.multi.website.power.type</field>
+            <field name="arch" type="xml">
+                 <search>
+                    <field name="name" />
+                    <filter name="is_power_glass" string="Is Power Glass" domain="[('is_power_glass','=',True)]"/>
+                    <group string="Group By">
+                        <filter name="website_id" string="Website" context="{'group_by': 'website_id'}"/>
+                        <filter name="is_power_glass" string="Power Glass" context="{'group_by': 'is_power_glass'}"/>
+
+                    </group>
+
+                </search>
+            </field>
+        </record>
+
+        <record id="kits_multi_website_power_type_action" model="ir.actions.act_window">
+            <field name="name">Power Type</field>
+            <field name="res_model">kits.multi.website.power.type</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+    </data>
+</odoo>

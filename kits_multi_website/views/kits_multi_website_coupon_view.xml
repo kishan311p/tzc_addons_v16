@@ -1,0 +1,94 @@
+<?xml version='1.0' encoding='utf-8'?>
+<odoo>
+    <data>
+
+        <record id="kits_multi_website_coupon_form_view" model="ir.ui.view">
+            <field name="name">kits.multi.website.coupon.form.view</field>
+            <field name="model">kits.multi.website.coupon</field>
+            <field name="arch" type="xml">
+                <form>
+                    <sheet>
+                        <div class="oe_button_box" name="button_box">
+                            <button type="object" name="action_open_coupon_customer_lines" options="{'size': [275,275]}" class="oe_stat_button" icon="fa-gift" help="Customer wise coupon count">
+                                <div class="o_field_widget o_stat_info">
+                                    <span class="o_stat_value" widget="statinfo">
+                                        <field name="coupon_customer_line_count" staring="Customer wise coupon count" class="mr4"/>
+
+                                    <span>Customers <br/>  Coupon</span>
+                                    </span>
+                                </div>
+                            </button>
+                        </div>
+                        <field name="coupon_image2" widget="image" style="float:right;" options="{'zoom': true,'preview_image':'coupon_image2','size': [80,150]}"/>
+                        <field name="coupon_image" widget="image" style="float:right;" options="{'zoom': true,'preview_image':'coupon_image','size': [80,150]}"/>
+                        <div>
+                            <label for="name"></label>
+                            <h1>
+                                <field name="name" required="1" placeholder="Coupon Name"/>
+                            </h1>
+                        </div>
+                        <group>
+                            <group string="Conditions">
+                                <field name="coupon_customer_domain" widget="domain" options="{'model': 'kits.multi.website.customer', 'in_dialog': true}"/>
+                                <field name="coupon_product_domain" widget="domain" options="{'model': 'product.product', 'in_dialog': true}"/>
+                            </group>
+                            <group string="Validity">
+                                <field name="start_date" />
+                                <field name="end_date" />
+                            </group>
+                        </group>
+                        <group>
+                            <group>
+                                <field name="min_qty" />
+                                <field name="min_purchase" />
+                                <field name="promo_code" required="1" />
+                                <field name="coupon_image_public_url" />
+                                <field name="coupon_image_public_url2" />
+                                <field name="header_text" />
+                                <field name="product_details_text" />                                
+                            </group>
+                            <group>
+                                <field name="apply_on" widget="radio" />
+                                <field name="discount_amount" />
+                                <field name="website_id"  invisible="context.get('show_website_id',False)"  required="1" options="{'no_open': True,'no_create': True}"/>
+                                <field name="can_be_used" />
+                            </group>
+                        </group>
+                        <group>
+                            <field name="terms_and_conditions">
+                                <tree editable="bottom">
+                                    <field name="sequence" widget="handle" />
+                                    <field name="name" />
+                                </tree>
+                            </field>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="kits_multi_website_coupon_tree_view" model="ir.ui.view">
+            <field name="name">kits.multi.website.coupon.tree.view</field>
+            <field name="model">kits.multi.website.coupon</field>
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="name" />
+                    <field name="min_qty" />
+                    <field name="min_purchase" />
+                    <field name="promo_code" />
+                    <field name="discount_amount" />
+                    <field name="start_date" />
+                    <field name="end_date" />
+                    <field name="website_id"  invisible="context.get('show_website_id',False)"  options="{'no_open': True,'no_create': True}" />
+                </tree>
+            </field>
+        </record>
+
+        <record id="kits_multi_website_coupon_action" model="ir.actions.act_window">
+            <field name="name">Coupons</field>
+            <field name="res_model">kits.multi.website.coupon</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+    </data>
+</odoo>

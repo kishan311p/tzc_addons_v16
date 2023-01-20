@@ -1,0 +1,339 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <data noupdate="0">
+        <record id="view_picking_form_inherit_tzc_sales_customization_spt" model="ir.ui.view">
+            <field name="name">view.picking.form.inherit.tzc.sales.customization.spt</field>
+            <field name="model">stock.picking</field>
+            <field name="inherit_id" ref="stock.view_picking_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//button[@name='action_cancel']" position="replace">
+                    <button name="action_product_qty_delivery_order_cancel" invisible="1" string="Cancel Without Delivery Qty" class="oe_highlight" attrs="{'invisible': [('state', '=','cancel')]}" groups="tzc_sales_customization_spt.group_cancel_picking_rule_spt" type="object" />
+                </xpath>
+                <xpath expr="//sheet/div[hasclass('oe_title')]" position="replace">
+                    <div class="oe_title">
+                        <h1 class="d-flex">
+                            <field name="priority" widget="priority" class="me-3" attrs="{'invisible': [('name','=','/')]}"/>
+                            <field name="name" invisible="1" attrs="{'invisible': [('name','=','/')]}"/>
+                            <field name="delivery_name" readonly="1" attrs="{'readonly': [('state','in',['assigned','done','cancel'])]}"/>
+                            <field name="is_multiple_delivery" invisible="1"/>
+                        </h1>
+                    </div>
+                </xpath>
+                <xpath expr="//field[@name='scheduled_date']" position="attributes">
+                    <attribute name="attrs">{'readonly': [('state','in',['assigned','done','cancel'])]}</attribute>
+                </xpath>
+                <xpath expr="//button[@name='action_picking_move_tree']" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </xpath>
+                <xpath expr="//field[@name='partner_id']" position="attributes">
+                    <!-- <attribute name="context">{'default_name':True}</attribute> -->
+                    <attribute name="options">{'no_create': True}</attribute>
+                    <attribute name="readonly">1</attribute>
+                </xpath>
+                <xpath expr="//field[@name='partner_id']" position="after">
+                    <label for="partner_street" string=""/>
+
+                    <div class="o_address_format">
+                        <field name="partner_street" placeholder="Street..." class="o_address_street" readonly="1"/>
+                        <field name="partner_street2" placeholder="Street 2..." class="o_address_street" readonly="1"/>
+                        <field name="partner_city" placeholder="City" class="o_address_city" readonly="1"/>
+                        <field name="partner_state_id" class="o_address_state" placeholder="State" options="{&quot;no_open&quot;: True}" readonly="1"/>
+                        <field name="partner_postal_code" placeholder="ZIP" class="o_address_zip" readonly="1"/>
+                        <field name="partner_country_id" placeholder="Country" class="o_address_country" options="{&quot;no_open&quot;: True,'no_create': True, 'no_create_edit':True}" readonly="1"/>
+                    </div>
+                </xpath>
+                <xpath expr="//button[@name='%(stock.act_stock_return_picking)d']" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </xpath>
+                <xpath expr="//button[@name='button_validate']" position="after">
+                    <button name="open_remove_done_quantity_wizard" type="object" string="Remove Scanned Items" attrs="{'invisible': [('state', 'in',('done','cancel','scanned','assigned'))]}" class="oe_highlight"/>
+                    <button name="excel_report_line_stock" type="object" string="CASE REPORT" class="oe_highlight" attrs="{'invisible': [('state', 'not in', ('in_scanning','assigned','done','scanned'))]}"/>
+                    <button string="Recover Delivery" name="action_delivery_restore" type="object" class="oe_highlight" attrs="{'invisible':['|',('is_multiple_delivery','=',False),('state','not in',['confirmed','in_scanning'])]}"/>
+                    <button name="picking_cancel_spt" string="Cancel Delivery" class="oe_highlight" attrs="{'invisible': [('state', '=','cancel')]}" groups="tzc_sales_customization_spt.group_cancel_picking_rule_spt" type="object" confirm="This delivery will be cancel." context="{'cancel_delivery': True }"/>
+
+                </xpath>
+                <xpath expr="//button[@name='%(stock.action_report_delivery)d']" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </xpath>
+                <xpath expr="//button[@name='do_print_picking']" position="attributes">
+                    <attribute name="attrs">{'invisible' : [('state','!=','done')]}</attribute>
+                </xpath>
+
+                <xpath expr="//button[@name='action_open_label_type']" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </xpath>
+                <xpath expr="//button[@name='action_assign']" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </xpath>
+                <xpath expr="//button[@name='action_toggle_is_locked']" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </xpath>
+                <xpath expr="//button[@name='action_toggle_is_locked'][2]" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </xpath>
+                <xpath expr="//button[@name='do_unreserve']" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </xpath>
+                <xpath expr="//button[@name='button_validate'][2]" position="replace">
+                    <button name="button_validate" attrs="{'invisible':[('state','not in',('assigned'))]}" string="Ship" type="object" groups="stock.group_stock_user" class="oe_highlight" data-hotkey="v"/>
+                </xpath>
+                <xpath expr="//button[@name='action_toggle_is_locked']" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </xpath>
+                <xpath expr="//button[@name='action_open_label_type']" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </xpath>
+                <xpath expr="//button[@name='action_confirm']" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </xpath>
+                <xpath expr="//button[@name='button_validate']" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </xpath>
+                <xpath expr="//button[@name='action_clear_quantities_to_zero']" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </xpath>
+                <xpath expr="//button[@name='action_set_quantities_to_reservation']" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </xpath>
+                <xpath expr="//button[hasclass('oe_highlight')]" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </xpath>
+                <xpath expr="//button[@name='button_scrap']" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </xpath>
+                <xpath expr="//button[@name='action_confirm']" position="before">
+                    <button string="Merge Quotation" name="action_update_order" type="object" class="oe_highlight" attrs="{'invisible':[('state','in',('scanned','done','cancel','assigned'))]}"/>
+                    <button name="excel_picking_order_report" string="Pick List" type="object" class="oe_highlight" attrs="{ 'invisible':[('state','=','cancel')] }"/>
+                    <button name="button_open_quick_scan_spt" string="Scan Order" attrs="{'invisible':[('state','in',('scanned','done','cancel','assigned'))]}" class="oe_highlight" type="object"/>
+                    <button name="set_qty_by_script" type="object" string="Update Stock" class="oe_highlight" groups="base.group_system" attrs="{ 'invisible':[('state','not in',['assigned'])] }" confirm="This will adjust product stock according to this delivery."/>
+                    <button string="Scanning Completed" name="action_scanned" type="object" class="oe_highlight" attrs="{'invisible':[('state','not in',('in_scanning'))]}"/>
+                    <button string="Reset To Inscanning" name="action_reset_to_inscanning" type="object" class="oe_highlight" attrs="{'invisible':[('state','!=','scanned')]}"/>
+                    <button name="update_sale_order_spt" string='Update Order' attrs="{'invisible': ['|',('order_qty_count_spt','=',0),('state','=','cancel')]}" type="object" class="oe_highlight" confirm="This will add extra product to order."/>
+                    <button name="picked_order_qty_spt" attrs="{'invisible':[('state','not in',('confirmed','in_scanning'))]}" string='Fullfil Complete Order' type="object" class="oe_highlight"/>
+                    <button string="REVERT COMPLETE ORDER" name="action_restore_preiviews_scanning" type="object" class="btn-danger" attrs="{ 'invisible':[('state','not in',['in_scanning'])] }" help="Revert Fullfil"/>
+                </xpath>
+                <xpath expr="//field[@name='move_ids_without_package']/tree/field[@name='product_id']" position="attributes">
+                    <attribute name="options">{'no_create': True}</attribute>
+                </xpath>
+                <xpath expr="//field[@name='user_id']" position="replace">
+                </xpath>
+                <xpath expr="//field[@name='picking_type_id']" position="after">
+                    <field name="user_id" attrs="{'readonly': [('state','in',['assigned','done','cancel'])]}"/>
+                    <field name="updated_on" readonly="1"/>
+                    <field name="updated_by" readonly="1"/>
+                    <!-- <field name="sale_website_id" invisible="1"/> -->
+                </xpath>
+                <xpath expr="//field[@name='owner_id']" position="after">
+                    <field name="include_cases" attrs="{'readonly':[('state','in',('done','cancel','assigned'))]}"/>
+                    <field name="show_update_button" invisible="1" />
+                    <label for='no_of_cases' attrs="{'invisible':[('include_cases','=',False)],'readonly':[('state','in',('done','cancel','assigned'))]}"/>
+                    <div class="row">
+                        <div class="col-2">
+                            <field name="no_of_cases" attrs="{'readonly':[('state','in',('done','cancel','assigned'))],'invisible':[('include_cases','=',False)]}" />
+                        </div>
+                        <div class="col-10">
+                            <button name="action_update_order_cases" type="object" class="oe_highlight" attrs="{'invisible':['|',('state','in',('done','cancel')),('show_update_button','=',False)]}" style="font-size:15px;">
+                                <i class='fa fa-refresh' title="Update"/>
+                                <i class='fa fa-shopping-cart' title="Update" style="margin-left:5px;"/>
+                            </button>
+                        </div>
+                    </div>
+                    <div role="alert" class="alert alert-info" attrs="{'invisible':['|',('state','in',('done','cancel')),('show_update_button','=',False)]}">
+                        Make sure you update cases in order.
+                    </div>
+                </xpath>
+                <xpath expr="//div[@name='button_box']" position="after">
+                    <div class="row">
+                        <div class="col-2 text-left"/>
+                        <div class="col-2 text-left"/>
+                        <div class="col-2 text-left"/>
+                        <div class="col-2 text-left"/>
+                        <div class="col-2 text-left"/>
+                        <div class="col-2 text-left">
+                            <label for="ordered_qty"/>
+                            <field name="ordered_qty" />
+                            <br/>
+                            <label for="delivered_qty"/>
+                            <field name="delivered_qty" />
+                            <field name="order_qty_count_spt" invisible="1" />
+                            <field name="source_spt" invisible="1" />
+
+                        </div>
+                    </div>
+                </xpath>
+                <xpath expr="//div[@name='button_box']" position="inside">
+                    <button type="object" name="action_picking_to_order" class="oe_stat_button" icon="fa-shopping-bag">
+                        <div class="o_field_widget o_stat_info">
+                            Order
+                        </div>
+                    </button>
+                </xpath>
+                <xpath expr="//field[@name='move_ids_without_package']/tree" position="attributes">
+                    <attribute name="default_order">product_id</attribute>
+                    <attribute name="create">0</attribute>
+                </xpath>
+                <xpath expr="//field[@name='move_ids_without_package']" position="attributes">
+                    <attribute name="attrs">{'readonly':[('state','in',['scanned','assigned','done','cancel','confirmed','in_scanning'])]}</attribute>
+                </xpath>
+                <xpath expr="//field[@name='move_ids_without_package']/tree" position="after">
+                    <kanban class="o_kanban_mobile" default_order='product_id'>
+                        <field name="product_id"/>
+                        <field name="show_details_visible"/>
+                        <field name="product_uom_qty"/>
+                        <field name="quantity_done"/>
+                        <field name="reserved_availability"/>
+                        <field name="state"/>
+                        <field name="name"/>
+                        <field name="product_uom"/>
+                        <field name="location_id"/>
+                        <field name="location_dest_id"/>
+                        <templates>
+                            <t t-name="kanban-box">
+                                <div t-attf-class="oe_kanban_global_click">
+                                    <div class="o_kanban_record_top">
+                                        <div class="o_kanban_record_headings">
+                                            <strong class="o_kanban_record_title">
+                                                <span>
+                                                    <field name="product_id"/>
+                                                </span>
+                                            </strong>
+                                        </div>
+                                        <button name="action_show_details" string="Register lots, packs, location" class="o_icon_button fa fa-list" type="object" attrs="{'invisible': [('show_details_visible', '=', False)]}" options="{&quot;warn&quot;: true}"/>
+                                    </div>
+                                    <div class="o_kanban_record_body">
+                                        <div>
+                                            <!-- <div attrs="{'invisible': [('inventory_id', '=', False)]}"> -->
+                                            <span>Initial Demand <field name="product_uom_qty"/>
+                                            </span>
+                                            <br/>
+                                            <span>Quantity Done <field name="quantity_done"/>
+                                            </span>
+                                        </div>
+                                        <div>
+                                            <span>Quantity Done <field name="quantity_done"/>
+/                                            <field name="reserved_availability"/>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </t>
+                    </templates>
+                </kanban>
+            </xpath>
+            <xpath expr="//header/field[@name='state']" position="attributes">
+                <attribute name="statusbar_visible">confirmed,done</attribute>
+            </xpath>
+            <xpath expr="//page/field[@name='move_ids_without_package']/tree/field[@name='quantity_done']" position="replace">
+                <field name="quantity_done" string="Done" readonly="1" force_save="1"/>
+            </xpath>
+            <field name="reserved_availability" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </field>
+            <xpath expr="//field[@name='move_ids_without_package']/tree/field[@name='product_uom_qty']" position="before">
+                <field name="qty_available" optional="hide"/>
+            </xpath>
+
+
+            <xpath expr="//field[@name='move_ids_without_package']/tree" position="attributes">
+                <attribute name="decoration-warning">quantity_done &gt; product_uom_qty</attribute>
+                <attribute name="decoration-danger">qty_available &lt; quantity_done</attribute>
+            </xpath>
+
+        </field>
+    </record>
+
+    <record id="stock.vpicktree" model="ir.ui.view">
+        <field name="name">stock.picking.tree</field>
+        <field name="model">stock.picking</field>
+        <field name="arch" type="xml">
+            <tree string="Picking list" multi_edit="1" sample="1">
+                <header>
+                    <button name="do_unreserve" type="object" string="Unreserve"/>
+                    <button name="action_assign" type="object" string="Check Availability"/>
+                </header>
+                <field name="company_id" invisible="1"/>
+                <field name="delivery_name" decoration-bf="1"/>
+                <field name="name" decoration-bf="1" invisible="1"/>
+                <field name="location_id" options="{'no_create': True}" string="From" groups="stock.group_stock_multi_locations" optional="show"/>
+                <field name="location_dest_id" options="{'no_create': True}" string="To" groups="stock.group_stock_multi_locations" optional="show"/>
+                <field name="partner_id" optional="show"/>
+                <field name="is_signed" string="Signed" optional="hide" groups="stock.group_stock_sign_delivery"/>
+                <field name="user_id" optional="hide" widget="many2one_avatar_user"/>
+                <field name="scheduled_date" optional="show" widget="remaining_days" attrs="{'invisible':[('state', 'in', ('done', 'cancel'))]}"/>
+                <field name="picking_type_code" invisible="1"/>
+                <field name="products_availability_state" invisible="1" options='{"lazy": true}'/>
+                <field name="products_availability" options='{"lazy": true}' optional="hide" attrs="{'invisible': ['|', ('picking_type_code', '!=', 'outgoing'), ('state', 'not in', ['confirmed', 'waiting', 'assigned'])]}" decoration-success="state == 'assigned' or products_availability_state == 'available'" decoration-warning="state != 'assigned' and products_availability_state in ('expected', 'available')" decoration-danger="state != 'assigned' and products_availability_state == 'late'"/>
+                <field name="date_deadline" optional="hide" widget="remaining_days" attrs="{'invisible':[('state', 'in', ('done', 'cancel'))]}"/>
+                <field name="date_done" string="Effective Date" optional="hide"/>
+                <field name="origin" optional="show"/>
+                <field name="backorder_id" optional="hide" invisible="1"/>
+                <field name="company_id" groups="base.group_multi_company" optional="show"/>
+                <field name="state" optional="show" widget="badge" decoration-danger="state=='cancel'" decoration-info="state== 'assigned'" decoration-muted="state == 'draft'" decoration-success="state == 'done'" decoration-warning="state not in ('draft','cancel','done','assigned')"/>
+                <field name="activity_exception_decoration" widget="activity_exception"/>
+                <field name="json_popover" widget="stock_rescheduling_popover" nolabel="1" attrs="{'invisible': [('json_popover', '=', False)]}"/>
+                <field name="priority"/>
+                <field name="picking_type_id" optional="show"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="delivery.vpicktree_view_tree" model="ir.ui.view">
+        <field name="name">stock.picking.delivery.tree.inherit.delivery</field>
+        <field name="model">stock.picking</field>
+        <field name="inherit_id" ref="stock.vpicktree"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='backorder_id']" position="after">
+                <field name="carrier_tracking_ref" optional="show"/>
+                <field name="carrier_id" optional="show"/>
+                <field name="destination_country_code" optional="hide" string="Destination"/>
+                <field name="weight" optional="show"/>
+                <field name="shipping_weight" invisible="1" optional="show"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="tzc_sales_customization_inherit_picking_with_carrier_form_view" model="ir.ui.view">
+        <field name="name">tzc.sales.customization.inherit.picking.with.carrier.form.view</field>
+        <field name="model">stock.picking</field>
+        <field name="inherit_id" ref="delivery.view_picking_withcarrier_out_form" />
+        <field name="arch" type="xml">
+            <xpath expr="//button[@name='open_website_url']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+            <xpath expr="//group[@name='carrier_data']/div[2]" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+            <xpath expr="//group[@name='carrier_data']/label[@for='weight']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+            <xpath expr="//group[@name='carrier_data']/label[@for='shipping_weight']" position="attributes">
+                <attribute name="string">Calculated Weight for items (kg)</attribute>
+            </xpath>
+            <xpath expr="//button[@name='send_to_shipper']" position="attributes">
+                <attribute name="class">oe_highlight</attribute>
+                <attribute name="invisible">1</attribute>
+            </xpath>
+            <field name="carrier_id" position="attributes">
+                <attribute name="string">API Carrier</attribute>
+            </field>
+            <xpath expr="//button[@name='print_return_label']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+        </field>
+    </record>
+    <record id="stock_picking_inherit_stock_account_view_form" model="ir.ui.view">
+        <field name="name">stock.picking.inherit.stock.account.view.form</field>
+        <field name="model">stock.picking</field>
+        <field name="inherit_id" ref="stock_account.stock_valuation_layer_picking"/>
+        <field name="arch" type="xml">
+            <xpath expr="//button[@name='action_view_stock_valuation_layers']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+        </field>
+    </record>
+
+</data>
+
+
+</odoo>

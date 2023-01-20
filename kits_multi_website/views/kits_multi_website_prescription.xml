@@ -1,0 +1,127 @@
+<?xml version='1.0' encoding='utf-8'?>
+<odoo>
+    <data>
+
+        <record id="kits_multi_website_prescription_form_view" model="ir.ui.view">
+            <field name="name">kits.multi.website.prescription.form.view</field>
+            <field name="model">kits.multi.website.prescription</field>
+            <field name="arch" type="xml">
+                <form>
+                    <header>
+                        <field name="state" widget="statusbar" options="{'clickable': '1'}"/>
+                    </header>
+
+                    <sheet>
+
+                        <div>
+                            <label for="name"></label>
+                            <h1>
+                                <field name="name" placeholder="My/My Wife/My Son" required="1" attrs="{'readonly':[('state','=','verified')]}"/>
+                            </h1>
+                        </div>
+                        <group>
+
+                            <group>
+                                <strong>Prescription Download</strong>
+                                <button title="Prescription Download" name="action_download_prescription" type="object" class="oe_stat_button" icon="fa-download"/>
+                            </group>
+                            <group>
+                                <field name="customer_id" attrs="{'readonly':[('state','=','verified')]}" options="{'no_create': True,'no_edit': True}" required="1"/>
+                            </group>
+                        </group>
+                        <notebook>
+                            <page name="eye_information" string="Eye Information">
+                                <field name="prescription_line_ids" attrs="{'readonly':[('state','=','verified')]}">
+                                    <tree editable="bottom">
+                                        <field name="eye_name_id" />
+                                        <field name="right_eye" />
+                                        <field name="left_eye" />
+                                    </tree>
+                                </field>
+                            </page>
+                        </notebook>
+
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="kits_multi_website_prescription_tree_view" model="ir.ui.view">
+            <field name="name">kits.multi.website.prescription.tree.view</field>
+            <field name="model">kits.multi.website.prescription</field>
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="customer_id" required="1" options="{'no_create': True,'no_edit': True}" />
+                    <field name="name" />
+                    <button string="Prescription download" name="action_download_prescription" type="object" class="oe_highlight"/>
+                </tree>
+            </field>
+        </record>
+        <record id="kits_multi_website_prescription_search_view" model="ir.ui.view">
+            <field name="name">kits.multi.website.prescription.search.view</field>
+            <field name="model">kits.multi.website.prescription</field>
+            <field name="arch" type="xml">
+                <search>
+                    <field name="name" />
+                    <field name="file_name" />
+                    <group string="Group By">
+                        <filter name="customer_id" string="Customers" context="{'group_by': 'customer_id'}"/>
+
+                    </group>
+                </search>
+            </field>
+        </record>
+
+        <record id="kits_multi_website_prescription_action" model="ir.actions.act_window">
+            <field name="name">Prescription</field>
+            <field name="res_model">kits.multi.website.prescription</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+        <record id="kits_multi_website_prescription_form_view_1" model="ir.ui.view">
+            <field name="name">kits.multi.website.prescription.form.view</field>
+            <field name="model">kits.multi.website.prescription</field>
+            <field name="arch" type="xml">
+                <form>
+                    <header>
+                        <field name="state" widget="statusbar" options="{'clickable': '1'}"/>
+                    </header>
+
+                    <sheet>
+
+                        <div>
+                            <label for="name"></label>
+                            <h1>
+                                <field name="name" placeholder="My/My Wife/My Son" required="1" attrs="{'readonly':[('state','=','verified')]}"/>
+                            </h1>
+                        </div>
+                        <group>
+
+                            <group>
+                                <strong>Prescription Download</strong>
+                                <button title="Prescription Download" name="action_download_prescription" type="object" class="oe_stat_button" icon="fa-download"/>
+                            </group>
+                            <group>
+                                <field name="customer_id" attrs="{'readonly':[('state','=','verified')]}" options="{'no_create': True,'no_edit': True}" invisible="1" required="1"/>
+                            </group>
+                        </group>
+                        <notebook>
+                            <page name="eye_information" string="Eye Information">
+                                <field name="prescription_line_ids" attrs="{'readonly':[('state','=','verified')]}">
+                                    <tree editable="bottom">
+                                        <field name="eye_name_id" />
+                                        <field name="right_eye" />
+                                        <field name="left_eye" />
+                                    </tree>
+                                </field>
+                            </page>
+                        </notebook>
+
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+
+    </data>
+</odoo>

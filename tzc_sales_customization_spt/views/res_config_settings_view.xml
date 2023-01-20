@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="res_config_settings_users_inherit_form_view_spt" model="ir.ui.view">
+            <field name="name">res.config.settings.users.inherit_form.view.spt</field>
+            <field name="model">res.config.settings</field>
+            <field name="inherit_id" ref="base_setup.res_config_settings_view_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="////div[@id='invite_users']/div/div[2]/div[1]" position="after">
+                    <br />
+                    <div class="o_setting_right_pane">
+                        <label string="Administrator" for="user_ids_spt"/>
+                        <div class="text-muted">
+                           Notify Internal user when customer signup in website.
+                        </div>
+                    </div>
+                    <div class="o_setting_right_pane">
+                        <field name="user_ids_spt" widget="many2many_tags" domain="[('share','=',False)]" options="{'no_create': True}"/>
+                    </div>
+                </xpath>
+            </field>
+        </record>
+        <record id="catalog_res_config_settings_inherit_form_view_spt" model="ir.ui.view">
+            <field name="name">catalog.res.config.settings.inherit.form.view.spt</field>
+            <field name="model">res.config.settings</field>
+            <field name="inherit_id" ref="sale.res_config_settings_view_form"/>
+            <field name="arch" type="xml">
+                <!-- div[@data-key='website']/div[hasclass('o_settings_container')] -->
+                <!-- <xpath expr="//div[@data-key='data-key']" position="before">
+                    <div class="col-12 col-lg-6 o_setting_box" id="reset_pass_expire_hours" >
+                        <div class="o_setting_right_pane">
+                            <label for="reset_pass_expire_hours"/>
+                            <span class="fa fa-clock-o"/>
+                            <div class="mt8">
+                                <field name="reset_pass_expire_hours" class="o_light_label"/>
+                            </div>
+                        </div>
+                    </div>
+                </xpath> -->
+                <xpath expr="//div[@data-key='sale_management']/h2[1]" position="before">
+                    <h2>
+                        Commission
+                    </h2>
+                    <div>
+                        <div class="row mt16 o_settings_container">
+                            <div class="col-12 col-lg-6 o_setting_box">
+                                <div class="o_setting_right_pane">
+                                    <label for="commission_id"/>
+                                    <div class="text-muted">
+                                    </div>
+                                    <field name="commission_id" options="{'no_create':True,'no_create_edit':True,'no_open':True}"/>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <h2>
+                        Salesperson
+                    </h2>
+                    <div class="row mt16 o_settings_container">
+                        <div class="col-12 col-lg-6 o_setting_box">
+                            <div class="o_setting_right_pane">
+                                <label string="Default Salesperson" for="default_sales_person_id"/>
+                                <div class="text-muted">
+                                    When new External User signup this salesperson will be set as default.
+                                </div>
+                            </div>
+                            <div class="o_setting_right_pane">
+                                <field name="default_sales_person_id" domain="[('is_salesperson','=',True),('share','=',False)]" options="{'no_create': True}"/>
+                            </div>
+                        </div>
+                        <div class="col-12 col-lg-6 o_setting_box">
+                            <div class="o_setting_right_pane">
+                                <label for="kits_global_tax" string="Sunglasses Tax"/>
+                                <div class="text-muted">
+                                    this field use for the applying tax on sunglasses products.
+                                </div>
+                                <field name="kits_global_tax" domain="[('type_tax_use', '=', 'sale')]" options="{'no_create': true}"/>
+                                <br/>
+                            </div>                            
+                            <div class="o_setting_right_pane">
+                                <label for="catalog_delay"/>
+                                <br/>
+                                <field name="catalog_delay"/>
+                                <br/>
+                                <label for="order_delay"/>
+                                <br/>
+                                <field name="order_delay"/>
+                               
+                            </div>
+                            <div class="o_setting_right_pane">
+                                <!-- <label for="on_sale_cad_spt"/>
+                                <div class="text-muted">
+                                    Set on sale price in CAD Rate for calculate on sale USD price
+                                </div>
+                                <field name="on_sale_cad_spt"/>
+                                <br/> -->
+                                <label for="kits_global_tax" string="Sunglasses Tax"/>
+                                <div class="text-muted">
+                                    this field use for the applying tax on sunglasses products.
+                                </div>
+                                <field name="kits_global_tax" domain="[('type_tax_use', '=', 'sale')]" options="{'no_create': true}"/>
+                                <br/>
+                                
+                            </div>
+    
+                        </div>
+                        <div class="col-lg-6 o_setting_box">
+                            <div class="o_setting_right_pane" id = 'remove-product-new-arrivals'>
+                                <b>Remove Products From New Arrivals After (Days)</b>
+                                <div class='text-muted'>Products to be removed from New Arrivals after given days.</div>
+                                <div class="content-group">
+                                    <div class="m16">
+                                        <label for="new_arraival_remove_after" string="" />
+                                        <field name="new_arraival_remove_after" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+    
+                        <div class="col-lg-6 o_setting_box">
+                            <div class="o_setting_right_pane" id = 'case-weight-gm'>
+                                <b>Weight for cases</b>
+                                <div class='text-muted'>The weight for cases in grams (gm).</div>
+                                <div class="content-group">
+                                    <div class="m16">
+                                        <label for="case_weight_gm" string="" />
+                                        <field name="case_weight_gm" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>                    
+                </xpath>
+            </field>
+        </record>
+
+        <record id="crm_res_config_settings_inherit_form_view" model="ir.ui.view">
+            <field name="name">crm.res.config.settings.inherit.form.view</field>
+            <field name="model">res.config.settings</field>
+            <field name="inherit_id" ref="base.res_config_settings_view_form" />
+            <field name="arch" type="xml">
+                <xpath expr="//div[@data-key='crm']/div[4]/div[1]" position="after">
+                    <div class="col-lg-6 o_setting_box">
+                        <div class="o_setting_right_pane" id = 'notify-salespersons-new-lead-generation'>
+                            <b>Lead Generation notification</b>
+                            <div class='text-muted'>Selected Salespersons will be notified on new Lead Generation</div>
+                            <div class="content-group">
+                                <div class="m16">
+                                    <label for="to_notify_user_ids" string="" />
+                                    <field name="to_notify_user_ids" widget="many2many_tags" />
+                                    <!-- <field name="to_notify_user_ids" widget="many2many_tags" domain="[('is_salesperson', '=', True)]" /> -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </xpath>
+            </field>
+        </record>
+    </data>
+</odoo>

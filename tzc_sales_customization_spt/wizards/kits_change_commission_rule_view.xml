@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <data>
+        <record id="kits_change_commission_rule_form_view" model="ir.ui.view">
+            <field name="name">kits.change.commission.rule.form.view</field>
+            <field name="model">kits.change.commission.rule</field>
+            <field name="arch" type="xml">
+                <form>
+                    <sheet>
+                        <group>
+                            <group>
+                                <field name="new_rule_id" options="{'no_create':True,'no_open':True}" />
+                            </group>
+                            <group>
+                                <field name="change_old_commissions" />
+                            </group>
+                        </group>
+                        <div>
+                            <h3 style="color:red;" attrs="{'invisible':[('change_old_commissions','=',False)]}">
+                                <field name="message" readonly="1" />
+                            </h3>
+                        </div>
+                        <group attrs="{'invisible':[('change_old_commissions','=',False)]}">
+                            <group>
+                                <field name="start_date" />
+                            </group>
+                        </group>
+                    </sheet>
+                    <footer>
+                        <button name="action_change_rule_id" type="object" string="Change" class="oe_highlight"/>
+                        <button special="cancel" type="object" string="Cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+    </data>
+
+</odoo>

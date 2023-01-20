@@ -1,0 +1,105 @@
+<?xml version='1.0' encoding='utf-8'?>
+<odoo>
+    <data noupdate="0">
+        <record id="inherit_product_templte_form_view" model="ir.ui.view">
+            <field name="name">inherit.product.template.form.view</field>
+            <field name="model">product.template</field>
+            <field name="inherit_id" ref="product.product_template_form_view" />
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='image_1920']" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </xpath>
+                <xpath expr="//form" position="attributes">
+                    <attribute name="edit">0</attribute>
+                </xpath>
+                <xpath expr="//div[hasclass('oe_title')]/h1" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </xpath>
+                <xpath expr="//field[@name='name']" position="replace">
+                </xpath>
+                <xpath expr="//label[@for='name']" position="replace">
+                    <div name="name_spt">
+                        <div class="col-6">
+                            <label class="oe_edit_only" for="name" string="Product Name" />
+                            <h1>
+                                <field name="name" placeholder="Product Name" />
+                            </h1>
+                        </div>
+                    </div>
+                </xpath>
+                <xpath expr="//div[@name='options']" position="replace">
+                    <div name="options" position="inside">
+                        <div>
+                            <field name="sale_ok" />
+                            <label for="sale_ok" />
+                            <br />
+                            <field name="purchase_ok" />
+                            <label for="purchase_ok" />
+                            <br />
+                            <field name="is_shipping_product" />
+                            <label for="is_shipping_product" string="Is Shipping Product" />
+                            <br />
+                            <field name="is_admin" />
+                            <label for="is_admin" string="Is Admin Fee" />
+                            <br />
+                            <field name="is_global_discount" />
+                            <label for="is_global_discount" string="Is Additional Discount" />
+                            <br />
+                            <field name="is_forcefully_unpublished" />
+                            <label for="is_forcefully_unpublished" />
+                        </div>
+
+                    </div>
+                </xpath>
+                <xpath expr="//group[@name='group_standard_price']/field[@name='company_id']"
+                    position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </xpath>
+                <xpath expr="//page[@name='sales']" position="after">
+                    <page name="product_tabs" string="Product Tabs">
+                        <field name="tab_line_ids" mode="kanban">
+                            <kanban>
+                                <templates>
+                                    <t t-name="kanban-box">
+                                        <div class="oe_kanban_details oe_kanban_global_click">
+                                            <field name="tab_name" />
+                                        </div>
+                                    </t>
+                                </templates>
+                            </kanban>
+                            <form string="Product Tab">
+                                <sheet>
+                                    <group>
+                                        <field name="tab_name" />
+                                        <field name="tab_content" />
+                                        <!-- <field name="website_ids" options="{'no_create': True}"
+                                            widget="many2many_tags"/> -->
+                                        <field name="sequence" />
+                                    </group>
+                                </sheet>
+                            </form>
+                        </field>
+                    </page>
+                </xpath>
+
+                <xpath expr="//page[@name='sales']" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </xpath>
+                <xpath expr="//group[@name='traceability']" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </xpath>
+            </field>
+        </record>
+        <record id="product_template_only_search_view_inherit_tzc" model="ir.ui.view">
+            <field name="name">product.template.search_view.inherit.tzc</field>
+            <field name="model">product.template</field>
+            <field name="inherit_id" ref="product.product_template_search_view"/>
+            <field name="arch" type="xml">
+                <xpath expr="//filter[@name='favorites']" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </xpath>
+
+            </field>
+        </record>
+    </data>
+</odoo>

@@ -1,0 +1,142 @@
+<?xml version='1.0' encoding='utf-8'?>
+<odoo>
+    <data>
+
+        <record id="kits_b2c_website_form_view" model="ir.ui.view">
+            <field name="name">kits.b2c.website.form.view</field>
+            <field name="model">kits.b2c.website</field>
+            <field name="arch" type="xml">
+                <form>
+                    <sheet>
+                        <field name="logo" widget="image" style="float:right;" options="{'zoom': true,'preview_image':'logo', 'size': [150,80]}"/>
+                        <group>
+                            <group>
+                                <field name="name" />
+                                <field name="favicon" widget="image" options="{'zoom': true,'preview_image':'favicon', 'size': [30,30]}"/>
+                                <field name="favicon_public_url" invisible="0" widget="url"/>
+                                <field name="url" />
+                                <field name="user_id" required="1" />
+                                <field name="return_product_days" />
+                            </group>
+                            <group>
+                                <field name="logo_public_url" invisible="0" widget="url"/>
+                                <field name="sale_pricelist_id" required="1" domain="[('id','!=',msrp_pricelist_id)]" options="{'no_create':True}" />
+                                <field name="msrp_pricelist_id" required="1" domain="[('id','!=',sale_pricelist_id)]" options="{'no_create':True}" />
+                                <field name="website_name" invisible="1" />
+
+                                <field name="sale_order_sequence_id" domain="[('code','=','unique.multi.website.sale.order.sequence')]" required="1"/>
+                                <field name="invoice_sequence_id" domain="[('code','=','unique.multi.website.invoice.sequence')]" required="1"/>
+                                <field name="return_request_sequence_id" domain="[('code','=','unique.multi.website.return.request.sequence')]" required="1"/>
+                                <field name="is_allow_for_geo_restriction"/>
+
+                            </group>
+                        </group>
+                        <notebook>
+                            <page name="shoppage_banner_lines" string="Shoppage Banner Lines">
+                                <field name="shoppage_banner_ids">
+                                    <tree editable="bottom">
+                                        <field name="image" widget="image" options="{'zoom': true,'preview_image':'image', 'size': [75,75]}"/>
+                                        <field name="image_public_url" widget="url" invisible="0" />
+                                        <field name="mobile_image" widget="image" options="{'zoom': true,'preview_image':'mobile_image', 'size': [75,75]}"/>
+                                        <field name="mobile_image_public_url" widget="url"/>
+                                        <field name="redirect_url" widget="url"/>
+                                    </tree>
+                                </field>
+                            </page>
+
+                            <page name="seo" string="SEO">
+                                <group>
+                                    <group>
+                                        <div class="o_row">
+
+                                            <button string="Update Robot File" name="action_update_text_file" type="object" class="oe_highlight"/>
+                                        </div>
+                                        <br/>
+                                        <field name="text_file_url" widget="url"/>
+                                        <field name="text_file_path" />
+                                        <field name="text_data" />
+                                    </group>
+                                    <group>
+                                        <div class="o_row">
+                                        <button string="Update Sitemap File" name="action_update_sitemap_file" type="object" class="oe_highlight"/>
+                                        </div>
+                                        <br/>
+                                        <field name="sitemap_url" widget="url"/>
+                                        <field name="sitemap_file_path" />
+                                        <field name="sitemap_file" filename="sitemap_name" />
+                                        <field name="sitemap_name" invisible="1" />
+                                    </group>
+
+                                </group>
+
+                            </page>
+                            <page name="policies" string="Policies">
+                                <group>
+                                    <group>
+                                        <field name="shipping_text" />
+                                    </group>
+                                    <group>
+                                        <field name="privacy_policy_text" />
+                                    </group>
+                                    <group>
+                                        <field name="terms_and_condition_text" />
+                                    </group>
+                                </group>
+
+                            </page>
+                            <page name="faqs" string="Faq's">
+                                <field name="faqs_ids">
+                                    <tree editable="bottom">
+                                        <field name="name" string="Quotation" />
+                                        <field name="value" string="Answer"/>
+                                    </tree>
+                                    <form>
+                                        <sheet>
+                                            <group name="name">
+                                                <group>
+                                                    <field name="name" string="Quotation" />
+                                                    <field name="value" string="Answer"/>
+                                                </group>
+
+                                            </group>
+                                        </sheet>
+                                    </form>
+                                </field>
+                            </page>
+                        </notebook>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="kits_b2c_website_tree_view" model="ir.ui.view">
+            <field name="name">kits.b2c.website.tree.view</field>
+            <field name="model">kits.b2c.website</field>
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="name" />
+                    <field name="url" />
+                    <field name="logo" />
+                    <field name="favicon" />
+                </tree>
+            </field>
+        </record>
+
+        <record id="kits_b2c_website_search_view" model="ir.ui.view">
+            <field name="name">kits.b2c.website.search.view</field>
+            <field name="model">kits.b2c.website</field>
+            <field name="arch" type="xml">
+                <search>
+                    <field name="name" />
+                    <field name="url" />
+                </search>
+            </field>
+        </record>
+
+        <record id="kits_b2c_website_action" model="ir.actions.act_window">
+            <field name="name">B2C Websites</field>
+            <field name="res_model">kits.b2c.website</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+    </data>
+</odoo>

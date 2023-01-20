@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+<template id="virtual_product_xml"><t t-translation="off">&lt;?xml version="1.0" encoding="UTF-8"?&gt;</t>
+    <t t-raw="content"/>
+</template>
+
+<template id="virtual_product_index_xml"><t t-translation="off">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+  <virtual_product t-translation="off" t-foreach="pages" t-as="page">
+    <loc><t t-esc="url_root"/>virtual_product-<t t-esc="page"/>.xml</loc>
+  </virtual_product>
+</t>
+</template>
+
+</odoo>

@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <record id="portal_users_message_wizard_from_view_spt" model="ir.ui.view">
+            <field name="name">portal.users.message.wizard.from.view.spt</field>
+            <field name="model">portal.users.message.wizard.spt</field>
+            <field name="arch" type="xml">
+                <form>
+                    <h3>
+                        <field name="name" readonly="1"/>
+                    </h3>
+                    <footer>
+                        <button string="Process" class="btn btn-primary" type="object" name="action_process" />
+                        <button string="Cancel" class="btn-secondary" special="cancel" />
+                    </footer>
+                </form>
+
+            </field>
+        </record>
+    </data>
+</odoo>
+

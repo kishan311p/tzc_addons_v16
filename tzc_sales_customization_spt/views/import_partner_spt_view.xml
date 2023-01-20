@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <record id="action_import_partner_spt" model="ir.actions.act_window">
+            <field name="view_mode">tree,form</field>
+            <field name="name">Import Customers</field>
+            <field name="res_model">import.partner.spt</field>
+        </record>
+
+        <record id="import_partner_from_view_spt" model="ir.ui.view">
+            <field name="name">import.partner.from.view.spt</field>
+            <field name="model">import.partner.spt</field>
+            <field name="arch" type="xml">
+               <form>
+					<header>
+						<button name="process_spt" string='Process' type="object" class="oe_stat_button" attrs="{'invisible':[('state','!=','draft')]}"/>
+						<field name='state' widget='statusbar' />
+					</header>
+					<sheet>
+
+						<div class="oe_button_box" name="button_box">
+							<button name="action_view_partner" type="object" class="oe_stat_button" icon="fa-user">
+								<div class="o_form_field o_stat_info">
+									<span class="o_stat_value">
+										<field name="number_of_partner" />
+									</span>
+									<span class="o_stat_text">
+										Contacts
+									</span>
+								</div>
+							</button>
+						</div>
+						<div class="oe_title">
+							<h1>
+								<field name="name" readonly="1" />
+							</h1>
+						</div>
+						<group>
+							<group>
+								<field name="attach_file_name" invisible='1' />
+								<field name="attach_file" filename="attach_file_name" required="1"/>								<!-- <field name="data_on"/> -->
+							</group> 
+							<group>
+								<field name="run_time_file_name" invisible='1' />
+								<field name="run_time" filename="run_time_file_name" readonly='1' />
+								<field name="create_date"/>
+							</group>
+						</group>
+						<!-- <notebook>
+							<page string='Product Lines'>
+								
+							</page>
+						</notebook> -->
+					</sheet>
+				</form>
+            </field>
+        </record>
+
+        <record id="import_partner_tree_view_spt" model="ir.ui.view">
+            <field name="name">import.partner.tree.view.spt</field>
+            <field name="model">import.partner.spt</field>
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="name"/>
+                    <field name="create_date"/>
+                    <field name="state"/>
+                </tree>
+            </field>
+        </record>
+
+        <menuitem name="Import Customers" action="action_import_partner_spt" id="menu_action_import_partner_spt" parent="contacts.menu_contacts" groups="base.group_system" sequence="100"/>
+
+    </data>
+</odoo>

@@ -1,0 +1,33 @@
+<?xml version='1.0' encoding='utf-8'?>
+<odoo>
+    <data>
+
+        <menuitem id="main_menu_multi_website" name="Multi Website" web_icon="kits_multi_website,static/description/icon.png" groups="kits_multi_website.kits_multi_website_group"/>
+        <menuitem id="menu_multi_website_sale_order" name="Sale Order" action="kits_multi_website_sale_order_action" parent="main_menu_multi_website" sequence="1"/>
+        <menuitem id="menu_multi_website_invoice" name="Invoices" action="kits_multi_website_invoice_action" parent="main_menu_multi_website" sequence="2"/>
+        <menuitem id="menu_multi_website_customer" name="Customers" action="kits_multi_website_customer_action" parent="main_menu_multi_website" sequence="3"/>
+        <menuitem id="menu_kits_multi_website_product" name="Products" action="product.product_normal_action_sell" parent="main_menu_multi_website" sequence="4"/>
+        <menuitem id="menu_kits_multi_website_return_request" name="Return Requests" action="kits_multi_website_return_request_action" parent="main_menu_multi_website" sequence="5"/>
+
+        <!-- reporting -->
+        <menuitem id="menu_multi_website_reporting" name="Reporting" parent="main_menu_multi_website" sequence="6"/>
+        <menuitem id="menu_kits_b2c_sales_report" name="Sales Report" action="kits_b2c_sales_report_action" parent="menu_multi_website_reporting" sequence="1"/>
+        <menuitem id="menu_kits_multi_website_wallet_transaction" name="Wallet Transactions" action="kits_multi_website_wallet_transaction_action" parent="menu_multi_website_reporting" sequence="9"/>
+        
+        <!-- Configuration -->
+        <menuitem id="menu_kits_multi_website_configuration" name="Configuration" parent="main_menu_multi_website" sequence="7"/>
+        <menuitem id="menu_b2c_website" name="Website" action="kits_b2c_website_action" parent="menu_kits_multi_website_configuration" sequence="1"/>
+        <menuitem id="menu_kits_multi_website_coupon" name="Coupons" action="kits_multi_website_coupon_action" parent="menu_kits_multi_website_configuration" sequence="2"/>
+        <menuitem id="menu_kits_free_shipping_rule" name="Shipping Rule" action="kits_free_shipping_rule_action" parent="menu_kits_multi_website_configuration" sequence="3"/>
+        <menuitem id="menu_kits_multi_website_product_slider_category" name="Product Slider Category" action="kits_multi_website_product_slider_category_action" parent="menu_kits_multi_website_configuration" sequence="4"/>
+        <menuitem id="menu_kits_multi_website_attribute_filter_action" name="Attribute Filters" action="kits_multi_website_attribute_filter_action" parent="menu_kits_multi_website_configuration" sequence="5"/>
+        <menuitem id="menu_kits_multi_website_glass_type_action" name="Glass Type" action="kits_multi_website_glass_type_action" parent="menu_kits_multi_website_configuration" sequence="11"/>
+        <menuitem id="menu_kits_multi_website_power_type_action" name="Power Type" action="kits_multi_website_power_type_action" parent="menu_kits_multi_website_configuration" sequence="6"/>
+        <menuitem id="menu_kits_multi_website_lense_action" name="Lenses" action="kits_multi_website_lense_action" parent="menu_kits_multi_website_configuration" sequence="6"/>
+	<menuitem id="menu_kits_multi_website_product_wishlist_action" name="Product Wishlist" action="kits_multi_website_wishlist_action" parent="menu_kits_multi_website_configuration" sequence="15"/>
+	<menuitem id="menu_kits_multi_website_sign_up_otp_action" name="Sign Up OTP" action="kits_multi_website_sign_up_otp_action" parent="menu_kits_multi_website_configuration" groups="base.group_system" sequence="16"/>
+    <menuitem id="menu_kits_multi_website_prescription_action" name="Prescription" action="kits_multi_website_prescription_action" parent="menu_kits_multi_website_configuration" sequence="17"/>
+    <menuitem id="menu_kits_multi_website_return_request_reason_action" name="Return request reason" action="kits_multi_website_return_request_reason_action" parent="menu_kits_multi_website_configuration" sequence="19"/>    
+    <menuitem id="menu_kits_currency_mapping" name="Currency Mapping" action="kits_currency_mapping_action" parent="menu_kits_multi_website_configuration" sequence="19"/>
+    </data>
+</odoo>

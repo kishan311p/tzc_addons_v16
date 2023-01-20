@@ -1,0 +1,6 @@
+<?xml version='1.0' encoding='utf-8'?>
+<odoo>
+    <data>
+        <menuitem id="sale.menu_sale_report" name="Reporting" parent="sale.sale_menu_root" sequence="40"/>
+    </data>
+</odoo>

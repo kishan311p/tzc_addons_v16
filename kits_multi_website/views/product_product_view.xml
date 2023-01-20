@@ -1,0 +1,34 @@
+<?xml version='1.0' encoding='utf-8'?>
+<odoo>
+    <data>
+
+        <record id="kits_multi_website_product_product_form_view" model="ir.ui.view">
+            <field name="name">kits.multi.website.product.product.form.view</field>
+            <field name="model">product.product</field>
+            <field name="inherit_id" ref="product.product_normal_form_view"/>
+            <field name="arch" type="xml">
+                <xpath expr="//notebook/page[@name='general_information']" position="after">
+                    <group name="b2c" string="B2C Info."  groups="kits_multi_website.kits_multi_website_group">
+                        <group>
+                            <field name="application_type" />
+                            <field name="is_select_for_lenses" />
+                            <field name="is_3d_model" />
+                            <field name="website_ids" widget="many2many_tags" />
+                            <field name="slider_category_ids" widget="many2many_tags" />
+                        </group>
+                        <group>
+                            <field name="b2c_title" />
+                            <field name="b2c_description" />
+                            <field name="b2c_keyword" />
+                        </group>
+                    </group>
+                </xpath>
+            </field>
+        </record>
+
+        <record id="product.product_normal_action_sell" model="ir.actions.act_window">
+            <field name="context">{"search_default_filter_to_sell":1, "kits_multi_website": 1}</field>
+        </record>
+
+    </data>
+</odoo>
