@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <data>
+        <report 
+        id="action_report_shipped_orders" 
+        model="shipped.orders.report.wizard.spt" 
+        string="Shipped Orders Report" 
+        report_type="qweb-pdf" 
+        name="tzc_sales_customization_spt.report_template_shipped_orders_spt" 
+        file="tzc_sales_customization_spt.report_template_shipped_orders_spt" 
+        menu="False" 
+        />
+        <record id="action_report_shipped_orders" model="ir.actions.report">
+            <field name="paperformat_id" ref="tzc_sales_customization_spt.shipped_orders_landscape_paperformat"/>
+        </record>
+        <report
+            id="stock.action_label_transfer_template_zpl"
+            model="stock.picking"
+            string="Barcodes (ZPL)"
+            report_type="qweb-pdf"
+            name="stock.label_transfer_template_view_zpl"
+            file="stock.label_transfer_template_view_zpl"
+            menu="False" 
+        />
+    </data>
+
+</odoo>

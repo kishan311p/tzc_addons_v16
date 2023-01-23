@@ -156,7 +156,6 @@ class warning_spt_wizard(models.TransientModel):
         data_row = 2
 
         f_name = 'Products_Export'
-
         left_alignment = Alignment(vertical='center', horizontal='left', text_rotation=0, wrap_text=True)
         
         for product in product_ids:

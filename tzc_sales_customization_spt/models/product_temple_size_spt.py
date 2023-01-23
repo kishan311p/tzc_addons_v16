@@ -24,8 +24,5 @@ class product_temple_size_spt(models.Model):
             "res_model":"product.product",
             "view_mode":"tree,form",
             "domain":[("temple_size",'=',self.id)],
-            "target":"current",    
+            "target":"current",
         }
-
-
-

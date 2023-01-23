@@ -1,0 +1,1170 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <template id="kits_sale_order_quotation_header">
+       
+       <div t-attf-class="article o_report_layout_standard o_company_#{company.id}_layout" t-att-data-oe-model="o and o._name" t-att-data-oe-id="o and o.id" t-att-data-oe-lang="o and o.env.context.get('lang')">
+            <t t-raw="0"/>
+
+        </div>
+        <div t-attf-class="footer o_standard_footer o_company_#{company.id}_layout">
+            <div class="text-center" style="border-top: 1px solid black;">
+                <div name="financial_infos">
+                    <span t-field="company.report_footer"/>
+                </div>
+
+                <div t-if="report_type == 'pdf'" class="text-muted">
+                    Page: <span class="page"/> / <span class="topage"/>
+                    &#160;
+                    <span t-field="doc.name"/>
+                </div>
+            </div>
+        </div>
+    </template>
+    <template id="report_saleorder_report_inherit_spt" inherit_id="sale.report_saleorder_document">
+        <xpath expr="//t[@t-call='web.external_layout']" position="attributes">
+            <attribute name="t-call">tzc_sales_customization_spt.kits_sale_order_quotation_header</attribute>
+        </xpath>
+       
+        <xpath expr="//t[@t-foreach='lines_to_report']" position="replace">
+            <t t-set="total_is_shipping_product" t-value="0"/>
+            <t t-set="total_is_admin" t-value="0"/>
+            <t t-set="total_discount" t-value="0"/>
+            <t t-set="total_line_qty" t-value="0"/>
+            <t t-set="custom_current_subtotal" t-value="0"/>
+            <t t-set="total_for_is_pro_forma" t-value="0"/>
+            <t t-set="total_for_is_pro_forma_text" t-value="0"/>
+            <t t-set="product_name_list" t-value="doc.line_ordering_by_product()"/>
+            <!-- sorting products -->
+            <t t-foreach="range(len(product_name_list))" t-as="product_name">
+                <t t-value="product_name_list[product_name]" t-set="product_name"/>
+                <!-- get product data in py file -->
+                <t t-foreach="doc.line_product_dict(product_name)[product_name]['line_ids']" t-as="line">
+                    <tr t-att-class="'bg-200 font-weight-bold o_line_section' if line.display_type == 'line_section' else 'font-italic o_line_note' if line.display_type == 'line_note' else ''">
+                        <!-- check pro-forma -->
+                        <t t-if="is_pro_forma or env.context.get('proforma', False) or doc.state in ['in_scanning','scanned','scan','shipped','draft_inv','open_inv','paid']">
+                            <t t-set="is_pro_forma" t-value="True"/>
+                            <t t-if="line.picked_qty and not line.product_id.is_admin and not line.product_id.is_shipping_product and not line.product_id.is_global_discount">
+                                <!-- pro-forma line print -->
+                                <td name="td_image" class="text-center">
+                                    <t t-set="special_discount" t-value="line.product_id._get_black_special_friday_sale()"/>
+                                    <t t-set="fest_discount_icon" t-value="request.env['tzc.fest.discount'].search([('id','=',special_discount.get('dynamic_label_icon'))])"/>
+                                    <t t-if="line.sale_type">
+                                        <t t-if="line.is_special_discount and fest_discount_icon">
+                                            <div class="icon_div position-absolute" id="style_3" style="background-color: transparent !important;top:unset !important;">
+                                                <img t-attf-src="data:image/png;base64,#{fest_discount_icon.dynamic_label_icon}" alt="Discount Icon" style="height:25px !important;"/>
+                                            </div>
+                                        </t>
+                                        <t t-else=''>
+                                            <span class="te_ribbon-wrapper kits_ribbon mr-1" style="color:white;position: absolute;margin-top: -6px;">
+                                                <span t-attf-class="style_3 label_div py-1 #{'kits_label_div' if line.sale_type == 'clearance' else ''}" id="style_3" t-attf-style="background-color:#{'#e50000' if line.sale_type == 'on_sale' else '#990000' if line.sale_type == 'clearance' else ''};font-weight: bold;top: auto !important;left: 20px !important;font-size: 9px;">
+                                                    <span t-attf-class="te_label_name te_label_name_wish #{'kits_label_name' if line.sale_type == 'clearance' else ''}">
+                                                        <span class="p-1" style="line-height: 1;" t-esc="dict(line._fields['sale_type'].selection).get(line.sale_type)"></span>
+                                                    </span>
+                                                </span>
+                                            </span>
+                                        </t>
+                                    </t>
+                                    <t t-if="line.is_special_discount and fest_discount_icon">
+                                        <div class="icon_div position-absolute" id="style_3" style="background-color: transparent !important;top:unset !important;">
+                                            <img t-attf-src="data:image/png;base64,#{fest_discount_icon.dynamic_label_icon}" alt="Discount Icon" style="height:25px !important;"/>
+                                        </div>
+                                    </t>
+                                    <t t-if="line.product_id.image_url">
+                                        <span><t t-esc="line.product_id.image_url"/></span>
+                                        <!-- <img t-attf-src="data:image/*;base64,{{line.product_id.image_variant_1920}}" style="max-height:120px; max-width:125px;"/> -->
+                                    </t>
+                                    <t t-else="">
+                                        <span>https://www.teameto.com/web/static/src/img/placeholder.png</span>
+                                    </t>
+
+                                </td>
+                                <td name="td_image_secondary" class="text-center">
+                                    <t t-if="line.product_id.image_secondary_url">
+                                        <span><t t-esc="line.product_id.image_secondary_url"/></span>
+                                        <!-- <img t-attf-src="data:image/*;base64,{{line.product_id.image_secondary_1920}}" style="max-height:120px; max-width:125px;"/> -->
+                                    </t>
+                                    <t t-else="">
+                                        <span>https://www.teameto.com/web/static/src/img/placeholder.png</span>
+                                    </t>
+                                </td>
+                                <td name="td_name" class="text-center">
+                                    <div>
+                                        <span t-if="line.product_id.brand" t-esc="line.product_id.brand.name"/>
+                                        <span t-else="">N/A</span>
+                                        <br/>
+                                        <span t-if="line.product_id.model" t-esc="line.product_id.model.name"/>
+                                        <span t-else="">N/A</span>
+                                        <!-- <t t-if="len(line.product_id.product_template_attribute_value_ids)">
+                                            <t t-set="total_attribute_color" t-value="0"/>
+                                            <t t-foreach="line.product_id.product_template_attribute_value_ids" t-as="val_color">
+                                                <span class="te_attr_span" t-if="val_color.attribute_id.name == 'Color'">
+                                                    <t t-esc="val_color.name.split('-')[0]"/>
+                                                    <t t-set="total_attribute_color" t-value="total_attribute_color +1"/>
+                                                </span>
+                                            </t>
+                                            <span t-if="total_attribute_color == 0">N/A</span>
+
+                                            <t t-set="total_attribute_eye_size" t-value="0"/>
+                                            <t t-foreach="line.product_id.product_template_attribute_value_ids" t-as="val_eye_size">
+                                                <span class="te_attr_span" t-if="val_eye_size.attribute_id.name == 'Eye Size'">
+                                                    <t t-if="val_eye_size">
+                                                        <t t-esc="val_eye_size.name"/>
+                                                    </t>
+                                                    <t t-else="else">
+                                                        <span>00</span>
+                                                    </t>
+                                                    <t t-set="total_attribute_eye_size" t-value="total_attribute_eye_size +1"/>
+                                                </span>
+                                            </t>
+                                            <span t-if="total_attribute_eye_size == 0">N/A</span>
+                                        </t> 
+                                        <span t-else="">N/A</span> -->
+                                        <t t-if="line.product_id.color_code">
+                                            <span t-esc="line.product_id.color_code.name"/>
+                                        </t>
+                                        <t t-else="else">
+                                            <span>00</span>
+                                        </t>
+                                        <t t-if="line.product_id.eye_size">
+                                            <span t-field="line.product_id.eye_size.name"/>
+                                        </t>
+                                        <t t-else="else">
+                                            <span>00</span>
+                                        </t>
+                                        <span t-if="line.product_id.bridge_size" t-esc="line.product_id.bridge_size.name"/>
+                                        <sapn t-else="else">00</sapn>
+                                        <!-- <span>
+                                            <t t-if="line.product_id.temple_size">
+                                                <t t-if="name">
+                                                    <t t-esc="name + line.product_id.temple_size.name"/>
+                                                </t>
+                                                <t t-if="not name">
+                                                    <t t-esc="line.product_id.temple_size.name"/>
+                                                </t>
+                                            </t>
+                                        </span> -->
+                                        <t t-if="line.product_id.temple_size">
+                                            <span t-field="line.product_id.temple_size.name"/>
+                                        </t>
+                                        <t t-else="else">
+                                            <span>00</span>
+                                        </t>
+                                        <!-- <span t-if="line.product_id.temple_size" t-esc="line.product_id.temple_size.name"/>
+                                        <span t-else="" t-esc="00"/> -->
+
+                                    </div>
+                                    <br/>
+                                </td>
+
+                            <td name="td_category" class="text-center">
+
+                                <t t-if="line.product_categ_id">
+                                    <span style="text-align: center" t-field="line.product_categ_id.name" />
+                                </t>
+                                <t t-if=" not line.product_categ_id">
+                                                -
+                                </t>
+
+                            </td>
+
+
+                            <td name="td_quantity" class="text-center">
+                                <!-- text calculation -->
+                                <t t-set="total_tax_amount" t-value="0"/>
+                                <t t-set="total_tax_amount" t-value="round(line.price_tax/line.product_uom_qty,2)"/>
+                                <t t-set="total_for_is_pro_forma_text" t-value="round(total_for_is_pro_forma_text + (total_tax_amount * line.picked_qty),2)"/>
+                                <!-- discount calculation -->
+
+                                <t t-set="total_discount" t-value="round(total_discount + ((line.price_unit * line.picked_qty) - (line.unit_discount_price * line.picked_qty)),2)"/>
+                                <t t-set="total_line_qty" t-value="total_line_qty + line.picked_qty"/>
+
+
+                                <span t-field="line.picked_qty"/>
+                            </td>
+
+                            <!-- <td name="td_wholesale" style="text-decoration:line-through;" class="text-center">
+                                <span style="white-space: nowrap;color:red;text-decoration:line-through;">
+                                    <span t-if="doc.currency_id.name == 'CAD'" style="color:black;" t-field="line.product_id.price_wholesale"/>
+                                    <span t-else="" t-field="line.product_id.price_wholesale_usd" style="color:black;" />
+                                </span>
+                            </td> -->
+
+                            <td name="display_discount" class="text-center">
+                                <span t-field="line.discount"/>
+                            </td>
+                            <td name="td_priceunit" class="text-right" t-if="line.price_unit != line.unit_discount_price">
+                                <t t-if="not line.discount">
+                                    <span t-field="line.price_unit" t-options='{"widget": "monetary", "display_currency":  line.currency_id}'/>
+                                </t>
+                                <t t-else="line.discount">
+                                    <span style="white-space: nowrap;color:red;text-decoration:line-through;">
+                                        <span t-field="line.price_unit" style="color:black;" t-options='{"widget": "monetary", "display_currency":  line.currency_id}'/>
+                                    </span>
+                                    <br/>
+                                    <span t-field="line.unit_discount_price" style="white-space: nowrap;color:#ff0000;" t-options='{"widget": "monetary", "display_currency":  line.currency_id}'/>
+                                </t>
+                            </td>
+                            <td name="td_priceunit" class="text-right" t-if="line.price_unit == line.unit_discount_price">
+                                <span t-field="line.price_unit" style="white-space: nowrap;" t-options='{"widget": "monetary", "display_currency":  line.currency_id}'/>
+                            </td>
+                            <td name="td_subtotal" class="text-right o_price_total">
+                                <!-- pro-forma total calculation -->
+
+                                <t t-set="subtotal_spt" t-value="round((line.price_unit * line.picked_qty),2)"/>
+
+                                <t t-set="total_for_is_pro_forma" t-value="total_for_is_pro_forma + subtotal_spt"/>
+                                <span t-esc="round(line.unit_discount_price * line.picked_qty,2)" t-options='{"widget": "monetary", "display_currency": doc.pricelist_id.currency_id}'/>
+
+                            </td>
+                            <t t-set="custom_current_subtotal" t-value="round(custom_current_subtotal + (line.price_unit * line.product_uom_qty),2)" groups="account.group_show_line_subtotals_tax_excluded"/>
+
+
+
+                        </t>
+
+
+                    </t>
+                    <t t-else="not is_pro_forma or env.context.get('proforma', False)">
+                        <!-- normal sale order line  -->
+                        <t t-if="not line.product_id.is_admin and not line.product_id.is_shipping_product and not line.product_id.is_global_discount">
+                            <!-- sale order line print -->
+                            <td name="td_image" class="text-center">
+                                <t t-set="special_discount" t-value="line.product_id._get_black_special_friday_sale()"/>
+                                <t t-set="fest_discount_icon" t-value="request.env['tzc.fest.discount'].search([('id','=',special_discount.get('dynamic_label_icon'))])"/>
+                                <t t-if="line.sale_type">
+                                    <t t-if="line.is_special_discount and fest_discount_icon">
+                                        <div class="icon_div position-absolute" id="style_3" style="background-color: transparent !important;top:unset !important;">
+                                            <img t-attf-src="data:image/png;base64,#{fest_discount_icon.dynamic_label_icon}" alt="Discount Icon" style="height:25px !important;"/>
+                                        </div>
+                                    </t>
+                                    <t t-else=''>
+                                        <span class="te_ribbon-wrapper kits_ribbon mr-1" style="color:white;position: absolute;margin-top: -6px;">
+                                            <span t-attf-class="style_3 label_div py-1 #{'kits_label_div' if line.sale_type == 'clearance' else ''}" id="style_3" t-attf-style="background-color:#{'#e50000' if line.sale_type == 'on_sale' else '#990000' if line.sale_type == 'clearance' else ''};font-weight: bold;top: auto !important;left: 20px !important;font-size: 9px;">
+                                                <span t-attf-class="te_label_name te_label_name_wish #{'kits_label_name' if line.sale_type == 'clearance' else ''}">
+                                                    <span class="p-1" style="line-height: 1;" t-esc="dict(line._fields['sale_type'].selection).get(line.sale_type)"></span>
+                                                </span>
+                                            </span>
+                                        </span>
+                                    </t>
+                                </t>
+                                <t t-if="line.is_special_discount and fest_discount_icon">
+                                    <div class="icon_div position-absolute" id="style_3" style="background-color: transparent !important;top:unset !important;">
+                                        <img t-attf-src="data:image/png;base64,#{fest_discount_icon.dynamic_label_icon}" alt="Discount Icon" style="height:25px !important;"/>
+                                    </div>
+                                </t>
+                                <t t-if="line.product_id.image_url">
+                                    <span><t t-esc="line.product_id.image_url"/></span>
+                                    <!-- <img t-attf-src="data:image/*;base64,{{line.product_id.image_variant_1920}}" style="max-height:120px; max-width:125px;"/> -->
+                                </t>
+                                <t t-else="">
+                                    <span>https://www.teameto.com/web/static/src/img/placeholder.png</span>
+                                </t>
+
+                            </td>
+                            <td name="td_image_secondary" class="text-center">
+                                <t t-if="line.product_id.image_secondary_url">
+                                <span><t t-esc="line.product_id.image_secondary_url"/></span>
+                                    <!-- <img t-attf-src="data:image/*;base64,{{line.product_id.image_secondary_1920}}" style="max-height:120px; max-width:125px;"/> -->
+                                </t>
+                                <t t-else="">
+                                    <span>https://www.teameto.com/web/static/src/img/placeholder.png</span>
+                                </t>
+                            </td>
+                            <td name="td_name" class="text-center">
+                                <!-- <t t-set="product_name" t-value="line.product_id.name_get()"/>
+                                    <t t-if="product_name">
+                                        <t t-esc="product_name[0][1]"/>
+                                    </t> -->
+                                <div>
+                                    <span t-if="line.product_id.brand" t-esc="line.product_id.brand.name"/>
+                                    <span t-else="">N/A</span>
+                                    <br/>
+                                    <span t-if="line.product_id.model" t-esc="line.product_id.model.name"/>
+                                    <span t-else="">N/A</span>
+                                        <!-- <t t-if="len(line.product_id.product_template_attribute_value_ids)">
+                                            <t t-set="total_attribute_color" t-value="0"/>
+                                            <t t-foreach="line.product_id.product_template_attribute_value_ids" t-as="val_color">
+                                                <span class="te_attr_span" t-if="val_color.attribute_id.name == 'Color'">
+                                                    <t t-esc="val_color.name.split('-')[0]"/>
+                                                    <t t-set="total_attribute_color" t-value="total_attribute_color +1"/>
+                                                </span>
+                                            </t>
+                                            <span t-if="total_attribute_color == 0">N/A</span>
+
+                                            <t t-set="total_attribute_eye_size" t-value="0"/>
+                                            <t t-set="product_name" t-value="0"/>
+                                            <t t-foreach="line.product_id.product_template_attribute_value_ids" t-as="val_eye_size">
+                                                <span class="te_attr_span" t-if="val_eye_size.attribute_id.name == 'Eye Size'">
+                                                    <t t-if="val_eye_size">
+                                                        <t t-esc="val_eye_size.name"/>
+                                                    </t>
+                                                    <t t-else="else">
+                                                        <span>00</span>
+                                                    </t>
+                                                    <t t-set="total_attribute_eye_size" t-value="total_attribute_eye_size +1"/>
+                                                    <t t-set="product_name" t-value="val_eye_size.name"/>
+                                                </span>
+                                            </t>
+                                            <span t-if="total_attribute_eye_size == 0">N/A</span>
+                                        </t> 
+                                        <span t-else="">N/A</span>-->
+                                        <t t-if="line.product_id.color_code">
+                                            <span t-esc="line.product_id.color_code.name"/>
+                                        </t>
+                                        <t t-else="else">
+                                            <span>00</span>
+                                        </t>
+                                        <t t-if="line.product_id.eye_size">
+                                            <span t-field="line.product_id.eye_size.name"/>
+                                        </t>
+                                        <t t-else="else">
+                                            <span>00</span>
+                                        </t>
+                                        <span t-if="line.product_id.bridge_size" t-esc="line.product_id.bridge_size.name"/>
+                                        <span t-else="">00</span>
+                                        <!-- <span>
+                                        <t t-if="line.product_id.temple_size">
+                                            <t t-if="product_name">
+                                                <t t-esc="product_name + line.product_id.temple_size.name"/>
+                                            </t>
+                                            <t t-if="not product_name">
+                                                <t t-esc="line.product_id.temple_size.name"/>
+                                            </t>
+                                        </t>
+                                    </span> -->
+                                    <span t-if="line.product_id.temple_size" t-esc="line.product_id.temple_size.name"/>
+                                    <span t-else="">00</span>
+
+                                    </div>
+                                    <br/>
+                                </td>
+
+                        <td name="td_category" class="text-center">
+
+                            <t t-if="line.product_categ_id">
+                                <span style="text-align: center" t-field="line.product_categ_id.name" />
+                            </t>
+                            <t t-if=" not line.product_categ_id">
+                                                -
+                            </t>
+
+                        </td>
+
+
+                        <td name="td_quantity" class="text-center">
+
+                            <span t-field="line.product_uom_qty"/>
+                            <span t-field="line.product_uom" groups="uom.group_uom"/>
+                            <t t-set="total_line_qty" t-value="total_line_qty + line.product_uom_qty"/>
+
+                        </td>
+
+                        <!-- <td name="td_wholesale" style="text-decoration:line-through;" class="text-center">
+                            <span style="white-space: nowrap;color:red;text-decoration:line-through;">
+                                <span t-if="doc.currency_id.name == 'CAD'" style="color:black;" t-field="line.product_id.price_wholesale"/>
+                                <span t-else="" t-field="line.product_id.price_wholesale_usd" style="color:black;" />
+                            </span>
+                        </td> -->
+
+                        <td name="display_discount" class="text-center">
+                            <span t-field="line.discount"/>
+                        </td>
+                        <td name="td_priceunit" class="text-right" t-if="line.price_unit != line.unit_discount_price">
+                            <t t-if="not line.unit_discount_price">
+                                <span t-field="line.price_unit" t-options='{"widget": "monetary", "display_currency":  line.currency_id}'/>
+                            </t>
+                            <t t-else="line.unit_discount_price">
+                                <span style="white-space: nowrap;color:red;text-decoration:line-through;">
+                                    <span t-field="line.price_unit" style="color:black;" t-options='{"widget": "monetary", "display_currency":  line.currency_id}'/>
+                                </span>
+                                <br/>
+                            </t>
+
+                            <t t-if="line.unit_discount_price">
+                                <span t-field="line.unit_discount_price" style="white-space: nowrap;color:#ff0000;" t-options='{"widget": "monetary", "display_currency":  line.currency_id}'/>
+                            </t>
+                        </td>
+                        <td name="td_priceunit" class="text-right" t-if="line.price_unit == line.unit_discount_price">
+                            <span t-field="line.price_unit" style="white-space: nowrap;" t-options='{"widget": "monetary", "display_currency":  line.currency_id}'/>
+                        </td>
+                        <td name="td_subtotal" class="text-right o_price_total">
+
+                            <span t-field="line.price_subtotal" t-options='{"widget": "monetary", "display_currency": doc.pricelist_id.currency_id}' groups="account.group_show_line_subtotals_tax_excluded"/>
+                            <span t-field="line.price_total" t-options='{"widget": "monetary", "display_currency": doc.pricelist_id.currency_id}' groups="account.group_show_line_subtotals_tax_included"/>
+
+                        </td>
+                        <t t-set="custom_current_subtotal" t-value="round(custom_current_subtotal + (line.price_unit * line.product_uom_qty),2)" groups="account.group_show_line_subtotals_tax_excluded"/>
+
+                    </t>
+                </t>
+            </tr>
+        </t>
+    </t>
+</xpath>
+
+<xpath expr="//table[hasclass('table','table-sm','o_main_table','mt-4')]/thead/tr/th[5]" position="replace"></xpath>
+<xpath expr="//th[@name='th_subtotal']" position="replace"></xpath>
+<xpath expr="//th[@name='th_discount']" position="replace"></xpath>
+<xpath expr="//th[@name='th_priceunit']" position="replace"></xpath>
+<xpath expr="//th[@name='th_description']" position="replace">
+    <th name="th_description" class="text-center">Product</th>
+    <th name="th_category" class="text-center">Cat</th>
+</xpath>
+
+<xpath expr="//table[hasclass('table','table-sm','o_main_table','mt-4')]/thead/tr/th[3]" position="replace">
+    <th name="th_quantity" class="text-center">Qty</th>
+    <!-- <th name="th_wholesale" class="text-center">Wholesale</th> -->
+    <th name="th_discount" class="text-center">
+        <span>Disc.%</span>
+    </th>
+    <th name="th_priceunit" class="text-right">Price</th>
+    <th name="th_subtotal" class="text-right">
+        <t groups="account.group_show_line_subtotals_tax_excluded">Subtotal</t>
+        <t groups="account.group_show_line_subtotals_tax_included">Subtotal</t>
+    </th>
+</xpath>
+<xpath expr="//table[hasclass('table','table-sm','o_main_table','mt-4')]/thead/tr/th[1]" position="before">
+    <td name="th_image"></td>
+    <td name="th_image_secondary"></td>
+</xpath>
+
+<!-- <xpath expr="//table[hasclass('table','table-sm','o_main_table')]/tbody/t/tr/t[1]" position="replace">
+            <t t-if="env.context.get('proforma', False) or is_pro_forma">
+                <t t-set="quantity_done" t-value="0"/>
+                <t t-foreach="line.move_ids" t-as="move">
+                    <t t-set="quantity_done" t-value="quantity_done + move.quantity_done"/>
+
+                </t>
+            </t>
+            <t t-if="not line.display_type and not is_pro_forma">
+                <t t-if="not line.product_id.is_admin and not line.product_id.is_shipping_product and not line.product_id.is_global_discount">
+                    <td name="td_image" class="text-center">
+                        <t t-if="line.sale_type">
+                            <style>
+                            .te_ribbon-wrapper kits_ribbon #style_3.label_div {
+                                display: inline-block;
+                                width: auto;
+                                font-size: 0.8125rem;
+                                background-color: #353e47;
+                                position: absolute;
+                                top: 10px;
+                                right: unset;
+                                bottom: unset;
+                                left: 0px;
+                                z-index: 1;
+                                overflow: hidden;
+                            }
+                            .te_ribbon-wrapper kits_ribbon #style_3.label_div .te_label_name.te_label_name_wish {
+                                padding: 2px 4px !important;
+                            }
+                            .te_ribbon-wrapper kits_ribbon #style_3.label_div .te_label_name.te_label_name_wish:before {
+                                //content: "\f02b";
+                                font-family: FontAwesome;
+                                margin-right: 5px;
+                                font-size: 8px;
+                            }
+                            </style>
+                            <div class="te_ribbon-wrapper kits_ribbon" style="color:white">
+                                
+                                <div class="style_3 label_div" id="style_3" style="background-color:#ff0000CC;font-weight: bold;top: auto !important;left: 20px !important;font-size: 9px;">
+                                    <div class="p-1 te_label_name te_label_name_wish">SALE</div>
+                                </div>
+                            </div>
+                        </t>
+                        <t t-if="line.product_id.image_variant_1920">
+                            <img t-attf-src="data:image/*;base64,{{line.product_id.image_variant_1920}}" style="max-height:120px; max-width:125px;"/>
+                        </t>
+                        <t t-else="">
+                            -
+                        </t>
+                    </td>
+                    <td name="td_image_secondary" class="text-center">
+                        <t t-if="line.product_id.image_secondary_1920">
+                            <img t-attf-src="data:image/*;base64,{{line.product_id.image_secondary_1920}}" style="max-height:120px; max-width:125px;"/>
+                        </t>
+                        <t t-else="">
+                            -
+                        </t>
+                    </td>
+                    <td name="td_name" class="text-center">
+
+                        <div>
+                            <span t-if="line.product_id.brand" t-esc="line.product_id.brand.name"/>
+                            <span t-else="">N/A</span>
+                            <br/>
+                            <span t-if="line.product_id.model" t-esc="line.product_id.model.name"/>
+                            <span t-else="">N/A</span>
+                            <t t-if="len(line.product_id.product_template_attribute_value_ids)">
+                            <t t-set="total_attribute_color" t-value="0"></t>
+                            <t t-foreach="line.product_id.product_template_attribute_value_ids" t-as="val_color">
+                                <span class="te_attr_span" t-if="val_color.attribute_id.name == 'Color'">
+                                    <t t-esc="val_color.name.split('-')[0]"></t>
+                                    <t t-set="total_attribute_color" t-value="total_attribute_color +1"></t>
+                                </span>
+                            </t>
+                            <span t-if="total_attribute_color == 0">N/A</span>
+                                
+                            <t t-set="total_attribute_eye_size" t-value="0"></t>
+                            <t t-foreach="line.product_id.product_template_attribute_value_ids" t-as="val_eye_size">
+                                <span class="te_attr_span" t-if="val_eye_size.attribute_id.name == 'Eye Size'">
+                                    <t t-esc="val_eye_size.name"></t>
+                                    <t t-set="total_attribute_eye_size" t-value="total_attribute_eye_size +1"></t>
+                                </span>
+                            </t>
+                            <span t-if="total_attribute_eye_size == 0">N/A</span>
+
+                        </t>
+                        <span t-else="">N/A</span>
+                    </div>
+                    <br/>
+                </td>
+
+
+                <td name="td_category" class="text-center">
+
+                    <t t-if="line.product_categ_id">
+                        <span style="text-align: center" t-field="line.product_categ_id.name" />
+                    </t>
+                    <t t-if=" not line.product_categ_id">
+                                                -
+                    </t>
+
+                </td>
+
+
+                <td name="td_quantity" class="text-center">
+
+                    <span t-field="line.product_uom_qty"/>
+                    <span t-field="line.product_uom" groups="uom.group_uom"/>
+                    <t t-set="total_line_qty" t-value="total_line_qty + line.product_uom_qty"/>
+
+                </td>
+               
+                <td name="td_wholesale" style="text-decoration:line-through;" class="text-center">
+                    <span style="white-space: nowrap;color:red;text-decoration:line-through;">
+                        <span t-if="doc.currency_id.name == 'CAD'" style="color:black;" t-field="line.product_id.price_wholesale"/>
+                        <span t-else="" t-field="line.product_id.price_wholesale_usd" style="color:black;" />
+                    </span>
+                </td>
+
+                <td name="display_discount" class="text-center">
+                    <span t-field="line.discount"/>
+                </td>
+                <td name="td_priceunit" class="text-center" t-if="line.price_unit != line.unit_discount_price">
+                    <t t-if="not line.unit_discount_price">
+                        <span t-field="line.price_unit" t-options='{"widget": "monetary", "display_currency":  line.currency_id}'/>
+                    </t>
+                    <t t-else="line.unit_discount_price">
+                        <span style="white-space: nowrap;color:red;text-decoration:line-through;">
+                            <span t-field="line.price_unit" style="color:black;" t-options='{"widget": "monetary", "display_currency":  line.currency_id}'/>
+                        </span>
+                        <br/>
+                    </t>
+
+                    <t t-if="line.unit_discount_price">
+                        <span t-field="line.unit_discount_price" style="white-space: nowrap;color:#7693f8;" t-options='{"widget": "monetary", "display_currency":  line.currency_id}'/>
+                    </t>
+                </td>
+                <td name="td_priceunit" class="text-center" t-if="line.price_unit == line.unit_discount_price">
+                    <span t-field="line.price_unit" style="white-space: nowrap;" t-options='{"widget": "monetary", "display_currency":  line.currency_id}'/>
+                </td>
+                <td name="td_subtotal" class="text-center o_price_total">
+                    <t t-if="env.context.get('proforma', False) or is_pro_forma">
+                        <t t-set="subtotal_spt" t-value="round((line.price_unit * quantity_done) - ((line.price_unit * quantity_done)*(line.discount * 0.01)),2)"/>
+                        <t t-set="round(total_for_is_pro_forma,2)" t-value="total_for_is_pro_forma + subtotal_spt"/>
+                        <span t-esc="round(subtotal_spt,2)" t-options='{"widget": "monetary", "display_currency": doc.pricelist_id.currency_id}'/>
+                    </t>
+                    <t t-else="">
+                        <span t-field="line.price_subtotal" t-options='{"widget": "monetary", "display_currency": doc.pricelist_id.currency_id}' groups="account.group_show_line_subtotals_tax_excluded"/>
+                        <span t-field="line.price_total" t-options='{"widget": "monetary", "display_currency": doc.pricelist_id.currency_id}' groups="account.group_show_line_subtotals_tax_included"/>
+
+                    </t>
+                </td>
+                <t t-set="custom_current_subtotal" t-value="round(custom_current_subtotal + (line.price_unit * line.product_uom_qty),2)" groups="account.group_show_line_subtotals_tax_excluded"/>
+                <t t-if="line.product_id.is_shipping_product">
+                    <t t-set="total_is_shipping_product" t-value="total_is_shipping_product + line.price_subtotal" groups="account.group_show_line_subtotals_tax_excluded"/>
+                </t>
+
+            </t>
+            <t t-if="line.product_id.is_admin">
+                <t t-set="total_is_admin" t-value="total_is_admin + line.price_subtotal" groups="account.group_show_line_subtotals_tax_excluded"/>
+            </t>
+        </t>
+        <t t-if="not line.display_type and is_pro_forma and quantity_done">
+            <t t-if="not line.product_id.is_admin and not line.product_id.is_global_discount and not line.product_id.is_shipping_product">
+                <td name="td_image" class="text-center">
+                    <t t-if="line.product_id.image_variant_1920">
+                        <img t-attf-src="data:image/*;base64,{{line.product_id.image_variant_1920}}" style="max-height:120px; max-width:125px;"/>
+                    </t>
+                    <t t-else="">
+                            -
+                    </t>
+                </td>
+                <td name="td_image_secondary" class="text-center">
+                    <t t-if="line.product_id.image_secondary_1920">
+                        <img t-attf-src="data:image/*;base64,{{line.product_id.image_secondary_1920}}" style="max-height:120px; max-width:125px;"/>
+                    </t>
+                    <t t-else="">
+                            -
+                    </t>
+                </td>
+                <td name="td_name" class="text-center">
+                    <span t-if="line.product_id.brand" t-esc="line.product_id.brand.name"/>
+                    <span t-else="">N/A</span>
+                    <br/>
+                    <span t-if="line.product_id.model" t-esc="line.product_id.model.name"/>
+                    <span t-else="">N/A</span>
+                        
+                    <t t-if="len(line.product_id.product_template_attribute_value_ids)">
+                        <t t-set="total_attribute_color" t-value="0"></t>
+                        <t t-foreach="line.product_id.product_template_attribute_value_ids" t-as="val_color">
+                            <span class="te_attr_span" t-if="val_color.attribute_id.name == 'Color'">
+                                <t t-esc="val_color.name.split('-')[0]"></t>
+                                <t t-set="total_attribute_color" t-value="total_attribute_color +1"></t>
+                            </span>
+                        </t>
+                        <span t-if="total_attribute_color == 0">N/A</span>
+                            
+                        <t t-set="total_attribute_eye_size" t-value="0"></t>
+                        <t t-foreach="line.product_id.product_template_attribute_value_ids" t-as="val_eye_size">
+                            <span class="te_attr_span" t-if="val_eye_size.attribute_id.name == 'Eye Size'">
+                                <t t-esc="val_eye_size.name"></t>
+                                <t t-set="total_attribute_eye_size" t-value="total_attribute_eye_size +1"></t>
+                            </span>
+                        </t>
+                        <span t-if="total_attribute_eye_size == 0">N/A</span>
+                    </t>
+                    <span t-else="">N/A</span>
+                    <br/>
+                </td>
+
+
+                <td name="td_category" class="text-center">
+
+                    <t t-if="line.product_categ_id">
+                        <span style="text-align: center" t-field="line.product_categ_id.name" />
+                    </t>
+                    <t t-if=" not line.product_categ_id">
+                                                -
+                    </t>
+
+                </td>
+
+
+                <td name="td_quantity" class="text-center">
+                    <t t-if="env.context.get('proforma', False) or is_pro_forma">
+                        <t t-set="total_tax_amount" t-value="0"/>
+                        <t t-set="total_tax_amount" t-value="line.price_tax/line.product_uom_qty"/>
+                        <span t-esc="int(quantity_done)"/>
+                        <t t-set="total_for_is_pro_forma_text" t-value="total_for_is_pro_forma_text + (total_tax_amount * quantity_done)"/>
+                        <br/>
+                        <t t-set="total_line_qty" t-value="total_line_qty + quantity_done"/>
+
+
+                    </t>
+                    <t t-else="">
+                        <span t-field="line.product_uom_qty"/>
+                        <span t-field="line.product_uom" groups="uom.group_uom"/>
+                    </t>
+
+                </td>
+                <td name="td_wholesale" style="text-decoration:line-through;" class="text-center">
+                    <span style="white-space: nowrap;color:red;text-decoration:line-through;">
+                        <span t-if="doc.currency_id.name == 'CAD'" style="color:black;" t-field="line.product_id.price_wholesale"/>
+                        <span t-else="" t-field="line.product_id.price_wholesale_usd" style="color:black;" />
+                    </span>
+                </td>
+
+                <td name="display_discount" class="text-center">
+                    <span t-field="line.discount"/>
+                </td>
+                <td name="td_priceunit" class="text-center" t-if="line.price_unit != line.unit_discount_price">
+                    <t t-if="not line.unit_discount_price">
+                        <span t-field="line.price_unit" t-options='{"widget": "monetary", "display_currency":  line.currency_id}'/>
+                    </t>
+                    <t t-else="line.unit_discount_price">
+                        <span style="white-space: nowrap;color:red;text-decoration:line-through;">
+                            <span t-field="line.price_unit" style="color:black;" t-options='{"widget": "monetary", "display_currency":  line.currency_id}'/>
+                        </span>
+                        <br/>
+                    </t>
+
+                    <t t-if="line.unit_discount_price">
+                        <span t-field="line.unit_discount_price" style="white-space: nowrap;color:#7693f8;" t-options='{"widget": "monetary", "display_currency":  line.currency_id}'/>
+                    </t>
+                </td>
+                <td name="td_priceunit" class="text-center" t-if="line.price_unit == line.unit_discount_price">
+                    <span t-field="line.price_unit" style="white-space: nowrap;" t-options='{"widget": "monetary", "display_currency":  line.currency_id}'/>
+                </td>
+                <td name="td_subtotal" class="text-center o_price_total">
+                    <t t-if="env.context.get('proforma', False) or is_pro_forma">
+                       
+                        <t t-set="subtotal_spt" t-value="round((line.price_unit * quantity_done),2)"/>
+
+                        <t t-set="total_for_is_pro_forma" t-value="total_for_is_pro_forma + subtotal_spt"/>
+                        <span t-esc="subtotal_spt" t-options='{"widget": "monetary", "display_currency": doc.pricelist_id.currency_id}'/>
+                    </t>
+                        <t t-set="total_discount" t-value="round(total_discount + ((line.price_unit * quantity_done) - (line.unit_discount_price * quantity_done)),2)"/>
+                </td>
+                <t t-set="custom_current_subtotal" t-value="round(custom_current_subtotal ,2)" groups="account.group_show_line_subtotals_tax_excluded"/>
+                <t t-if="line.product_id.is_shipping_product">
+                    <t t-set="total_is_shipping_product" t-value="total_is_shipping_product + line.price_subtotal" groups="account.group_show_line_subtotals_tax_excluded"/>
+                </t>
+
+            </t>
+            <t t-if="line.product_id.is_admin">
+                <t t-set="total_is_admin" t-value="total_is_admin + line.price_subtotal" groups="account.group_show_line_subtotals_tax_excluded"/>
+            </t>
+        </t>
+
+        <t t-if="line.display_type">
+            <t t-set="total_is_shipping_product" t-value="total_is_shipping_product + line.price_subtotal" groups="account.group_show_line_subtotals_tax_excluded"/>
+        </t>
+
+    </xpath> -->
+<!-- <xpath expr="//div[@name='so_total_summary']" position="after">
+            <t t-if="doc.state not in ['draft','sent','cancel']">
+                Once your order is ready for shipping, you will be notified for additional shipping charges, we are working towards your order.
+            </t>
+        </xpath> -->
+        <!-- ################### -->
+<xpath expr="//div[hasclass('clearfix')]" position="after">
+    <tr class="border-black o_subtotal" t-if="doc.tax_totals and not is_pro_forma">
+        <td name="td_admin_product_total_amount_label">
+            <strong>Tax</strong>
+        </td>
+        <td name="td_admin" class="text-right">
+            <span t-field="doc.amount_tax" t-options='{"widget": "monetary", "display_currency": doc.pricelist_id.currency_id}'/>
+        </td>
+    </tr>
+</xpath>
+
+<xpath expr="//div[hasclass('clearfix')]" position="after">
+    <tr class="border-black o_subtotal" style="">
+        <td name="td_shipping_product_total_amount_label">
+            <strong>Shipping Cost</strong>
+        </td>
+        <td name="td_amount_untaxed" class="text-right">
+            <t t-if="doc.shipping_cost != doc.amount_is_shipping_total">
+                <span style="white-space: nowrap;color:red;text-decoration:line-through;">
+                    <span style='color:black;' t-field="doc.shipping_cost" t-options='{"widget": "monetary", "display_currency": doc.pricelist_id.currency_id}'/> 
+                </span>
+                /
+                <span>
+                    <span style="color:red;" t-field="doc.amount_is_shipping_total" t-options='{"widget": "monetary", "display_currency": doc.pricelist_id.currency_id}'/>
+                </span>
+            </t>
+            <t t-else="">
+                <span t-field="doc.amount_is_shipping_total" t-options='{"widget": "monetary", "display_currency": doc.pricelist_id.currency_id}'/>
+            </t>
+            <!-- <span t-esc="total_is_shipping_product" t-options='{"widget": "monetary", "display_currency": doc.pricelist_id.currency_id}'/> -->
+        </td>
+    </tr>
+
+    <tr class="border-black o_subtotal" style="">
+        <td name="td_admin_product_total_amount_label">
+            <strong>Admin Fee</strong>
+        </td>
+        <td name="td_admin" class="text-right">
+            <span t-field="doc.amount_is_admin" t-options='{"widget": "monetary", "display_currency": doc.pricelist_id.currency_id}'/>
+            <!-- <span t-esc="total_is_admin" t-options='{"widget": "monetary", "display_currency": doc.pricelist_id.currency_id}'/> -->
+        </td>
+    </tr>
+    <!-- <tr t-if="doc.global_discount" class="border-black o_subtotal"> -->
+    <!-- <td name="td_global_discount_label">
+            <strong>Additional Discount</strong>
+        </td> -->
+    <!-- <td name="td_global_discount" class="text-right o_price_total"> -->
+    <!-- <span t-esc="doc.global_discount" t-options='{"widget": "monetary", "display_currency": doc.pricelist_id.currency_id}'/> -->
+    <!-- <span t-esc="doc.global_discount" t-options='{"widget": "monetary", "display_currency": doc.pricelist_id.currency_id}'/> -->
+
+    <!-- </td> -->
+    <!-- </tr> -->
+
+    <tr class="border-black o_subtotal" t-if="not is_pro_forma">
+        <td name="td_amount_discount_label">
+            <strong>Discount</strong>
+        </td>
+        <td name="td_amount_discount" class="text-right o_price_total">
+            <span t-esc="doc.amount_discount" t-options='{"widget": "monetary", "display_currency": doc.pricelist_id.currency_id}'/>
+        </td>
+    </tr>
+
+    <tr class="border-black o_subtotal" t-if="is_pro_forma">
+        <td name="td_amount_discount_label">
+            <strong>Discount</strong>
+        </td>
+        <td name="td_amount_discount" class="text-right o_price_total" t-if="is_pro_forma">
+            <span t-esc="round(total_discount + abs(doc.global_discount),2)" t-options='{"widget": "monetary", "display_currency": doc.pricelist_id.currency_id}'/>
+        </td>
+
+    </tr>
+
+    <tr class="border-black o_subtotal" style="" t-if="not doc.tax_totals and not is_pro_forma">
+        <td name="td_tax_totals_label">
+            <strong>Tax</strong>
+        </td>
+        <td t-if="not is_pro_forma" name="td_tax_totals" class="text-right o_price_total">
+            <span>$0.00</span>
+        </td>
+
+    </tr>
+    <tr class="border-black o_subtotal" t-if="is_pro_forma">
+        <td name="td_tax_totals_label">
+            <strong>Tax</strong>
+        </td>
+        <td name="td_tax_totals" class="text-right o_price_total">
+            <span t-esc="round(total_for_is_pro_forma_text,2)" t-options='{"widget": "monetary", "display_currency": doc.pricelist_id.currency_id}'/>
+
+        </td>
+    </tr>
+
+</xpath>
+<xpath expr="//div[hasclass('clearfix')]" position="after">
+    <span t-esc="custom_current_subtotal" t-options='{"widget": "monetary", "display_currency": doc.pricelist_id.currency_id}'/>
+</xpath>
+<xpath expr="//div[hasclass('page')]/h2[1]" position="replace">
+    <h4 class="mt16" style="color:#808080;">
+        <t t-if="not (env.context.get('proforma', False) or is_pro_forma)">
+            <span t-if="doc.state not in ['draft','sent']">Sales Order # </span>
+            <span t-if="doc.state in ['draft','sent']">Quotation # </span>
+        </t>
+        <t t-if="env.context.get('proforma', False) or is_pro_forma">
+            <span>Pro-Forma Invoice # </span>
+        </t>
+        <span t-field="doc.name"/>
+    </h4>
+</xpath>
+<!-- <xpath expr="//t[@t-call='web.external_layout']/t[3]" position="replace">
+            <t t-set="information_block" style="padding-top:5px">
+                <strong t-if="doc.partner_invoice_id">Billing Address:</strong>
+                <div t-field="doc.partner_invoice_id" t-options='{"widget": "contact", "fields": ["address", "name"], "no_marker": True}'/>
+                <div>
+                    <span t-field="doc.partner_invoice_id.name"/>
+                </div>
+                <div>
+                    <span t-field="doc.partner_invoice_id.street"/>
+                </div>
+                <div>
+                    <span t-field="doc.partner_invoice_id.street2"/>
+                </div>
+                <div>
+                    <span t-field="doc.partner_invoice_id.city"/>
+                    <span t-if="doc.partner_invoice_id.city and doc.partner_invoice_id.zip">,</span>
+                    <span t-field="doc.partner_invoice_id.zip"/>
+                </div>
+                <div>
+                    <span t-field="doc.partner_invoice_id.state_id.name"/>
+                    <span t-if="doc.partner_invoice_id.state_id.name and doc.partner_invoice_id.country_id.name">,</span>
+                    <span t-field="doc.partner_invoice_id.country_id.name"/>
+                </div>
+                <div>Tel:
+                            
+                    <span t-field="doc.partner_invoice_id.phone" />
+                </div>
+                <div>Email:
+                            
+                    <span t-field="doc.partner_invoice_id.email" />
+                </div>
+            </t>
+            <div class="row" style="margin-top: 1rem;" t-if="doc.state not in ['draft','sent','cancel']">
+                <t t-if="doc.applied_promo_code">
+                    <div class="col-lg-6">
+                        <strong>Applied Promo Code:</strong>
+                        <t t-esc="doc.applied_promo_code"></t>
+                    </div>
+                </t>
+            </div>
+        </xpath> -->
+<xpath expr="//div[@t-field='doc.partner_id']" position="replace">
+    <!-- <t t-if="doc.partner_id.phone">Tel:
+                <span t-field="doc.partner_id.phone" /></t><t t-if="doc.partner_id.email">Email:
+                <span t-field="doc.partner_id.email" /></t> -->
+    <strong t-if="doc.partner_shipping_id" style="padding-top:5px">Shipping Address:</strong>
+    <!-- <div t-field="doc.partner_shipping_id" t-options='{"widget": "contact", "fields": ["address", "name"], "no_marker": True}'/> -->
+    <div>
+        <span t-field="doc.partner_shipping_id.name"/>
+    </div>
+    <div>
+        <span t-field="doc.partner_shipping_id.street"/>
+    </div>
+    <div>
+        <span t-field="doc.partner_shipping_id.street2"/>
+    </div>
+    <div>
+        <span t-field="doc.partner_shipping_id.city"/>
+        <span t-if="doc.partner_shipping_id.city and doc.partner_shipping_id.zip">,</span>
+        <span t-field="doc.partner_shipping_id.zip"/>
+    </div>
+    <div>
+        <span t-field="doc.partner_shipping_id.state_id.name"/>
+        <span t-if="doc.partner_shipping_id.state_id.name and doc.partner_shipping_id.country_id.name">,</span>
+        <span t-field="doc.partner_shipping_id.country_id.name"/>
+    </div>
+    <div>Tel:
+                    
+        <span t-field="doc.partner_shipping_id.phone" />
+    </div>
+    <div>Email:
+                    
+        <span t-field="doc.partner_shipping_id.email" />
+    </div>
+</xpath>
+<xpath expr="//p[@t-if='doc.partner_id.vat']" position="replace"></xpath>
+<!-- <xpath expr="//td[@name='td_note_line']" position="replace">
+    <td name="td_amount_total" style="white-space: nowrap;" class="text-right d-line-block">
+        <t t-if="env.context.get('proforma', False) or is_pro_forma">
+                    
+        (            <span t-esc="doc.currency_id.name"/>
+        )
+            <span t-esc="round(total_for_is_pro_forma +doc.amount_is_shipping_total+ doc.amount_is_admin + total_for_is_pro_forma_text - abs(doc.global_discount) - total_discount,2)" t-options='{"widget": "monetary", "display_currency": doc.pricelist_id.currency_id}'/>
+
+        </t>
+
+        <t t-else="" class="col-12 d-flex-row">
+    (            <span t-esc="doc.currency_id.name"/>
+    )
+            <span t-esc="doc.amount_total" t-options='{"widget": "monetary", "display_currency": doc.pricelist_id.currency_id}' />
+        </t>
+
+    </td>
+    <tr class="border-black o_total">
+        <td name="td_amount_total_qty">
+            <strong>Total Quantity</strong>
+        </td>
+        <td name="td_amount_total" class="text-right">
+            <span t-esc="int(total_line_qty)"/>
+        </td>
+    </tr>
+    <tr class="border-black o_total">
+        <td name="td_amount_total_qty">
+            <strong>Total Weight (kg)</strong>
+        </td>
+        <td name="td_amount_total" class="text-right">
+            <span t-esc="'{:,.2f}'.format(doc.weight_total_kg)"/>
+        </td>
+    </tr>
+    <tr class="border-black o_total" style="font-size:10px" t-if="env.context.get('proforma', False) or is_pro_forma">
+        <td name="td_amount_total_qty">
+            <strong>Original Order</strong>
+        </td>
+        <td name="td_amount_total" class="text-right" >
+            (            <span t-esc="doc.currency_id.name"/>
+    )
+            <span t-esc="doc.amount_total" t-options='{"widget": "monetary", "display_currency": doc.pricelist_id.currency_id}' />
+
+        </td>
+    </tr>
+    <tr class="border-black o_total" style="font-size:10px" t-if="env.context.get('proforma', False) or is_pro_forma">
+        <td name="td_amount_total_qty">
+            <strong>Original Order QTY</strong>
+        </td>
+        <td name="td_amount_total" class="text-right" >
+            <span t-esc="int(sum(request.env['sale.order.line'].sudo().search([('order_id','=',doc.id),('product_id.type','!=','service')]).mapped('product_uom_qty')))"/>
+        </td>
+    </tr>
+</xpath> -->
+<!-- <xpath expr="//td[@name='td_amount_total']" position="replace">
+    <td name="td_amount_untaxed" class="text-right">
+        <t t-if="env.context.get('proforma', False) or is_pro_forma">
+            <span t-esc="total_for_is_pro_forma" t-options='{"widget": "monetary", "display_currency": doc.pricelist_id.currency_id}'/>
+        </t>
+        <t t-else="">
+            <span t-esc="custom_current_subtotal" t-options='{"widget": "monetary", "display_currency": doc.pricelist_id.currency_id}'/>
+        </t>
+
+
+    </td>
+</xpath> -->
+
+<xpath expr="//t[@t-set='address']" position="after">
+            <t t-if="not is_pro_forma" t-set="is_pro_forma" t-value="env.context.get('proforma', False)"/>
+                <t t-if="o">
+                <t t-set="company" t-value="o.company_id"/>
+                <t t-set="model" t-value="o._name"/>
+            </t>
+            <t t-elif="doc">
+                <t t-set="company" t-value="doc.company_id.sudo()"/>
+                <t t-set="model" t-value="doc._name"/>
+            </t>
+            <div class="row">
+                <div class="col-6 mb4">
+                    <img t-if="company.logo" t-att-src="image_data_uri(company.logo)" style="margin:40px 5px 5px 10px;height:51px;max-width:425px;" alt="Logo"/>
+                </div>
+                <div class="col-6 float-right company_address" style="padding-left:20%;">
+                    <div>
+                        <strong t-field="company.partner_id.name"/>
+                    </div>
+                    (A division of Tanzacan Tradelink Inc.)
+                    <span t-field="company.street"/>
+                    <br/>
+                    <span t-field="company.city"/> <span t-field="company.state_id.name"/>
+                    <span t-field="company.country_id.name"/> <span t-field="company.zip"/>
+                    <br/>
+                    Tel. <span t-field="company.phone"/><br/>
+                    Email. <span t-field="company.email"/>
+                </div>
+                <div class="clearfix mb8"/>
+            </div>
+            <hr style="margin-top:0 !important"/>
+            <div class="col">
+                <div class="row-6">
+                    <strong t-if="doc.partner_invoice_id">Billing Address:</strong>
+                    <div t-field="doc.partner_invoice_id" t-options='{"widget": "contact", "fields": ["address", "name"], "no_marker": True}'/>
+                    <div>
+                        <span t-field="doc.partner_invoice_id.name"/>
+                    </div>
+                    <div>
+                        <span t-field="doc.partner_invoice_id.street"/>
+                    </div>
+                    <div>
+                        <span t-field="doc.partner_invoice_id.street2"/>
+                    </div>
+                    <div>
+                        <span t-field="doc.partner_invoice_id.city"/>
+                        <span t-if="doc.partner_invoice_id.city and doc.partner_invoice_id.zip">,</span>
+                        <span t-field="doc.partner_invoice_id.zip"/>
+                    </div>
+                    <div>
+                        <span t-field="doc.partner_invoice_id.state_id.name"/>
+                        <span t-if="doc.partner_invoice_id.state_id.name and doc.partner_invoice_id.country_id.name">,</span>
+                        <span t-field="doc.partner_invoice_id.country_id.name"/>
+                    </div>
+                    <div>Tel:
+                                
+                        <span t-field="doc.partner_invoice_id.phone" />
+                    </div>
+                    <div>Email:
+                                
+                        <span t-field="doc.partner_invoice_id.email" />
+                    </div>
+                    <!-- <div class="row" style="margin-top: 1rem;" t-if="doc.state not in ['draft','sent','cancel']">
+                        <t t-if="doc.applied_promo_code">
+                            <div class="col-lg-6">
+                                <strong>Applied Promo Code:</strong>
+                                <t t-esc="doc.applied_promo_code"></t>
+                            </div>
+                        </t>
+                    </div> -->
+                </div>
+                <div  class="row-6">
+                    <strong t-if="doc.partner_shipping_id" style="padding-top:5px">Shipping Address:</strong>
+                    <!-- <div t-field="doc.partner_shipping_id" t-options='{"widget": "contact", "fields": ["address", "name"], "no_marker": True}'/> -->
+                    <div>
+                        <span t-field="doc.partner_shipping_id.name"/>
+                    </div>
+                    <div>
+                        <span t-field="doc.partner_shipping_id.street"/>
+                    </div>
+                    <div>
+                        <span t-field="doc.partner_shipping_id.street2"/>
+                    </div>
+                    <div>
+                        <span t-field="doc.partner_shipping_id.city"/>
+                        <span t-if="doc.partner_shipping_id.city and doc.partner_shipping_id.zip">,</span>
+                        <span t-field="doc.partner_shipping_id.zip"/>
+                    </div>
+                    <div>
+                        <span t-field="doc.partner_shipping_id.state_id.name"/>
+                        <span t-if="doc.partner_shipping_id.state_id.name and doc.partner_shipping_id.country_id.name">,</span>
+                        <span t-field="doc.partner_shipping_id.country_id.name"/>
+                    </div>
+                    <div>Tel:
+                            
+                        <span t-field="doc.partner_shipping_id.phone" />
+                    </div>
+                    <div>Email:
+                            
+                        <span t-field="doc.partner_shipping_id.email" />
+                    </div>
+                </div>
+            </div>
+       
+        </xpath>
+<xpath expr="//div[@id='informations']/div[@t-if='doc.user_id.name']" position="after">
+
+    <div class="col-auto mw-100 mb-2">
+        <strong>Total Quantity:</strong>
+        <t t-if="env.context.get('proforma', False) or is_pro_forma">
+            <t t-if="doc.state not in ('draft','sent','received')">
+                <t t-if="doc.delivered_qty">
+                    <p class="m-0 text-center" t-esc="doc.delivered_qty"/>
+                </t>
+                <t t-if="doc.picked_qty">
+                    <p class="m-0 text-center" t-esc="doc.picked_qty"/>
+                </t>
+            </t>
+            <t t-else="">
+                <t t-if="doc.ordered_qty">
+                    <p class="m-0 text-center" t-esc="doc.ordered_qty"/>
+                </t>
+            </t>
+            <!-- <p class="m-0 text-center" t-esc="int(sum(request.env['sale.order.line'].sudo().search([('order_id','=',doc.id),('product_id.type','!=','service')]).mapped('move_ids.quantity_done')))"/> -->
+        </t>
+        <t t-else="">
+            <t t-if="doc.state not in ('draft','sent','received')">
+                <t t-if="doc.delivered_qty">
+                    <p class="m-0 text-center" t-esc="doc.delivered_qty"/>
+                </t>
+                <t t-elif="doc.picked_qty">
+                    <p class="m-0 text-center" t-esc="doc.picked_qty"/>
+                </t>
+                <t t-elif="not doc.delivered_qty and not doc.picked_qty">
+                    <p class="m-0 text-center" t-esc="doc.ordered_qty"/>
+                </t>
+            </t>
+            <t t-else="">
+                <t t-if="doc.ordered_qty">
+                    <p class="m-0 text-center" t-esc="doc.ordered_qty"/>
+                </t>
+            </t>
+            <!-- <p class="m-0 text-center" t-esc="int(sum(request.env['sale.order.line'].sudo().search([('order_id','=',doc.id),('product_id.type','!=','service')]).mapped('product_uom_qty')))"/> -->
+        </t>
+    </div>
+    <div class="col-auto mw-100 mb-2">
+        <strong>Total Cases:</strong>
+        <p class="m-0 text-center" t-esc="int(doc.no_of_cases)"/>
+    </div>
+
+</xpath>
+<xpath expr="//div[@id='informations']" position="inside">
+    <div t-if="doc.free_shipping" class="col-auto mw-100 mb-2" style="position:absolute;right:0;">
+        <span style="padding:5px;background-color:#00A04A;color:white;">FREE SHIPPING</span>
+    </div>
+</xpath>
+<xpath expr="//div[@id='informations']/div[2]/p[@t-field='doc.date_order']" position="attributes">
+    <attribute name="t-options">{"widget": "date"}</attribute>
+    <p></p>
+</xpath>
+<xpath expr="//div[@id='informations']/div[@t-if='doc.user_id.name']" position="replace">
+
+                <div t-if="doc.sudo().user_id.name" class="col-auto mw-100 mt-2" style="display:block;">
+                <!--  -->
+                    <strong>Salesperson:</strong>
+                    <p class="m-0" t-field="doc.sudo().user_id"/>
+                </div>
+</xpath>
+</template>
+
+<template id="validation_template">
+    <t t-call="web.external_layout">
+        <div class="page">
+            <h2>You can not print PRO-FORMA Invoice report before scanning completed.</h2>
+        </div>
+    </t>
+</template>
+
+<template id="report_saleorder_report_inherit_spt2" inherit_id="sale.report_saleorder_pro_forma">
+    <xpath expr="//t[@t-foreach='docs']" position="replace">
+        <t t-foreach="docs" t-as="doc">
+            <t t-if="doc.state in ['draft','sent','received','sale','in_scanning']">
+                <t t-call="tzc_sales_customization_spt.validation_template" t-lang="doc.partner_id.lang"/>    
+            </t>
+            <t t-else="">
+                <t t-call="sale.report_saleorder_document" t-lang="doc.partner_id.lang"/>
+            </t>
+        </t>
+    </xpath>
+</template>
+</odoo>

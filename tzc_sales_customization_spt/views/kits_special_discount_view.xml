@@ -1,0 +1,24 @@
+<?xml version='1.0' encoding='utf-8'?>
+<odoo>
+    <data>
+        <record id="kits_special_discount_view_tree" model="ir.ui.view">
+            <field name="name">kits.special.discount.view.tree</field>
+            <field name="model">kits.special.discount</field>
+            <field name="arch" type="xml">
+                <tree editable="bottom">
+                    <field name="country_id" widget="many2many_tags" options="{'no_create':True,'no_open':True,'no_create_edit':True}"/>
+                    <field name="brand_ids" widget="many2many_tags" options="{'no_create':True,'no_open':True,'no_create_edit':True}"/>
+                    <field name="discount" />
+                </tree>
+            </field>
+        </record>
+
+        <!-- <record id="kits_special_discount_action" model="ir.actions.act_window">
+            <field name="name">Special Discount</field>
+            <field name="res_model">kits.special.discount</field>
+            <field name="view_mode">tree</field>
+        </record>
+
+        <menuitem id="kits_special_discount_menu" name="Special Discount" action="kits_special_discount_action" parent="sale.menu_sale_config" /> -->
+    </data>
+</odoo>

@@ -9,7 +9,7 @@ class kits_package_product_lines(models.Model):
     image_variant_1920 = fields.Binary('Image', related='product_id.image_variant_1920')
     image_secondary_1920 = fields.Binary('Secondary Image', related='product_id.image_secondary')
     image_product_url = fields.Char(' Primary Image',related='product_id.image_url')
-    image_product_secondary_url = fields.Char('Secondary Image ',related='product_id.image_secondary_url')
+    image_product_secondary_url = fields.Char('Secondary Image',related='product_id.image_secondary_url')
     qty = fields.Integer('Qty',default=1)
     product_price = fields.Float('Unit Price')
     usd_price = fields.Float('USD Price')
@@ -28,14 +28,14 @@ class kits_package_product_lines(models.Model):
     @api.onchange('usd_price')
     def _onchange_usd_price(self):
         for record in self:
-            # price = record.usd_price
-            # if self.env.user.partner_id.property_product_pricelist.currency_id.name == 'CAD':
-            #     price = record.cad_price
+            price = record.usd_price
+            if self.env.user.partner_id.property_product_pricelist.currency_id.name == 'CAD':
+                price = record.cad_price
             try:
-                record.discount = round(((record.product_price-record.usd_price) * 100) / record.product_price , 2)
+                record.discount = round(((record.product_price-price) * 100) / record.product_price , 2)
             except:
                 record.discount = 0.00
-            record.fix_discount_price = record.product_price - record.usd_price
+            record.fix_discount_price = record.product_price - price
     
     @api.onchange('discount')
     def _onchange_discount(self):
@@ -65,7 +65,7 @@ class kits_package_product_lines(models.Model):
         user_currency = self.env.user.partner_id.property_product_pricelist.currency_id.name
         for rec in self:
             # without sale_type price
-            product_price = rec.product_id.lst_price_usd
+            product_price = rec.product_id.lst_price
             if user_currency == 'CAD':
                 product_price = rec.product_id.lst_price
             rec.product_price = product_price

@@ -1350,3 +1350,37 @@ class ProductProduct(models.Model):
             "context":context,
             'target':"new",
         }
+
+    def _get_black_special_friday_sale(self):
+        active_fest_id = self.env['tzc.fest.discount'].search([('is_active','=',True)])
+        if self._context.get('partner_id'):
+            partner_id = self._context.get('partner_id')
+        else:
+            partner_id = self.env.user.partner_id
+        records = self.env['kits.special.discount'].search([('country_id','in',partner_id.country_id.ids),('brand_ids','in',self.brand.ids),('tzc_fest_id','=',active_fest_id.id)])
+        current_activate = False
+        if active_fest_id.from_date and active_fest_id.to_date:
+            current_activate = True if datetime.today().date() >= active_fest_id.from_date and datetime.today().date() <= active_fest_id.to_date else False
+        elif active_fest_id.from_date and not active_fest_id.to_date:
+            current_activate = True if datetime.today().date() >= active_fest_id.from_date else False
+        elif not active_fest_id.from_date and active_fest_id.to_date:
+            current_activate = True if datetime.today().date() <= active_fest_id.to_date else False
+        elif not active_fest_id.from_date and not active_fest_id.to_date:
+            current_activate = True
+        if records:
+            vals = {'discount':records[-1].discount,
+                    'active_dynamic_label':active_fest_id.active_dynamic_label_name if active_fest_id.active_dynamic_label_name else False,
+                    'dynamic_label_icon':active_fest_id.id if active_fest_id else False,
+                    'special_disc_active':True if active_fest_id else False,
+                    'is_set_discount_date':True if active_fest_id.from_date or active_fest_id.to_date else False,
+                    'current_activate':current_activate}
+            return vals
+        else:
+            return {}
+
+    def get_black_special_friday_sale(self):
+        data = self._get_black_special_friday_sale()
+        if data.get('current_activate') and data.get('dynamic_label_icon'):
+            data['icon'] = str(self.env['tzc.fest.discount'].browse(data.get('dynamic_label_icon')).dynamic_label_icon)[2:-1]
+        
+        return data

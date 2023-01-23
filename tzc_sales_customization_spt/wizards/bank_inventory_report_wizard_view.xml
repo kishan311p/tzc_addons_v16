@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <data>
+        <record id="bank_inventory_report_wizard_form_view_spt" model="ir.ui.view">
+            <field name="name">bank.inventory.report.wizard.form.view.spt</field>
+            <field name="model">bank.inventory.report.wizard</field>
+            <field name="arch" type="xml">
+                <form>
+                    <sheet>
+                        <div class="row">
+                            <div class="col" style="display:flex;">
+                                <div class="col-2">
+                                    <b>
+                                    From
+                                    </b>
+                                </div>
+                                <div class="col-4">
+                                    <field name="start_month" placeholder="Month"/>
+                                </div>
+                                <div class="col-4">
+                                    <field name="start_year" placeholder="Year"/>
+                                </div>
+                            </div>
+                            <div class="col" style="display:flex;">
+                                <div class="col-2">
+                                    <b>
+                                    To
+                                    </b>
+                                </div>
+                                <div class="col-4">
+                                    <field name="end_month" placeholder="Month"/>
+                                </div>
+                                <div class="col-4">
+                                    <field name="end_year" placeholder="Year"/>
+                                </div>
+                            </div>
+                        </div>
+                    </sheet>
+                    <footer>
+                        <button name="action_print_report_file" type="object" string="Export"/>
+                        <button special="cancel" type="object" string="Cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+    </data>
+
+    <record id="action_bank_inventory_report_wizard" model="ir.actions.act_window">
+        <field name="name">Bank Inventory Report</field>
+        <field name="res_model">bank.inventory.report.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+
+    <menuitem id='menuproduct_bank_inventory_report' name="Bank Inventory Report" action="action_bank_inventory_report_wizard" parent="sale.menu_sale_report" sequence="150" />
+</odoo>

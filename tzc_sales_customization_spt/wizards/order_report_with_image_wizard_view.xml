@@ -1,0 +1,23 @@
+<?xml version='1.0' encoding='utf-8'?>
+<odoo>
+    <data>
+        <record id="order_report_with_image_wizard_form_view" model="ir.ui.view">
+            <field name="name">order.report.with.image.wizard.form.view</field>
+            <field name="model">order.report.with.image.wizard</field>
+            <field name="arch" type="xml">
+                <form>
+                    <sheet>
+                        <group>
+                            <field name="with_img" />      
+                        </group>
+                    </sheet>
+                    <footer>
+                        <button string="Send File By Email" class="btn btn-primary" type="object" name="action_send_email" />
+                        <button string="Download Excel" class="btn btn-primary" type="object" name="action_process_report" />
+                        <button string="Cancel" class="btn-secondary" special="cancel" />
+                    </footer>
+                </form>
+            </field>
+        </record>
+    </data>
+</odoo>

@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <record id="flash_sale_from_view_spt" model="ir.ui.view">
+            <field name="name">flash.sale.from.view.spt</field>
+            <field name="model">flash.menu.spt</field>
+            <field name="arch" type="xml">
+                <form>
+                    <header>
+                        <button string="Process" class="btn btn-primary" type="object" name="action_process" attrs="{'invisible':[('state', 'not in',['cancel','draft'])]}"/>
+                        <button string="Start Flash Sale" class="btn btn-primary" type="object" name="action_is_publised" attrs="{'invisible':[('state', '!=','confrimed')]}"/>
+                        <button string="Set Draft" class="btn btn-primary" type="object" name="action_draft" attrs="{'invisible':[('state', '=', 'draft')]}"/>
+                        <button string="Cancel" class="btn btn-primary" type="object" name="action_cancel" attrs="{'invisible':[('state', '=', 'cancel')]}"/>
+                        <button string="Stop Flash Sale" class="btn btn-primary" type="object" name="button_expired" attrs="{'invisible':[('state', 'not in',['is_publised'])]}"/>
+                        <field name="state" widget="statusbar"/>
+
+
+                    </header>
+                    <sheet>
+                        <div name="button_box" class="oe_button_box">
+                            <button name="open_pricelist_spt" class="oe_stat_button" icon="fa-bars" type="object" string="Pricelist">
+                            </button>
+                            <button name="open_pricelist_usd_spt" class="oe_stat_button" icon="fa-bars" type="object" string="International Pricelist">
+                            </button>
+                        </div>
+                        <label for="name" />
+                        <h1>
+                            <field name="name" attrs="{'readonly':[('state','!=','draft')]}" />
+                        </h1>
+                        <group>
+                            <group name="pricelist_rule_limits">
+                                <field name="min_quantity" attrs="{'readonly':[('state','!=','draft')]}"/>
+                                <field name="date_start" attrs="{'readonly':[('state','!=','draft')]}"/>
+                                <field name="date_end" attrs="{'readonly':[('state','!=','draft')]}"/>
+                                <field name="pricelist_id" invisible="1"/>
+                            </group>
+                            <group name="pricelist_rule_related" groups="base.group_no_one">
+                                <!-- Infos from the pricelist for UI rendering (monetary fields, ...) -->
+                                <field name="currency_id" groups="base.group_multi_currency" attrs="{'readonly':[('state','!=','draft')]}"/>
+                            </group>
+                        </group>
+                        <group string="Price Computation" name="pricelist_rule_computation" groups="product.group_sale_pricelist" attrs="{'readonly':[('state','!=','draft')]}">
+                            <group name="pricelist_rule_method">
+                                <field name="compute_price" readonly="1" string="Compute Price" widget="radio" attrs="{'readonly':[('state','!=','draft')]}"/>
+                            </group>
+                            <group name="pricelist_rule_base">
+                                <field name="fixed_price" attrs="{'invisible':[('compute_price', '!=', 'fixed')],'readonly':[('state','!=','draft')]}"/>
+                                <label for="percent_price" attrs="{'invisible':[('compute_price', '!=', 'percentage')],'readonly':[('state','!=','draft')]}"/>
+                                <div attrs="{'invisible':[('compute_price', '!=', 'percentage')],'readonly':[('state','!=','draft')]}">
+                                    <field name="percent_price" class="oe_inline" attrs="{'invisible':[('compute_price', '!=', 'percentage')],'readonly':[('state','!=','draft')]}"/>
+                                  %%
+                                </div>
+                                <field name="base" attrs="{'invisible':[('compute_price', '!=', 'formula')],'readonly':[('state','!=','draft')]}"/>
+                            </group>
+                        </group>
+                        <div class="oe_grey" groups="uom.group_uom">
+                            <p>The computed price is expressed in the default Unit of Measure of the product.</p>
+                        </div>
+                        <group name="pricelist_rule_advanced" col="6" attrs="{'invisible':[('compute_price', '!=', 'formula')]}" groups="product.group_sale_pricelist">
+                            <label for="name" string="New Price ="/>
+                            <div>
+                                <span attrs="{'invisible':[('base', '!=', 'list_price')]}">Sales Price  -  </span>
+                                <span attrs="{'invisible':[('base', '!=', 'standard_price')]}">Cost  -  </span>
+                                <span attrs="{'invisible':[('base', '!=', 'pricelist')]}">Other Pricelist  -  </span>
+                            </div>
+                            <label for="price_discount"/>
+                            <div class="o_row">
+                                <field name="price_discount" attrs="{'readonly':[('state','!=','draft')]}"/>
+                                <span>%%</span>
+                            </div>
+                            <label string=" + " for="price_surcharge"/>
+                            <field name="price_surcharge" nolabel="1" attrs="{'readonly':[('state','!=','draft')]}"/>
+
+                            <field name="price_round" string="Rounding Method" attrs="{'readonly':[('state','!=','draft')]}"/>
+                            <field name="price_min_margin" string="Min. Margin" attrs="{'readonly':[('state','!=','draft')]}"/>
+                            <field name="price_max_margin" string="Max. Margin" attrs="{'readonly':[('state','!=','draft')]}"/>
+                        </group>
+                        <notebook>
+                            <page name="product_tmpl" string="Products">
+                                <field name="product_ids" attrs="{'readonly':[('state','!=','draft')]}">
+                                    <tree create="1">
+                                        <!-- <field name="image_variant_128" widget="image" options="{'zoom': true,'preview_image':'image_variant_1920','size': [128, 128]}" string="Primary" />
+                                        <field name="image_secondary_128" widget='image' options="{'zoom': true,'preview_image':'image_secondary','size': [128, 128]}" string="Secondary" /> -->
+                                        <field name="image_url" class="oe_avatar" string="Primary Image" widget="image" options="{'zoom': true,'thumb_image':'image_url','preview_image':'image_url','size': [256, 256]}"/>
+                                        <field name="image_secondary_url" class="oe_avatar" string="Secondary Image" widget="image" style="margin-left:10px;" options="{'zoom': true,'thumb_image':'image_secondary_url','preview_image':'image_secondary_url','size': [256, 256]}"/>
+                                        <field name="default_code"/>
+                                        <field name="brand"/>
+                                        <field name="model"/>
+                                        <field name="variant_name" string="Name"/>
+                                        <field name="available_qty_spt" string="Available Qty"/>
+                                        <field name="virtual_available" invisible="1"/>
+                                    </tree>
+                                </field>
+                            </page>
+                            <page name="customer" string="Customers">
+                                <field name="partner_ids" attrs="{'readonly':[('state','!=','draft')]}"/>
+                            </page>
+                        </notebook>
+
+
+                    </sheet>
+                    <footer>
+                    </footer>
+                </form>
+
+            </field>
+        </record>
+
+
+        <record id="flash_sale_tree_view_spt" model="ir.ui.view">
+            <field name="name">flash.sale.tree.view.spt</field>
+            <field name="model">flash.menu.spt</field>
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="name"/>
+                    <field name="date_start"/>
+                    <field name="date_end"/>
+                    <field name="state"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="action_flash_menu_spt" model="ir.actions.act_window">
+            <field name="view_mode">tree,form</field>
+            <field name="name">Flash Sale</field>
+            <field name="res_model">flash.menu.spt</field>
+        </record>
+
+        <!-- <menuitem name="Flash Sale" groups="base.group_system" action="action_flash_menu_spt" id="menu_action_flash_menu_spt" parent="sale.sale_menu_root" sequence="200"/> -->
+
+    </data>
+</odoo>

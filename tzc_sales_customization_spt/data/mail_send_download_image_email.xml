@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <data>
+        <record id="mail_send_download_image_email" model="mail.template">
+            <field name="name">Send Download Image Email</field>
+            <field name="subject">{{object.env.user.name}} has sent you download link.</field>
+            <field name="email_from">{{object.env.user.email or ''}}</field>
+            <field name="email_to">{{object.partner_id.email or ''}}</field>
+            <field name="reply_to">{{object.user_id.company_id.catchall_email}} {{object.user_id.email}}</field>
+            <field name="model_id" ref="sale.model_sale_order"/>
+            <field name="auto_delete" eval="False"/>
+            <field name="lang">{{object.partner_id.lang}}</field>
+            <field name="body_html" type="html">
+                <!-- USE NOTIFICATION LIGHT -->
+                <p style="margin-top:0px;">Dear <t t-out="object.partner_id.name"/>,</p>
+                <!-- message -->
+                <p>
+                    <t t-out="object.env.user.name"/> has sent you product image download link for order <a t-attf-href="object.get_base_url()/my/orders/object.id?access_token=object.access_token" target="_blank" style="text-decoration: none;" class="o_default_snippet_text"><t t-out="object.name"/>.</a>
+                </p>
+                <a t-attf-href="object.get_base_url()/my/orders/object.id?access_token=object.access_token" target="_blank" style="background-color:#7693f8 !important; padding:10px; text-decoration: none; color: #fff; border-radius: 5px; font-size: 16px;" class="o_default_snippet_text">
+                    View Order
+                </a>
+                <p style="margin-bottom:0px;">
+                    Thank you,
+                    <br/>
+                    ETO Support
+                </p>
+            </field>
+        </record>
+    </data>
+
+</odoo>

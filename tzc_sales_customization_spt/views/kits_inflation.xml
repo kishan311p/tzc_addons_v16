@@ -1,0 +1,79 @@
+<?xml version='1.0' encoding='utf-8'?>
+<odoo>
+    <data>
+        <record id="kits_inflation_from" model="ir.ui.view">
+            <field name="name">kits.inflation.form</field>
+            <field name="model">kits.inflation</field>
+            <field name="arch" type="xml">
+                <form>
+                    <sheet>
+                        <div class="oe_button_box" name="button_box" modifiers="{}">
+                            <field name="is_active" invisible="1"/>
+                            <button type="object" name="action_active" style="color:#00b115;" class="oe_stat_button" icon="fa-toggle-on" attrs="{'invisible':[('is_active','=',False)]}">
+                                <span>
+                                    Activated
+                                </span>
+                            </button>
+                            <button type="object" name="action_deactive" style="color:#f06767;" class="oe_stat_button" icon="fa-toggle-off" attrs="{'invisible':[('is_active','=',True)]}">
+                                <span>
+                                    Deactivated
+                                </span>
+                            </button>
+                        </div>
+                        <group>
+                            <group>
+                                <h1>
+                                    <field name="name" required="1" />
+                                </h1>
+                            </group>
+                        </group>
+                       <group>
+                            <group>
+                                <field name="from_date" />
+                                <field name="to_date" />
+                                <field name="is_active" invisible="1"/>
+                            </group>
+                        </group>
+                        <notebook>
+                            <page string="Inflation Rules">
+                                <field name="inflation_rule_ids" />
+                            </page>
+                        </notebook>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+        <record id="kits_inflation_tree" model="ir.ui.view">
+            <field name="name">kits.inflation.tree</field>
+            <field name="model">kits.inflation</field>
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="name" />
+                    <field name="from_date" />
+                    <field name="to_date" />
+                </tree>
+            </field>
+        </record>
+        <record id="kits_inflation_search_view" model="ir.ui.view">
+            <field name="name">kits_inflation_search_view</field>
+            <field name="model">kits.inflation</field>
+            <field name="arch" type="xml">
+                <search>
+                    <separator/>
+                    <filter name="archived" string="Active" domain="[('is_active', '=', True)]"/>
+                    <filter name="unarchived" string="Deactive" domain="[('is_active', '=', False)]"/>
+                </search>
+            </field>
+        </record>
+        <record id="action_kits_inflation" model="ir.actions.act_window">
+            <field name="name">Price Inflation</field>
+            <field name="res_model">kits.inflation</field>
+            <field name="view_mode">tree,form</field>
+            <field name="context">{'search_default_archived':1}</field>
+            <field name="domain">['|',('is_active','=',True),('is_active','=',False)]</field>
+        </record>
+        <menuitem id="menu_kits_inflation" name="Price Inflation" action="action_kits_inflation" parent="sale.sale_menu_root" groups="base.group_system"/>
+        <!-- ,tzc_sales_customization_spt.group_marketing_user -->
+    </data>
+    
+</odoo>

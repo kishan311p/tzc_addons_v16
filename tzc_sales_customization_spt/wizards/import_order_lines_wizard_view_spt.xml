@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <data>
+        <record id="import_order_lines_wizard_spt_form_view" model="ir.ui.view">
+            <field name="name">import.order.lines.wizard.spt.form.view</field>
+            <field name="model">import.order.lines.wizard.spt</field>
+            <field name="arch" type="xml">
+                <form>
+                    <sheet>
+                        <group>
+                            <group>
+                                <field name="attached_file_name" invisible="1"/>
+                                <field name="attached_file" filename="attached_file_name"/>
+                            </group>
+                        </group>
+                    </sheet>
+                    <footer>
+                        <button name="action_process_file" type="object" string="Process"/>
+                        <button string="Cancel" class="btn btn-secondary" special="cancel"/>
+
+                    </footer>
+                </form>
+            </field>
+        </record>
+    </data>
+
+</odoo>

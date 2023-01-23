@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="0">
+        <record id="tzc_email_template_order_ready_to_ship" model="mail.template">
+            <field name="name">Salesperson Order Sent Ready To Ship</field>
+            <field name="email_from">{{(object.user_id.email or ''}}</field>
+            <!-- <field name="subject">Your Order {{object.name}} is ready for shipment Dear {{(object.partner_id.name or '')}}.</field> -->
+            <field name="subject">Your Order {{object.name}} is ready for shipment {{object.partner_id.name or ''}}.</field>
+            <field name="email_to">{{object.partner_id.email}}</field>
+            <field name="reply_to">{{object.user_id.company_id.catchall_email|safe}} {{object.user_id.email}}</field>
+            <field name="model_id" ref="sale.model_sale_order" />
+            <field name="auto_delete" eval="False" />
+            <field name="lang">{{object.partner_id.lang}}</field>
+            <field name="body_html" type="html">
+                <table border="0" cellpadding="0" cellspacing="0" width="590" style="padding: 0px; background-color: white; color: #454748; border-collapse:separate;">
+                    <tbody>
+                        <!-- CONTENT -->
+                        <tr>
+                            <td align="left" style="min-width: 590px;">
+                                <table border="0" cellpadding="0" cellspacing="0" width="590" style="min-width: 590px; background-color: white; padding: 0px 8px 0px 8px; border-collapse:separate;">
+                                    <tr>
+                                        <td valign="top" style="font-size: 13px;">
+                                            <p style="margin-top:0px;">Dear <t t-out="object.partner_id.name"/>,</p>
+                                            <p>
+                                                Your Order <t t-out="object.name"/> is now ready for shipment.
+                                            </p>
+                                            <p>
+                                            <a t-attf-href="object.get_base_url()/my/orders/object.id?object.get_access_token_spt()" style="background-color:#7693f8 !important; padding: 10px; text-decoration: none; color: #fff; border-radius: 5px; font-size: 16px;" class="o_default_snippet_text">
+                                                View Order
+                                            </a>
+                                            </p>
+                                            <p>
+                                                Your account manager <b><t t-out="object.user_id.name"/></b> will be in touch with you shortly to collect payment and to finalize any specific shipping instructions.
+                                            </p>
+                                            <p style="margin-bottom:0px;">
+                                                Thank you,
+                                            </p>
+                                            <p>
+                                                <t t-if="object.user_id.signature">
+                                                    <t t-out="object.user_id.signature"/>
+                                                </t>
+                                                
+                                                <t t-else="">
+                                                    Eto Support
+                                                </t>
+                                                
+                                            </p>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </field>
+        </record>
+    </data>
+</odoo>

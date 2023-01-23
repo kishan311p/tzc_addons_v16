@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <data noupdate='0'>
+        <record id="tzc_start_adding_into_cart_notification_to_salesperson_spt" model="mail.template">
+            <field name="name">Customer Start Adding to Cart notification to SalesPerson</field>
+            <!-- <field name="email_from">${object.user_id.email | safe}</field> -->
+            <field name="email_from">"ETO-Support" &lt;{{object.user_id.company_id.catchall_email or user.email}}&gt;</field>
+            <field name="subject">{{object.partner_id.name}} customer has started adding items to cart.</field>
+            <field name="email_to">{{ }}</field>
+            <field name="model_id" ref="sale.model_sale_order"/>
+            <field name="auto_delete" eval="False"/>
+            <field name="lang">{{object.env.context['lang'] or object.env.user.lang }}</field>
+            <field name="body_html" type="html">
+                <table border="0" cellpadding="0" cellspacing="0" style="padding-top: 16px; background-color: #F1F1F1; font-family:Verdana, Arial,sans-serif; color: #454748; width: 100%; border-collapse:separate;">
+                    <tr>
+                        <td align="center">
+                            <table border="0" cellpadding="0" cellspacing="0" width="590" style="padding: 16px; background-color: white; color: #454748; border-collapse:separate;">
+                                <tbody>
+                                    <!-- HEADER -->
+                                    <tr>
+                                        <td align="center" style="min-width: 590px;">
+                                            <t>
+                                            <t t-if="object.env.cr.dbname != 'eto_production'">
+                                                <div class="corner-ribbon" style="top: 5%;position:absolute;width: 165px;font-weight: bold;color: #dc0e0e;font-size: 36px;text-align: center;">TEST</div>
+                                            </t>
+                                            
+                                            </t>
+                                            <table border="0" cellpadding="0" cellspacing="0" width="590" style="min-width: 590px; background-color: white; padding: 0px 8px 0px 8px; border-collapse:separate;">
+                                                <tr>
+                                                    <td valign="middle" style="width: 245px;">
+                                                        <span style="font-size: 20px; font-weight: bold;">
+                                                            <t t-out="object.name"/>
+                                                        </span>
+                                                    </td>
+                                                    <td valign="middle" style="width: 145px;" align="right">
+                                                        <img t-httf-src="/web/image?model=res.company&amp;id=object.user_id.company_id.id&amp;field=logo" style="padding: 0px; margin: 0px; height: auto; width: 280px;" alt="object.user_id.company_id.name"/>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td colspan="2" style="text-align:center;">
+                                                        <hr width="100%" style="background-color:rgb(204,204,204);border:medium none;clear:both;display:block;font-size:0px;min-height:1px;line-height:0; margin:16px 0px 16px 0px;"/>
+                                                    </td>
+                                                </tr>
+                                            </table>
+                                        </td>
+                                    </tr>
+                                    <!-- CONTENT -->
+                                    <td align="center" style="min-width: 590px;">
+                                        <table border="0" cellpadding="0" cellspacing="0" width="590" style="min-width: 590px; background-color: white; padding: 0px 8px 0px 8px; border-collapse:separate;">
+                                            <tr>
+                                                <td valign="top" style="font-size: 13px;">
+                                                    <p style="margin-top:0px;">Hello <t t-out="object.user_id.name"/>,</p>
+                                                    <!-- <br/> -->
+                                                    <!-- <br/> -->
+                                                    <p>Customer <t t-out="object.partner_id.name"/> has started adding items to the Cart.</p>
+                                                    <p style="margin-bottom:0px;">Thank you,<br/>
+                                                       ETO Support
+                                                    </p>
+                                                    <!-- <br/> -->
+                                                    <a t-attf-href="object.get_base_url()/report/pdf/sale.report_saleorder/object.id">
+                                                        <img t-attf-src="/tzc_sales_customization_spt/static/src/img/pdf.png" style="height:60px;width:100px;" />
+                                                    </a>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td style="text-align:center;">
+                                                    <hr width="100%" style="background-color:rgb(204,204,204);border:medium none;clear:both;display:block;font-size:0px;min-height:1px;line-height:0; margin: 16px 0px 16px 0px;"/>
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                    <!-- FOOTER -->
+                                    <tr>
+                                        <td align="center" style="min-width: 590px;">
+                                            <table border="0" cellpadding="0" cellspacing="0" width="590" style="min-width: 590px; background-color: white; font-size: 11px; padding: 0px 8px 0px 8px; border-collapse:separate;">
+                                                <tr>
+                                                    <td valign="middle" align="left">
+                                                        <t t-out="object.env.company.name"/>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td valign="middle" align="left" style="opacity: 0.7;">
+                                                        <t t-out="object.env.company.phone"/>
+                                                        <t t-if="object.env.company.email">
+                                                            <a t-attf-href="'mailto:%s' % ${object.env.company.email}" style="text-decoration:none; color: #454748;"><t t-out="object.env.company.email"/></a>
+                                                        </t>
+                                                        <t t-if="object.env.company.website">
+                                                            |<a t-attf-href="'%s' % object.env.company.website" style="text-decoration:none; color: #454748;">                        
+                                                            <t t-out="object.env.company.website"/></a>
+                                                        </t>
+                                                       
+                                                    </td>
+                                                </tr>
+                                            </table>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </td>
+                    </tr>
+                    <!-- POWERED BY -->
+                    <tr>
+                        <td align="center" style="min-width: 590px;">
+                            <table border="0" cellpadding="0" cellspacing="0" width="590" style="min-width: 590px; background-color: #F1F1F1; color: #454748; padding: 8px; border-collapse:separate;">
+                                <tr>
+                                    <td style="text-align: center; font-size: 13px;">
+                                    Powered by <a target="_blank" href="www.teameto.com" style="color: #7693f8;">ETO</a>
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                </table>
+            </field>
+        </record>
+    </data>
+
+</odoo>

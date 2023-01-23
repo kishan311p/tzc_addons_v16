@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <data>
+        <record id="kits_create_credit_note_wizard_form_view" model="ir.ui.view">
+            <field name="name">kits.create.credit.note.wizard.form.view</field>
+            <field name="model">kits.create.credit.note.wizard</field>
+            <field name="arch" type="xml">
+                <form>
+                    <sheet>
+                        <group>
+                            <group>
+                                <field name="order_amount" />
+                                <field name="paid_amount" attrs="{'invisible':[('paid_amount','=',0)]}" />
+                            </group>
+                            <group>
+                                <field name="refund_date" />
+                                <field name="credit_amount" />
+                            </group>
+                        </group>
+                    </sheet>
+                    <footer>
+                        <button name="action_create_credit_note" type="object" string="Create Credit Note" class="oe_highlight"/>
+                        <button special="cancel" type="object" string="Cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+    </data>
+
+</odoo>

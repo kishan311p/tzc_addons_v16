@@ -1,0 +1,25 @@
+<?xml version='1.0' encoding='utf-8'?>
+<odoo>
+    <data>
+        <record id="kits_generate_payment_link_wizard_view_form" model="ir.ui.view">
+            <field name="name">kits.generate.payment.link.wizard.view.form</field>
+            <field name="model">kits.generate.payment.link.wizard</field>
+            <field name="arch" type="xml">
+                <form>
+                    <sheet>
+                        <div role="alert" class="alert alert-info">
+                            Payment Link Generated Successfully !!
+                        </div>
+                        <group>
+                            <field name="kits_payment_link" readonly="1" widget="CopyClipboardChar" />
+                        </group>
+                    </sheet>
+                    <footer>
+                        <button string="Send Email" name="action_send_payment_link" type="object" class="oe_highlight"/>
+                        <button string="Close" type="object" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+    </data>
+</odoo>

@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="0">
+        <!-- Email template -->
+        <record id="mail_template_salesperson_abandone_cart" model="mail.template">
+            <field name="name">New Sales Order: Cart Recovery Notify Salesperson Email</field>
+            <field name="email_from">"ETO-Support" &lt;{{object.user_id.company_id.catchall_email or user.email}}&gt;</field>
+            <field name="subject">Order {{object.name}} has abandoned.</field>
+            <field name="partner_to">{{object.user_id.partner_id.id }}</field>
+            <field name="model_id" ref="sale.model_sale_order" />
+            <field name="auto_delete" eval="False" />
+            <field name="lang">{{object.user_id.lang}}</field>
+            <field name="body_html" type="xml">
+                <table border="0" cellpadding="0" cellspacing="0" width="590" style="padding: 0px; background-color: white; color: #454748; border-collapse:separate;">
+                    <tbody>
+                        <!-- CONTENT -->
+                        <tr>
+                            <td valign="top" style="font-size:13px;">
+                                <p style="margin-top:0px;">Hello <t t-out="object.user_id.name"/>,</p>
+                                <!-- <br/> -->
+                                <!-- <br/> -->
+                                <p>Quotation <b><a t-attf-href="object.get_base_url()/web#id=object.id &amp;action=object.env.ref('website_sale.action_orders_ecommerce').id &amp;model=sale.order&amp;view_type=form" target="_blank" style="text-decoration: none;"><t t-out="object.name"/></a></b> is <b><t t-out="object.count_days()"/> Days</b> Old, Please do follow up with customer <b><t t-out="object.partner_id.name"/>.</b></p>
+                                <!-- <br/> -->
+                                <div style="text-align: left; margin: 16px 0px 16px 0px; font-size: 14px;">
+                                    <a t-attf-href="object.get_base_url()/web#id= object.id &amp;action=object.env.ref('website_sale.action_orders_ecommerce').id &amp;model=sale.order&amp;view_type=form" target="_blank" style="background-color: #7693f8; padding: 8px 16px 8px 16px; text-decoration: none; color: #fff; border-radius: 5px; font-size:13px;">
+                                        View order
+                                    </a>
+                                </div>
+                                <!-- <br/> -->
+                                <p style="margin-bottom:0px;">Thank you,<br/>
+                                ETO Support</p>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </field>
+        </record>
+    </data>
+</odoo>

@@ -1,0 +1,37 @@
+<?xml version='1.0' encoding='utf-8'?>
+<odoo>
+    <data>
+        <record id="mail_template_notify_customer_quotation_create" model="mail.template">
+            <field name="name">Send Create Order To Customer</field>
+            <!-- <field name="subject">Order ${object.name} Is Created.</field> -->
+            <field name="subject">An order has been created for you Dear Customer.</field>
+            <field name="email_from">"ETO-Support" &lt;{{object.company_id.catchall_email or user.email}}&gt;</field>
+            <field name="email_to">{{object.partner_id.email}}</field>
+            <field name="model_id" ref="sale.model_sale_order" />
+            <field name="auto_delete" eval="False" />
+            <field name="lang">{{object.partner_id.lang}}</field>
+            <field name="body_html" type="xml">
+                <table border="0" cellpadding="0" cellspacing="0" width="590" style="padding: 0px; background-color: white; color: #454748; border-collapse:separate;">
+                    <tbody>
+                        <!-- CONTENT -->
+                        <tr>
+                            <td valign="top" style="font-size:13px;">
+                                
+                                <p style="margin-top:0px;">Dear <t t-out = 'object.partner_id.name'/>,</p>
+                                <p>Your account manager <t t-out = 'object.partner_id.name'/> has created an order for you.</p>
+                                <!-- <p>Order ${object.name} is created.</p> -->
+                                
+                                <a t-attf-href="object.get_base_url()/my/orders/object.id?access_token=object.access_token" target="_blank" style="background-color:#7693f8 !important; padding:10px; text-decoration: none; color: #fff; border-radius: 5px; font-size: 16px;" class="o_default_snippet_text">
+                                    View Order
+                                </a>
+                                
+                                <p style="margin-bottom:0px;">Thank you,<br/>
+                                ETO Support</p>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </field>
+        </record>
+    </data>
+</odoo>

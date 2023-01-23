@@ -1,0 +1,45 @@
+<?xml version='1.0' encoding='utf-8'?>
+<odoo>
+    <data>
+        <record id="mail_template_notify_customer_order_completion" model="mail.template">
+            <field name="name">Send Completed Order To Customer</field>
+            <field name="subject">Order {{object.name}} Is Completed.</field>
+            <field name="email_from">{{object.user_id.email}}</field>
+            <field name="email_to">{{object.partner_id.email}}</field>
+            <field name="reply_to">{{object.user_id.company_id.catchall_email}}{{object.user_id.email}}</field>
+            <field name="model_id" ref="sale.model_sale_order" />
+            <field name="auto_delete" eval="False" />
+            <field name="lang">{{object.partner_id.lang}}</field>
+            <field name="body_html" type="xml">
+                <table border="0" cellpadding="0" cellspacing="0" width="590" style="padding: 0px; background-color: white; color: #454748; border-collapse:separate;">
+                    <tbody>
+                        <!-- CONTENT -->
+                        <tr>
+                            <td valign="top" style="font-size:13px;">
+                                
+                                <p style="margin-top:0px;">Dear <t t-out="object.partner_id.name"/>,</p>
+                                <p>Here is your Order <t t-out="object.name"/></p>
+                                <br/>
+                                <a t-attf-href="object.get_base_url()/my/orders/object.id?access_token=object.access_token" target="_blank" style="background-color:#7693f8 !important; padding:10px; text-decoration: none; color: #fff; border-radius: 5px; font-size: 16px;" class="o_default_snippet_text">
+                                    View Order
+                                </a>
+                                <p style="margin-bottom:0px;">Thank you,<br/>
+                                    <t t-if="object.user_id and object.user_id.signature">
+                                        <t t-out="object.user_id.signature"/>
+                                    </t>
+                                    <t t-else="">
+                                        Eto Support
+                                    </t>
+                                    
+                                </p>
+                                <a t-attf-href="object.get_base_url()/report/pdf/sale.report_saleorder/object.id">
+                                    <img t-attf-src="/tzc_sales_customization_spt/static/src/img/pdf.png" style="height:60px;width:100px;"/>
+                                </a>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </field>
+        </record>
+    </data>
+</odoo>

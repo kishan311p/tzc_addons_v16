@@ -1,0 +1,46 @@
+<?xml version='1.0' encoding='utf-8'?>
+<odoo>
+    <data>
+        <record id="order_payments_view_form" model="ir.ui.view">
+            <field name="name">order.payments.view.form</field>
+            <field name="model">order.payment</field>
+            <field name="arch" type="xml">
+                <form create="false" edit="false">
+                    <header>
+                        <field name="state" widget="statusbar" statusbar_visible="approve,decliend"/>
+                    </header>
+                    <sheet>
+                        <group>
+                            <group>
+                                <field name="create_date" />
+                                <field name="order_id" />
+                                <field name="amount" />
+                                <field name="is_manual_paid" />
+                                <field name="mode_of_payment" />
+                                <field name="payment_description" />
+                            </group>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+        <record id="order_payments_view_tree" model="ir.ui.view">
+            <field name="name">order.payments.view.tree</field>
+            <field name="model">order.payment</field>
+            <field name="arch" type="xml">
+                <tree create="false" edit="false" default_order="create_date desc">
+                    <field name="create_date" />
+                    <field name="order_id" />
+                    <field name="amount" />
+                    <field name="state" />
+                </tree>
+            </field>
+        </record>
+        <record id="order_payments_act_window" model="ir.actions.act_window">
+            <field name="name">Order Payment</field>
+            <field name="res_model">order.payment</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+        <menuitem id="order_payments_menu" name="Order Payment" action="order_payments_act_window" parent="sale.menu_sale_config" />
+    </data>
+</odoo>

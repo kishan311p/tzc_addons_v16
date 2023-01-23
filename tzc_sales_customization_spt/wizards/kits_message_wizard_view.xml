@@ -1,0 +1,24 @@
+<?xml version='1.0' encoding='utf-8'?>
+<odoo>
+    <data>
+        <record id="kits_message_wizard_view_form" model="ir.ui.view">
+            <field name="name">kits.message.wizard.view.form</field>
+            <field name="model">kits.message.wizard</field>
+            <field name="arch" type="xml">
+                <form>
+                    <sheet>
+                        <group>
+                            <div role="alert" class="alert alert-info" style="font-size:15px;">
+                                <field name="kits_message" readonly="1"/>       
+                            </div>
+                        </group>
+                    </sheet>
+                    <footer>
+                        <button string="Yes" name="action_confirm" type="object" class="oe_highlight"/>
+                        <button string="Cancel" type="object" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+    </data>
+</odoo>

@@ -1,0 +1,75 @@
+<?xml version='1.0' encoding='utf-8'?>
+<odoo>
+    <data>
+        <record id="kits_double_move_log_form_view" model="ir.ui.view">
+            <field name="name">kits.double.move.log.form.view</field>
+            <field name="model">kits.double.move.log</field>
+            <field name="arch" type="xml">
+                <form create="false" edit="false">
+                    <sheet>
+                        <group>
+                            <group>
+                                <field name="product_id"/>
+                                <field name="picking_id"/>
+                            </group>
+                            <group>
+                                <field name="created_date"/>
+                                <field name="user_id"/>
+
+                            </group>
+                        </group>
+                        <notebook>
+                            <page name='double_move' string="Double Moves">
+                                <field name="other_move_ids">
+                                    <tree create="false" edit="false">
+                                        <field name="move_id"/>
+                                        <field name="product_id"/>
+                                        <field name="name"/>
+                                        <field name="quantity_done"/>
+                                        <field name="product_uom_qty"/>
+                                        <field name="status"/>
+                                    </tree>
+                                </field>
+
+
+                            </page>
+                        </notebook>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+        <record id="kits_double_move_log_tree_view" model="ir.ui.view">
+            <field name="name">kits.double.move.log.tree.view</field>
+            <field name="model">kits.double.move.log</field>
+            <field name="arch" type="xml">
+                <tree create="false" edit="false">
+                    <field name="created_date" />
+                    <field name="user_id" />
+                    <field name="product_id" />
+                    <field name="picking_id" />
+                    <field name="other_move_ids" widget='many2many_tags'/>
+
+                </tree>
+            </field>
+        </record>
+        <record id="action_kits_double_move_log" model="ir.actions.act_window">
+            <field name="name">Double Move</field>
+            <field name="res_model">kits.double.move.log</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+        <record id="update_qty_rec_search_view" model="ir.ui.view">
+            <field name="name">kits.double.move.log.search.view</field>
+            <field name="model">kits.double.move.log</field>
+            <field name="arch" type="xml">
+                <search>
+                    <group>
+                        <filter name="product_id" string="Product" context="{'group_by': 'product_id'}" />
+                        <filter name="picking_id" string="Delivery Order" context="{'group_by': 'picking_id'}" />
+                        <filter name="created_date" string="Created Date" context="{'group_by': 'created_date'}" />
+                    </group>
+                </search>
+            </field>
+        </record>
+        <menuitem id="menu_kits_double_move_log" name="Picking's Double Moves" action="action_kits_double_move_log" parent="sale.menu_sale_report" groups="base.group_system" />
+    </data>
+</odoo>

@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <data>
+        <record id="remove_product_spt_form_view" model="ir.ui.view">
+            <field name="name">remove.product.spt.form.view</field>
+            <field name="model">remove.product.spt</field>
+            <field name="arch" type="xml">
+                <form>
+                    <sheet>
+                        <group>
+                            <group>
+                                <field name="_barcode_scanned" widget="barcode_handler" invisible="1"/>
+                                <field name="product_qty_count" />
+                            </group>
+                            <group/>
+                        </group>
+                        <div class="row">
+                            <div class="col-2">
+                                <label for="product_id" style="font-weight: bold;" />
+                            </div>
+                            <div>
+                                <field name="product_id" style="width: 26rem;" options="{'no_create': True, 'no_open': True}" />
+                            </div>
+                            <div class="col-1">
+                                <field name="qty" />
+                            </div>
+                            <div class="col-1">
+                                <button name="action_remove_product" type="object" string="Remove" class="oe_highlight" />
+                            </div>
+                            <div class="col-1">
+                                <button name="action_edit_product" type="object" string="Edit" class="oe_highlight" />
+                            </div>
+                        </div>
+                        <div>
+                            <field name="line_ids" widget="one2many" nolable="1">
+                                <tree editable="bottom" default_order="sequence" limit="1000000" create="0" edit="0">
+                                    <field name="sequence" widget="handle" />
+                                    <field name="product_id" readonly="1" force_save="1"/>
+                                    <field name="product_qty" readonly="1" force_save="1"/>
+                                    <!-- <button icon="fa-solid fa-pencil" name="action_product_selection" type="object" /> -->
+                                </tree>
+                            </field>
+                        </div>
+                    </sheet>
+                    <footer>
+                        <button name="action_process" type="object" string="Process" class="oe_highlight" />
+                    </footer>
+                </form>
+            </field>
+        </record>
+    </data>
+</odoo>

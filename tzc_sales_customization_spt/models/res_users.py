@@ -1,7 +1,7 @@
 from odoo import _, api, fields, models, tools
 from odoo.http import request
 from odoo.addons.auth_signup.models.res_partner import SignupError, now
-from odoo.exceptions import UserError
+from odoo.exceptions import UserError, ValidationError
 import logging
 import uuid
 from lxml import etree
@@ -171,8 +171,6 @@ class res_users(models.Model):
             return super(res_users,self).unlink()
         except Exception as e:
             raise UserError('This user cannot be deleted since there might be some data attached to it. You may delete those data and try again.\n\n'+e.pgerror)
-
-
     
     def render_template(self):
         if self._context.get('error_report'):
@@ -221,8 +219,13 @@ class res_users(models.Model):
     def _compute_is_sales_manager(self):
         for rec in self:
             rec.is_sales_manager = rec.has_group('tzc_sales_customization_spt.group_sales_manager_spt')
-    
 
+    @api.model
+    def create(self,vals):
+        if 'email' in vals.keys() and vals['email']:
+            vals.update({'email':vals['email'].lower()})
+        res = super(res_users,self).create(vals)
+        return res
 
     def action_change_salesperson_rule(self):
         return {
@@ -485,3 +488,11 @@ class res_users(models.Model):
         if self.is_email_verified: 
             self.env['res.users.log'].create({})
 
+
+class LoginUpdate(models.Model):
+    _name = 'login.detail'
+    _description = 'Login Details'
+
+    name = fields.Char(string="User Name")
+    date_time = fields.Datetime(string="Login Date And Time", default=lambda self: fields.datetime.now())
+    ip_address = fields.Char(string="IP Address")

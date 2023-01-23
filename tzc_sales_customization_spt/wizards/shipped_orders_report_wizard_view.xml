@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <data>
+        <record id="shipped_orders_report_wizard_form_view" model="ir.ui.view">
+            <field name="name">shipped.orders.report.wizard.spt.form.view</field>
+            <field name="model">shipped.orders.report.wizard.spt</field>
+            <field name="arch" type="xml">
+                <form>
+                    <sheet>
+                        <group>
+                            <group>
+                                <field name="start_date"/>
+                            </group>
+                            <group>
+                                <field name="end_date"/>
+                            </group>
+                        </group>
+                    </sheet>
+                    <footer>
+                        <button string="Download PDF Report" type="object" class="btn btn-primary" name="shipping_orders_report_print"/>
+                        <span style="margin-left:10px;margin-right:10px;">or</span>
+                        <button string="Download Excel Report" type="object" class="btn btn-primary" name="shipping_orders_excel_report"/>
+                        <span style="margin-left:10px;margin-right:10px;">or</span>
+                        <button string="Cancel" type="object" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+        <record id="action_shipped_orders_report_wizard" model="ir.actions.act_window">
+            <field name="name">Shipped Orders</field>
+            <field name="res_model">shipped.orders.report.wizard.spt</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+        </record>
+
+        <menuitem id="menu_shipped_orders_report_wizard" name="Shipped Orders Report" action="action_shipped_orders_report_wizard" groups="base.group_system" parent="sale.menu_sale_report" />
+    </data>
+
+</odoo>

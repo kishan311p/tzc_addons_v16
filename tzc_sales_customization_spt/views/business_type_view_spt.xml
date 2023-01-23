@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <record id="action_business_type_spt" model="ir.actions.act_window">
+        <field name="view_mode">tree,form</field>
+            <field name="name">Business Type</field>
+            <field name="res_model">business.type.spt</field>
+        </record>
+
+        <record id="business_type_from_view_spt" model="ir.ui.view">
+            <field name="name">business.type.from.view.spt</field>
+            <field name="model">business.type.spt</field>
+            <field name="arch" type="xml">
+                <form>
+                    <sheet>
+
+                        <group>
+                            <group>
+                                <field name="name"/>
+                            </group>
+
+                        </group>
+
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="business_type_tree_view_spt" model="ir.ui.view">
+            <field name="name">business.type.tree.view.spt</field>
+            <field name="model">business.type.spt</field>
+            <field name="arch" type="xml">
+                <tree default_order="name">
+                    <field name="name"/>
+                </tree>
+            </field>
+        </record>
+
+    <menuitem name="Business Type" action="action_business_type_spt" id="menu_action_business_type_spt" parent="tzc_sales_customization_spt.menu_action_product_custom_spt" sequence="400"/>
+
+    </data>
+</odoo>
+

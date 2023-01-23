@@ -55,6 +55,12 @@ from . import geo_restriction_spt
 from . import business_type_spt
 from . import internal_flag_spt
 from . import delivery_carrier
+from . import kits_shipping_error_log
+from . import kits_double_move_log
+from . import kits_stock_move
 from . import flash_menu_spt
+from . import pending_order_spt
+from . import pending_order_line_spt
 from . import sale_catalog
 from . import sale_catalog_line
+

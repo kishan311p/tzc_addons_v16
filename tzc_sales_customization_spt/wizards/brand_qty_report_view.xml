@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="brand_qty_report_wizard_form_view_spt" model="ir.ui.view">
+            <field name="name">brand.qty.report.wizard.form.view.spt</field>
+            <field name="model">brand.qty.report.wizard</field>
+            <field name="arch" type="xml">
+                <form>
+                    <sheet>
+                        <group>
+                            <div class="row">
+                                <div class="col" style="display:flex;">
+                                    <div class="col-2">
+                                        <b>
+                                        From
+                                        </b>
+                                    </div>
+                                    <div class="col-4">
+                                        <field name="start_month" placeholder="Month" />
+                                    </div>
+                                    <div class="col-4">
+                                        <field name="start_year" placeholder="Year" />
+                                    </div>
+                                </div>
+                                <div class="col" style="display:flex;">
+                                    <div class="col-2">
+                                        <b>
+                                        To
+                                        </b>
+                                    </div>
+                                    <div class="col-4">
+                                        <field name="end_month" placeholder="Month" />
+                                    </div>
+                                    <div class="col-4">
+                                        <field name="end_year" placeholder="Year" />
+                                    </div>
+                                </div>
+                            </div>
+                        </group>
+                        <group>
+                            <label for='brand_selection' style="padding:5px 37px 0 15px;"/>
+                            <div>
+                                <field name="brand_selection" widget="radio" required="1"/>
+                            </div>
+                        </group>
+                        <group attrs="{ 'invisible':[('brand_selection','=','multiple')] }" >
+                            <label for='brand_id' style="padding:5px 37px 0 15px;"/>
+                            <div>
+                                <field name="brand_id" options="{'no_create': True}" attrs="{ 'required':[('brand_selection','=','single')] }" />
+                            </div>
+                        </group>
+                        <group attrs="{ 'invisible':[('brand_selection','=','single')] }" >
+                            <label for='brand_ids' style="padding:5px 37px 0 15px;"/>
+                            <div>
+                                <field name="brand_ids" widget="many2many_tags" options="{'no_create': True}" attrs="{ 'required':[('brand_selection','=','multiple')] }"/>
+                            </div>
+                        </group>
+                    </sheet>
+                    <footer>
+                        <button name="action_print_report_file" type="object" string="Export" class="oe_highlight"/>
+                        <button special="cancel" type="object" string="Cancel" />
+                    </footer>
+                </form>
+            </field>
+        </record>
+    </data>
+
+    <record id="action_brand_qty_report_wizard" model="ir.actions.act_window">
+        <field name="name">Monthly Brand Sales Report</field>
+        <field name="res_model">brand.qty.report.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+
+    <menuitem id='menu_brand_qty_report' name="Monthly Brand Sales Report" action="action_brand_qty_report_wizard" parent="sale.menu_sale_report" sequence="1000" />
+</odoo>

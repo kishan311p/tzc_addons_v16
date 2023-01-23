@@ -176,9 +176,6 @@
             <field name="state">code</field>
             <field name="code">action = records.all_picking_cancle_spt()</field>
         </record>
-
-
-
         <!-- <record id="action_paid_invoice" model="ir.actions.server">
             <field name="name">Mark as Paid</field>
             <field name="model_id" ref="model_account_move"/>
@@ -200,6 +197,16 @@
             </field>
         </record> -->
 
+        <!-- <record id="website_sale.ir_actions_server_sale_cart_recovery_email" model="ir.actions.server">
+            <field name="name">Send Abandoned Email</field>
+            <field name="model_id" ref="sale.model_sale_order"/>
+            <field name="binding_model_id" ref="sale.model_sale_order"/>
+            <field name="state">code</field>
+            <field name="code">
+                action = records.recovery_mail_customer()
+            </field>
+            <field name="sequence">20</field>
+        </record> -->
         <record id="model_res_user_action_sent_mail_spt" model="ir.actions.server">
             <field name="groups_id" eval="[(4, ref('base.group_system'))]"/>
             <field name="name">Send Bulk Mails </field>
@@ -210,6 +217,16 @@
             if records:
                 action = records.action_sent_mail_spt()</field>
         </record>
+        <record id="ir_actions_server_follow_up_salesperson" model="ir.actions.server">
+            <field name="name">Send To Salesperson</field>
+            <field name="model_id" ref="sale.model_sale_order"/>
+            <field name="binding_model_id" ref="sale.model_sale_order"/>
+            <field name="sequence" eval="1"/>
+            <field name="state">code</field>
+            <field name="code">
+                action = records.recovery_mail_salesperson()
+            </field>
+        </record>
         <record id="action_partner_email_varification" model="ir.actions.server">
             <field name="name">Mailgun Verification</field>
             <field name="binding_model_id" ref="base.model_res_partner"/>
@@ -218,6 +235,15 @@
             <field name="code">
                 if records:
                     action = records.action_contact_mailgun_verification()
+            </field>
+        </record>
+        <record id="ir_actions_server_follow_up_warehouse" model="ir.actions.server">
+            <field name="name">Send To Warehouse</field>
+            <field name="model_id" ref="sale.model_sale_order"/>
+            <field name="binding_model_id" ref="sale.model_sale_order"/>
+            <field name="state">code</field>
+            <field name="code">
+                action = records.recovery_mail_warehouse()
             </field>
         </record>
         <record id="action_grant_portal_access_spt" model="ir.actions.server">
@@ -263,6 +289,16 @@
                 action = records.action_verify_email()
             </field>
         </record>
+        <record model="ir.actions.server" id="action_download_excel_quotation_spt">
+            <field name="name">Download Excel Quotation</field>
+            <field name="model_id" ref="model_sale_order"/>
+            <field name="binding_model_id" ref="model_sale_order" />
+            <field name="binding_view_types">form</field>
+            <field name="state">code</field>
+            <field name="code">
+                action = records.action_order_xls_report()
+            </field>
+        </record>
 
         <record model="ir.actions.server" id="action_change_password_of_related_user">
             <field name="name">Change Password</field>
@@ -272,6 +308,18 @@
             <field name="state">code</field>
             <field name="code">
                 action = records.action_change_password_of_related_user()
+            </field>
+        </record>
+        <record id="action_server_paid" model="ir.actions.server">
+            <field name="name">Mark As Paid</field>
+            <field name="model_id" ref="model_sale_order"/>
+            <field name="binding_model_id" ref="model_sale_order"/>
+            <field name="binding_view_types">form</field>
+            <field name="groups_id" eval="[(4, ref('base.group_system')),(4, ref('account.group_account_user'))]"/>
+            <field name="state">code</field>
+            <field name="code">
+                if records:
+                    action = records.action_is_paid()
             </field>
         </record>
 
@@ -284,6 +332,12 @@
                 if records:
                     action = records.action_contact_mass_mailing()
             </field>
+        </record>
+        <record id="action_import_product_report" model="ir.actions.server">
+            <field name="name">Product Import Report</field>
+            <field name="model_id" ref="model_product_import_spt"/>
+            <field name="state">code</field>
+            <field name="code">action = env.get('product.import.spt').action_import_product_report()</field>
         </record>
         <record id="action_res_partner_delete" model="ir.actions.server">
             <field name="groups_id" eval="[(4, ref('base.group_system')),(4, ref('tzc_sales_customization_spt.group_sales_manager_spt'))]"/>

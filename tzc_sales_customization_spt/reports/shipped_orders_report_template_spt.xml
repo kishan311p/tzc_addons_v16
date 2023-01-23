@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="report_template_shipped_orders_spt_document" name="Shipped Orders Report Document">
+        <t t-call="web.external_layout">
+            <div class="page">
+                <div class="table table-sm o_main_table">
+                    <table>
+                        <theader>
+                            <tr>
+                                <th>Order Date</th>
+                                <th>Order#</th>
+                                <th>Shipping Date</th>
+                                <th>Customer</th>
+                                <th>Total Ordered QTY</th>
+                                <th>Total Picked QTY</th>
+                                <th class="text-center">Admin Fee</th>
+                                <th class="text-center">Shipping Cost</th>
+                                <th>Shipping Provider</th>
+                                <th>Tracking number</th>
+                                <th>Country</th>
+                                <th>Shipping Address</th>
+                                <th class="text-center">Currency</th>
+                                <th class="text-center">Subtotal</th>
+                            </tr>
+                        </theader>
+                        <tbody style="font-size:13px !important;">
+                            <t t-set="sale_order_ids" t-value="doc.get_sale_orders()"/>
+                            <!-- <t t-set="sale_order_ids" t-value="doc.sale_order_ids.sorted(key=lambda a:(a.date_order))"/> -->
+                            <t t-if="not sale_order_ids">
+                                <tr>
+                                    <b style="font-size:12px !important;">There are no orders between date <span f-field="doc.start_date"/> and <span t-field="doc.end_date"/>
+.</b>
+                                </tr>
+                            </t>
+                            <t t-foreach="sale_order_ids" t-as="so">
+                                <t t-set="pickings" t-value="so.picking_ids.filtered(lambda picking: picking.state == 'done' and picking.picking_type_code == 'outgoing')"/>
+                                <t t-if="len(pickings) >= 1">
+                                    <t t-set="picking" t-value="pickings[0]"/>
+                                </t>
+                                <t t-if="so.partner_shipping_id">
+                                    <t t-set="address" t-value="so.partner_shipping_id"/>
+                                </t>
+                                <t t-else="else">
+                                    <t t-set="address" t-value="so.partner_invoice_id"/>
+                                </t>
+                                <tr>
+                                    <td>
+                                        <span t-field="so.date_order"/>
+                                    </td>
+                                    <td>
+                                        <span t-field="so.name"/>
+                                    </td>
+                                    <td>
+                                        <span t-field="so.shipped_date"/>
+                                    </td>
+                                    <td>
+                                        <span t-field="so.partner_id.name"/>
+                                    </td>
+                                    <td>
+                                        <span t-field="so.ordered_qty"/>
+                                    </td>
+                                    <td>
+                                        <span t-field="so.picked_qty"/>
+                                    </td>
+                                    <td class="text-right">
+                                        <span t-field="so.amount_is_admin"/>
+                                    </td>
+                                    <td class="text-right">
+                                        <span t-field="so.amount_is_shipping_total" />
+                                    </td>
+                                    <td>
+                                        <t t-esc="picking.shipping_id.name"/>
+                                    </td>
+                                    <td>
+                                        <t t-if="picking.tracking_number_spt">
+                                            <t t-esc="picking.tracking_number_spt"/>
+                                        </t>
+                                    </td>
+                                    <td>
+                                        <t t-if="address.country_id">
+                                            <t t-esc="address.country_id.name"/>
+                                        </t>
+                                    </td>
+                                    <td>
+                                        <t t-esc="doc.show_address(address)"/>
+                                    </td>
+                                    <td class="text-right">
+                                        <span t-field="so.currency_id.name"/>
+                                    </td>
+                                    <td class="text-right">
+                                        <span t-field="so.picked_qty_order_subtotal"/>
+                                    </td>
+                                </tr>
+                            </t>
+                        </tbody>
+                    </table>
+                </div>
+
+            </div>
+        </t>
+    </template>
+    <template id="report_template_shipped_orders_spt">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="doc">
+                <t t-call="tzc_sales_customization_spt.report_template_shipped_orders_spt_document" />
+            </t>
+        </t>
+    </template>
+</odoo>

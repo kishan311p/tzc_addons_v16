@@ -1,0 +1,789 @@
+<?xml version='1.0' encoding='utf-8'?>
+<odoo>
+    <data>
+        <record id="tzc_fest_discount_view_form" model="ir.ui.view">
+            <field name="name">tzc.fest.discount.view.form</field>
+            <field name="model">tzc.fest.discount</field>
+            <field name="arch" type="xml">
+                <form>
+                    <sheet>
+                        <div class="oe_button_box" name="button_box" modifiers="{}">
+                            <field name="is_active" invisible="1"/>
+                            <button type="object" name="action_active" style="color:#00b115;" class="oe_stat_button" icon="fa-toggle-on" attrs="{'invisible':[('is_active','=',False)]}">
+                                <span>
+                                    Activated
+                                </span>
+                            </button>
+                            <button type="object" name="action_deactive" style="color:#f06767;" class="oe_stat_button" icon="fa-toggle-off" attrs="{'invisible':[('is_active','=',True)]}">
+                                <span>
+                                    Deactivated
+                                </span>
+                            </button>
+                        </div>
+                        <group>
+                            <group>
+                                <h1>
+                                    <field name="name" required="1" />
+                                </h1>
+                            </group>
+                        </group>
+                       <group>
+                            <group>
+                                <field name="from_date" />
+                                <field name="to_date" />
+                                <field name="is_active" invisible="1"/>
+                            </group>
+                        </group>
+                        <notebook>
+                            <page string="Special Discount Rules">
+                                <field name="special_discount_rule_ids" />
+                            </page>
+                            <page string="Dynamic Ribbon Settings">
+                                <group>
+                                    <div class="col-12 o_setting_box">
+                                        <div class="row py-2">
+                                            <div class="col-3">
+                                                <label for="active_dynamic_label_name">Active Dynamic Ribbons</label>
+                                            </div>
+                                            <div class="col-6">
+                                                <field name="active_dynamic_label_name" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <group>
+                                        <div class="col-12 o_setting_box">
+                                            <div class="py-2">
+                                                <div class="row">
+                                                    <div class="col-3">
+                                                        <label for="dynamic_label_icon">Active Dynamic Ribbons</label>
+                                                    </div>
+                                                    <div class="col-2">
+                                                        <field name="dynamic_label_icon" class="oe_avatar" widget="image" attrs="{'required':[('active_dynamic_label_name' ,'=',True)]}" />
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <span class="text-muted">
+                                                Image size should be 60*60
+                                            </span>
+                                        </div>
+                                    </group>
+                                </group>
+                            </page>
+                            <page string="Product Category Banner Settings">
+                                <group string="Product Category Eyeglass Banner Settigns">
+                                    <div class="col-12 o_setting_box">
+                                        <div class="row py-2">
+                                            <div class="col-3">
+                                                <label for="eyeglass_active_pro_categ_banner"></label>
+                                            </div>
+                                            <div class="col-6">
+                                                <field name="eyeglass_active_pro_categ_banner" nolable="1"/>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </group>
+                                <group >
+                                    <group>
+                                        <div class="col-12 o_setting_box">
+                                            <div class="py-2">
+                                                <div class="row">
+                                                    <div class="col-3">
+                                                        <label for="eyeglass_category_banner_1">Eyeglass Category Banner 1</label>
+                                                    </div>
+                                                    <div class="col-2">
+                                                        <field name="eyeglass_category_banner_1" class="oe_avatar" widget="image" attrs="{'required':[('eyeglass_active_pro_categ_banner' ,'=',True)]}" />
+                                                    </div>
+                                                </div>
+                                                <span class="text-muted">
+                                                    Image size should be 181*122
+                                                </span>
+                                            </div>
+                                            <div class="row py-2">
+                                                <div class="col-3">
+                                                    <label for="eyeglass_category_banner_1_text"></label>
+                                                </div>
+                                                <div class="col-6 d-flex">
+                                                    <field name="eyeglass_category_banner_1_text" attrs="{'required':[('eyeglass_active_pro_categ_banner' ,'=',True)]}" /> <field name="eyeglass_category_banner_1_text_color" widget="color" class="ml-4" attrs="{'required':[('eyeglass_active_pro_categ_banner' ,'=',True)]}"/>
+                                                </div>
+                                            </div>
+                                            <div class="row py-2">
+                                                <div class="col-3">
+                                                    <label for="eyeglass_category_banner_1_url"></label>
+                                                </div>
+                                                <div class="col-6 ">
+                                                    <field name="eyeglass_category_banner_1_url" attrs="{'required':[('eyeglass_active_pro_categ_banner' ,'=',True)]}" />
+                                                </div>
+                                            </div>
+                                            <div class="py-2">
+                                                <div class="row">
+                                                    <div class="col-3">
+                                                        <label for="eyeglass_category_banner_2">Eyeglass Category Banner 2</label>
+                                                    </div>
+                                                    <div class="col-2">
+                                                        <field name="eyeglass_category_banner_2" class="oe_avatar" widget="image" attrs="{'required':[('eyeglass_active_pro_categ_banner' ,'=',True)]}" />
+                                                    </div>
+                                                </div>
+                                                <span class="text-muted">
+                                                    Image size should be 181*122
+                                                </span>
+                                            </div>
+                                            <div class="row py-2">
+                                                <div class="col-3">
+                                                    <label for="eyeglass_category_banner_2_text"></label>
+                                                </div>
+                                                <div class="col-6 d-flex">
+                                                    <field name="eyeglass_category_banner_2_text" attrs="{'required':[('eyeglass_active_pro_categ_banner' ,'=',True)]}" /><field name="eyeglass_category_banner_2_text_color" widget="color" class="ml-4" attrs="{'required':[('eyeglass_active_pro_categ_banner' ,'=',True)]}"/>
+                                                </div>
+                                            </div>
+                                            <div class="row py-2">
+                                                <div class="col-3">
+                                                    <label for="eyeglass_category_banner_2_url"></label>
+                                                </div>
+                                                <div class="col-6 ">
+                                                    <field name="eyeglass_category_banner_2_url" attrs="{'required':[('eyeglass_active_pro_categ_banner' ,'=',True)]}" />
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </group>
+                                    <group>
+                                        <div class="col-12 o_setting_box">
+                                            <div class="py-2">
+                                                <div class="row">
+                                                    <div class="col-3">
+                                                        <label for="eyeglass_category_banner_3">Eyeglass Category Banner 3</label>
+                                                    </div>
+                                                    <div class="col-2">
+                                                        <field name="eyeglass_category_banner_3" class="oe_avatar" widget="image" attrs="{'required':[('eyeglass_active_pro_categ_banner' ,'=',True)]}" />
+                                                    </div>
+                                                </div>
+                                                <span class="text-muted">
+                                                    Image size should be 181*122
+                                                </span>
+                                            </div>
+                                            <div class="row py-2">
+                                                <div class="col-3">
+                                                    <label for="eyeglass_category_banner_3_text"></label>
+                                                </div>
+                                                <div class="col-6 d-flex">
+                                                    <field name="eyeglass_category_banner_3_text" attrs="{'required':[('eyeglass_active_pro_categ_banner' ,'=',True)]}" /><field name="eyeglass_category_banner_3_text_color" widget="color" class="ml-4" attrs="{'required':[('eyeglass_active_pro_categ_banner' ,'=',True)]}"/>
+                                                </div>
+                                            </div>
+                                            <div class="row py-2">
+                                                <div class="col-3">
+                                                    <label for="eyeglass_category_banner_3_url"></label>
+                                                </div>
+                                                <div class="col-6">
+                                                    <field name="eyeglass_category_banner_3_url" attrs="{'required':[('eyeglass_active_pro_categ_banner' ,'=',True)]}" />
+                                                </div>
+                                            </div>
+                                            <div class="py-2">
+                                                <div class="row">
+                                                    <div class="col-3">
+                                                        <label for="eyeglass_category_banner_4">Eyeglass Category Banner 4</label>
+                                                    </div>
+                                                    <div class="col-2">
+                                                        <field name="eyeglass_category_banner_4" class="oe_avatar" widget="image" attrs="{'required':[('eyeglass_active_pro_categ_banner' ,'=',True)]}" />
+                                                    </div>
+                                                </div>
+                                                <span class="text-muted">
+                                                    Image size should be 181*122
+                                                </span>
+                                            </div>
+                                            <div class="row py-2">
+                                                <div class="col-3">
+                                                    <label for="eyeglass_category_banner_4_text"></label>
+                                                </div>
+                                                <div class="col-6 d-flex">
+                                                    <field name="eyeglass_category_banner_4_text" attrs="{'required':[('eyeglass_active_pro_categ_banner' ,'=',True)]}" /><field name="eyeglass_category_banner_4_text_color" widget="color" class="ml-4" attrs="{'required':[('eyeglass_active_pro_categ_banner' ,'=',True)]}"/>
+                                                </div>
+                                            </div>
+                                            <div class="row py-2">
+                                                <div class="col-3">
+                                                    <label for="eyeglass_category_banner_4_url"></label>
+                                                </div>
+                                                <div class="col-6 ">
+                                                    <field name="eyeglass_category_banner_4_url" attrs="{'required':[('eyeglass_active_pro_categ_banner' ,'=',True)]}" />
+                                                </div>
+                                            </div>
+                                            <br />
+                                        </div>
+                                    </group>
+                                </group>
+                                <group  string="Product Category Sunglass Banner Settigns">
+                                    <div class="col-12 o_setting_box">
+                                        <div class="row py-2">
+                                            <div class="col-3">
+                                                <label for="sunglass_active_pro_categ_banner"></label>
+                                            </div>
+                                            <div class="col-6">
+                                                <field name="sunglass_active_pro_categ_banner" nolable="1"/>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </group>
+                                <group>
+                                    <group>
+                                        <div class="col-12 o_setting_box">
+                                            <div class="py-2">
+                                                <div class="row">
+                                                    <div class="col-3">
+                                                        <label for="sunglass_category_banner_1">Sunglass Category Banner 1</label>
+                                                    </div>
+                                                    <div class="col-2">
+                                                        <field name="sunglass_category_banner_1" class="oe_avatar" widget="image" attrs="{'required':[('sunglass_active_pro_categ_banner' ,'=',True)]}" />
+                                                    </div>
+                                                </div>
+                                                <span class="text-muted">
+                                                    Image size should be 181*122
+                                                </span>
+                                            </div>
+                                            <div class="row py-2">
+                                                <div class="col-3">
+                                                    <label for="sunglass_category_banner_1_text"></label>
+                                                </div>
+                                                <div class="col-6 d-flex">
+                                                    <field name="sunglass_category_banner_1_text" attrs="{'required':[('sunglass_active_pro_categ_banner' ,'=',True)]}" /> <field name="sunglass_category_banner_1_text_color" widget="color" class="ml-4" attrs="{'required':[('sunglass_active_pro_categ_banner' ,'=',True)]}" />
+                                                </div>
+                                            </div>
+                                            <div class="row py-2">
+                                                <div class="col-3">
+                                                    <label for="sunglass_category_banner_1_url"></label>
+                                                </div>
+                                                <div class="col-6 ">
+                                                    <field name="sunglass_category_banner_1_url" attrs="{'required':[('sunglass_active_pro_categ_banner' ,'=',True)]}" />
+                                                </div>
+                                            </div>
+                                            <div class="py-2">
+                                                <div class="row">
+                                                    <div class="col-3">
+                                                        <label for="sunglass_category_banner_2">Eyeglass Category Banner 2</label>
+                                                    </div>
+                                                    <div class="col-2">
+                                                        <field name="sunglass_category_banner_2" class="oe_avatar" widget="image" attrs="{'required':[('sunglass_active_pro_categ_banner' ,'=',True)]}" />
+                                                    </div>
+                                                </div>
+                                                <span class="text-muted">
+                                                    Image size should be 181*122
+                                                </span>
+                                            </div>
+                                            <div class="row py-2">
+                                                <div class="col-3">
+                                                    <label for="sunglass_category_banner_2_text"></label>
+                                                </div>
+                                                <div class="col-6 d-flex">
+                                                    <field name="sunglass_category_banner_2_text" attrs="{'required':[('sunglass_active_pro_categ_banner' ,'=',True)]}" /><field name="sunglass_category_banner_2_text_color" widget="color" class="ml-4" attrs="{'required':[('sunglass_active_pro_categ_banner' ,'=',True)]}" />
+                                                </div>
+                                            </div>
+                                            <div class="row py-2">
+                                                <div class="col-3">
+                                                    <label for="sunglass_category_banner_2_url"></label>
+                                                </div>
+                                                <div class="col-6 ">
+                                                    <field name="sunglass_category_banner_2_url" attrs="{'required':[('sunglass_active_pro_categ_banner' ,'=',True)]}" />
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </group>
+                                    <group>
+                                        <div class="col-12 o_setting_box">
+                                            <div class="py-2">
+                                                <div class="row">
+                                                    <div class="col-3">
+                                                        <label for="sunglass_category_banner_3">Sunglass Category Banner 3</label>
+                                                    </div>
+                                                    <div class="col-2">
+                                                        <field name="sunglass_category_banner_3" class="oe_avatar" widget="image" attrs="{'required':[('sunglass_active_pro_categ_banner' ,'=',True)]}" />
+                                                    </div>
+                                                </div>
+                                                <span class="text-muted">
+                                                    Image size should be 181*122
+                                                </span>
+                                            </div>
+                                            <div class="row py-2">
+                                                <div class="col-3">
+                                                    <label for="sunglass_category_banner_3_text"></label>
+                                                </div>
+                                                <div class="col-6 d-flex">
+                                                    <field name="sunglass_category_banner_3_text" attrs="{'required':[('sunglass_active_pro_categ_banner' ,'=',True)]}" /><field name="sunglass_category_banner_3_text_color" widget="color" class="ml-4" attrs="{'required':[('sunglass_active_pro_categ_banner' ,'=',True)]}" />
+                                                </div>
+                                            </div>
+                                            <div class="row py-2">
+                                                <div class="col-3">
+                                                    <label for="sunglass_category_banner_3_url"></label>
+                                                </div>
+                                                <div class="col-6">
+                                                    <field name="sunglass_category_banner_3_url" attrs="{'required':[('sunglass_active_pro_categ_banner' ,'=',True)]}" />
+                                                </div>
+                                            </div>
+                                            <div class="py-2">
+                                                <div class="row">
+                                                    <div class="col-3">
+                                                        <label for="sunglass_category_banner_4">Sunglass Category Banner 4</label>
+                                                    </div>
+                                                    <div class="col-2">
+                                                        <field name="sunglass_category_banner_4" class="oe_avatar" widget="image" attrs="{'required':[('sunglass_active_pro_categ_banner' ,'=',True)]}" />
+                                                    </div>
+                                                </div>
+                                                <span class="text-muted">
+                                                    Image size should be 181*122
+                                                </span>
+                                            </div>
+                                            <div class="row py-2">
+                                                <div class="col-3">
+                                                    <label for="sunglass_category_banner_4_text"></label>
+                                                </div>
+                                                <div class="col-6 d-flex">
+                                                    <field name="sunglass_category_banner_4_text" attrs="{'required':[('sunglass_active_pro_categ_banner' ,'=',True)]}" /><field name="sunglass_category_banner_4_text_color" widget="color" class="ml-4" attrs="{'required':[('sunglass_active_pro_categ_banner' ,'=',True)]}" />
+                                                </div>
+                                            </div>
+                                            <div class="row py-2">
+                                                <div class="col-3">
+                                                    <label for="sunglass_category_banner_4_url"></label>
+                                                </div>
+                                                <div class="col-6 ">
+                                                    <field name="sunglass_category_banner_4_url" attrs="{'required':[('sunglass_active_pro_categ_banner' ,'=',True)]}" />
+                                                </div>
+                                            </div>
+                                            <br />
+                                        </div>
+                                    </group>
+                                </group>
+                                <group  string="Product Category Special Discount Banner Settigns">
+                                    <div class="col-12 o_setting_box">
+                                        <div class="row py-2">
+                                            <div class="col-3">
+                                                <label for="special_discount_active_pro_categ_banner">Active Special Discount Category Banner</label>
+                                            </div>
+                                            <div class="col-6">
+                                                <field name="special_discount_active_pro_categ_banner" nolable="1"/>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </group>
+                                <group>
+                                    <group>
+                                        <div class="col-12 o_setting_box">
+                                            <div class="py-2">
+                                                <div class="row">
+                                                    <div class="col-3">
+                                                        <label for="special_discount_category_banner_1">Sunglass Category Banner 1</label>
+                                                    </div>
+                                                    <div class="col-2">
+                                                        <field name="special_discount_category_banner_1" class="oe_avatar" widget="image" attrs="{'required':[('special_discount_active_pro_categ_banner' ,'=',True)]}" />
+                                                    </div>
+                                                </div>
+                                                <span class="text-muted">
+                                                    Image size should be 181*122
+                                                </span>
+                                            </div>
+                                            <div class="row py-2">
+                                                <div class="col-3">
+                                                    <label for="special_discount_category_banner_1_text"></label>
+                                                </div>
+                                                <div class="col-6 d-flex">
+                                                    <field name="special_discount_category_banner_1_text" attrs="{'required':[('special_discount_active_pro_categ_banner' ,'=',True)]}" /> <field name="special_discount_category_banner_1_text_color" widget="color" class="ml-4" attrs="{'required':[('special_discount_active_pro_categ_banner' ,'=',True)]}" />
+                                                </div>
+                                            </div>
+                                            <div class="row py-2">
+                                                <div class="col-3">
+                                                    <label for="special_discount_category_banner_1_url"></label>
+                                                </div>
+                                                <div class="col-6 ">
+                                                    <field name="special_discount_category_banner_1_url" attrs="{'required':[('special_discount_active_pro_categ_banner' ,'=',True)]}" />
+                                                </div>
+                                            </div>
+                                            <div class="py-2">
+                                                <div class="row">
+                                                    <div class="col-3">
+                                                        <label for="special_discount_category_banner_2">Eyeglass Category Banner 2</label>
+                                                    </div>
+                                                    <div class="col-2">
+                                                        <field name="special_discount_category_banner_2" class="oe_avatar" widget="image" attrs="{'required':[('special_discount_active_pro_categ_banner' ,'=',True)]}" />
+                                                    </div>
+                                                </div>
+                                                <span class="text-muted">
+                                                    Image size should be 181*122
+                                                </span>
+                                            </div>
+                                            <div class="row py-2">
+                                                <div class="col-3">
+                                                    <label for="special_discount_category_banner_2_text"></label>
+                                                </div>
+                                                <div class="col-6 d-flex">
+                                                    <field name="special_discount_category_banner_2_text" attrs="{'required':[('special_discount_active_pro_categ_banner' ,'=',True)]}" /><field name="special_discount_category_banner_2_text_color" widget="color" class="ml-4" attrs="{'required':[('special_discount_active_pro_categ_banner' ,'=',True)]}" />
+                                                </div>
+                                            </div>
+                                            <div class="row py-2">
+                                                <div class="col-3">
+                                                    <label for="special_discount_category_banner_2_url"></label>
+                                                </div>
+                                                <div class="col-6 ">
+                                                    <field name="special_discount_category_banner_2_url" attrs="{'required':[('special_discount_active_pro_categ_banner' ,'=',True)]}" />
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </group>
+                                    <group>
+                                        <div class="col-12 o_setting_box">
+                                            <div class="py-2">
+                                                <div class="row">
+                                                    <div class="col-3">
+                                                        <label for="special_discount_category_banner_3">Sunglass Category Banner 3</label>
+                                                    </div>
+                                                    <div class="col-2">
+                                                        <field name="special_discount_category_banner_3" class="oe_avatar" widget="image" attrs="{'required':[('special_discount_active_pro_categ_banner' ,'=',True)]}" />
+                                                    </div>
+                                                </div>
+                                                <span class="text-muted">
+                                                    Image size should be 181*122
+                                                </span>
+                                            </div>
+                                            <div class="row py-2">
+                                                <div class="col-3">
+                                                    <label for="special_discount_category_banner_3_text"></label>
+                                                </div>
+                                                <div class="col-6 d-flex">
+                                                    <field name="special_discount_category_banner_3_text" attrs="{'required':[('special_discount_active_pro_categ_banner' ,'=',True)]}" /><field name="special_discount_category_banner_3_text_color" widget="color" class="ml-4" attrs="{'required':[('special_discount_active_pro_categ_banner' ,'=',True)]}" />
+                                                </div>
+                                            </div>
+                                            <div class="row py-2">
+                                                <div class="col-3">
+                                                    <label for="special_discount_category_banner_3_url"></label>
+                                                </div>
+                                                <div class="col-6">
+                                                    <field name="special_discount_category_banner_3_url" attrs="{'required':[('special_discount_active_pro_categ_banner' ,'=',True)]}" />
+                                                </div>
+                                            </div>
+                                            <div class="py-2">
+                                                <div class="row">
+                                                    <div class="col-3">
+                                                        <label for="special_discount_category_banner_4">Sunglass Category Banner 4</label>
+                                                    </div>
+                                                    <div class="col-2">
+                                                        <field name="special_discount_category_banner_4" class="oe_avatar" widget="image" attrs="{'required':[('special_discount_active_pro_categ_banner' ,'=',True)]}" />
+                                                    </div>
+                                                </div>
+                                                <span class="text-muted">
+                                                    Image size should be 181*122
+                                                </span>
+                                            </div>
+                                            <div class="row py-2">
+                                                <div class="col-3">
+                                                    <label for="special_discount_category_banner_4_text"></label>
+                                                </div>
+                                                <div class="col-6 d-flex">
+                                                    <field name="special_discount_category_banner_4_text" attrs="{'required':[('special_discount_active_pro_categ_banner' ,'=',True)]}" /><field name="special_discount_category_banner_4_text_color" widget="color" class="ml-4" attrs="{'required':[('special_discount_active_pro_categ_banner' ,'=',True)]}" />
+                                                </div>
+                                            </div>
+                                            <div class="row py-2">
+                                                <div class="col-3">
+                                                    <label for="special_discount_category_banner_4_url"></label>
+                                                </div>
+                                                <div class="col-6 ">
+                                                    <field name="special_discount_category_banner_4_url" attrs="{'required':[('special_discount_active_pro_categ_banner' ,'=',True)]}" />
+                                                </div>
+                                            </div>
+                                            <br />
+                                        </div>
+                                    </group>
+                                </group>
+                            </page>
+                            <page string="Header Message Settings">
+                                <group>
+                                    <group>
+                                        <field name="active_message_header" string="Active Header Message"/>
+                                        <field name="message_header_text" string="Header Message Text" attrs="{'required':[('active_message_header' ,'=',True)]}"/>
+                                    </group>
+                                </group>
+                            </page>
+                            <page string="Home Page Brand Slider Settings">
+                                <group string="Home Page First Brand Slider">
+                                    <div class="col-12 o_setting_box">
+                                        <div class="row py-2">
+                                            <div class="col-3">
+                                                <label for="active_home_page_slider">Active Home Page Slider</label>
+                                            </div>
+                                            <div class="col-6">
+                                                <field name="active_home_page_slider" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </group>
+                                <group>
+                                    <div class="col-12 o_setting_box">
+                                        <div class="row py-2">
+                                            <div class="col-3">
+                                                <label for="home_page_slider_header_text">Home Page Slider Header Text</label>
+                                            </div>
+                                            <div class="col-6">
+                                                <field name="home_page_slider_header_text" attrs="{'required':[('active_home_page_slider' ,'=',True)]}" />
+                                            </div>
+                                        </div>
+                                        <div class="row py-2">
+                                            <div class="col-3">
+                                                <label for="home_page_slider_subheader_text">Home Page Slider Subheader Text</label>
+                                            </div>
+                                            <div class="col-6">
+                                                <field name="home_page_slider_subheader_text" attrs="{'required':[('active_home_page_slider' ,'=',True)]}" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </group>
+                                <group>
+                                    <div class="col-12 o_setting_box">
+                                        <div class="py-2">
+                                            <div class="row">
+                                                <div class="col-3">
+                                                    <label for="home_page_slider_banner_1">Home Page Banner 1</label>
+                                                </div>
+                                                <div class="col-2">
+                                                    <field name="home_page_slider_banner_1" class="oe_avatar" widget="image" attrs="{'required':[('active_home_page_slider' ,'=',True)]}" />
+                                                </div>
+                                            </div>
+                                            <span class="text-muted">
+                                                Image size should be 181*122
+                                            </span>
+                                        </div>
+                                        <div class="row py-2">
+                                            <div class="col-3">
+                                                <label for="home_page_slider_banner_1_text"></label>
+                                            </div>
+                                            <div class="col-6 ">
+                                                <field name="home_page_slider_banner_1_text" attrs="{'required':[('active_home_page_slider' ,'=',True)]}" />
+                                            </div>
+                                        </div>
+                                        <div class="row py-2">
+                                            <div class="col-3">
+                                                <label for="home_page_slider_banner_1_url"></label>
+                                            </div>
+                                            <div class="col-6 ">
+                                                <field name="home_page_slider_banner_1_url" attrs="{'required':[('active_home_page_slider' ,'=',True)]}" />
+                                            </div>
+                                        </div>
+                                        <div class="py-2">
+                                            <div class="row">
+                                                <div class="col-3">
+                                                    <label for="home_page_slider_banner_2">Home Page Banner 1</label>
+                                                </div>
+                                                <div class="col-2">
+                                                    <field name="home_page_slider_banner_2" class="oe_avatar" widget="image" attrs="{'required':[('active_home_page_slider' ,'=',True)]}" />
+                                                </div>
+                                            </div>
+                                            <span class="text-muted">
+                                                Image size should be 181*122
+                                            </span>
+                                        </div>
+                                        <div class="row py-2">
+                                            <div class="col-3">
+                                                <label for="home_page_slider_banner_2_text"></label>
+                                            </div>
+                                            <div class="col-6 ">
+                                                <field name="home_page_slider_banner_2_text" attrs="{'required':[('active_home_page_slider' ,'=',True)]}" />
+                                            </div>
+                                        </div>
+                                        <div class="row py-2">
+                                            <div class="col-3">
+                                                <label for="home_page_slider_banner_2_url"></label>
+                                            </div>
+                                            <div class="col-6 ">
+                                                <field name="home_page_slider_banner_2_url" attrs="{'required':[('active_home_page_slider' ,'=',True)]}" />
+                                            </div>
+                                        </div>
+                                        <div class="py-2">
+                                            <div class="row">
+                                                <div class="col-3">
+                                                    <label for="home_page_slider_banner_3">Home Page Banner 1</label>
+                                                </div>
+                                                <div class="col-2">
+                                                    <field name="home_page_slider_banner_3" class="oe_avatar" widget="image" attrs="{'required':[('active_home_page_slider' ,'=',True)]}" />
+                                                </div>
+                                            </div>
+                                            <span class="text-muted">
+                                                Image size should be 181*122
+                                            </span>
+                                        </div>
+                                        <div class="row py-2">
+                                            <div class="col-3">
+                                                <label for="home_page_slider_banner_3_text"></label>
+                                            </div>
+                                            <div class="col-6 ">
+                                                <field name="home_page_slider_banner_3_text" attrs="{'required':[('active_home_page_slider' ,'=',True)]}" />
+                                            </div>
+                                        </div>
+                                        <div class="row py-2">
+                                            <div class="col-3">
+                                                <label for="home_page_slider_banner_3_url"></label>
+                                            </div>
+                                            <div class="col-6 ">
+                                                <field name="home_page_slider_banner_3_url" attrs="{'required':[('active_home_page_slider' ,'=',True)]}" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </group>
+                                <group string="Home Page Second Brand Slider">
+                                    <div class="col-12 o_setting_box">
+                                        <div class="row py-2">
+                                            <div class="col-3">
+                                                <label for="active_home_page_second_slider">Active Home Page Slider</label>
+                                            </div>
+                                            <div class="col-6">
+                                                <field name="active_home_page_second_slider" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </group>
+                                <group>
+                                    <div class="col-12 o_setting_box">
+                                        <div class="row py-2">
+                                            <div class="col-3">
+                                                <label for="home_page_second_slider_header_text">Home Page Slider Header Text</label>
+                                            </div>
+                                            <div class="col-6">
+                                                <field name="home_page_second_slider_header_text" attrs="{'required':[('active_home_page_second_slider' ,'=',True)]}" />
+                                            </div>
+                                        </div>
+                                        <div class="row py-2">
+                                            <div class="col-3">
+                                                <label for="home_page_second_slider_subheader_text">Home Page Slider Subheader Text</label>
+                                            </div>
+                                            <div class="col-6">
+                                                <field name="home_page_second_slider_subheader_text" attrs="{'required':[('active_home_page_second_slider' ,'=',True)]}" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </group>
+                                <group>
+                                    <div class="col-12 o_setting_box">
+                                        <div class="py-2">
+                                            <div class="row">
+                                                <div class="col-3">
+                                                    <label for="home_page_second_slider_banner_1">Home Page Banner 1</label>
+                                                </div>
+                                                <div class="col-2">
+                                                    <field name="home_page_second_slider_banner_1" class="oe_avatar" widget="image" attrs="{'required':[('active_home_page_second_slider' ,'=',True)]}" />
+                                                </div>
+                                            </div>
+                                            <span class="text-muted">
+                                                Image size should be 181*122
+                                            </span>
+                                        </div>
+                                        <div class="row py-2">
+                                            <div class="col-3">
+                                                <label for="home_page_second_slider_banner_1_text"></label>
+                                            </div>
+                                            <div class="col-6 ">
+                                                <field name="home_page_second_slider_banner_1_text" attrs="{'required':[('active_home_page_second_slider' ,'=',True)]}" />
+                                            </div>
+                                        </div>
+                                        <div class="row py-2">
+                                            <div class="col-3">
+                                                <label for="home_page_second_slider_banner_1_url"></label>
+                                            </div>
+                                            <div class="col-6 ">
+                                                <field name="home_page_second_slider_banner_1_url" attrs="{'required':[('active_home_page_second_slider' ,'=',True)]}" />
+                                            </div>
+                                        </div>
+                                        <div class="py-2">
+                                            <div class="row">
+                                                <div class="col-3">
+                                                    <label for="home_page_second_slider_banner_2">Home Page Banner 1</label>
+                                                </div>
+                                                <div class="col-2">
+                                                    <field name="home_page_second_slider_banner_2" class="oe_avatar" widget="image" attrs="{'required':[('active_home_page_second_slider' ,'=',True)]}" />
+                                                </div>
+                                            </div>
+                                            <span class="text-muted">
+                                                Image size should be 181*122
+                                            </span>
+                                        </div>
+                                        <div class="row py-2">
+                                            <div class="col-3">
+                                                <label for="home_page_second_slider_banner_2_text"></label>
+                                            </div>
+                                            <div class="col-6 ">
+                                                <field name="home_page_second_slider_banner_2_text" attrs="{'required':[('active_home_page_second_slider' ,'=',True)]}" />
+                                            </div>
+                                        </div>
+                                        <div class="row py-2">
+                                            <div class="col-3">
+                                                <label for="home_page_second_slider_banner_2_url"></label>
+                                            </div>
+                                            <div class="col-6 ">
+                                                <field name="home_page_second_slider_banner_2_url" attrs="{'required':[('active_home_page_second_slider' ,'=',True)]}" />
+                                            </div>
+                                        </div>
+                                        <div class="py-2">
+                                            <div class="row">
+                                                <div class="col-3">
+                                                    <label for="home_page_second_slider_banner_3">Home Page Banner 1</label>
+                                                </div>
+                                                <div class="col-2">
+                                                    <field name="home_page_second_slider_banner_3" class="oe_avatar" widget="image" attrs="{'required':[('active_home_page_second_slider' ,'=',True)]}" />
+                                                </div>
+                                            </div>
+                                            <span class="text-muted">
+                                                Image size should be 181*122
+                                            </span>
+                                        </div>
+                                        <div class="row py-2">
+                                            <div class="col-3">
+                                                <label for="home_page_second_slider_banner_3_text"></label>
+                                            </div>
+                                            <div class="col-6 ">
+                                                <field name="home_page_second_slider_banner_3_text" attrs="{'required':[('active_home_page_second_slider' ,'=',True)]}" />
+                                            </div>
+                                        </div>
+                                        <div class="row py-2">
+                                            <div class="col-3">
+                                                <label for="home_page_second_slider_banner_3_url"></label>
+                                            </div>
+                                            <div class="col-6 ">
+                                                <field name="home_page_second_slider_banner_3_url" attrs="{'required':[('active_home_page_second_slider' ,'=',True)]}" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </group>
+                            </page>
+                        </notebook>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="tzc_fest_discount_view_tree" model="ir.ui.view">
+            <field name="name">tzc.fest.discount.view.tree</field>
+            <field name="model">tzc.fest.discount</field>
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="name" />
+                    <field name="from_date" />
+                    <field name="to_date" />
+                </tree>
+            </field>
+        </record>
+
+        
+        <record id="action_tzc_fest_discount" model="ir.actions.act_window">
+            <field name="name">Special Discount</field>
+            <field name="res_model">tzc.fest.discount</field>
+            <field name="view_mode">tree,form</field>
+            <field name="context">{'search_default_archived':1}</field>
+            <field name="domain">['|',('is_active','=',True),('is_active','=',False)]</field>
+        </record>
+        
+        <record id="tzc_fest_discount_search_view" model="ir.ui.view">
+            <field name="name">tzc_fest_discount_search_view</field>
+            <field name="model">tzc.fest.discount</field>
+            <field name="arch" type="xml">
+                <search>
+                    <separator/>
+                    <filter name="archived" string="Active" domain="[('is_active', '=', True)]"/>
+                    <filter name="unarchived" string="Deactive" domain="[('is_active', '=', False)]"/>
+                </search>
+            </field>
+        </record>
+
+        <menuitem id="menu_tzc_fest_discount" name="Special Discount" action="action_tzc_fest_discount" parent="sale.sale_menu_root" groups="base.group_system"/>
+        <!-- ,tzc_sales_customization_spt.group_marketing_user -->
+    </data>
+</odoo>

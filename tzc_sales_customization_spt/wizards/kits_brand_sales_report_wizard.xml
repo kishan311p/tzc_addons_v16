@@ -1,0 +1,38 @@
+<?xml version='1.0' encoding='utf-8'?>
+<odoo>
+    <data>
+        <record id="kits_brand_sales_report_wizard_form_view" model="ir.ui.view">
+            <field name="name">kits.brand.sales.report.wizard.form.view</field>
+            <field name="model">kits.brand.sales.report.wizard</field>
+            <field name="arch" type="xml">
+                <form>
+                    <sheet>
+                        <group>
+                            <group>
+                                <field name="start_date"/>
+                                <field name="brand" widget="many2many_tags" options="{'no_create':True}"/>
+                            </group>
+                            <group>
+                                <field name="end_date"/>
+                                <field name="country_ids"  widget='many2many_tags' options="{'no_create': True}"/>
+                            </group>
+                        </group>
+                    </sheet>
+                    <footer>
+                        <button string="Download Brand Sales Report" name="brand_sales_report" type="object" class="oe_highlight"/>
+                        <button string="Download Brand Country Report" name="specific_brand_excel_report" type="object" class="oe_highlight"/>
+                        <button string="Cancel" class="btn-secondary" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+        <record id="action_kits_brand_sales_report_wizard" model="ir.actions.act_window">
+            <field name="view_mode">form</field>
+            <field name="view_mode">form</field>
+            <field name="name">Brand Sales</field>
+            <field name="res_model">kits.brand.sales.report.wizard</field>
+            <field name="target">new</field>
+        </record>
+        <menuitem id="menu_product_detail_wizard" name="Brand Sales Report" action="action_kits_brand_sales_report_wizard" groups="base.group_system" parent="sale.menu_sale_report" />
+    </data>
+</odoo>

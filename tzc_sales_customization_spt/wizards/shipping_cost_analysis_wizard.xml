@@ -1,0 +1,43 @@
+<?xml version='1.0' encoding='utf-8'?>
+<odoo>
+    <data>
+        <record id="shipping_cost_analysis_wizard_form_view" model="ir.ui.view">
+            <field name="name">shipping.cost.analysis.wizard.form.view</field>
+            <field name="model">shipping.cost.analysis.wizard</field>
+            <field name="arch" type="xml">
+                <form>
+                    <sheet>
+                        <group>
+                            <group>
+                                <field name="start_date" />
+                            </group>
+                            <group>
+                                <field name="end_date" />
+                            </group>
+                        </group>
+                        <group>
+                            <group>
+                                <field name="carrier_id" required="1" options="{'no_create':True,'no_open':True}" />
+                            </group>
+                        </group>
+                    </sheet>
+                    <footer>
+                        <button string="Download Excel Report" name="action_xls_report" type="object" class="oe_highlight"/>
+                        <button string="Cancel" class="btn-secondary" special="cancel" />
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+        <record id="action_shipping_cost_analysis" model="ir.actions.act_window">
+            <field name="view_mode">form</field>
+            <field name="view_mode">form</field>
+            <field name="name">Shipping Cost Analysis</field>
+            <field name="res_model">shipping.cost.analysis.wizard</field>
+            <field name="target">new</field>
+        </record>
+
+        <menuitem name="Shipping Cost Analysis" action="action_shipping_cost_analysis" id="menu_action_shipping_cost_analysis" groups="base.group_system" parent="sale.menu_sale_report"/>
+
+    </data>
+</odoo>

@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <data>
+        <record id="kits_search_sale_order_form_view" model="ir.ui.view">
+            <field name="name">kits.search.sale.order.form.view</field>
+            <field name="model">kits.search.sale.order.wizard</field>
+            <field name="arch" type="xml">
+                <form>
+                    <sheet>
+                        <group>
+                            <group>
+                                <field name="start_date" />
+                            </group>
+                            <group>
+                                <field name="start_date" />
+                            </group>
+                        </group>
+                        <group>
+                            <group>
+                                <field name="customer_ids" widget="many2many_tags" options="{'no_create':True,'no_create_edit':True}" />
+                            </group>
+                            <group>
+                                <field name="state" widget="many2many_tags" options="{'no_create':True,'no_create_edit':True}" />
+                            </group>
+                        </group>
+                    </sheet>
+                    <footer>
+                        <button name="action_search_orders" type="object" string="Search" class="oe_highlight"/>
+                        <button special="cancel" type="object" string="Cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+        <record id="action_search_sale_order" model="ir.actions.act_window">
+            <field name="name">Sale Orders</field>
+            <field name="res_model">kits.search.sale.order.wizard</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+        </record>
+
+        <menuitem id="menu_search_sale_order_wizard" name="Search Order" action="action_search_sale_order" groups="base.group_system" parent="sale.menu_sale_report"/>
+    </data>
+
+</odoo>

@@ -2,7 +2,6 @@
 # Part of SnepTech See LICENSE file for full copyright and licensing details.##
 ##############################################################################
 from odoo import models, fields, api, _
-from odoo.exceptions import UserError, ValidationError
 import re
 import base64
 import requests
@@ -451,7 +450,6 @@ class res_partner(models.Model):
             'context':{'default_success_partner_ids':[(6,0,success)],'default_failed_partner_ids':[(6,0,failed)],'default_verify_mail_success':success_message,'default_verify_mail_failed':failed_messsage},
             "target":"new",
         }
-
 
     @api.model
     def _get_view(self, view_id=None, view_type='form',**options):

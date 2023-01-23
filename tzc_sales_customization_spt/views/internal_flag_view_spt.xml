@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <record id="action_internal_flag_spt" model="ir.actions.act_window">
+        <field name="view_mode">tree,form</field>
+            <field name="name">Internal Flag</field>
+            <field name="res_model">internal.flag.spt</field>
+        </record>
+
+        <record id="internal_flag_from_view_spt" model="ir.ui.view">
+            <field name="name">internal.flag.from.view.spt</field>
+            <field name="model">internal.flag.spt</field>
+            <field name="arch" type="xml">
+                <form>
+                    <sheet>
+
+                        <group>
+                            <group>
+                                <field name="name"/>
+                            </group>
+
+                        </group>
+
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="internal_flag_tree_view_spt" model="ir.ui.view">
+            <field name="name">internal.flag.tree.view.spt</field>
+            <field name="model">internal.flag.spt</field>
+            <field name="arch" type="xml">
+                <tree default_order="name">
+                    <field name="name"/>
+                </tree>
+            </field>
+        </record>
+
+    <menuitem name="Internal Flag" action="action_internal_flag_spt" id="menu_action_internal_flag_spt" parent="tzc_sales_customization_spt.menu_action_product_custom_spt" sequence="400"/>
+
+    </data>
+</odoo>
+

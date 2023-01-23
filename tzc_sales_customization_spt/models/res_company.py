@@ -1,11 +1,22 @@
+from odoo import fields, models
 import random
 import string
 
-from odoo import fields, models
 
-
-class website(models.Model):
+class res_company(models.Model):
     _inherit = "res.company"
+
+    account_type = fields.Selection([('sand_box','Sandbox Account'),('production','Production')],default="sand_box")
+
+    sand_box_merchant_id_usd = fields.Char('Sandbox Merchant ID (USD)')
+    sand_box_hash_value_usd = fields.Char('Sandbox Hash Value (USD)')
+    sand_box_merchant_id_cad = fields.Char('Sandbox Merchant ID (CAD)')
+    sand_box_hash_value_cad = fields.Char('Sandbox Hash Value (CAD)')
+
+    production_merchant_id_cad = fields.Char('Production Merchant ID (CAD)')
+    production_hash_value_cad = fields.Char('Production Hash Value (CAD)')
+    production_merchant_id_usd = fields.Char('Production Merchant ID (USD)')
+    production_hash_value_usd = fields.Char('Production Hash Value (USD)')
 
     excel_token = fields.Char(string="Excel Token")
 

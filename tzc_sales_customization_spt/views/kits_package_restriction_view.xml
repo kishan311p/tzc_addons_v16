@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <data>
+        <record id="kits_package_restriction_form_view" model="ir.ui.view">
+            <field name="name">kits.package.restriction.form.view</field>
+            <field name="model">kits.package.restriction</field>
+            <field name="arch" type="xml">
+                <form>
+                    <sheet>
+                        <group>
+                            <group>
+                                <field name="restricted_package_ids" widget="many2many_tags" readonly="1"/>
+                            </group>
+                            <group>
+                                <field name="package_to_remove" widget="many2many_tags" domain="[('id','in',restricted_package_ids)]" options="{'no_create':True}" />
+                            </group>
+                        </group>
+                    </sheet>
+                    <footer>
+                        <button name="action_process_with_package" type="object" string="Keep and Process" class="oe_highlight"/>
+                        <button name="action_process_without_packages" type="object" string="Delete and Process" class="oe_highlight"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+    </data>
+
+</odoo>

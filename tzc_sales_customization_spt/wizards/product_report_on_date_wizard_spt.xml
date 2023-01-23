@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <data>
+        <record id="product_report_on_date_wizard_form_view_spt" model="ir.ui.view">
+            <field name="name">product.report.on.date.wizard.form.view.spt</field>
+            <field name="model">product.report.on.date.wizard.spt</field>
+            <field name="arch" type="xml">
+                <form>
+                    <sheet>
+                        <group>
+                            <group>
+                                <field name="start_date" required='1'/>
+                            </group>
+                            <group>
+                                <field name="exclude_zero_qty"/>
+                            </group>
+                        </group>
+                    </sheet>
+                    <footer>
+                        <button name="action_print_report_file" type="object" string="Export"/>
+                        <button special="cancel" type="object" string="Cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+    </data>
+
+    <record id="action_product_report_on_date_info_wizard" model="ir.actions.act_window">
+        <field name="name">Inventory At Date</field>
+        <field name="res_model">product.report.on.date.wizard.spt</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+
+    <menuitem id='menuproduct_report_on_date_wizard' name="Inventory At Date" action="action_product_report_on_date_info_wizard" parent="sale.menu_sale_report" sequence="150" />
+</odoo>

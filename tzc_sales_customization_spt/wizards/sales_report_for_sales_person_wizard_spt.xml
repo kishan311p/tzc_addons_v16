@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="sales_report_for_sales_person_wizard_from_view_spt" model="ir.ui.view">
+        <field name="name">sales.report.for.sales.person.wizard.from.view.spt</field>
+        <field name="model">sales.report.for.sales.person.wizard.spt</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+
+                    <group>
+                        <group>
+                            <field name="start_date"/>
+                            <field name="end_date"/>
+                        </group>
+                        <group>
+                        </group>
+
+                    </group>
+                    <notebook>
+                        <page string="Sales Person">
+                            <field name="user_ids" domain="[('is_salesperson', '=', True)]" />
+                        </page>
+                        </notebook>
+                    </sheet>
+                    <footer>
+                        <button string="Download PDF Report" class="btn btn-primary" type="object" name="action_process"  />
+                        <button string="Download Excel Report" class="btn btn-primary" type="object" name="action_create_excel_report" />
+                        <button string="Cancel" class="btn-secondary" special="cancel" />
+                    </footer>
+                </form>
+
+            </field>
+        </record>
+
+        <record id="action_sales_person_report_spt" model="ir.actions.act_window">
+            <field name="view_mode">form</field>
+            <field name="view_mode">form</field>
+            <field name="name">Sales Person Report</field>
+            <field name="res_model">sales.report.for.sales.person.wizard.spt</field>
+        <field name="target">new</field>
+
+        </record>
+
+        <menuitem name="Sales Person Report" action="action_sales_person_report_spt" id="menu_action_sales_person_report_spt" groups="base.group_system" parent="sale.menu_sale_report" sequence="4"/>
+
+
+    </odoo>

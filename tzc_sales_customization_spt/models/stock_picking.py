@@ -12,9 +12,10 @@ import math
 import base64
 import ast
 import os
-
+import ast
+from lxml import etree
 class stock_picking(models.Model):
-    _inherit = "stock.picking"
+    _inherit = 'stock.picking'
 
     def _get_default_include_cases(self):
         order = self.sale_id
@@ -22,6 +23,46 @@ class stock_picking(models.Model):
             order = self.env['sale.order'].search([('picking_ids','in',self.ids)])
         return order.include_cases
     
+    def action_open_return_picking_wizard_kits(self):
+        return {
+            'name':_('Return Product'),
+            'type':'ir.actions.act_window',
+            'res_model':'kits.wizard.return.picking',
+            'view_mode':'form',
+            'view_id':self.env.ref('kits_picking_return.kits_wizard_return_picking_form_view').id,
+            'context':{'default_picking_id':self.id,'default_total_qty':self.delivered_qty},
+            'target':'new',
+            }
+
+    def action_create_credit_note(self):
+        if self.env.user.has_group('account.group_account_invoice'):
+            return {
+                'name':_("Credit Note"),
+                'type':'ir.actions.act_window',
+                'res_model':"kits.create.credit.note.wizard",
+                'view_mode':'form',
+                'context':{'default_sale_id':self.sale_id.id,'default_picking_id':self.id},
+                'target':'new',
+            }
+        else:
+            raise UserError('Only billing user can create credit note.')
+
+    def action_show_return_pickings_kits(self):
+        pickings = self.sale_id.picking_ids.filtered(lambda x: x.kits_return_picking)
+        action = {
+            'name':_("Return Ordes"),
+            'type':'ir.actions.act_window',
+            'res_model':"stock.picking",
+            'view_mode':'form',
+            'target':'self',
+        }
+        if len(pickings) == 1:
+            action['res_id']=pickings.id
+        else:
+            action['view_mode']='tree,form'
+            action['domain'] = [('id','in',pickings.ids)]
+        return action
+
     def _get_rec_name(self):
         for rec in self:
             rec_name = '%s (%s)'%(rec.origin,rec.name)
@@ -36,6 +77,7 @@ class stock_picking(models.Model):
     
     # sale_website_id = fields.Many2one('website', string='Sale Order Website',compute="_compute_check_in_sale_order")
    
+
     # @api.depends('sale_id')  
     # def _compute_check_in_sale_order(self):
     #     website = False
@@ -82,7 +124,7 @@ class stock_picking(models.Model):
     credit_note_created  = fields.Boolean('Credit note ?')
     count_return_order = fields.Integer('Return Orders',compute="_count_return_pickings")
     kits_return_picking = fields.Boolean(compute="_compute_kits_return_picking",store=True,compute_sudo=True)
-
+    move_lines = fields.One2many('stock.move', 'picking_id', string="Stock Moves", copy=True)
 
     actual_weight = fields.Float('Actual Weight (kg)',related="weight")
     weight_of_cases = fields.Float('Calculated Weight for cases (kg)',compute="_compute_weight_of_cases",store=True,compute_sudo=True)
@@ -977,6 +1019,15 @@ class stock_picking(models.Model):
 
         return {'domain':{'carrier_id':domain}}
 
+    # @api.onchange('weight_unit')
+    # def onchange_check_weighty_unit(self):
+    #     for rec in self:
+    #         if rec.carrier_id and rec.carrier_id.delivery_type.lower() == 'ups' and rec.is_ups:
+    #             if rec.carrier_id.ups_package_weight_unit != rec.weight_unit.upper()+'S':
+    #                 raise UserError('Selected service type \'%s\' weight unit is %s & order weight unit is %s'%(rec.carrier_id.name,rec.carrier_id.ups_package_weight_unit,rec.weight_unit.upper()+'S'))
+    #             else:
+    #                 rec._onchange_weight()
+
     @api.onchange('tracking_number_spt')
     def _add_tracking_ref_in_order(self):
         for rec in self:
@@ -1031,7 +1082,7 @@ class stock_picking(models.Model):
                 rec.package_type_id = False
             
             rec._onchange_dimention()
-            
+
     @api.onchange('package_type_id')
     def _onchange_dimention(self):
         for rec in self:

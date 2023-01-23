@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <record id="pending_order_form_view_spt" model="ir.ui.view">
+            <field name="name">pending.order.form.view.spt</field>
+            <field name="model">pending.order.spt</field>
+            <field name="arch" type="xml">
+                <form>
+                    <header>
+                        <button name="create_sale_order" type="object" string="Process" class="oe_highlight" attrs="{'invisible': [('state', '!=', 'pending')]}"/>
+                        <field name="state" widget="statusbar" />
+                    </header>
+                    <sheet>
+                        <group>
+                            <group>
+                                <field name="catalog_id" />
+                                <field name="sale_order_id" readonly='1'/>
+                                
+                            </group>
+                            <group>
+                                <field name="customer_id" />
+                                <field name="execution_time"/>
+
+                            </group>
+                            <field name="reject_reason" attrs="{'invisible':[('state','!=','decline')]}"/>
+                        </group>
+                        <notebook>
+                            <page name="pending_order_lines" string="Lines">
+                                <field name="pending_order_line_ids" mode="tree" >
+                                    <tree>
+                                        <field name="product_id" />
+                                        <field name="qty" />
+                                    </tree>
+                                </field>
+                            </page>
+                        </notebook>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="pending_order_tree_view_spt" model="ir.ui.view">
+            <field name="name">pending.order.tree.view.spt</field>
+            <field name="model">pending.order.spt</field>
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="customer_id"/>
+                    <field name="catalog_id"/>
+                    <field name="execution_time"/>
+                    <field name="state"/>
+                    <field name="user_id" invisible="1"/>
+                    <button name="create_sale_order" class="oe_highlight" type="object" string="Send Now" />
+                    <!-- <button name="create_sale_order" type="object" string="Send" icon="fa-play"/> -->
+                </tree>
+            </field>
+        </record>
+
+        <record id="action_pending_order_spt" model="ir.actions.act_window">
+            <field name="name">Report Quotation</field>
+            <field name="res_model">pending.order.spt</field>
+            <field name="view_mode">tree,form</field>
+            <field name="context">{'create':0,'edit':0}</field>
+        </record>
+        <menuitem id="menu_pending_order_spt" name="Report Quotation" action="action_pending_order_spt" parent="menu_main_sale_catalog" sequence="4"/>
+
+    </data>
+</odoo>
