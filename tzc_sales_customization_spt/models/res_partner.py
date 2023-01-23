@@ -2,6 +2,7 @@
 # Part of SnepTech See LICENSE file for full copyright and licensing details.##
 ##############################################################################
 from odoo import models, fields, api, _
+from odoo.exceptions import UserError, ValidationError
 import re
 import base64
 import requests

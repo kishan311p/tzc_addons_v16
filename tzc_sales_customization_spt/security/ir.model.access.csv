@@ -88,7 +88,4 @@ access_reserved_product_report,access.reserved.product.report,model_reserved_pro
 access_product_report_on_date_wizard_spt,access.product.report.on.date.wizard.spt,model_product_report_on_date_wizard_spt,,1,1,1,1
 access_bank_inventory_report_wizard,access.bank.inventory.report.wizard,model_bank_inventory_report_wizard,,1,1,1,1
 access_brand_qty_report_wizard,access.brand.qty.report.wizard,model_brand_qty_report_wizard,,1,1,1,1
-access_pending_order_spt,access.pending.order.spt,model_pending_order_spt,,1,1,1,1
-access_pending_order_line_spt,access.pending.order.line.spt,model_pending_order_line_spt,,1,1,1,1
 access_flash_menu_spt,access.flash.menu.spt,model_flash_menu_spt,,1,1,1,1
-access_login_user_detail,login_user_detail_login_detail,model_login_detail,,1,1,1,1

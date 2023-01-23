@@ -34,7 +34,6 @@ from . import account_move
 from . import python_script_runner
 from . import res_company
 from . import kits_commission_lines
-from . import res_partner
 from . import ir_model
 from . import stock_move
 from . import internal_flag_spt
@@ -49,6 +48,7 @@ from . import mail_template
 from . import mailgun_email_logs
 from . import sale_order
 from . import res_users
+from . import res_partner
 from . import tzc_fest_discount
 from . import order_payment
 from . import geo_restriction_spt

@@ -62,7 +62,6 @@ class res_users(models.Model):
     is_validate = fields.Boolean(string='Validate User')
     redirect_url = fields.Char('redirect_url')
     access_token = fields.Char('Security Token', copy=False, default=_get_default_access_token)
-
     # wk_website_loyalty_points = fields.Float(
     #     related='partner_id.wk_website_loyalty_points'
     # )

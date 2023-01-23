@@ -514,18 +514,11 @@ class stock_picking(models.Model):
             }
 
     def update_sale_order_spt(self):
-        if self.state in ['confirmed','in_scanning','scanned','assigned']:
-            # catalog_obj = self.env['sale.catalog']
-            # catalog_obj.connect_server()
-            # method = catalog_obj.get_method('update_sale_order_spt')
-            # if method['method']:
-            #     localdict = {'self': self,}
-            #     exec(method['method'], localdict)
-            context_spt = dict(self.env.context)
-            context_spt.update({'no_create_spt':True})
-            order_line_obj = self.env['sale.order.line'].with_context(context_spt)
-                                
-            for record in self:
+        context_spt = dict(self.env.context)
+        context_spt.update({'no_create_spt':True})
+        order_line_obj = self.env['sale.order.line'].with_context(context_spt)
+        for record in self:
+            if record.state in ['confirmed','in_scanning','scanned','assigned']:
                 for line in range(len(record.move_ids_without_package)):
                     line = record.move_ids_without_package[line]
                     if line.sale_line_id:
@@ -566,20 +559,20 @@ class stock_picking(models.Model):
                                 order_line_id._onchange_unit_discounted_price_spt()
                                 line.write({'sale_line_id':order_line_id.id,'product_uom_qty':line.quantity_done})
                 record.sale_id._amount_all()
-        else:
-            return {
-            'type': 'ir.actions.client',
-            'tag': 'display_notification',
-            'params': {
-                    'title': 'Something is wrong.',
-                    'message': 'Please reload your screen.',
-                    'sticky': True,
-                }
+        return {
+        'type': 'ir.actions.client',
+        'tag': 'display_notification',
+        'params': {
+                'title': 'Something is wrong.',
+                'message': 'Please reload your screen.',
+                'sticky': True,
             }
+        }
+
 
     def picked_order_qty_spt(self):
-        if self.state in ['in_scanning','confirmed']:
-            for record in self:
+        for record in self:
+            if record.state in ['in_scanning','confirmed']:
                 if not record.sale_id:
                     record.sale_id = record.get_order_id(self)
                 record.preiviews_scanning_products_data = record.get_scanned_product()
@@ -593,20 +586,19 @@ class stock_picking(models.Model):
                     record.sale_id._amount_all()
                 else:
                     raise UserError(_('If user clicks when fulfilled is higher than ordered qty.'))
-        else:
-            return {
-                'type': 'ir.actions.client',
-                'tag': 'display_notification',
-                'params': {
-                        'title': 'Something is wrong.',
-                        'message': 'Please reload your screen.',
-                        'sticky': True,
-                    }
+        return {
+            'type': 'ir.actions.client',
+            'tag': 'display_notification',
+            'params': {
+                    'title': 'Something is wrong.',
+                    'message': 'Please reload your screen.',
+                    'sticky': True,
                 }
+            }
 
     def action_restore_preiviews_scanning(self):
-        if self.state in ['in_scanning']:
-            for rec in self:
+        for rec in self:
+            if rec.state in ['in_scanning']:
                 if not rec.sale_id:
                     rec.sale_id = rec.get_order_id(self)
                 if rec.id and rec.preiviews_scanning_products_data:
@@ -618,21 +610,22 @@ class stock_picking(models.Model):
                             if line_id:
                                 line_id.quantity_done = data.get(rec.id).get(product_id.id)
                         rec.sale_id.write({'updated_by':self.env.user.id,'updated_on':datetime.now()}) if rec.sale_id else None
-                            
-            self.message_post(body='Revert Fullfil.')
-            self.state = 'confirmed' if not any(self.move_ids_without_package.mapped('quantity_done')) else 'in_scanning'
-        else:
-            return {
-                'type': 'ir.actions.client',
-                'tag': 'display_notification',
-                'params': {
-                        'title': 'Something is wrong.',
-                        'message': 'Please reload your screen.',
-                        'sticky': True,
-                    }
+                                
+                self.message_post(body='Revert Fullfil.')
+                self.state = 'confirmed' if not any(self.move_ids_without_package.mapped('quantity_done')) else 'in_scanning'
+        return {
+            'type': 'ir.actions.client',
+            'tag': 'display_notification',
+            'params': {
+                    'title': 'Something is wrong.',
+                    'message': 'Please reload your screen.',
+                    'sticky': True,
                 }
+            }
+
 
     def action_update_order(self):
+        self.ensure_one()
         if self.state in ['in_scanning','confirmed']:
             if not self.sale_id:
                 self.sale_id = self.get_order_id(self)
@@ -764,9 +757,9 @@ class stock_picking(models.Model):
         }
 
     def action_scanned(self):
-        if self.state in ['in_scanning']:
-            error_msg = ''
-            for rec in self:
+        error_msg = ''
+        for rec in self:
+            if rec.state in ['in_scanning']:
                 for line in range(len(rec.move_ids_without_package)):
                     line = rec.move_ids_without_package[line]
                     rec.check_duplicate_move(line)
@@ -786,34 +779,23 @@ class stock_picking(models.Model):
                 if user_id and user_id.email:
                     template_id.send_mail(rec.id,force_send=True,notif_layout="mail.mail_notification_light")
                 rec.sale_id._amount_all()
-        else:
-            return {
-                'type': 'ir.actions.client',
-                'tag': 'display_notification',
-                'params': {
-                        'title': 'Something is wrong.',
-                        'message': 'Please reload your screen.',
-                        'sticky': True,
+            else:
+                return {
+                    'type': 'ir.actions.client',
+                    'tag': 'display_notification',
+                    'params': {
+                            'title': 'Something is wrong.',
+                            'message': 'Please reload your screen.',
+                            'sticky': True,
+                        }
                     }
-                }
 
     def set_qty_by_script(self):
-        # catalog_obj = self.env['sale.catalog']
-        # quant_obj = self.env['stock.quant']
-        # catalog_obj.connect_server()
-        # method = catalog_obj.get_method('set_qty_by_script')
-        # if method['method']:
-        #     localdict = {'self': self,'quant_obj': quant_obj}
-        #     exec(method['method'], localdict)
-
-        # =======================================================
-
-            # record.action_assign() 
-        if self.state in ['assigned']:
-            inventory_dict = {}
-            product_dict = {}
-            product_wizard_obj = self.env['stock.change.product.qty']
-            for record in self:
+        inventory_dict = {}
+        product_dict = {}
+        product_wizard_obj = self.env['stock.change.product.qty']
+        for record in self:
+            if record.state in ['assigned']:
                 if not record.sale_id:
                     record.sale_id = record.get_order_id(self)
 
@@ -848,8 +830,8 @@ class stock_picking(models.Model):
                         product_wizard_id.change_product_qty()
                         self.create_update_qty_log(line,inventory_dict[line])
                 record.sale_id._amount_all()
-        else:
-            return {
+                #record.action_assign() 
+        return {
             'type': 'ir.actions.client',
             'tag': 'display_notification',
             'params': {
@@ -857,7 +839,8 @@ class stock_picking(models.Model):
                     'message': 'Please reload your screen.',
                     'sticky': True,
                 }
-            }
+        }
+
 
     def action_reset_to_inscanning(self):
         if self.state in ['scanned']:
@@ -876,7 +859,6 @@ class stock_picking(models.Model):
                         'sticky': True,
                     }
                 }
-
     def button_open_quick_scan_spt(self):
         if self.state in ['in_scanning','confirmed']:
             for record in self:
@@ -940,14 +922,7 @@ class stock_picking(models.Model):
                     }
                 }
             
-    def action_update_order_cases(self):
-        for record in self:
-            record.show_update_button = False
-            sale_order = record.sale_id
-            if not sale_order:
-                sale_order = self.env['sale.order'].search([('invoice_ids','in',record.ids)],limit=1)
-            sale_order.include_cases = record.include_cases
-            sale_order.no_of_cases = record.no_of_cases
+
 
     def action_delivery_restore(self):
         if self.state not in ['confirmed','in_scanning']:
@@ -1242,7 +1217,22 @@ class stock_picking(models.Model):
                     'city':order_id.partner_id.city,
                     'phone':order_id.partner_id.phone,
                 })
+        if "active_model" in self._context.keys() and self._context.get('active_model') == 'sale.order':
+            if 'params' in self._context.keys():
+                sale_id = self.env['sale.order'].browse(self._context['params'].get('id'))
+            else:
+                sale_id = self.env['sale.order'].search([('name','=',vals['origin'])]) if vals else False
+            if sale_id and sale_id.picking_ids.filtered(lambda picking: picking.state != 'cancel' ):
+                raise UserError("You can not create more then one delivery order of same sale order.")
+        
+        if "origin" in vals.keys():
+            sale_order_id = self.env['sale.order'].search([('name','=',vals['origin'])])
+            if sale_order_id and len(sale_order_id.picking_ids.filtered(lambda x:x.state != 'cancel' and x.picking_type_id.name != "Receipts")) >= 1:
+                raise UserError(_('You can not add product in this order.\n%s has already one delivery order')%(vals.get('origin')))
 
+        order = self.env['sale.order'].search([('name','=',vals.get('origin'))],limit=1)
+        if order and vals.get('origin'):
+            vals.update(include_cases=order.include_cases,no_of_cases=order.no_of_cases)
         return super(stock_picking,self).create(vals)
     
     def add_shipping_cost(self):
@@ -1352,8 +1342,8 @@ class stock_picking(models.Model):
                 raise UserError(_(error_message))
 
             quant_obj = self.env['stock.quant']
-            # if not self.shipping_id:
-            #     raise ValidationError("Please add shipping details before order shipped.")
+            if not self.shipping_id:
+                raise ValidationError("Please add shipping details before order shipped.")
             ## check if picking have more then quantity then order
             custom_warning = False
             for line in range(len(self.move_ids_without_package)):
@@ -1432,3 +1422,127 @@ class stock_picking(models.Model):
             if stock_pick.partner_id and stock_pick.partner_id.user_ids and stock_pick.sale_id.partner_verification():
                 delivery_template_id = stock_pick.company_id.stock_mail_confirmation_template_id.id
                 stock_pick.with_context(force_send=True).message_post_with_template(delivery_template_id, email_layout_xmlid='mail.mail_notification_light')
+
+    def get_scanned_product(self):
+        scaned_product = {}
+        for rec in self:
+            scaned_product = ast.literal_eval(rec.preiviews_scanning_products_data) if rec.preiviews_scanning_products_data else {}
+            scaned_product.update({rec.id:{}})
+            for line in rec.move_ids_without_package:
+                scaned_product[rec.id].update({line.product_id.id:line.quantity_done})
+        
+        return scaned_product
+    
+
+
+    def create_address_line_for_sale(self,source_id,take_name=False):
+        address = ''
+        if take_name == True:
+            if source_id.name:
+                address += str(source_id.name)+'\n'+'(A division of Tanzacan Tradelink Inc.)'
+            if source_id.street:
+                address += '\n'+str(source_id.street)
+        else:
+            if source_id.street:
+                address += '\n'+'(A division of Tanzacan Tradelink Inc.)'
+                address += '\n'+str(source_id.street) 
+        if source_id.street2:
+            address += '\n'+str(source_id.street2)
+        if source_id.city:
+            address+= '\n'+str(source_id.city)
+        if source_id.state_id:
+            address += '\n'+str(source_id.state_id.name)
+        if source_id.zip:
+            address += '\n'+source_id.zip
+        if source_id.phone:
+            address += '\nTel:-'+ source_id.phone
+        if source_id.email:
+            address += '\nEmail:-'+ source_id.email 
+        
+        return address
+
+    def create_update_qty_log(self,product_id,product_data):
+        self.env['update.qty.log'].create({
+            'product_default_code':product_id.default_code,
+            'created_date':datetime.now(),
+            'user_id':self.env.user.id,
+            'origin_order_id':self.sale_id.id,
+            'before_qty_on_hand':product_data['before_qty_on_hand'],
+            'before_available_qty':product_data['before_available_qty'],
+            'before_reserved_qty':product_data['before_reserved_qty'],
+            'after_qty_on_hand':product_id.qty_available,
+            'after_available_qty':product_id.available_qty_spt,
+            'after_reserved_qty':product_id.reversed_qty_spt,
+        })
+
+    def action_cancel(self):
+        for record in self:
+            for line in range(len(record.move_ids_without_package)):
+                line = record.move_ids_without_package[line]
+                line_ids = line.move_line_ids.mapped(lambda move_line: move_line if move_line.state not in ['done','cancel'] else None)
+                if line_ids:
+                    self._cr.execute('''
+                        Update stock_move_line set product_qty = 0.00 where id =%s
+                    ''',[str(line_ids[0].id)])
+            # record.action_assign()
+        return super(stock_picking,self).action_cancel() 
+
+    def action_update_order_cases(self):
+        for record in self:
+            record.show_update_button = False
+            sale_order = record.sale_id
+            if not sale_order:
+                sale_order = self.env['sale.order'].search([('picking_ids','in',record.ids)],limit=1)
+            sale_order.include_cases = record.include_cases
+            sale_order.no_of_cases = record.no_of_cases
+
+    def check_duplicate_move(self,line):
+        self.ensure_one()
+        self._cr.execute("""select id from stock_move where picking_id = {} and product_id={}  order by id""".format(self.id,line.product_id.id))
+        move_data = self._cr.fetchall()
+
+        move_id = self.env['stock.move'].browse([id[0] for id in move_data])
+        if move_id:
+            if len(move_id)>1 :
+                self.env['kits.double.move.log'].genarete_double_move_log(move_id[0].product_id,self,move_id)
+
+                move_id_list = []
+                for move in move_id:
+                    if (move.quantity_done ==0 and move.product_uom_qty) or  (move.quantity_done ==0 and not move.product_uom_qty):
+                        self._cr.execute("""delete from stock_move_line where move_id in ({})""".format(move.id))
+                        self._cr.execute("""delete from stock_move where id={}""".format(move.id))
+                    else:
+                        if move.state == 'done':
+                            self._cr.execute("""delete from stock_move_line where move_id in ({})""".format(move.id))
+                            self._cr.execute("""delete from stock_move where id={}""".format(move.id))
+                        else:
+                            move_id_list.append(str(move.id))
+                if len(move_id_list)>1:
+                    move_id_list.sort()
+                    self._cr.execute("""delete from stock_move_line where move_id in ({})""".format(','.join(move_id_list[1:])))
+                    self._cr.execute("""delete from stock_move where id in ({})""".format(','.join(move_id_list[1:])))
+
+                move_id= move_id.filtered(lambda move : move.exists())
+        return move_id
+
+    def get_picking_order_values(self):
+        for rec in self:
+            if rec.sale_id:
+                rec.sale_id.write({
+                    'include_cases':rec.include_cases,
+                    'no_of_cases':rec.no_of_cases,
+                    'shipping_id':rec.shipping_id.id,
+                    'carrier_id':rec.carrier_id.id,
+                    'kits_carrier_tracking_ref':rec.tracking_number_spt,
+                    'glass_weight_kg':rec.shipping_weight,
+                    'case_weight_kg':rec.weight_of_cases,
+                    'weight_total_kg':rec.weight_total_kg,
+                    'actual_weight':rec.actual_weight,
+                    'estimate_shipping_cost':rec.calulate_shipping_cost
+                })
+
+
+    def get_wh_user(self):
+        user_id = self.env['res.users'].search([('is_warehouse','=',True)],limit=1)
+        return user_id.email
+

@@ -12,10 +12,10 @@
     'data': [
         
         # Access rules
-        'security/security_rule.xml',
-        'security/res_groups.xml',
         'security/ir.model.access.csv',
         'security/cancel_sale_order_rule_spt.xml',
+        'security/security_rule.xml',
+        'security/ir_rule.xml',
 
         # Data
         'data/ir_server_actions.xml',
@@ -83,7 +83,7 @@
         'views/flash_menu_spt.xml',
         # 'views/kits_inflation_rule.xml',
         'views/account_move_view.xml',
-        'views/sale_order.xml',
+        'views/sale_order_view.xml',
         'views/res_users.xml',
         'views/login_user_views.xml',
 

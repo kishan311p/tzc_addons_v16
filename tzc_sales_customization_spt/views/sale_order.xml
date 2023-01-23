@@ -155,9 +155,9 @@
             </xpath> -->
             <xpath expr="//group[@name='note_group']" position="replace">
                     <div align="right">
-                        <button style="font-size:30px;" icon="fa-money" help="Admin Fee" name="action_add_admin_fee" type="object" attrs="{'invisible':[('state','in',['scan','shipped','open_inv','cancel','merged','draft_inv'])]}"/>
-                        <button style="font-size:30px;" icon="fa-percent" help="Additional Discount" name="action_add_aditional_discount" type="object" attrs="{'invisible':[('state','in',['scan','shipped','open_inv','cancel','merged','paid','draft_inv'])]}"/>
-                        <button style="font-size:30px;" icon="fa-truck" help="Shipping Cost" name="action_add_shipping_cost" type="object" attrs="{'invisible':[('state','in',['scan','shipped','open_inv','cancel','merged','paid','draft_inv'])]}"/>
+                        <button style="font-size:30px;" icon="fa fa-money" help="Admin Fee" name="action_add_admin_fee" type="object" attrs="{'invisible':[('state','in',['scan','shipped','open_inv','cancel','merged','draft_inv'])]}"/>
+                        <button style="font-size:30px;" icon="fa fa-percent" help="Additional Discount" name="action_add_aditional_discount" type="object" attrs="{'invisible':[('state','in',['scan','shipped','open_inv','cancel','merged','paid','draft_inv'])]}"/>
+                        <button style="font-size:30px;" icon="fa fa-truck" help="Shipping Cost" name="action_add_shipping_cost" type="object" attrs="{'invisible':[('state','in',['scan','shipped','open_inv','cancel','merged','paid','draft_inv'])]}"/>
                     </div>
                     <group name="note_group" >
                         <group>
@@ -718,7 +718,7 @@
         <field name="model">sale.order</field>
         <field name="inherit_id" ref="tzc_sales_customization_spt.view_sale_view_order_form_inherit_tzc"/>
         <field name="arch" type="xml">
-            <xpath expr="//div[@class='row']/div[@class='col-sm-10']" position="inside">
+            <xpath expr="//div[hasclass('row')]/div[hasclass('col-sm-10')]" position="inside">
                 <div id="scanned_msg" class="col-sm-20" attrs="{'invisible':[('state','not in',('scanned'))]}">
                     <div role="alert" class="alert alert-info text-left" style="margin-left:10px; margin-right:2px; font-size:19px;" >
                         This order is scanned please confirm with customer and approve by <button name="send_shipment_ready_email_to_salesperson_spt" class="oe_highlight" string="Click Here" type="object"/>

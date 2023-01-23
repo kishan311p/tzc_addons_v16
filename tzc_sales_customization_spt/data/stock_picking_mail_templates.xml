@@ -117,6 +117,39 @@
 
             </field>
         </record>
+        <record id="mail_template_notify_salesperson_order_scanned" model="mail.template">
+            <field name="name">Send Scanned Order Notification To Salesperson</field>
+            <field name="subject">Order {{object.sale_id.name}} Is Scanned.</field>
+            <field name="email_from">{{object.get_wh_user() }}</field>
+            <field name="email_to">{{object.sale_id.user_id.email }}</field>
+            <field name="reply_to">{{(object.sale_id.user_id.company_id.catchall)}},{{(object.sale_id.user_id.email) }}</field>
+            <field name="model_id" ref="stock.model_stock_picking" />
+            <field name="auto_delete" eval="False" />
+            <field name="lang">{{object.sale_id.user_id.lang}}</field>
+            <field name="body_html" type="xml">
+                <table border="0" cellpadding="0" cellspacing="0" width="590" style="padding: 0px; background-color: white; color: #454748; border-collapse:separate;">
+                    <tbody>
+                        <!-- CONTENT -->
+                        <tr>
+                            <td valign="top" style="font-size:13px;">
+                                
+                                <p style="margin-top:0px;">Hello {{object.sale_id.user_id.name}},</p>
+                                <p>Order is scanned, what would you like to do next.</p>
+                                
+                                <p style="margin-bottom:0px;">Thank you,<br/>
+                                ETO Support</p>
+                                <p>
+                                <t t-if="object.env['res.users'].search([('is_warehouse','=',True)],limit=1)">
+                                    <t t-out="{{object.env['res.users'].search([('is_warehouse','=',True)],limit=1).signature}}"/>
+                                </t>
+                                 
+                                </p>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </field>
+        </record>
 
 
 

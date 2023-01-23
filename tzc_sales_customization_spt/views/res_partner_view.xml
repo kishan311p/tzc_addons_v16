@@ -9,9 +9,6 @@
                 <xpath expr="//form" position="attributes">
                     <attribute name="delete">0</attribute>
                 </xpath>
-                <xpath expr="//form/div[1]" position="before">
-                    <field name="access_field_flag" invisible="1" />
-                </xpath>
                 <xpath expr="//sheet" position="before">
                     <header>
                         <field name="customer_type" options="{'clickable': '1'}" widget="statusbar" statusbar_visible='b2c,b2b_regular,b2b_fs' class='oe_highlight' />
@@ -87,9 +84,10 @@
                 <xpath expr="//button[@name='open_partner_ledger']" position="attributes">
                     <attribute name="invisible">1</attribute>
                 </xpath>
-                <xpath expr="//notebook/page[@name='sales_purchases']/group/group[2]/field[@name='property_payment_method_id']" position="attributes">
+                
+                <!-- <field name="property_payment_method_id" position="attributes">
                     <attribute name="invisible">1</attribute>
-                </xpath>
+                </field> -->
 
                 <xpath expr="//sheet/notebook/page[@name='sales_purchases']/group/group/field[@name='user_id']" position="after">
                     <field name="sales_person_id"/>

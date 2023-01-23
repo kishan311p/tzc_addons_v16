@@ -9,7 +9,7 @@ class kits_package_product_lines(models.Model):
     image_variant_1920 = fields.Binary('Image', related='product_id.image_variant_1920')
     image_secondary_1920 = fields.Binary('Secondary Image', related='product_id.image_secondary')
     image_product_url = fields.Char(' Primary Image',related='product_id.image_url')
-    image_product_secondary_url = fields.Char('Secondary Image',related='product_id.image_secondary_url')
+    image_product_secondary_url = fields.Char('Secondary Image ',related='product_id.image_secondary_url')
     qty = fields.Integer('Qty',default=1)
     product_price = fields.Float('Unit Price')
     usd_price = fields.Float('USD Price')
