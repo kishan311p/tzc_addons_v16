@@ -56,13 +56,13 @@
             </field>
         </record>
 
-        <record id="action_pending_order_spt" model="ir.actions.act_window">
+        <!-- <record id="action_pending_order_spt" model="ir.actions.act_window">
             <field name="name">Report Quotation</field>
             <field name="res_model">pending.order.spt</field>
             <field name="view_mode">tree,form</field>
             <field name="context">{'create':0,'edit':0}</field>
         </record>
-        <menuitem id="menu_pending_order_spt" name="Report Quotation" action="action_pending_order_spt" parent="menu_main_sale_catalog" sequence="4"/>
+        <menuitem id="menu_pending_order_spt" name="Report Quotation" action="action_pending_order_spt" parent="tzc_sales_customization_spt.menu_main_sale_catalog" sequence="4"/> -->
 
     </data>
 </odoo>

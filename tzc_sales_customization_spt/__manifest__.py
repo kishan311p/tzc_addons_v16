@@ -12,10 +12,10 @@
     'data': [
         
         # Access rules
+        'security/security_rule.xml',
         'security/res_groups.xml',
         'security/ir.model.access.csv',
         'security/cancel_sale_order_rule_spt.xml',
-        'security/security_rule.xml',
 
         # Data
         'data/ir_server_actions.xml',
@@ -27,7 +27,7 @@
         'data/mail_templates_stock_picking.xml',
         'data/mail_template_warehouse_abandone_cart.xml',
         'data/mail_send_download_image_email.xml',
-        'data/report_paperformate.xml',
+        'data/report_paperformat.xml',
         'data/mail_template_sales_person_order_confirm.xml',
         'data/mail_template_purchase_start.xml',
         'data/cron_spt.xml',
@@ -38,7 +38,7 @@
         'data/seq.xml',
         # 'data/mail_change_commission_rule_for_salesperson.xml',
         'data/mail_template_customer_approve_notify.xml',
-	'data/stock_picking_mail_templates.xml',
+        'data/stock_picking_mail_templates.xml',
 
         # Views
         'views/product_product_view.xml',
@@ -83,7 +83,7 @@
         'views/flash_menu_spt.xml',
         # 'views/kits_inflation_rule.xml',
         'views/account_move_view.xml',
-        'views/sale_order_view.xml',
+        'views/sale_order.xml',
         'views/res_users.xml',
         'views/login_user_views.xml',
 
