@@ -155,9 +155,9 @@
             </xpath> -->
             <xpath expr="//group[@name='note_group']" position="replace">
                     <div align="right">
-                        <button style="font-size:30px;" icon="fa fa-money" help="Admin Fee" name="action_add_admin_fee" type="object" attrs="{'invisible':[('state','in',['scan','shipped','open_inv','cancel','merged','draft_inv'])]}"/>
-                        <button style="font-size:30px;" icon="fa fa-percent" help="Additional Discount" name="action_add_aditional_discount" type="object" attrs="{'invisible':[('state','in',['scan','shipped','open_inv','cancel','merged','paid','draft_inv'])]}"/>
-                        <button style="font-size:30px;" icon="fa fa-truck" help="Shipping Cost" name="action_add_shipping_cost" type="object" attrs="{'invisible':[('state','in',['scan','shipped','open_inv','cancel','merged','paid','draft_inv'])]}"/>
+                        <button style="font-size:30px;" icon="fa-money" help="Admin Fee" name="action_add_admin_fee" type="object" attrs="{'invisible':[('state','in',['scan','shipped','open_inv','cancel','merged','draft_inv'])]}"/>
+                        <button style="font-size:30px;" icon="fa-percent" help="Additional Discount" name="action_add_aditional_discount" type="object" attrs="{'invisible':[('state','in',['scan','shipped','open_inv','cancel','merged','paid','draft_inv'])]}"/>
+                        <button style="font-size:30px;" icon="fa-truck" help="Shipping Cost" name="action_add_shipping_cost" type="object" attrs="{'invisible':[('state','in',['scan','shipped','open_inv','cancel','merged','paid','draft_inv'])]}"/>
                     </div>
                     <group name="note_group" >
                         <group>

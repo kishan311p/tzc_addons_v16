@@ -6,14 +6,17 @@ from openpyxl import Workbook,load_workbook
 from openpyxl.styles import PatternFill, Border, Side, Alignment, Protection, Font
 from io import BytesIO
 from datetime import datetime
-
-
 import math
 import base64
 import ast
 import os
 import ast
 from lxml import etree
+
+field_list = ['move_ids_without_package','partner_id','user_id','scheduled_date','origin','shipping_id','include_cases','no_of_cases','carrier_id','calulate_shipping_cost',
+              'tracking_number_spt','package_contain','total_box','weight','weight_unit','package_type_id','height','width','kits_length','ship_date','carriage_value','currency_id',
+              'shipment','transportation_to','duties_taxes','notes','customer_ref','shipment_purpose','commercial_invoice','export_export','b13a','exemption','note','ups_no_of_package',
+              'general_desc','street','street_2','city','state_id','country_id','zip_code','company_name','phone','phone_ext','fright','state']
 class stock_picking(models.Model):
     _inherit = 'stock.picking'
 
@@ -29,7 +32,7 @@ class stock_picking(models.Model):
             'type':'ir.actions.act_window',
             'res_model':'kits.wizard.return.picking',
             'view_mode':'form',
-            'view_id':self.env.ref('kits_picking_return.kits_wizard_return_picking_form_view').id,
+            'view_id':self.env.ref('tzc_sales_customization_spt.kits_wizard_return_picking_form_view').id,
             'context':{'default_picking_id':self.id,'default_total_qty':self.delivered_qty},
             'target':'new',
             }
@@ -325,6 +328,10 @@ class stock_picking(models.Model):
             record.ordered_qty = ordered_qty
             record.delivered_qty = delivered_qty
             record.sale_id._amount_all()
+
+    def all_picking_cancle_spt(self):
+        for rec in self:
+            rec.with_context(cancel_delivery=True).picking_cancel_spt()
 
     def picking_cancel_spt(self):
         if self.state in ['scanned', 'in_scanning', 'done', 'confirmed', 'assigned']:
@@ -1546,3 +1553,84 @@ class stock_picking(models.Model):
         user_id = self.env['res.users'].search([('is_warehouse','=',True)],limit=1)
         return user_id.email
 
+
+    @api.model
+    def _fields_view_get(self, view_id=None, view_type='form', toolbar=False, submenu=False):
+        res = super(stock_picking, self)._fields_view_get(view_id=view_id, view_type=view_type, toolbar=toolbar, submenu=submenu)
+        if view_type == 'form':
+            doc = etree.fromstring(res['arch'])
+            is_admin = self.env.user.has_group('base.group_system')
+            is_warehouse = self.env.user.is_warehouse
+            if is_admin or is_warehouse:
+                for button_reset in doc.xpath("//button[@name='action_reset_to_inscanning']"):
+                    button_reset.attrib['invisible'] = '0'
+            res['arch'] = etree.tostring(doc, encoding='unicode')
+        return res
+
+    # def is_accessible_to(self,user):
+    #     self = self.sudo()
+    #     self.ensure_one()
+    #     result = False
+    #     if user:
+    #         if user.is_warehouse or user.is_salesperson or user.is_sales_manager or user.has_group('base.group_system '):
+    #             result = True
+    #     return result
+
+    def write(self,vals):
+        update = self.env['ir.model']._updated_data_validation(field_list,vals,self._name)
+        if update:
+            vals.update({'updated_by':self.env.user.id,'updated_on':datetime.now()})
+        return super(stock_picking,self).write(vals)
+
+    def name_get(self):
+        name = []
+        for rec in self:
+            rec_name = '%s (%s)'%(rec.origin,rec.name)
+            name.append((rec.id,rec_name))
+        return name
+    
+    def action_delivery_restore(self):
+        self.ensure_one()
+        if self.state not in ['confirmed','in_scanning']:
+            return {
+                'type': 'ir.actions.client',
+                'tag': 'display_notification',
+                'params': {
+                        'title': 'Something is wrong.',
+                        'message': 'Please reload your screen.',
+                        'sticky': True,
+                    }
+                }
+        else:
+            return {
+                "name":_("Recover Delivery"),
+                "type":"ir.actions.act_window",
+                "res_model":"delivery.recovery.selection.wizard",
+                "view_mode":"form",
+                "target":"new",
+                "context":{'default_sale_id':self.sale_id.id}
+            }
+    
+    def button_open_package_scan(self):
+        self.ensure_one()
+        return {
+            'name':_("Scan Packages"),
+            'type':'ir.actions.act_window',
+            'res_model':'kits.scan.package.products',
+            'view_mode':'form',
+            'view_id':self.env.ref('tzc_sales_customization_spt.kits_scan_package_products_form_view').id,
+            'context':{'default_picking_id':self.id},
+            'target':'new'
+        }
+    
+    def button_open_remove_package(self):
+        self.ensure_one()
+        return {
+            'name':_("Scan Packages"),
+            'type':'ir.actions.act_window',
+            'res_model':'kits.remove.package.products',
+            'view_mode':'form',
+            'view_id':self.env.ref('kits_package_product.kits_remove_pacakge_product_form_view').id,
+            'context':{'default_picking_id':self.id},
+            'target':'new'
+        }

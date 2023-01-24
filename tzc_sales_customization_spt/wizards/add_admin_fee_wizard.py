@@ -11,15 +11,18 @@ class add_admin_fee_wizard(models.TransientModel):
     def add_admin_fee(self):
         product_id = self.env['product.product'].search([('is_admin','=',True)],limit=1)
         admin_fee_line = self.kits_so_id.order_line.filtered(lambda x: x.product_id == product_id)
-        if not admin_fee_line:
-            order_line = [(0,0,{
-                'product_id':product_id.id,
-                'name':product_id.name,
-                'product_uom_qty':1.0,
-                'price_unit':self.admin_fee_price,
-                'unit_discount_price':self.admin_fee_price,
-                'is_admin':True,
-            })]
-            self.kits_so_id.write({'order_line':order_line})
+        if product_id:
+            if not admin_fee_line:
+                order_line = [(0,0,{
+                    'product_id':product_id.id,
+                    'name':product_id.name,
+                    'product_uom_qty':1.0,
+                    'price_unit':self.admin_fee_price,
+                    'unit_discount_price':self.admin_fee_price,
+                    'is_admin':True,
+                })]
+                self.kits_so_id.write({'order_line':order_line})
+            else:
+                admin_fee_line.write({'price_unit':self.admin_fee_price,'unit_discount_price':self.admin_fee_price,'is_admin':True})
         else:
-            admin_fee_line.write({'price_unit':self.admin_fee_price,'unit_discount_price':self.admin_fee_price,'is_admin':True})
+            raise UserError(_('Please add admin product'))

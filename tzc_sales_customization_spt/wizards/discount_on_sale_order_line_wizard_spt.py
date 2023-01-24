@@ -61,14 +61,9 @@ class discount_on_sale_order_line_wizard_spt(models.TransientModel):
         return {}
 
     def action_process(self):
-        # catalog_obj = self.env['sale.catalog']
-        # catalog_obj.connect_server()
-        # method = catalog_obj.get_method('action_process_discount_on_sale_order_line_wizard_model')
-        # if method['method']:
-        #     localdict = {'self': self,}
-        #     exec(method['method'], localdict)
         order_line_obj = self.env['sale.order.line'] 
-        if not self.sale_id.code_promo_program_id:
+        # if not self.mapped('sale_id.code_promo_program_id'):
+        if not self.mapped('sale_id.applied_coupon_ids'):
             for record in self:
                 if record.sale_id:
                     order_line_ids = []

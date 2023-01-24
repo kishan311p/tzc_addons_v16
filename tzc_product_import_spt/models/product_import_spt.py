@@ -862,8 +862,8 @@ class product_import_spt(models.Model):
                 product_id= product_pro_obj.search(['|',('active','=',True),('active','=',False),('default_code','=',import_line_id.default_code)])
                 if not product_id:
                     product_data_dict = self.convert_dict(fields_dict,import_line_id.read()[0])
-                    self._cr.execute("""call create_product_template('%s','%s','%s',%s,%s,null);
-                    """%(product_data_dict['default_code'],json.dumps({"name" :product_data_dict['name']}).replace("'","\'"),product_data_dict['active'],product_data_dict['categ_id'],self.env.uid))
+                    self._cr.execute("""call create_product_template(%s,%s,%s,%s,%s,null);
+                    """,[product_data_dict['default_code'],json.dumps({"name" :product_data_dict['name'].replace("'","\'")}),product_data_dict['active'],product_data_dict['categ_id'],self.env.uid])
             print('\n\n\n\n')
             self._cr.commit() 
             record.with_context(from_create=True).action_update_product(wrong_lines,product_ids = []) 

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="barcode_error_message_wizard_from_view_spt" model="ir.ui.view">
+            <field name="name">barcode.error.message.wizard.from.view.spt</field>
+            <field name="model">barcode.error.message.wizard.spt</field>
+            <field name="arch" type="xml">
+                <form>
+                    <sheet>
+                        <h1><field name="name"/></h1>
+                    </sheet>
+                    <footer>
+                        <button name="action_process" string="Process" type="object" class="oe_highlight"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+    </data>
+</odoo>
+

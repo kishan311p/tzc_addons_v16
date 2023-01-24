@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="shipping_detail_receipt_report" model="ir.actions.report">
+        <field name="name">Fedex Shipping B13A Report</field>
+        <field name="model">stock.picking</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">tzc_sales_customization_spt.shipping_details_b13a_report</field>
+        <field name="report_file">tzc_sales_customization_spt.shipping_details_b13a_report</field>
+        <field name="print_report_name">'Shipping Detail Report'</field>
+        <field name="binding_model_id" ref="stock.model_stock_picking"/>
+        <field name="binding_type">report</field>
+    </record>
+
+
+</odoo>

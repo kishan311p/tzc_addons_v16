@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <data>
+        <record id="kits_scan_package_products_form_view" model="ir.ui.view">
+            <field name="name">kits.scan.package.products.form.view</field>
+            <field name="model">kits.scan.package.products</field>
+            <field name="arch" type="xml">
+                <form>
+                    <sheet>
+                        <group>
+                            <field name="_barcode_scanned" widget="barcode_handler" invisible="1"/>
+                            <field name="total_qty" readonly="1" />
+                        </group>
+                        <group>
+                            <group>
+                                <field name="package_id" options="{'no_create':True,'no_create_edit':True,'no_open':True}" required="1"/>
+                            </group>
+                        </group>
+                        <div>
+                            <field name="line_ids" mode="tree">
+                                <tree editable="bottom">
+                                    <field name="product_id" />
+                                    <field name="package_id" invisible='1' readonly="1" force_save="1"/>
+                                    <field name="product_qty" />
+                                </tree>
+                            </field>
+                        </div>
+                    </sheet>
+                    <footer>
+                        <button string="Process" name="action_process" type="object" class="oe_highlight"/>
+                        <button string="Remove Package" name="action_remove_package" type="object" class="oe_highlight"/>
+                        <button string="Cancel" special="cancel" type="object" class="oe_highlight"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+    </data>
+
+</odoo>

@@ -7,8 +7,8 @@
     'author': 'Keypress',
     'sequence': 1,
     'version': '16.0.0',
-    'depends':['base','product','stock','sale_stock','sale','sale_management','web','crm','delivery','mail','portal','mass_mailing','snailmail_account_followup','marketing_automation'],
-    # 'web','website'
+    'depends':['base','product','stock','sale_stock','sale','sale_management','web','crm','delivery','mail','portal','mass_mailing','snailmail_account_followup','marketing_automation','sale_loyalty'],
+
     'data': [
         
         # Access rules
@@ -136,6 +136,9 @@
         'wizards/kits_replace_sales_manager_wizard_view.xml',
         'wizards/kits_change_commission_rule_view.xml',
         'wizards/paid_amount_wizard_view.xml',
+        'wizards/kits_scan_package_products_view.xml',
+        'wizards/barcode_error_message_wizard_spt.xml',
+        'wizards/stock_picking_barcode_spt.xml',
 
         # Reports
         'reports/kits_commission_report.xml',
@@ -146,6 +149,8 @@
         'reports/shipped_orders_report_template_spt.xml',
         'reports/catalog_report_template_spt.xml',
         'reports/report_saleorder_spt.xml',
+        'reports/shipping_details_b13a_report.xml',
+        'reports/report_action.xml',
 
         # Templates
         'templates/excel_data.xml',

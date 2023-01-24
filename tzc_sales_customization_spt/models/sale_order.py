@@ -66,7 +66,7 @@ field_list = ['partner_id','validity_date','date_order','payment_term_id','inclu
               'require_payment','signed_by','signed_on','signature','approve_by_salesperson','approve_by_salesmanager','approve_by_admin','payment_link',
               'amount_paid','due_amount','payment_status','state']
 
-class SaleOrder(models.Model):
+class sale_order(models.Model):
     _inherit = 'sale.order'
 
     def _get_salesmangers(self):
@@ -450,16 +450,6 @@ class SaleOrder(models.Model):
                             else:
                                 for picking in picking_ids:
                                     picking.with_context(cancel_delivery=True).picking_cancel_spt()
-                        record.is_paid = False
-                        record.mark_as_paid_by_user = False
-                        record.payment_link_approved_by = False
-                        record.payment_link = False
-                        record.approve_by_salesperson = False
-                        record.approve_by_salesmanager = False
-                        record.approve_by_admin = False
-                        record.amount_paid = 0.0
-                        record.due_amount = 0.0
-                        record.payment_status = False
                         if record.invoice_ids:
                             for invoice_id in record.invoice_ids:
                                 if invoice_id.state == 'paid':
@@ -468,8 +458,20 @@ class SaleOrder(models.Model):
                                 else:
                                     invoice_id.action_cancel()
                                 # invoice_id.is_commission_paid = False
-                        record.state = 'cancel'
                         self.env['order.payment'].sudo().search([('order_id','=',record.id)]).unlink()
+                        record.write({
+                            'state' : 'cancel',
+                            'is_paid' : False,
+                            'mark_as_paid_by_user' : False,
+                            'payment_link_approved_by' : False,
+                            'payment_link' : False,
+                            'approve_by_salesperson' : False,
+                            'approve_by_salesmanager' : False,
+                            'approve_by_admin' : False,
+                            'amount_paid' : 0.0,
+                            'due_amount' : 0.0,
+                            'payment_status' : False,
+                        })
                     else:
                         message = 'You don\'t have access to cancel order'
                         raise UserError(_(message))
@@ -2540,20 +2542,12 @@ class SaleOrder(models.Model):
                 raise UserError(_(warning_message))
 
     def action_confirm(self):
-        if self.state in ['draft','sent','received']:
-            self._get_unavailable_package_ids()
-            # catalog_obj = self.env['sale.catalog']
-            # catalog_obj.connect_server()
-            # method = catalog_obj.get_method('action_confirm')
-            # backup_package_line_obj = self.env['kits.package.order.line']
-            # if method['method']:
-            #     localdict = {'self': self,'_':_,}
-            #     exec(method['method'], localdict)
-            #     record = localdict['record']
-            #     if localdict['geo_restriction_list'] and not record._context.get('allow_restricted'):
-            sol_obj = self.env['sale.order.line']
-            order_backup_obj = self.env['sale.order.backup.spt']
+        sol_obj = self.env['sale.order.line']
+        order_backup_obj = self.env['sale.order.backup.spt']
+        state_list = self.mapped(lambda so : so.state in ['draft','sent','received'])
+        if any(state_list):
             for record in self:
+                record._get_unavailable_package_ids()
                 restricted_package_lines = record.package_order_lines.filtered(lambda x: x.availability == 'out_of_stock')
                 pack_sale_lines = []
                 if restricted_package_lines and not self.env.context.get('package_allow'):
@@ -2565,7 +2559,6 @@ class SaleOrder(models.Model):
                         'context':{'default_restricted_package_ids':[(6,0,restricted_package_lines.mapped('product_id').ids)],'default_order_id':record.id},
                         'target':'new',
                     }
-            for record in self:
                 geo_restriction_list = []
                 backup_order_line_list =[]
                 # Unpack Packed Product Lines
@@ -2590,7 +2583,7 @@ class SaleOrder(models.Model):
                                 pack_sale_line.write({'unit_discount_price':product_line.usd_price or 0.00})
                         pack_sale_line._onchange_unit_discounted_price_spt()
                         pack_sale_lines.append(pack_sale_line.id) if pack_sale_line.id and pack_sale_line.id not in pack_sale_lines else None
-
+                # backup order line for Packed Product Lines
                 for line in record.order_line.filtered(lambda x: not x.is_pack_order_line or not x.package_id):
                     backup_order_line_list.append((0,0,{
                         'product_id':line.product_id.id,
@@ -2624,20 +2617,10 @@ class SaleOrder(models.Model):
                 if len(record.package_order_lines):
                     backup_order_id = order_backup_obj.search([('order_id','=',record.id)],order="id desc",limit=1)
                     record.action_sync_backup_order(backup_order_id)
-            if self.state in ['draft','sent','received']:
-                self = self.sudo()
-                if self.website_id and self.state == 'draft' and self.env.user.has_group('base.group_user'):
-                    self.write({'is_confirm_by_saleperson':True})
-            # catalog_obj = self.env['sale.catalog']
-            # sol_obj = self.env['sale.order.line']
-            # catalog_obj.connect_server()
-            # method = catalog_obj.get_method('action_confirm')
-            # if method['method']:
-                # localdict = {'self': self,'_':_,}
-                # exec(method['method'], localdict)
-                # record = localdict['record']
-                order_backup_obj = self.env['sale.order.backup.spt']
-                for record in self:
+            if record.state in ['draft','sent','received']:
+                record = self.sudo()
+                if record.website_id and record.state == 'draft' and record.env.user.has_group('base.group_user'):
+                    record.write({'is_confirm_by_saleperson':True})
                     geo_restriction_list = []
                     backup_order_line_list =[]
                     #Merge same product lines
@@ -2687,7 +2670,7 @@ class SaleOrder(models.Model):
                             'target': 'new',
                             'context': {'default_order_line_ids': [(6,0,products)] }
                         }
-                on_consign_product_ids = self.order_line.filtered(lambda x:x.product_id.on_consignment and x.product_uom_qty > x.product_id.actual_stock)
+                on_consign_product_ids = record.order_line.filtered(lambda x:x.product_id.on_consignment and x.product_uom_qty > x.product_id.actual_stock)
                 if on_consign_product_ids and not self._context.get('on_consign_wizard'):
                     for line in on_consign_product_ids:
                         line.product_id.assign_qty = line.product_uom_qty or 0.0 
@@ -2708,7 +2691,17 @@ class SaleOrder(models.Model):
                 #             for sol in so.line_ids:
                 #                 sol.b2b_currency_rate = currency_rate
                 #     template_id.send_mail(res_id=record.id,force_send=True,notif_layout="mail.mail_notification_light")
-                return super(sale_order, self).action_confirm()
+                res = super(sale_order, self).action_confirm()
+                picking_ids = self.mapped('picking_ids')
+                if picking_ids:
+                    PickingObj = self.env['stock.picking']
+                    for picking in  picking_ids:
+                        if picking not in ['cancel', 'done'] and picking.state == 'assigned':
+                            PickingObj |= picking
+                    if PickingObj.ids:
+                        PickingObj.do_unreserve()
+                        
+                return res
         else:
             return {
                 'type': 'ir.actions.client',
@@ -2962,7 +2955,8 @@ class SaleOrder(models.Model):
     # theme_tzc_enterprice
     def recompute_coupon_lines(self):
         for order in self:
-            if not order.code_promo_program_id.on_order_line and order.code_promo_program_id:
+            if not order.applied_coupon_ids.on_order_line and order.applied_coupon_ids:
+            # if not order.code_promo_program_id.on_order_line and order.code_promo_program_id:
                 order._remove_invalid_reward_lines()
                 order._create_new_no_code_promo_reward_lines()
                 order._update_existing_reward_lines()

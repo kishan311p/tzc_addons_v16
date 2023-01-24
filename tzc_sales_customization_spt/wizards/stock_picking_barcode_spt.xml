@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="stock_picking_barcode_from_view_spt" model="ir.ui.view">
+            <field name="name">stock.picking.barcode.from.view.spt</field>
+            <field name="model">stock.picking.barcode.spt</field>
+            <field name="arch" type="xml">
+                <form>
+                    <sheet>
+                        <group>
+                            <group>
+                                <field name="_barcode_scanned" widget="barcode_handler" invisible="1"/>
+                                <field name="product_qty_count" />
+                            </group>
+                            <group/>
+                        </group>
+                        <div class="row">
+                            <div class="col-9" style="display:flex">
+                                <label for="product_id" style="font-weight: bold;"/>
+                                <field name="product_id" style="width: 26rem;margin-left: 20px;" options="{'no_create': True, 'no_open': True}"/>
+                                <div class="col-1">
+                                    <field name="qty" style="margin-left: 20px;width: 5rem;"/>
+                                </div>
+                                <div class="col-1" />
+                                <div class="col-1">
+                                    <button name="action_add_product" type="object" string="Add" class="oe_highlight"/>
+                                </div>
+                                <div class="col-1" />
+                                <div class="col-1" style="margin-left:-39px;">
+                                    <button name="action_edit_product" type="object" string="Edit" class="oe_highlight" />
+                                </div>
+                            </div>
+                        </div>
+                        <field name='line_ids'>
+                            <tree editable="bottom" default_order="sequence" limit="1000000" create="0" edit="0">
+                                <field name="sequence" widget="handle"/>
+                                <field name="product_id" options="{'no_create': True, 'no_open': True}" required="1" readonly="1" force_save="1"/>
+                                <field name="id" invisible="1"/>
+                                <field name="product_qty" readonly="1" force_save="1"/>
+                                <!-- <button icon="fa-solid fa-pencil" name="action_product_selection" type="object" /> -->
+                            </tree>
+                        </field>
+                    </sheet>
+                    <footer>
+                        <button name="action_process" string="Process" type="object" class="oe_highlight"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+    </data>
+</odoo>

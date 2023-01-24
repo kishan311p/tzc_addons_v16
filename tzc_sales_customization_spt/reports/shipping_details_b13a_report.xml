@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="shipping_b13a_detail_report">
+        <t t-call="web.external_layout">
+            <div class="page">
+                <div class="oe_structure" />
+                <div>
+
+                    <div style="font-size:20px;">
+                        <strong>
+                            Order# : 
+                            <t t-if="doc.sale_id">
+                                <span t-esc="doc.sale_id.name" />
+                            </t>
+                        </strong>
+                        <br/>
+                        <strong>
+                            B13# : 
+                            <t t-if="doc.exemption">
+                                <span t-esc="doc.exemption" />
+                            </t>
+                        </strong>
+                        <br/>
+                        <strong>
+                            Tracking : 
+                            <t t-if="doc.tracking_number_spt">
+                                <span t-esc="doc.tracking_number_spt" />
+                            </t>
+                        </strong>
+                        <br/>
+                        <br/>
+                    </div>
+
+                    <div style="font-size:20px;">
+
+                        <strong>
+                            <span t-esc="doc.sale_id.partner_id.name" />
+                        </strong>
+                        <br />
+                        <t t-if="doc.sale_id.partner_id.street">
+                            <span t-esc="doc.sale_id.partner_id.street" />
+                            ,
+                            <br />
+                        </t>
+                        <t t-if="doc.sale_id.partner_id.street2">
+                            <span t-esc="doc.sale_id.partner_id.street2" />
+                            ,
+                            <br />
+                        </t>
+                        <t t-if="doc.sale_id.partner_id.city">
+                            <span t-esc="doc.sale_id.partner_id.city" />
+                            ,
+                            <br />
+                        </t>
+                        <t t-if="doc.sale_id.partner_id.state_id">
+                            <span t-esc="doc.sale_id.partner_id.state_id.name" />
+                            ,
+                        </t>
+                        <t t-if="doc.sale_id.partner_id.country_id">
+                            <span t-esc="doc.sale_id.partner_id.country_id.name" />
+                            <br />
+                        </t>
+                        <t t-if="doc.sale_id.partner_id.phone">
+                            Tel:
+                            <span t-esc="doc.sale_id.partner_id.phone" />
+                            <br />
+                        </t>
+                        <t t-if="doc.sale_id.partner_id.email">
+                            Email:
+                            <span t-esc="doc.sale_id.partner_id.email" />
+                            <br />
+                        </t>
+                    </div>
+                    <!-- <strong>Order# : </strong>
+                    <t t-esc="doc.sale_id.name"/>
+                    <p></p>
+                    
+                    <strong>Customer : </strong>
+                    <t t-esc="doc.sale_id.partner_id.name"/>
+                    <p></p>
+                    
+                    <strong>Address : </strong>
+                    <t t-if="doc.sale_id.partner_id.street">
+                        <t t-esc="doc.sale_id.partner_id.street"/>
+                        ,
+                    </t>
+                    <br/>
+                    <span style="margin-left:142px;">
+                        <t t-if="doc.sale_id.partner_id.street2">
+                            <t t-esc="doc.sale_id.partner_id.street2"/>
+                            ,
+                        </t>
+                    </span>
+                    <br/>
+                    <span style="margin-left:142px;">
+                        <t t-if="doc.sale_id.partner_id.city">
+                            <t t-esc="doc.sale_id.partner_id.city"/>
+                            ,
+                        </t>
+                        <t t-if="doc.sale_id.partner_id.state_id">
+                            <t t-esc="doc.sale_id.partner_id.state_id.name"/>
+                            ,
+                        </t>
+                        <t t-if="doc.sale_id.partner_id.zip">
+                            <t t-esc="doc.sale_id.partner_id.zip"/>
+                            ,
+                        </t>
+                    </span>
+                    <br/>
+                    <span style="margin-left:142px;">
+                        <t t-if="doc.sale_id.partner_id.country_id">
+                            <t t-esc="doc.sale_id.partner_id.country_id.name"/>
+                        </t>
+                    </span>
+                    <p></p>
+                    
+                    <strong>Email : </strong>
+                    <t t-esc="doc.sale_id.partner_id.email"/>
+                    <p></p>
+                    
+                    <strong>Phone : </strong>
+                    <t t-esc="doc.sale_id.partner_id.phone"/>
+                    <p></p>
+                    
+                    <strong>B13# : </strong>
+                    <t t-esc="doc.exemption"/>
+                    <p></p>
+                    
+                    <strong>Tracking : </strong>
+                    <t t-esc="doc.tracking_number_spt"/>
+                    <p></p> -->
+
+                </div>
+
+
+            </div>
+        </t>
+    </template>
+
+    <template id="shipping_details_b13a_report">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="doc">
+                <t t-call="tzc_sales_customization_spt.shipping_b13a_detail_report" />
+            </t>
+        </t>
+    </template>
+</odoo>

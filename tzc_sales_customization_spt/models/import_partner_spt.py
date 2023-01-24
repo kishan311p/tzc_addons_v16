@@ -162,7 +162,6 @@ class import_partner_spt(models.Model):
         user_obj = self.env['res.users']
         business_type_obj = self.env['business.type.spt']
         internal_flag_obj = self.env['internal.flag.spt']
-        website_obj = self.env['website']
         for line in file_data:
             try:
                 print(str(file_data.index(line))+':'+str(line[index_heading_dict['internal_id']]))
@@ -297,7 +296,7 @@ class import_partner_spt(models.Model):
                     'supplier_rank': supplier_rank if supplier_rank else None,
                     'user_id': user_id if user_id else None,
                     # 'user_ids': [(6,0,user_ids)] if user_ids else [] ,
-                    'website': website if website else None,
+                    # 'website': website if website else None,
                     'previous_total_sales': previous_total_sales if previous_total_sales else None,
                     'internal_flag_id': internal_flag_id if internal_flag_id else None,
                     'eto': eto if eto else None,

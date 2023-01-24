@@ -48,3 +48,7 @@ from . import bank_inventory_report_wizard
 from . import brand_qty_report
 # from . import choose_delivery_carrier
 # from . import choose_delivery_package
+from . import kits_scan_package_products
+from . import kits_remove_package_products
+from . import stock_picking_barcode_spt
+from . import barcode_error_message_wizard_spt

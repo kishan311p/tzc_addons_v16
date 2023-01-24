@@ -1214,7 +1214,7 @@ class res_partner(models.Model):
     #     coupon_obj = self.env['sale.coupon.program']
     #     for record in self:
     #         promotion_name_list = []
-    #         order_ids = sale_order_obj.search([('partner_id','=',record.id),('code_promo_program_id','!=',False)]).filtered(lambda x: x if x.code_promo_program_id else None)
+    #         order_ids = sale_order_obj.search([('partner_id','=',record.id),('applied_coupon_ids','!=',False)]).filtered(lambda x: x if x.applied_coupon_ids else None)
     #         if order_ids:
     #             promotion_name_list = order_ids.mapped('promo_code')
     #         promotion_ids = coupon_obj.search([('promo_code','in',promotion_name_list)])
