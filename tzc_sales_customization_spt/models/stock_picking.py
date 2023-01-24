@@ -334,11 +334,12 @@ class stock_picking(models.Model):
             rec.with_context(cancel_delivery=True).picking_cancel_spt()
 
     def picking_cancel_spt(self):
-        if self.state in ['scanned', 'in_scanning', 'done', 'confirmed', 'assigned']:
+        state_list = self.mapped(lambda picking : picking.state in ['scanned', 'in_scanning', 'done', 'confirmed', 'assigned'])
+        if any(state_list):
             self = self.with_context(force_delete=True)
-            picking_data = ast.literal_eval(
-                self.delivery_data) if self.delivery_data else {}
             for stock_picking in self:
+                picking_data = ast.literal_eval(
+                stock_picking.delivery_data) if stock_picking.delivery_data else {}
                 if self._context.get('cancel_delivery'):
                     picking_data.update({stock_picking.id: {}})
                     for line in stock_picking.move_ids_without_package:
@@ -524,8 +525,9 @@ class stock_picking(models.Model):
         context_spt = dict(self.env.context)
         context_spt.update({'no_create_spt':True})
         order_line_obj = self.env['sale.order.line'].with_context(context_spt)
-        for record in self:
-            if record.state in ['confirmed','in_scanning','scanned','assigned']:
+        state_list = self.mapped(lambda picking : picking.state in  ['confirmed','in_scanning','scanned','assigned'])
+        if any(state_list):
+            for record in self:
                 for line in range(len(record.move_ids_without_package)):
                     line = record.move_ids_without_package[line]
                     if line.sale_line_id:
@@ -566,34 +568,8 @@ class stock_picking(models.Model):
                                 order_line_id._onchange_unit_discounted_price_spt()
                                 line.write({'sale_line_id':order_line_id.id,'product_uom_qty':line.quantity_done})
                 record.sale_id._amount_all()
-        return {
-        'type': 'ir.actions.client',
-        'tag': 'display_notification',
-        'params': {
-                'title': 'Something is wrong.',
-                'message': 'Please reload your screen.',
-                'sticky': True,
-            }
-        }
-
-
-    def picked_order_qty_spt(self):
-        for record in self:
-            if record.state in ['in_scanning','confirmed']:
-                if not record.sale_id:
-                    record.sale_id = record.get_order_id(self)
-                record.preiviews_scanning_products_data = record.get_scanned_product()
-                if record.ordered_qty >= record.delivered_qty:
-                    for line in range(len(record.move_ids_without_package)):
-                        line = record.move_ids_without_package[line]
-                        line.quantity_done = line.product_uom_qty
-                    record.sale_id.write({'state':'in_scanning'})
-                    record.write({'state': 'in_scanning'})
-                    # record.sale_id.with_context(fulfilled=True).send_shipment_ready_email_to_salesperson_spt()
-                    record.sale_id._amount_all()
-                else:
-                    raise UserError(_('If user clicks when fulfilled is higher than ordered qty.'))
-        return {
+        else:
+            return {
             'type': 'ir.actions.client',
             'tag': 'display_notification',
             'params': {
@@ -603,9 +579,39 @@ class stock_picking(models.Model):
                 }
             }
 
+
+    def picked_order_qty_spt(self):
+        state_list = self.mapped(lambda picking : picking.state in  ['in_scanning','confirmed'])
+        if any(state_list):
+            for record in self:
+                    if not record.sale_id:
+                        record.sale_id = record.get_order_id(self)
+                    record.preiviews_scanning_products_data = record.get_scanned_product()
+                    if record.ordered_qty >= record.delivered_qty:
+                        for line in range(len(record.move_ids_without_package)):
+                            line = record.move_ids_without_package[line]
+                            line.quantity_done = line.product_uom_qty
+                        record.sale_id.write({'state':'in_scanning'})
+                        record.write({'state': 'in_scanning'})
+                        # record.sale_id.with_context(fulfilled=True).send_shipment_ready_email_to_salesperson_spt()
+                        record.sale_id._amount_all()
+                    else:
+                        raise UserError(_('If user clicks when fulfilled is higher than ordered qty.'))
+        else:
+            return {
+                'type': 'ir.actions.client',
+                'tag': 'display_notification',
+                'params': {
+                        'title': 'Something is wrong.',
+                        'message': 'Please reload your screen.',
+                        'sticky': True,
+                    }
+                }
+
     def action_restore_preiviews_scanning(self):
-        for rec in self:
-            if rec.state in ['in_scanning']:
+        state_list = self.mapped(lambda picking : picking.state in  ['in_scanning'])
+        if any(state_list):
+            for rec in self:
                 if not rec.sale_id:
                     rec.sale_id = rec.get_order_id(self)
                 if rec.id and rec.preiviews_scanning_products_data:
@@ -620,20 +626,22 @@ class stock_picking(models.Model):
                                 
                 self.message_post(body='Revert Fullfil.')
                 self.state = 'confirmed' if not any(self.move_ids_without_package.mapped('quantity_done')) else 'in_scanning'
-        return {
-            'type': 'ir.actions.client',
-            'tag': 'display_notification',
-            'params': {
-                    'title': 'Something is wrong.',
-                    'message': 'Please reload your screen.',
-                    'sticky': True,
+        else:
+            return {
+                'type': 'ir.actions.client',
+                'tag': 'display_notification',
+                'params': {
+                        'title': 'Something is wrong.',
+                        'message': 'Please reload your screen.',
+                        'sticky': True,
+                    }
                 }
-            }
 
 
     def action_update_order(self):
         self.ensure_one()
-        if self.state in ['in_scanning','confirmed']:
+        state_list = self.mapped(lambda picking : picking.state in ['in_scanning','confirmed'])
+        if any(state_list):
             if not self.sale_id:
                 self.sale_id = self.get_order_id(self)
             return{
@@ -765,8 +773,9 @@ class stock_picking(models.Model):
 
     def action_scanned(self):
         error_msg = ''
-        for rec in self:
-            if rec.state in ['in_scanning']:
+        state_list = self.mapped(lambda picking : picking.state in ['in_scanning'])
+        if any(state_list):
+            for rec in self:
                 for line in range(len(rec.move_ids_without_package)):
                     line = rec.move_ids_without_package[line]
                     rec.check_duplicate_move(line)
@@ -786,23 +795,24 @@ class stock_picking(models.Model):
                 if user_id and user_id.email:
                     template_id.send_mail(rec.id,force_send=True,notif_layout="mail.mail_notification_light")
                 rec.sale_id._amount_all()
-            else:
-                return {
-                    'type': 'ir.actions.client',
-                    'tag': 'display_notification',
-                    'params': {
-                            'title': 'Something is wrong.',
-                            'message': 'Please reload your screen.',
-                            'sticky': True,
-                        }
+        else:
+            return {
+                'type': 'ir.actions.client',
+                'tag': 'display_notification',
+                'params': {
+                        'title': 'Something is wrong.',
+                        'message': 'Please reload your screen.',
+                        'sticky': True,
                     }
+                }
 
     def set_qty_by_script(self):
         inventory_dict = {}
         product_dict = {}
         product_wizard_obj = self.env['stock.change.product.qty']
-        for record in self:
-            if record.state in ['assigned']:
+        state_list = self.mapped(lambda picking : picking.state in  ['assigned'])
+        if any(state_list):
+            for record in self:
                 if not record.sale_id:
                     record.sale_id = record.get_order_id(self)
 
@@ -838,19 +848,21 @@ class stock_picking(models.Model):
                         self.create_update_qty_log(line,inventory_dict[line])
                 record.sale_id._amount_all()
                 #record.action_assign() 
-        return {
-            'type': 'ir.actions.client',
-            'tag': 'display_notification',
-            'params': {
-                    'title': 'Something is wrong.',
-                    'message': 'Please reload your screen.',
-                    'sticky': True,
-                }
-        }
+        else:
+            return {
+                'type': 'ir.actions.client',
+                'tag': 'display_notification',
+                'params': {
+                        'title': 'Something is wrong.',
+                        'message': 'Please reload your screen.',
+                        'sticky': True,
+                    }
+            }
 
 
     def action_reset_to_inscanning(self):
-        if self.state in ['scanned']:
+        state_list = self.mapped(lambda picking : picking.state in ['scanned'])
+        if any(state_list):
             for rec in self:
                 if not rec.sale_id:
                     rec.sale_id = rec.get_order_id(self)
@@ -867,7 +879,8 @@ class stock_picking(models.Model):
                     }
                 }
     def button_open_quick_scan_spt(self):
-        if self.state in ['in_scanning','confirmed']:
+        state_list = self.mapped(lambda picking : picking.state in ['in_scanning','confirmed'])
+        if any(state_list):
             for record in self:
                 if not record.sale_id:
                     record.sale_id = record.get_order_id(self)
@@ -901,7 +914,8 @@ class stock_picking(models.Model):
 
     def open_remove_done_quantity_wizard(self):
         self.ensure_one()
-        if self.state in ['in_scanning','confirmed']:
+        state_list = self.mapped(lambda picking : picking.state in ['in_scanning','confirmed'])
+        if any(state_list):
             if not self.sale_id:
                 self.sale_id = self.get_order_id(self)
             for line in range(len(self.move_ids_without_package)):
@@ -1320,7 +1334,8 @@ class stock_picking(models.Model):
 
 
     def button_validate(self):
-        if self.state in ['assigned']:
+        state_list = self.mapped(lambda picking : picking.state in ['assigned'])
+        if any(state_list):
             context = self._context.copy()
             context.update({'no_shipping_label':True,'ship':True})
             self.env.context = context
@@ -1366,13 +1381,13 @@ class stock_picking(models.Model):
                         available_quantity = quant_obj._get_available_quantity(line_ids[0].product_id, line_ids[0].location_id, None, None, None, False)
                         quants = quant_obj._gather(line_ids[0].product_id, line_ids[0].location_id, lot_id=None, package_id=None, owner_id=None, strict=False)
                         
-                        quantity = -line_ids[0].product_qty
+                        quantity = -line_ids[0].reserved_qty
                         rounding = line_ids[0].product_id.uom_id.rounding
                         if float_compare(quantity, 0, precision_rounding=rounding) > 0:
                             # if we want to reserve
                             if float_compare(quantity, available_quantity, precision_rounding=rounding) > 0:
                                 self._cr.execute('''
-                                    Update stock_move_line set product_qty = 0.00 where id =%s
+                                    Update stock_move_line set reserved_qty = 0.00 where id =%s
                                 ''',[str(line_ids[0].id)])
                                 self._cr.commit()
                         elif float_compare(quantity, 0, precision_rounding=rounding) < 0:
@@ -1380,7 +1395,7 @@ class stock_picking(models.Model):
                             available_quantity = sum(quants.mapped('reserved_quantity'))
                             if float_compare(abs(quantity), available_quantity, precision_rounding=rounding) > 0:
                                 self._cr.execute('''
-                                        Update stock_move_line set product_qty = 0.00 where id =%s
+                                        Update stock_move_line set reserved_qty = 0.00 where id =%s
                                     ''',[str(line_ids[0].id)])
                                 self._cr.commit()
                                     
@@ -1396,7 +1411,7 @@ class stock_picking(models.Model):
             immediate_transfer_view_id = self.env.ref('stock.view_immediate_transfer').id
             # if not self.sale_id:
             #     self.sale_id = self.get_order_id(self)
-            if res and 'view_id' in res.keys() and self._check_backorder():
+            if isinstance(res, dict) and res and 'view_id' in res.keys() and self._check_backorder():
                 self.env['stock.backorder.confirmation'].create({
                 'pick_ids': [(4, self.id)]
                         }).process_cancel_backorder()

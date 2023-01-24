@@ -51,7 +51,7 @@
                     <button name="excel_report_line_stock" type="object" string="CASE REPORT" class="oe_highlight" attrs="{'invisible': [('state', 'not in', ('in_scanning','assigned','done','scanned'))]}"/>
                     <button string="Recover Delivery" name="action_delivery_restore" type="object" class="oe_highlight" attrs="{'invisible':['|',('is_multiple_delivery','=',False),('state','not in',['confirmed','in_scanning'])]}"/>
                     <button name="picking_cancel_spt" string="Cancel Delivery" class="oe_highlight" attrs="{'invisible': [('state', '=','cancel')]}" groups="tzc_sales_customization_spt.group_cancel_picking_rule_spt" type="object" confirm="This delivery will be cancel." context="{'cancel_delivery': True }"/>
-
+                    <button name="action_open_return_picking_wizard_kits" string="Return" class="oe_highlight" attrs="{'invisible': ['|','|',('kits_return_picking','=',True), ('state', '!=', 'done'), ('is_locked', '=', False)]}" type="object" groups="base.group_user" />
                 </xpath>
                 <xpath expr="//button[@name='%(stock.action_report_delivery)d']" position="attributes">
                     <attribute name="invisible">1</attribute>
@@ -239,6 +239,57 @@
                 <attribute name="decoration-warning">quantity_done &gt; product_uom_qty</attribute>
                 <attribute name="decoration-danger">qty_available &lt; quantity_done</attribute>
             </xpath>
+            <xpath expr="//group[@name='other_infos']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+            <xpath expr="//field[@name='owner_id']" position="after">
+                <field name="shipping_id" attrs="{'invisible':[('state','in',('cancel','merged'))],'readonly':[('state','in',['done','cancel'])]}" widget="selection"/>
+                <field name="provider" invisible="1"/>
+            </xpath>
+
+
+            <xpath expr="//sheet/div[hasclass('oe_button_box')]" position="inside">
+                <button name="action_show_return_pickings_kits" class="oe_stat_button" icon="fa-undo" type="object" attrs="{'invisible': ['|',('count_return_order','=',0),('kits_return_picking','=',True)]}">
+                    <field name="count_return_order" widget="statinfo" string="Receipts" readonly="1"/>
+                </button>
+            </xpath>
+            <xpath expr="//button[@name='%(stock.act_stock_return_picking)d']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+            <xpath expr="//button[@name='excel_picking_order_report']" position="after">
+                <button name="action_create_credit_note" type="object" string="Credit Note" class="oe_highlight" attrs="{'invisible':['|',('kits_return_picking','=',True),'&amp;',('kits_return_picking','=',False),('state','!=','done')]}"/>
+            </xpath>
+            <xpath expr="//sheet" position="inside">
+                <field name="kits_return_picking" invisible="1" />
+            </xpath>
+            <!-- <xpath expr="//header/button[@name='set_qty_by_script']" position="attributes">
+                    <attribute name="attrs">{'invisible':[('kits_return_picking','=',True)]}</attribute>
+                </xpath> -->
+            <!-- <xpath expr="//header/button[@name='excel_picking_order_report']" position="attributes">
+                    <attribute name="attrs">{'invisible':[('kits_return_picking','=',True)]}</attribute>
+                </xpath>
+                <xpath expr="//header/button[@name='excel_picking_order_report']" position="attributes">
+                    <attribute name="attrs">{'invisible':[('kits_return_picking','=',True)]}</attribute>
+                </xpath> -->
+            <!-- <xpath expr="//button[@name='update_sale_order_spt']" position="attributes">
+                    <attribute name="attrs">{'invisible':['|',('order_qty_count_spt','=',0),('kits_return_picking','=',True)]}</attribute>
+                </xpath> -->
+            <!-- <xpath expr="//header/button[@name='picked_order_qty_spt']" position="attributes">
+                    <attribute name="attrs">{'invisible':['|',('kits_return_picking','=',True),'&amp;',('state','!=','draft'),('source_spt','!=','Manually')]}</attribute>
+                </xpath> -->
+
+
+            <xpath expr="//sheet/div[hasclass('oe_button_box')]" position="after">
+                <field name="package_order" invisible="1" />
+                <field name="package_order_status" invisible="1" />
+                <!-- Red -->
+                <widget name="web_ribbon" class="s-ribbon-right s-ribbon-custom" bg_color="bg-danger" title="Package" attrs="{'invisible': ['|',('package_order','=',False),'&amp;',('package_order','=',True),('package_order_status','=','available')]}" />
+                <!-- Green -->
+                <widget name="web_ribbon" class="s-ribbon-right" title="Package" attrs="{'invisible': ['|',('package_order','=',False),'&amp;',('package_order','=',True),('package_order_status','=','out_of_stock')]}" />
+            </xpath>
+            <xpath expr="//page/field[@name='move_ids_without_package']/tree/field[@name='product_uom_qty']" position="before">
+                <field name="package_id" readonly="1" />
+            </xpath>
 
         </field>
     </record>
@@ -318,6 +369,176 @@
                 <attribute name="string">API Carrier</attribute>
             </field>
             <xpath expr="//button[@name='print_return_label']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+            <xpath expr="//field[@name='carrier_id']" position="attributes">
+                <attribute name="string">Service Type</attribute>
+                <attribute name="force_save">1</attribute>
+                <attribute name="attrs">{'readonly':[('state','in',['done','cancel'])]}</attribute>
+                <attribute name="domain">[('delivery_type','=',provider),('is_freight','=',False)]</attribute>
+            </xpath>
+            <xpath expr="//field[@name='carrier_id']" position="after">
+                <field name="fright" attrs="{'invisible':[('is_ups','=',False)]}"/>
+            </xpath>
+            <xpath expr="//group[@name='carrier_data']" position="inside">
+                <label for="weight_of_cases" />
+                <div>
+                    <field name="weight_of_cases" />
+                        kg
+                </div>
+                <label for="weight_total_kg" />
+                <div>
+                    <field name="weight_total_kg" />
+                        kg
+                </div>
+                <label for="actual_weight" />
+                <div>
+                    <field name="actual_weight" readonly="1" force_save="1"/>
+                        kg
+                </div>
+            </xpath>
+            <xpath expr="//group[@name='other_infos']" position="after">
+                <group>
+                    <field name="file_name" invisible="1"/>
+                    <field name="is_provider_pick_up" invisible="1"/>
+                    <div>
+                        <div class="o_row d-flex">
+                            <label for="calulate_shipping_cost" style="font-weight: bold;" attrs="{'invisible':[('state','in',('cancel','merged'))]}"/>
+                            <div class="col-12">
+                                <field name="calulate_shipping_cost" widget="monetary" force_save="1" attrs="{'invisible':[('state','in',('cancel','merged'))],'readonly':[('state','in',['done','cancel','assigned'])]}"/>
+                            </div>
+                        </div>
+                        <div>
+                            <button name="add_shipping_cost" type="object" attrs="{'invisible':[('state','in',('done','cancel','merged'))]}">
+                                <i class="fa fa-arrow-right mr-1" />
+                                    Add Shipping Cost
+                            </button>
+                            <button name="get_rate" type="object" attrs="{'invisible':[('state','in',('done','cancel','merged'))]}">
+                                <i class="fa fa-arrow-right mr-1" />
+                                    Get Rate
+                            </button>
+                        </div>
+                        <div class="o_row d-flex">
+                            <label for="shipping_label" style="font-weight:bold;"/>
+                            <div class="col-12">
+                                <field name="shipping_label" readonly="1" filename="file_name"/>
+                            </div>
+                        </div>
+                        <div>
+                            <button name="get_label" type="object" attrs="{'invisible':[('state','in',('done','cancel','merged'))]}">
+                                <i class="fa fa-arrow-right mr-1" />
+                                    Get Label
+                            </button>
+                        </div>
+                        <div class="o_row d-flex">
+                            <label for="tracking_number_spt" style="font-weight:bold;" attrs="{'invisible':['|',('state','in',('cancel','merged')),('is_provider_pick_up','=',True)]}"/>
+                            <div class="col-12">
+                                <field name="tracking_number_spt" attrs="{'invisible':['|',('state','in',('cancel','merged')),('is_provider_pick_up','=',True)],'readonly':['|',('state','in',['done','cancel'])]}"/>
+                            </div>
+                        </div>
+                    </div>
+                </group>
+                <div class="d-block mt-4" attrs="{'invisible':[('is_fedex','=',False)]}">
+                    <h1 style="color: #666666;">Fedex Shipping Details</h1>
+                </div>
+                <div class="d-block mt-4" attrs="{'invisible':[('is_ups','=',False)]}">
+                    <h1 style="color: #666666;">UPS Shipping Details</h1>
+                </div>
+                <group string="Recipient Information" attrs="{'invisible':[('is_fedex','=',False),('is_ups','=',False)]}">
+                    <field name="is_fedex" invisible="1" />
+                    <field name="is_ups" invisible="1" />
+                    <field name="recipient_id" attrs="{'required':[('state','=','assigned'),('is_fedex','=',True),('is_ups','=',True)]}" options="{'no_create':True}" readonly="1" force_save="1"/>
+                    <label for="street" string="Address" />
+                    <div class="o_address_format">
+                        <field name="street" placeholder="Street..." class="o_address_street" attrs="{'readonly':[('state','in',['done','cancel'])]}" />
+                        <field name="street_2" placeholder="Street 2..." class="o_address_street" attrs="{'readonly':[('state','in',['done','cancel'])]}" />
+                        <field name="city" placeholder="City" class="o_address_city" attrs="{'readonly':[('state','in',['done','cancel'])],'required':[('state','=','assigned'),('is_ups','=',True)]}" />
+                        <field name="state_id" class="o_address_state" placeholder="State" options='{"no_open": True}' attrs="{'readonly':[('state','in',['done','cancel'])],'required':[('state','=','assigned'),('is_ups','=',True)]}" />
+                        <field name="zip_code" placeholder="ZIP" class="o_address_zip" attrs="{'readonly':[('state','in',['done','cancel'])],'required':[('state','=','assigned'),('is_ups','=',True)]}" />
+                        <field name="country_id" placeholder="Country" class="o_address_country" attrs="{'readonly':[('state','in',['done','cancel'])],'required':[('state','=','assigned'),('is_ups','=',True)]}" options="{'no_open': True,'no_create': True, 'no_create_edit':True}"/>
+                    </div>
+                    <field name="company_name" attrs="{'readonly':[('state','in',['done','cancel'])]}" />
+                    <field name="phone" attrs="{'readonly':[('state','in',['done','cancel'])],'required':[('state','=','assigned'),('is_ups','=',True)]}" />
+                    <field name="phone_ext" attrs="{'readonly':[('state','in',['done','cancel'])]}" />
+                </group>
+                <group string="Sender Information" attrs="{'invisible':[('is_fedex','=',False),('is_ups','=',False)]}">
+                    <label for="currecnt_sender_name" string="Current Sender" />
+                    <div class="o_address_format">
+                        <field name="currecnt_sender_name" class="o_address_street" readonly="1" attrs="{'readonly':[('state','in',['done','cancel'])]}" options="{'no_open': True}"/>
+                        <field name="kits_street" placeholder="Street..." class="o_address_street" readonly="1" attrs="{'readonly':[('state','in',['done','cancel'])]}" />
+                        <field name="kits_street_1" placeholder="Street 2..." class="o_address_street" readonly="1" attrs="{'readonly':[('state','in',['done','cancel'])]}" />
+                        <field name="kits_city" placeholder="City" class="o_address_city" readonly="1" attrs="{'readonly':[('state','in',['done','cancel'])]}" />
+                        <field name="kits_state_id" class="o_address_state" placeholder="State" readonly="1" options='{"no_open": True}' attrs="{'readonly':[('state','in',['done','cancel'])]}" />
+                        <field name="kits_zip_code" placeholder="ZIP" class="o_address_zip" readonly="1" attrs="{'readonly':[('state','in',['done','cancel'])]}" />
+                        <field name="kits_country_id" placeholder="Country" class="o_address_country" readonly="1" attrs="{'readonly':[('state','in',['done','cancel'])]}" options="{'no_open': True,'no_create': True, 'no_create_edit':True}"/>
+                    </div>
+                </group>
+                <div class="d-block mt-4" attrs="{'invisible':[('is_ups','=',False)]}">
+                    <div role="alert" class="alert alert-info text-left" style="margin-left:10px; margin-right:2px; font-size:19px;">
+                            Note : If your order weight is smaller than 68.04 kg (150 lb), It consider as a small shipment.
+                    </div>
+                </div>
+                <group string="Package and shipment details" attrs="{'invisible':[('is_ups','=',False),('is_fedex','=',False)]}">
+                    <field name="package_contain" attrs="{'readonly':[('state','in',['done','cancel'])],'required':[('state','=','assigned'),('is_fedex','=',True)],'invisible':[('is_fedex','=',False)]}" />
+                    <field name="num_of_package" invisible="1"/>
+                    <field name="ups_no_of_package" attrs="{'invisible':['|',('is_ups','=',False),('fright','=',True)]}" force_save="1"/>
+                    <label for="num_of_pieces" attrs="{'invisible':['|',('is_ups','=',False),('fright','=',False)]}"/>
+                    <div class="o_row" name="num_of_pieces" attrs="{'invisible':['|',('is_ups','=',False),('fright','=',False)]}">
+                        <field name="num_of_pieces" attrs="{'required':[('state','=','assigned'),('is_ups','=',True)]}"/>
+                        <div class="col-10">
+                            <field name="shipped_pack_as" attrs="{'required':[('state','=','assigned'),('is_ups','=',True)]}"/>
+                        </div>
+                    </div>
+                    <label for="num_of_pack" attrs="{'invisible':['|',('is_ups','=',False),('fright','=',False)]}"/>
+                    <div class="o_row" name="num_of_pack" attrs="{'invisible':['|',('is_ups','=',False),('fright','=',False)]}">
+                        <field name="num_of_pack" attrs="{'required':[('state','=','assigned'),('is_ups','=',True)]}"/>
+                        <div class="col-10">
+                            <field name="pack_type" attrs="{'required':[('state','=','assigned'),('is_ups','=',True)]}"/>
+                        </div>
+                    </div>
+                    <field name="total_box" attrs="{'readonly':[('state','in',['done','cancel'])],'invisible':[('is_fedex','=',False)]}" />
+                    <field name="weight" attrs="{'readonly':[('state','in',['done','cancel'])],'required':[('state','=','assigned'),('is_fedex','=',True)],'invisible':[('is_fedex','=',False),('is_ups','=',False)]}" />
+                    <field name="weight_unit" attrs="{'readonly':[('state','in',['done','cancel'])],'required':[('state','=','assigned'),('is_fedex','=',True)],'invisible':[('is_fedex','=',False),('is_ups','=',False)]}" />
+
+                    <field name="package_type_id" options="{'no_create':True}" domain="[('package_carrier_type', '=',provider)]" attrs="{'readonly':[('state','in',['done','cancel'])],'required':[('state','=','assigned'),('is_fedex','=',True),('is_ups','=',True)],'invisible':[('is_fedex','=',False),('is_ups','=',False)]}" />
+                    <field name="height" attrs="{'readonly':[('state','in',['done','cancel'])],'invisible':[('is_fedex','=',False),('is_ups','=',False)],'required':[('state','=','assigned'),('is_ups','=',True)]}" />
+                    <field name="width" attrs="{'readonly':[('state','in',['done','cancel'])],'invisible':[('is_fedex','=',False),('is_ups','=',False)],'required':[('state','=','assigned'),('is_ups','=',True)]}" />
+                    <field name="kits_length" stirng="Length" attrs="{'readonly':[('state','in',['done','cancel'])],'invisible':[('is_fedex','=',False),('is_ups','=',False)],'required':[('state','=','assigned'),('is_ups','=',True)]}" />
+                    <field name="general_desc" attrs="{'invisible':[('is_ups','=',False)]}"/>
+                    <field name="ship_date" attrs="{'readonly':[('state','in',['done','cancel'])],'required':[('state','=','assigned'),('is_fedex','=',True)],'invisible':[('is_fedex','=',False)]}" />
+                    <field name="carriage_value" attrs="{'readonly':[('state','in',['done','cancel'])],'invisible':[('is_fedex','=',False)]}" />
+                    <field name="currency_id" attrs="{'readonly':[('state','in',['done','cancel'])],'required':[('state','=','assigned'),('is_fedex','=',True)],'invisible':[('is_fedex','=',False)]}" />
+                </group>
+                <group string="Addition References" attrs="{'invisible':[('is_fedex','=',False)]}">
+                    <field name="order_id" options='{"no_create":True}' readonly="1" attrs="{'readonly':[('state','in',['done','cancel'])]}" />
+                    <field name="shipment" attrs="{'readonly':[('state','in',['done','cancel'])]}" />
+                </group>
+                <group string="Billing Details" attrs="{'invisible':[('is_fedex','=',False)]}">
+                    <field name="transportation_to" attrs="{'readonly':[('state','in',['done','cancel'])],'required':[('state','=','assigned'),('is_fedex','=',True)]}" />
+                    <field name="duties_taxes" attrs="{'readonly':[('state','in',['done','cancel'])]}" />
+                    <field name="notes" attrs="{'readonly':[('state','in',['done','cancel'])]}" />
+                    <field name="customer_ref" attrs="{'readonly':[('state','in',['done','cancel'])]}" />
+                </group>
+                <group string="Customs Documents" attrs="{'invisible':[('is_fedex','=',False)]}">
+                    <field name="shipment_purpose" attrs="{'readonly':[('state','in',['done','cancel'])],'required':[('state','=','assigned'),('is_fedex','=',True)]}" />
+                    <field name="commercial_invoice" attrs="{'readonly':[('state','in',['done','cancel'])],'required':[('state','=','assigned'),('is_fedex','=',True)]}" />
+                    <field name="export_export" attrs="{'readonly':[('state','in',['done','cancel'])]}" />
+                    <field name="b13a" attrs="{'readonly':[('state','in',['done','cancel'])],'required':[('state','=','assigned'),('is_fedex','=',True)]}" />
+                    <field name="exemption" attrs="{'readonly':[('state','in',['done','cancel'])]}" />
+                    <button string="B13A Detail Pdf" icon="fa-download" name="action_download_pdf_report" type="object" class="oe_highlight" attrs="{'invisible':['|',('is_fedex','=',False),('state','in',['done','cancel','merged'])]}"/>
+                </group>
+            </xpath>
+            <xpath expr="//page[@name='extra']" position="attributes">
+                <attribute name="string">Shipping Details</attribute>
+                <attribute name="attrs">{'readonly':[('state','in',['done','cancel'])]}</attribute>
+            </xpath>
+            <xpath expr="//field[@name='carrier_tracking_ref']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+            <xpath expr="//label[@for='carrier_tracking_ref']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+            <xpath expr="//button[@name='cancel_shipment']" position="attributes">
                 <attribute name="invisible">1</attribute>
             </xpath>
         </field>

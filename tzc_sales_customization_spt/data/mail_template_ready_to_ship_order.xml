@@ -3,11 +3,10 @@
     <data noupdate="0">
         <record id="tzc_email_template_order_ready_to_ship" model="mail.template">
             <field name="name">Salesperson Order Sent Ready To Ship</field>
-            <field name="email_from">{{(object.user_id.email or ''}}</field>
-            <!-- <field name="subject">Your Order {{object.name}} is ready for shipment Dear {{(object.partner_id.name or '')}}.</field> -->
+            <field name="email_from">{{object.user_id.email or ''}}</field>
             <field name="subject">Your Order {{object.name}} is ready for shipment {{object.partner_id.name or ''}}.</field>
             <field name="email_to">{{object.partner_id.email}}</field>
-            <field name="reply_to">{{object.user_id.company_id.catchall_email|safe}} {{object.user_id.email}}</field>
+            <field name="reply_to">{{object.user_id.company_id.catchall_email or ''}} {{object.user_id.email or ''}}</field>
             <field name="model_id" ref="sale.model_sale_order" />
             <field name="auto_delete" eval="False" />
             <field name="lang">{{object.partner_id.lang}}</field>
