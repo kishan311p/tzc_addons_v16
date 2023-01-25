@@ -26,6 +26,10 @@ class stock_move(models.Model):
                         qty = line.product_uom_id._compute_quantity(line.qty_done, line.product_id.uom_id)
                         self.env['stock.quant']._update_available_quantity(line.product_id, line.location_id, qty)
                         self.env['stock.quant']._update_available_quantity(line.product_id, line.location_dest_id, qty * -1)
+            move.write({
+                'quantity_done' : 0,
+                'state' : 'cancel'
+            })
             context.update(self._context)
             context.update({'stock_quant_update_spt':True})
             move.with_context(context)._action_cancel()

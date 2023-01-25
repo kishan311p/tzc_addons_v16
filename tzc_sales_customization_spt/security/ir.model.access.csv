@@ -93,3 +93,5 @@ access_flash_menu_spt,access.flash.menu.spt,model_flash_menu_spt,,1,1,1,1
 access_stock_picking_barcode_spt,access.stock.picking.barcode.spt,model_stock_picking_barcode_spt,,1,1,1,1
 access_stock_picking_barcode_line_spt,access.stock.picking.barcode.line.spt,model_stock_picking_barcode_line_spt,,1,1,1,1
 access_barcode_error_message_wizard_spt,access.barcode.error.message.wizard.spt,model_barcode_error_message_wizard_spt,,1,1,1,1
+access_update_qty_log,access.update.qty.log,model_update_qty_log,,1,1,1,1
+

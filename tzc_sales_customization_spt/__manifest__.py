@@ -86,6 +86,7 @@
         'views/sale_order_view.xml',
         'views/res_users.xml',
         'views/login_user_views.xml',
+        'views/update_qty_log_view.xml',
 
         # Wizard
         'wizards/kits_warning_wizard_view.xml',

@@ -50,7 +50,7 @@
                     <button name="open_remove_done_quantity_wizard" type="object" string="Remove Scanned Items" attrs="{'invisible': [('state', 'in',('done','cancel','scanned','assigned'))]}" class="oe_highlight"/>
                     <button name="excel_report_line_stock" type="object" string="CASE REPORT" class="oe_highlight" attrs="{'invisible': [('state', 'not in', ('in_scanning','assigned','done','scanned'))]}"/>
                     <button string="Recover Delivery" name="action_delivery_restore" type="object" class="oe_highlight" attrs="{'invisible':['|',('is_multiple_delivery','=',False),('state','not in',['confirmed','in_scanning'])]}"/>
-                    <button name="picking_cancel_spt" string="Cancel Delivery" class="oe_highlight" attrs="{'invisible': [('state', '=','cancel')]}" groups="tzc_sales_customization_spt.group_cancel_picking_rule_spt" type="object" confirm="This delivery will be cancel." context="{'cancel_delivery': True }"/>
+                    <button name="picking_cancel_spt" string="Cancel Delivery" class="oe_highlight" attrs="{'invisible': [('state', 'in',['draft','cancel'])]}" groups="tzc_sales_customization_spt.group_cancel_picking_rule_spt" type="object" confirm="This delivery will be cancel." context="{'cancel_delivery': True }"/>
                     <button name="action_open_return_picking_wizard_kits" string="Return" class="oe_highlight" attrs="{'invisible': ['|','|',('kits_return_picking','=',True), ('state', '!=', 'done'), ('is_locked', '=', False)]}" type="object" groups="base.group_user" />
                 </xpath>
                 <xpath expr="//button[@name='%(stock.action_report_delivery)d']" position="attributes">
@@ -233,6 +233,12 @@
             <xpath expr="//field[@name='move_ids_without_package']/tree/field[@name='product_uom_qty']" position="before">
                 <field name="qty_available" optional="hide"/>
             </xpath>
+            <xpath expr="//field[@name='move_ids_without_package']/tree/field[@name='forecast_availability']" position="attributes">
+                <field name="invisible">1</field>
+            </xpath>
+            <field name="forecast_availability" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </field>
 
 
             <xpath expr="//field[@name='move_ids_without_package']/tree" position="attributes">

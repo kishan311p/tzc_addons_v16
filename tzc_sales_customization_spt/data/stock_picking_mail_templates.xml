@@ -46,7 +46,7 @@
                                         <table border="0" cellpadding="0" cellspacing="0" width="590" style="min-width: 590px; background-color: white; padding: 0px 8px 0px 8px; border-collapse:separate;">
                                             <tr>
                                                 <td valign="top" style="font-size: 13px;">
-                                                    <p style="margin-top:0px;">Hello {{object.sale_id.user_id.partner_id.name}},</p>
+                                                    <p style="margin-top:0px;">Hello <t t-out="object.sale_id.user_id.partner_id.name"/>,</p>
                                                     <!-- <br/> -->
                                                     <p>Good news!<br/>
                                                     The order number <b>{{object.sale_id.name}}</b> for client <b>{{object.sale_id.partner_id.name}}</b>, has been shipped. 

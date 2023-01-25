@@ -64,3 +64,4 @@ from . import pending_order_line_spt
 from . import sale_catalog
 from . import sale_catalog_line
 from . import product_packaging
+from . import update_qty_log

@@ -1,0 +1,68 @@
+<?xml version='1.0' encoding='utf-8'?>
+<odoo>
+    <data>
+        <record id="update_qty_log_form_view" model="ir.ui.view">
+            <field name="name">update.qty.log.form.view</field>
+            <field name="model">update.qty.log</field>
+            <field name="arch" type="xml">
+                <form create="false" edit="false">
+                    <sheet>
+                        <group>
+                            <group>
+                                <field name="product_default_code" readonly="1" />
+                                <field name="created_date" readonly="1" />
+                                <field name="user_id" readonly="1" />
+                                <field name="origin_order_id" readonly="1" />
+                            </group>
+                            <group string="Before Update Quantity">
+                                <field name="before_qty_on_hand" readonly="1" />
+                                <field name="before_available_qty" readonly="1" />
+                                <field name="before_reserved_qty" readonly="1" />
+                            </group>
+                            <group></group>
+                            <group string="After Update Quantity">
+                                <field name="after_qty_on_hand" readonly="1" />
+                                <field name="after_available_qty" readonly="1" />
+                                <field name="after_reserved_qty" readonly="1" />
+                            </group>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+        <record id="update_qty_log_tree_view" model="ir.ui.view">
+            <field name="name">update.qty.log.tree.view</field>
+            <field name="model">update.qty.log</field>
+            <field name="arch" type="xml">
+                <tree create="false" edit="false">
+                    <field name="created_date" />
+                    <field name="product_default_code" />
+                    <field name="user_id" />
+                    <field name="before_qty_on_hand" string="Before Quantity On Hand" readonly="1" />
+                    <field name="after_qty_on_hand" string="After Quantity On Hand" readonly="1" />
+                    <field name="before_available_qty" string="Before Available Quantity" readonly="1" />
+                    <field name="after_available_qty" string="After Available Quantity" readonly="1" />
+                    <field name="before_reserved_qty" string="Before Reserved Quantity" readonly="1" />
+                    <field name="after_reserved_qty" string="After Reserved Quantity" readonly="1" />
+                </tree>
+            </field>
+        </record>
+        <record id="action_update_qty_log" model="ir.actions.act_window">
+            <field name="name">Update Quantity Records</field>
+            <field name="res_model">update.qty.log</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+        <record id="update_qty_rec_search_view" model="ir.ui.view">
+            <field name="name">update.qty.rec.search.view</field>
+            <field name="model">update.qty.log</field>
+            <field name="arch" type="xml">
+                <search>
+                    <group>
+                        <filter name="group_by_sku" string="SKU" context="{'group_by': 'product_default_code'}" />
+                    </group>
+                </search>
+            </field>
+        </record>
+        <menuitem id="menu_update_qty_log" name="Update Qty Records" action="action_update_qty_log" parent="sale.menu_sale_report" groups="base.group_system" />
+    </data>
+</odoo>

@@ -334,44 +334,33 @@ class stock_picking(models.Model):
             rec.with_context(cancel_delivery=True).picking_cancel_spt()
 
     def picking_cancel_spt(self):
-        state_list = self.mapped(lambda picking : picking.state in ['scanned', 'in_scanning', 'done', 'confirmed', 'assigned'])
-        if any(state_list):
-            self = self.with_context(force_delete=True)
-            for stock_picking in self:
-                picking_data = ast.literal_eval(
-                stock_picking.delivery_data) if stock_picking.delivery_data else {}
-                if self._context.get('cancel_delivery'):
-                    picking_data.update({stock_picking.id: {}})
-                    for line in stock_picking.move_ids_without_package:
-                        if picking_data[stock_picking.id].get(line.product_id.id):
-                            picking_data[stock_picking.id].get(line.product_id.id).update(
-                                {
-                                    'demand': picking_data[stock_picking.id].get(line.product_id.id).get('demand') + line.product_uom_qty,
-                                    'done': picking_data[stock_picking.id].get(line.product_id.id).get('done') + line.quantity_done
-                                }
-                            )
-                        else:
-                            picking_data[stock_picking.id].update(
-                                {
-                                    line.product_id.id: {
-                                        'demand': line.product_uom_qty, 'done': line.quantity_done}
-                                }
-                            )
-                    stock_picking.delivery_data = picking_data
-                stock_picking.state = 'cancel'
-                stock_picking.sale_id.write(
-                    {'state': 'received' if stock_picking.sale_id.source_spt != 'Manually' else 'draft'})
-                stock_picking.move_lines.stock_quant_update_spt()
-        else:
-            return {
-                'type': 'ir.actions.client',
-                'tag': 'display_notification',
-                'params': {
-                        'title': 'Something is wrong.',
-                        'message': 'Please reload your screen.',
-                        'sticky': True,
-                }
-            }
+        self = self.with_context(force_delete=True)
+        for stock_picking in self:
+            picking_data = ast.literal_eval(
+            stock_picking.delivery_data) if stock_picking.delivery_data else {}
+            if self._context.get('cancel_delivery'):
+                picking_data.update({stock_picking.id: {}})
+                for line in stock_picking.move_ids_without_package:
+                    if picking_data[stock_picking.id].get(line.product_id.id):
+                        picking_data[stock_picking.id].get(line.product_id.id).update(
+                            {
+                                'demand': picking_data[stock_picking.id].get(line.product_id.id).get('demand') + line.product_uom_qty,
+                                'done': picking_data[stock_picking.id].get(line.product_id.id).get('done') + line.quantity_done
+                            }
+                        )
+                    else:
+                        picking_data[stock_picking.id].update(
+                            {
+                                line.product_id.id: {
+                                    'demand': line.product_uom_qty, 'done': line.quantity_done}
+                            }
+                        )
+                stock_picking.delivery_data = picking_data
+            stock_picking.state = 'cancel'
+            stock_picking.sale_id.write(
+                {'state': 'received' if stock_picking.sale_id.source_spt != 'Manually' else 'draft'})
+            stock_picking.move_lines.stock_quant_update_spt()
+
     def action_product_qty_delivery_order_cancel(self):
         try:
             product_wizard_obj = self.env['stock.change.product.qty']

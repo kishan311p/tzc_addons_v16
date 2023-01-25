@@ -299,7 +299,7 @@ class SaleOrderLine(models.Model):
         return res
 
     @api.depends('qty_invoiced', 'qty_delivered', 'product_uom_qty', 'order_id.state')
-    def _get_to_invoice_qty(self):
+    def _compute_qty_to_invoice(self):
         """
         Compute the quantity to invoice. If the invoice policy is order, the quantity to invoice is
         calculated from the ordered quantity. Otherwise, the quantity delivered is used.
