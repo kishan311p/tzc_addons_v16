@@ -2720,6 +2720,7 @@ class sale_order(models.Model):
                         'message': 'Please reload your screen.',
                         'sticky': True,
                     }
+            }
 
     def line_ordering_by_product(self):
         product_list = []
