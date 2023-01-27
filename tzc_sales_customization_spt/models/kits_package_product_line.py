@@ -28,14 +28,14 @@ class kits_package_product_lines(models.Model):
     @api.onchange('usd_price')
     def _onchange_usd_price(self):
         for record in self:
-            price = record.usd_price
-            if self.env.user.partner_id.property_product_pricelist.currency_id.name == 'CAD':
-                price = record.cad_price
+            # price = record.usd_price
+            # if self.env.user.partner_id.property_product_pricelist.currency_id.name == 'CAD':
+            #     price = record.cad_price
             try:
-                record.discount = round(((record.product_price-price) * 100) / record.product_price , 2)
+                record.discount = round(((record.product_price-record.usd_price) * 100) / record.product_price , 2)
             except:
                 record.discount = 0.00
-            record.fix_discount_price = record.product_price - price
+            record.fix_discount_price = record.product_price - record.usd_price
     
     @api.onchange('discount')
     def _onchange_discount(self):

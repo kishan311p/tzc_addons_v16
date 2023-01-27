@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="0">
+        <record id="user_access.mail_template_user_signup_confirmation" model="mail.template">
+            <field name="body_html" type="html">
+
+                <table border="0" cellpadding="0" cellspacing="0" style="padding-top:16px;background-color: #F1F1F1; font-family:Verdana, Arial,sans-serif; color: #454748; width: 100%; border-collapse:separate;">
+                    <tr>
+                        <td align="center" style="min-width:590px;">
+                            <table border="0" cellpadding="0" cellspacing="0" width="590" style="padding: 0px 8px 0px 8px;background-color: white; color: #454748; border-collapse:separate;">
+                                <tbody>
+                                    <!-- HEADER -->
+                                    <tr>
+                                        <td align="center" style="min-width: 590px;">
+                                            <t>
+                                                % if object.env.cr.dbname != 'eto_production':
+                                                <div class="corner-ribbon" style="top: 5%;position:absolute;width: 165px;font-weight: bold;color: #dc0e0e;font-size: 36px;text-align: center;">TEST</div>
+                                                % endif
+                                            </t>
+                                            <table border="0" cellpadding="0" cellspacing="0" width="590" style="min-width: 590px; background-color: white; padding: 0px 8px 0px 8px; border-collapse:separate;">
+                                                <tr>
+                                                    <td valign="middle" style="width: 245px;">
+                                                        <!-- <span style="font-size: 10px;">Your Account</span>
+                                                        <br/> -->
+                                                        <span style="font-size: 20px; font-weight: bold;">
+                                                            ${object.name}
+                                                        </span>
+                                                    </td>
+                                                    <td valign="middle" style="width: 145px;" align="right">
+                                                        <img src="/web/image?model=res.company&amp;id=1&amp;field=logo" style="padding: 0px; margin: 0px; height: auto; width: 280px;" alt="${object.user_id.company_id.name}"/>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td colspan="2" style="text-align:center;">
+                                                        <hr width="100%" style="background-color:rgb(204,204,204);border:medium none;clear:both;display:block;font-size:0px;min-height:1px;line-height:0; margin:16px 0px 16px 0px;"/>
+                                                    </td>
+                                                </tr>
+                                            </table>
+                                        </td>
+                                    </tr>
+                                    <!-- CONTENT -->
+                                    <tr>
+                                        <td align="center" style="min-width:590px;">
+                                            <table border="0" cellpadding="0" cellspacing="0" width="590" style="min-width:590px;background-color: white; padding: 0px 8px 0px 8px; border-collapse:separate;">
+                                                <tbody>
+                                                    <tr>
+                                                        <td valign="top">
+                                                            <div>
+                                                                <p style="margin-top:0px;">Dear ${object.name},</p>
+                                                                <!-- <br/> -->
+                                                                <!-- <br/> -->
+                                                                <p>You have successfully created your account at teameto.com.
+                                                               
+                                                                    <br/>
+                                                                    <br/>
+                                                                        We just need to verify your email address. Click on the <b>Activate Account</b> button below to verify your email.</p>
+                                                                <!-- <br/> -->
+                                                                <div style="font-size: 13px; margin: 16px 0px;">
+                                                                    <a href=" ${object.env['kits.b2b.website'].search([('website_name','=','b2b1')]).url}/login?details_code=${object.access_token}&amp;login=${object.login}" style="background-color:#00A09D !important;padding: 8px 16px 8px 16px; text-decoration: none; color: #fff; border-radius: 5px; font-size:13px;">
+                                                                                    Activate Account
+                                                                    </a>
+                                                                </div>
+                                                                <br/>
+                                                                <p style="margin-bottom:0px;">Thank you,
+                                                                    <br/>
+                                                                
+                                                                        ETO Support</p>
+
+                                                                <!-- <br/> -->
+                                                            </div>
+                                                        </td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td style="text-align:center;">
+                                            <hr width="100%" style="background-color:rgb(204,204,204);border:medium none;clear:both;display:block;font-size:0px;min-height:1px;line-height:0; margin: 16px 0px 16px 0px;"/>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </td>
+                    </tr>
+                    <!-- FOOTER -->
+                    <tr>
+                        <td align="center" style="min-width: 605px;">
+                            <table border="0" cellpadding="0" cellspacing="0" width="590" style="min-width: 605px; background-color: white; font-size: 11px; padding: 0px 8px 16px 8px; border-collapse:separate;">
+                                <tr>
+                                    <td valign="middle" align="left">
+                                                        ${object.user_id.company_id.name}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td valign="middle" align="left" style="opacity: 0.7;">
+                                                        ${object.user_id.company_id.phone}
+                                                        % if object.user_id.company_id.email
+                                                        |                                        <a href="'mailto:%s' % ${object.user_id.company_id.email}" style="text-decoration:none; color: #454748;">${object.user_id.company_id.email}</a>
+                                                        % endif
+                                                        % if object.user_id.company_id.website
+                                                            |                                        <a href="'%s' % ${object.user_id.company_id.website}" style="text-decoration:none; color: #454748;">
+                                                            ${object.user_id.company_id.website}
+                                        </a>
+                                                        % endif
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                    <tr>
+                    </tr>
+                    <!-- POWERED BY -->
+                    <tr>
+                        <td align="center" style="min-width:605px;">
+                            <table border="0" cellpadding="0" cellspacing="0" width="605" style="min-width:605px;background-color: #F1F1F1; color: #454748; padding: 8px; border-collapse:separate;">
+                                <tbody>
+                                    <tr>
+                                        <td style="text-align:center;font-size: 13px;">
+                                                Powered by <a target="_blank" href="www.teameto.com" style="color: #7693f8;">ETO</a>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </td>
+                    </tr>
+                </table>
+
+            </field>
+        </record>
+
+    </data>
+
+</odoo>

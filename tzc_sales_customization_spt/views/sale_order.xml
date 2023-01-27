@@ -34,6 +34,11 @@
             <!-- Green -->
             <widget name="web_ribbon" class="s-ribbon-right"  title="Package" attrs="{'invisible': ['|',('package_order','=',False),'&amp;',('package_order','=',True),('package_order_status','!=','available')]}" /> 
         </xpath>
+        <xpath expr="//header/button[3]" position="after">
+            <button string="FREIGHT INVOICE" name="excel_order_report" type="object" class="oe_highlight" sequence="100" attrs="{'invisible': [('state', 'not in', ('in_scanning','scan','shipped','draft_inv','open_inv','paid','scanned'))]}"/>
+            <!-- <button name="action_quotation_send" type="object" string="Send PRO-FORMA Invoice" class="btn-primary" attrs="{'invisible':[('state','in',('draft','sent','received','sale','in_scanning','cancel','merged'))]}" context="{'proforma': True}" modifiers="{'invisible':[['state','in',['draft','sent','received','sale','in_scanning','cancel','merged']]]}" options="{}"/>
+		    <button name="action_quotation_send" type="object" string="Send PRO-FORMA Invoice" attrs="{'invisible': ['|', ('state', '=', 'draft'), ('invoice_count','&gt;=',1)]}" context="{'proforma': True}" invisible="1" class="oe_highlight" modifiers="{'invisible':true}" options="{}"/> -->
+        </xpath>
         <xpath expr="//form/sheet/notebook/page[@name='order_lines']" position="after">
             <page name="package_order_lines" string="Pack Products" attrs="{'invisible':[('package_order_lines','=',[])]}">
                 <field name="package_order_lines" mode="tree" attrs="{'readonly':[('state','not in',('draft','sent','received'))]}">
@@ -48,6 +53,10 @@
                     </tree>
                 </field>
             </page>
+        </xpath>
+        
+        <xpath expr="//button[@name='action_quotation_send']" position="before">
+            <button name="action_view_sale_advance_payment_inv" string="Create Invoice" type="object" context="{'default_advance_payment_method': 'delivered'}" class='oe_highlight' attrs="{'invisible': [('state','not in',['shipped'])]}" groups="account.group_account_invoice"/>
         </xpath>
 
             <xpath expr="//tree/field[@name='product_template_id']" position="after">
@@ -241,11 +250,11 @@
             <xpath expr="//tree/field[@name='discount']" position="after">
                     <field name="fix_discount_price" groups="product.group_discount_per_so_line" attrs="{'readonly':['|','|',('is_admin','=',True),('is_shipping_product','=',True),('state','not in',['draft','sent','received','in_scanning','sale','scanned'])]}"/>
             </xpath>
-            <xpath expr="//button[@name='action_cancel']" position="before">
+            <!-- <xpath expr="//button[@name='action_cancel']" position="before"> -->
                 <!-- <button name="excel_report_line_stock" type="object" string="CASE REPORT" attrs="{'invisible': [('state', 'in', ('cancel','merge'))]}"/> -->
-                <button name="excel_order_report" type="object" string="FREIGHT INVOICE"  class="oe_highlight" attrs="{'invisible': [('state', 'not in', ('in_scanning','scan','shipped','draft_inv','open_inv','paid','scanned','scan'))]}" />
+                <!-- <button name="excel_order_report" type="object" string="FREIGHT INVOICE"  class="oe_highlight" attrs="{'invisible': [('state', 'not in', ('in_scanning','scan','shipped','draft_inv','open_inv','paid','scanned','scan'))]}" /> -->
                 <!-- <button name="action_discount_wizard" type="object" string="Bulk Discount" class="oe_highlight" attrs="{'invisible': [('state','in',('cancel','draft_inv','open_inv','paid','merged'))]}" /> -->
-            </xpath>
+            <!-- </xpath> -->
             <xpath expr="//field[@name='order_line']/tree/field[@name='product_uom_qty']" position="attributes">
                     <attribute name="attrs">{'readonly':['|',('parent.state', 'in', ('sale', 'done','in_scanning','scanned','scan','shipped','draft_inv','open_inv','cancel')),'|',('is_shipping_product','!=',False),'|',('is_admin','!=',False),('is_global_discount','!=',False)]}</attribute>
                     <attribute name="force_save">1</attribute>
@@ -474,6 +483,9 @@
                 </xpath>
                 <xpath expr="//page[@name='order_lines']/field[@name='order_line']/tree/control" position="replace">
                 </xpath>
+                <xpath expr="//page[@name='order_lines']/field[@name='order_line']/tree/field[@name='product_template_id']" position="replace">
+                    <field name="product_id" options="{'no_open': True, 'no_create': True}" readonly="1"/>
+                </xpath>
                 <xpath expr="//sheet/div[@name='button_box']" position="inside">
                     <button class="oe_stat_button" context="{'surpass_restriction_kits':True}" name="merge_order_lines" icon="fa-compress" type="object" invisible="1">
                     <!-- <button class="oe_stat_button" context="{'surpass_restriction_kits':True}" name="merge_order_lines" icon="fa-compress" type="object" attrs="{'invisible':[('state','not in',('draft','sent','received'))]}"> -->
@@ -524,7 +536,24 @@
                         </div>
                     </div>
                 </xpath>
-
+                <xpath expr="//button[@name='action_draft']" position="attributes">
+                    <attribute name="class">oe_highlight</attribute>
+                </xpath>
+                <xpath expr="//button[@name='action_quotation_send'][1]" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </xpath>
+                <xpath expr="//button[@name='action_quotation_send'][2]" position="attributes">
+                    <attribute name="attrs">{'invisible':[('state','in',('draft','sent','received','sale','in_scanning','cancel','merged'))]}</attribute>
+                </xpath>
+                <xpath expr="//button[@name='action_quotation_send'][3]" position="attributes">
+                    <!-- <attribute name="invisible">1</attribute> -->
+                    <attribute name="class">oe_highlight</attribute>
+                </xpath>
+                <xpath expr="//button[@name='action_quotation_send'][4]" position="attributes">
+                    <attribute name="class">oe_highlight</attribute>
+                    <!-- <attribute name="attrs">{'invisible':['|',('state','not in',('scan','shipped','draft_inv','open_inv','paid'),('invoice_count','&gt;=',1))]}</attribute> -->
+                    <attribute name="attrs">{'invisible':[('state','not in',('scan','shipped','draft_inv','open_inv','paid')),('invoice_count','&gt;=',1)]}</attribute>                    
+                </xpath>
                 <xpath expr="//div[@name='button_box']" position="after">
                     <div class="row">
                         <div class="col-sm-10">
@@ -664,14 +693,6 @@
             <field name="context">{}</field>
             <field name="domain">[('state','=','merged')]</field>
         </record>
-    <record id="action_show_merged_orders" model="ir.actions.act_window">
-            <field name="name">Merged Orders</field>
-            <field name="res_model">sale.order</field>
-            <field name="view_mode">tree,kanban,form,calendar,pivot,graph,activity</field>
-            <field name="search_view_id" ref="sale.sale_order_view_search_inherit_sale"/>
-            <field name="context">{}</field>
-            <field name="domain">[('state','=','merged')]</field>
-        </record>
     <record id="action_abandoned_cart_order" model="ir.actions.act_window">
             <field name="name">Abandoned Cart Order</field>
             <field name="res_model">sale.order</field>
@@ -704,15 +725,15 @@
     
     <menuitem id="sale.menu_sale_report" name="Reporting" parent="sale.sale_menu_root" sequence="100"/>
     <menuitem id="sale.menu_report_product_all" name="Sales" action="sale.action_order_report_all" parent="sale.menu_sale_report" sequence="1" groups="base.group_system"/>
+    <menuitem id="sale.menu_sale_order" name="Orders" action="sale.action_orders" parent="sale.sale_order_menu" groups="sales_team.group_sale_salesman" sequence="11"/>
     <menuitem id="sale_menu_config_activity_type" name="Activity Types" action="mail_activity_type_action_config_sale" parent="sale.menu_sale_config" groups="base.group_system"/>
-    <menuitem id="menu_merged_orders" name="Merged Orders" action="action_show_merged_orders" parent="sale.sale_order_menu" sequence="2" groups="base.group_system"/>
-    <menuitem id="menu_abandoned_cart_order" name="Abandoned Cart Orders" action="action_abandoned_cart_order" parent="sale.sale_order_menu" sequence="11" groups="base.group_system"/>
-    <menuitem id="menu_unfulfilled_order" name="Unfulfilled Orders" action="action_unfulfilled_order" parent="sale.sale_order_menu" sequence="12" groups="base.group_system"/>
+    <menuitem id="menu_merged_orders" name="Merged Orders" action="action_show_merged_orders" parent="sale.sale_order_menu" sequence="12" groups="base.group_system"/>
+    <menuitem id="menu_abandoned_cart_order" name="Abandoned Cart Orders" action="action_abandoned_cart_order" parent="sale.sale_order_menu" sequence="41" groups="base.group_system"/>
+    <menuitem id="menu_unfulfilled_order" name="Unfulfilled Orders" action="action_unfulfilled_order" parent="sale.sale_order_menu" sequence="42" groups="base.group_system"/>
     <!-- <menuitem action="sale_coupon.sale_coupon_program_action_promo_program" id="sale_coupon.menu_promotion_type_config" parent="sale.product_menu_catalog" name="Promotion Programs" groups="base.group_system" sequence="4"/> -->
     <menuitem id="menu_download_images" name="Download Images" action="action_download_images" parent="sale.product_menu_catalog" groups="base.group_system"/>
     <menuitem id="sale.menu_product_pricelist_main" name="Pricelists" parent="sale.menu_sale_config" action="product.product_pricelist_action2" groups="base.group_system" sequence="3" active="True"/>
-    <menuitem id="refresh_product_images_menu" name="Refresh Images" action="refresh_product_image" parent="sale.sale_menu_root" sequence="200" groups="base.group_system"/>
-
+    <menuitem id="refresh_product_images_menu" name="Refresh Images" action="refresh_product_image" parent="sale.sale_menu_root" sequence="400" groups="base.group_system"/>
     <record id="tzc_sales_customization_inherit_form_view" model="ir.ui.view">
         <field name="name">tzc.sales.customization.inherit.form.view</field>
         <field name="model">sale.order</field>

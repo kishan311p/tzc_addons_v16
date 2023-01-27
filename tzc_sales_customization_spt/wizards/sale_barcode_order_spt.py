@@ -97,7 +97,7 @@ class sale_barcode_order_spt(models.TransientModel):
                         vals.update({'sequence': sequence - len(self.line_ids)})
                 else:
                     vals.update({'sequence': 0})
-                new_line_ids = self.line_ids.create(vals)
+                new_line_ids = self.line_ids.new(vals)
                 self.line_ids += new_line_ids
             else:                   
                 raise UserError(_("Scanned Barcode does not exist. Try manual entry."))

@@ -10,13 +10,13 @@ import math
 import base64
 import ast
 import os
-import ast
 from lxml import etree
 
 field_list = ['move_ids_without_package','partner_id','user_id','scheduled_date','origin','shipping_id','include_cases','no_of_cases','carrier_id','calulate_shipping_cost',
               'tracking_number_spt','package_contain','total_box','weight','weight_unit','package_type_id','height','width','kits_length','ship_date','carriage_value','currency_id',
               'shipment','transportation_to','duties_taxes','notes','customer_ref','shipment_purpose','commercial_invoice','export_export','b13a','exemption','note','ups_no_of_package',
               'general_desc','street','street_2','city','state_id','country_id','zip_code','company_name','phone','phone_ext','fright','state']
+
 class stock_picking(models.Model):
     _inherit = 'stock.picking'
 
@@ -80,7 +80,6 @@ class stock_picking(models.Model):
     
     # sale_website_id = fields.Many2one('website', string='Sale Order Website',compute="_compute_check_in_sale_order")
    
-
     # @api.depends('sale_id')  
     # def _compute_check_in_sale_order(self):
     #     website = False
@@ -334,33 +333,44 @@ class stock_picking(models.Model):
             rec.with_context(cancel_delivery=True).picking_cancel_spt()
 
     def picking_cancel_spt(self):
-        self = self.with_context(force_delete=True)
-        for stock_picking in self:
-            picking_data = ast.literal_eval(
-            stock_picking.delivery_data) if stock_picking.delivery_data else {}
-            if self._context.get('cancel_delivery'):
-                picking_data.update({stock_picking.id: {}})
-                for line in stock_picking.move_ids_without_package:
-                    if picking_data[stock_picking.id].get(line.product_id.id):
-                        picking_data[stock_picking.id].get(line.product_id.id).update(
-                            {
-                                'demand': picking_data[stock_picking.id].get(line.product_id.id).get('demand') + line.product_uom_qty,
-                                'done': picking_data[stock_picking.id].get(line.product_id.id).get('done') + line.quantity_done
-                            }
-                        )
-                    else:
-                        picking_data[stock_picking.id].update(
-                            {
-                                line.product_id.id: {
-                                    'demand': line.product_uom_qty, 'done': line.quantity_done}
-                            }
-                        )
-                stock_picking.delivery_data = picking_data
-            stock_picking.state = 'cancel'
-            stock_picking.sale_id.write(
-                {'state': 'received' if stock_picking.sale_id.source_spt != 'Manually' else 'draft'})
-            stock_picking.move_lines.stock_quant_update_spt()
-
+        state_list = self.mapped(lambda picking : picking.state in ['scanned', 'in_scanning', 'done', 'confirmed', 'assigned'])
+        if any(state_list):
+            self = self.with_context(force_delete=True)
+            for stock_picking in self:
+                picking_data = ast.literal_eval(
+                stock_picking.delivery_data) if stock_picking.delivery_data else {}
+                if self._context.get('cancel_delivery'):
+                    picking_data.update({stock_picking.id: {}})
+                    for line in stock_picking.move_ids_without_package:
+                        if picking_data[stock_picking.id].get(line.product_id.id):
+                            picking_data[stock_picking.id].get(line.product_id.id).update(
+                                {
+                                    'demand': picking_data[stock_picking.id].get(line.product_id.id).get('demand') + line.product_uom_qty,
+                                    'done': picking_data[stock_picking.id].get(line.product_id.id).get('done') + line.quantity_done
+                                }
+                            )
+                        else:
+                            picking_data[stock_picking.id].update(
+                                {
+                                    line.product_id.id: {
+                                        'demand': line.product_uom_qty, 'done': line.quantity_done}
+                                }
+                            )
+                    stock_picking.delivery_data = picking_data
+                stock_picking.state = 'cancel'
+                stock_picking.sale_id.write(
+                    {'state': 'received' if stock_picking.sale_id.source_spt != 'Manually' else 'draft'})
+                stock_picking.move_lines.stock_quant_update_spt()
+        else:
+            return {
+                'type': 'ir.actions.client',
+                'tag': 'display_notification',
+                'params': {
+                        'title': 'Something is wrong.',
+                        'message': 'Please reload your screen.',
+                        'sticky': True,
+                }
+            }
     def action_product_qty_delivery_order_cancel(self):
         try:
             product_wizard_obj = self.env['stock.change.product.qty']
@@ -527,7 +537,7 @@ class stock_picking(models.Model):
                     else:
                         if not record.sale_id:
                             record.sale_id = record.sale_id.search([('name','=',self.origin)]).id
-                        price_unit = record.sale_id.pricelist_id.get_product_price(line.product_id, line.quantity_done, record.sale_id.partner_id)
+                        price_unit = record.sale_id.pricelist_id._get_product_price(line.product_id, line.quantity_done, line.product_id.uom_id)
                         if line.product_id.sale_type == 'on_sale' and record.sale_id and record.sale_id.pricelist_id and record.sale_id.pricelist_id.currency_id:
                             if record.sale_id.pricelist_id.currency_id.name == 'CAD':
                                 price_unit = line.product_id.on_sale_cad
@@ -848,7 +858,6 @@ class stock_picking(models.Model):
                     }
             }
 
-
     def action_reset_to_inscanning(self):
         state_list = self.mapped(lambda picking : picking.state in ['scanned'])
         if any(state_list):
@@ -867,6 +876,7 @@ class stock_picking(models.Model):
                         'sticky': True,
                     }
                 }
+
     def button_open_quick_scan_spt(self):
         state_list = self.mapped(lambda picking : picking.state in ['in_scanning','confirmed'])
         if any(state_list):

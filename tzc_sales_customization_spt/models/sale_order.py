@@ -253,20 +253,20 @@ class sale_order(models.Model):
         #             }
         #         }
         # else:
-        template_id = self.env.ref('tzc_sales_customization_spt.mail_template_notify_customer_order_completion').id if self.state in ['draft_inv','open_inv','scan','shipped'] else self._find_mail_template()
+        template_id = self.env.ref('tzc_sales_customization_spt.mail_template_notify_customer_order_completion') if self.state in ['draft_inv','open_inv','scan','shipped'] else self._find_mail_template()
         # template_id = self._find_mail_template()
         lang = self.env.context.get('lang')
         template = self.env['mail.template'].browse(template_id)
-        if template.lang:
-            lang = template._render_template(template.lang, 'sale.order', self.ids[0])
+        if template_id.lang:
+            lang = template_id._render_lang(self.ids)[self.id]
         ctx = {
             'default_model': 'sale.order',
-            'default_res_id': self.ids[0],
-            'default_use_template': bool(template_id.id),
-            'default_template_id': template_id.id,
+            'default_res_id': self.id,
+            'default_use_template': bool(template_id),
+            'default_template_id': template_id.id if template_id else None,
             'default_composition_mode': 'comment',
             'mark_so_as_sent': True,
-            'custom_layout': "mail.mail_notification_light",
+            'default_email_layout_xmlid': 'mail.mail_notification_layout_with_responsible_signature',
             'proforma': self.env.context.get('proforma', False),
             'force_email': True,
             'model_description': self.with_context(lang=lang).type_name,
@@ -2162,7 +2162,7 @@ class sale_order(models.Model):
         for rec in self:
             tmp_id = tmp_id.with_context(name=user_id.name,active_id=rec.id)
             tmp_id.email_to = user_id.email
-            tmp_id.send_mail(rec.id,force_send=True,notif_layout="mail.mail_notification_light")
+            tmp_id.send_mail(rec.id,force_send=True,email_layout_xmlid="mail.mail_notification_light")
 
     def order_filter(self):
         now = fields.Datetime.now()
@@ -2456,6 +2456,20 @@ class sale_order(models.Model):
                 backup_orders = backup_Obj.search([('order_id','=',record.id)],order="id desc",limit=1)
                 package_order = backup_orders.pack_order_backup
             record.package_order = package_order
+    
+    def action_draft(self):
+        if self.state != 'cancel':
+            return {
+                'type': 'ir.actions.client',
+                'tag': 'display_notification',
+                'params': {
+                        'title': 'Something is wrong.',
+                        'message': 'Please reload your screen.',
+                        'sticky': True,
+                    }
+                }
+        else:
+            return super(sale_order,self).action_draft()
 
     def action_revert_order_to_quotation(self):
         if self.state not in ['sent','received','sale','in_scanning','scanned','scan']:
@@ -2683,14 +2697,9 @@ class sale_order(models.Model):
                         'target': 'new',
                         'context': {'default_product_ids': [(6,0,on_consign_product_ids.mapped('product_id').ids)],'default_order_id':self.id }
                     }
-                # if record.state in ['draft'] and not record.website_id and not record.catalog_id:
-                #     template_id = self.env.ref('tzc_sales_customization_spt.mail_template_notify_customer_quotation_create').sudo()
-                #     for so in self:
-                #         currency_rate = self.env['kits.b2b.multi.currency.mapping'].search([('currency_id','=',so.b2b_currency_id.id)],limit =1).currency_rate
-                #         if currency_rate:
-                #             for sol in so.line_ids:
-                #                 sol.b2b_currency_rate = currency_rate
-                #     template_id.send_mail(res_id=record.id,force_send=True,notif_layout="mail.mail_notification_light")
+                if record.state in ['draft'] and not record.website_id and not record.catalog_id:
+                    template_id = self.env.ref('tzc_sales_customization_spt.mail_template_notify_customer_quotation_create').sudo()
+                    template_id.send_mail(res_id=record.id,force_send=True,email_layout_xmlid="mail.mail_notification_light")
                 res = super(sale_order, self).action_confirm()
                 picking_ids = self.mapped('picking_ids')
                 if picking_ids:
@@ -2711,7 +2720,6 @@ class sale_order(models.Model):
                         'message': 'Please reload your screen.',
                         'sticky': True,
                     }
-                }
 
     def line_ordering_by_product(self):
         product_list = []

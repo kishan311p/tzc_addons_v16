@@ -1,0 +1,192 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="kits_b2b_pages_view_form" model="ir.ui.view">
+        <field name="name">kits.b2b.pages.view.form</field>
+        <field name="model">kits.b2b.pages</field>
+        <field name="arch" type="xml">
+            <form string="">
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="name" />
+                            <field name="is_our_core_values" attrs="{'invisible': [('page_type','not in',['contact_us','our_story'])]}" />
+                        </group>
+                        <group>
+                            <field name="page_type" />
+                            <field name="website_id" />
+                        </group>
+                    </group>
+                    <notebook>
+                        <page name="general_info" attrs="{'invisible': [('page_type','not in',['home','our_story','contact_us'])]}" string="General Info">
+                            <group name="eto_b2b" attrs="{'invisible': [('page_type','not in',['home'])]}" string="Everything Optical B2B">
+                                <field name="header_text_1" />
+                                <field name="text_1" />
+                                <field name="text_1_redirect_url" widget="url"/>
+                                <field name="text_1_redirect_url_text"/>
+                            </group>
+                            <group name="eto_b2b" string="Join Our Team" attrs="{'invisible': [('page_type','not in',['our_story'])]}">
+                                <field name="header_text_1" />
+                                <field name="text_1" />
+                                <field name="text_1_redirect_url" widget="url"/>
+                                <field name="text_1_redirect_url_text"/>
+                            </group>
+                            <group name="eto_b2b" string="Our Team" attrs="{'invisible': [('page_type','not in',['our_story','contact_us'])]}">
+                                <group>
+                                    <field name="header_text_2" />
+                                    <field name="text_2" />
+                                    <field name="banner_1_id" attrs="{'invisible': [('page_type','not in',['contact_us'])]}" />
+
+                                    <field name="banner_1_image" widget="image" class="oe_avatar" options="{'zoom': true,'preview_image': 'banner_1_image'}" size="[150,150]" attrs="{'invisible': [('page_type','not in',['contact_us'])]}"/>
+                                    <field name="banner_2_id" attrs="{'invisible': [('page_type','not in',['contact_us'])]}"/>
+                                    <field name="banner_2_image" widget="image" class="oe_avatar" options="{'zoom': true,'preview_image': 'banner_2_image'}" attrs="{'invisible': [('page_type','not in',['contact_us'])]}"/>
+                                </group>
+                            </group>
+                            <group>
+                                <group attrs="{'invisible': [('page_type','not in',['home'])]}">
+                                    <group>
+                                        <group>
+                                            <group>
+                                                <group>
+                                                    <field name="banner_1_id" options="{'no_create': True}"/>
+
+
+                                                    <field name="banner_1_image" widget="image" class="oe_avatar" options="{'zoom': true,'preview_image': 'banner_1_image'}" size="[150,150]" />
+
+                                                </group>
+                                            </group>
+                                        </group>
+                                    </group>
+                                </group>
+                            </group>
+
+                        </page>
+                        <page name="main_banner" string="Main Banner" attrs="{'invisible': [('page_type','not in',['home'])]}">
+                            <field name="main_banner_ids">
+                                <tree editable="bottom">
+                                    <field name="image_icon" widget="image" class="oe_avatar" options="{'zoom': true,'preview_image': 'image_icon'}" size="[150,150]"/>
+                                    <field name="url" widget="url"/>
+                                    <field name="redirect_url" widget="url"/>
+                                    <field name="redirect_text"/>
+                                    <field name="header_description" />
+                                    <field name="description" />
+                                </tree>
+                            </field>
+                        </page>
+                        <page name="main_banner" string="Main Banner" attrs="{'invisible': [('page_type','not in',['our_story'])]}">
+                            <field name="main_banner_ids">
+                                <tree editable="bottom" create="0">
+                                    <field name="image_icon" widget="image" class="oe_avatar" options="{'zoom': true,'preview_image': 'image_icon'}" size="[150,150]"/>
+                                    <field name="url" widget="url"/>
+                                    <field name="redirect_url" widget="url"/>
+                                    <field name="redirect_text"/>
+                                    <field name="header_description" />
+                                    <field name="description" />
+                                </tree>
+                            </field>
+                        </page>
+                        <page name="our_core_values" attrs="{'invisible': [('page_type','not in',['home','our_story'])]}" string="Our Core Values">
+                            <field name="our_core_values_ids">
+                                <tree editable="bottom">
+                                    <field name="image_icon" widget="image" class="oe_avatar" options="{'zoom': true,'preview_image': 'image_icon'}" size="[50,50]"/>
+                                    <field name="url" widget="url"/>
+                                    <field name="header_description" />
+                                    <field name="description" />
+                                </tree>
+                            </field>
+                        </page>
+                        <page name="sliders" string="Our Team" attrs="{'invisible': [('page_type','not in',['our_story'])]}">
+                            <field name="slider_ids" context="{'website':'b2b1'}" domain="[('slider_type','=','our_story')]">
+                                <tree>
+                                    <field name="image" widget="image" class="oe_avatar" options="{'zoom': true,'preview_image': 'image'}" size="[150,150]"/>
+                                    <field name="name" />
+                                    <field name="slider_type" />
+                                </tree>
+                            </field>
+                        </page>
+                        <page name="sliders" string="Sliders" attrs="{'invisible': [('page_type','not in',['home'])]}">
+                            <field name="slider_ids" context="{'website':'b2b1'}" domain="[('slider_type','=','home')]">
+                                <tree>
+                                    <field name="image" widget="image" class="oe_avatar" options="{'zoom': true,'preview_image': 'image'}" size="[150,150]"/>
+                                    <field name="name" />
+                                    <field name="slider_type" />
+                                </tree>
+                            </field>
+                        </page>
+                        <page name="sliders" string="Sliders" attrs="{'invisible': [('page_type','not in',['contact_us'])]}">
+                            <field name="slider_ids" context="{'website':'b2b1'}" domain="[('slider_type','=','contact_us')]">
+                                <tree editable="bottom">
+                                    <field name="image" widget="image" class="oe_avatar" options="{'zoom': true,'preview_image': 'image'}" size="[150,150]"/>
+                                    <field name="name" />
+                                    <field name="slider_type" />
+                                    <field name="parent_id" domain="[('slider_type','=','contact_us')]"/>
+                                </tree>
+                            </field>
+                        </page>
+                        <page name="our_network" string="FAQ'S" attrs="{'invisible': [('page_type','not in',['faqs'])]}">
+                            <field name="key_value_model_ids" attrs="{'invisible': [('page_type','not in',['faqs'])]}">
+                                <tree editable="bottom">
+                                    <field name="name"/>
+                                    <field name="value" />
+                                </tree>
+                            </field>
+                        </page>
+                        <page name="our_network" string="Our Network" attrs="{'invisible': [('page_type','not in',['our_story'])]}">
+                            <field name="key_value_model_ids" attrs="{'invisible': [('page_type','not in',['our_story'])]}">
+                                <tree editable="bottom">
+                                    <field name="name" />
+                                    <field name="value" />
+                                </tree>
+                            </field>
+                        </page>
+                        <page name="our_network" string="Our Branch" attrs="{'invisible': [('page_type','not in',['our_core_values'])]}">
+                            <field name="key_value_model_ids" attrs="{'invisible': [('page_type','not in',['our_core_values'])]}">
+                                <tree editable="bottom">
+                                    <field name="name"/>
+                                    <field name="value"/>
+                                </tree>
+                            </field>
+                            <group>
+                                <group>
+
+                                    <group>
+                                        <group>
+                                            <group>
+                                                <field name="banner_1_id" options="{'no_create': True}"/>
+
+                                                <field name="banner_1_image" widget="image" class="oe_avatar" options="{'zoom': true,'preview_image': 'banner_1_image'}" size="[150,150]" />
+
+                                            </group>
+                                        </group>
+                                    </group>
+                                </group>
+                            </group>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+
+    <record id="kits_b2b_pages_view_tree" model="ir.ui.view">
+        <field name="name">kits.b2b.pages.view.tree</field>
+        <field name="model">kits.b2b.pages</field>
+        <field name="arch" type="xml">
+            <tree string="">
+                <field name="name" />
+                <field name="page_type" />
+                <field name="website_id" />
+            </tree>
+        </field>
+    </record>
+
+
+    <record id="kits_b2b_pages_action" model="ir.actions.act_window">
+        <field name="name">Action Name</field>
+        <field name="res_model">kits.b2b.pages</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+
+
+</odoo>

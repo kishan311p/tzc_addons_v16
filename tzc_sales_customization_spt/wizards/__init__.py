@@ -52,3 +52,4 @@ from . import kits_scan_package_products
 from . import kits_remove_package_products
 from . import stock_picking_barcode_spt
 from . import barcode_error_message_wizard_spt
+from . import remove_done_quantity_spt

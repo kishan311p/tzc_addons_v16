@@ -89,9 +89,10 @@ access_product_report_on_date_wizard_spt,access.product.report.on.date.wizard.sp
 access_bank_inventory_report_wizard,access.bank.inventory.report.wizard,model_bank_inventory_report_wizard,,1,1,1,1
 access_brand_qty_report_wizard,access.brand.qty.report.wizard,model_brand_qty_report_wizard,,1,1,1,1
 access_flash_menu_spt,access.flash.menu.spt,model_flash_menu_spt,,1,1,1,1
-
 access_stock_picking_barcode_spt,access.stock.picking.barcode.spt,model_stock_picking_barcode_spt,,1,1,1,1
 access_stock_picking_barcode_line_spt,access.stock.picking.barcode.line.spt,model_stock_picking_barcode_line_spt,,1,1,1,1
 access_barcode_error_message_wizard_spt,access.barcode.error.message.wizard.spt,model_barcode_error_message_wizard_spt,,1,1,1,1
 access_update_qty_log,access.update.qty.log,model_update_qty_log,,1,1,1,1
-
+access_login_user_detail,login_user_detail_login_detail,model_login_detail,,1,1,1,1
+access_remove_done_quantity_spt,access.remove.done.quantity.spt,model_remove_done_quantity_spt,,1,1,1,1
+access_remove_stock_done_qty_line_spt,access.remove.stock.done.qty.line.spt,model_remove_stock_done_qty_line_spt,,1,1,1,1

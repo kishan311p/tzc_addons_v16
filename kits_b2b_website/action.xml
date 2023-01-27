@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="kits_b2b_multi_currency_mapping_action" model="ir.actions.act_window">
+        <field name="name">Currency Mapping</field>
+        <field name="res_model">kits.b2b.multi.currency.mapping</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <record id="kits_b2b_website_action" model="ir.actions.act_window">
+        <field name="name">Wesite</field>
+        <field name="res_model">kits.b2b.website</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+    <record id="kits_b2b_menus_action" model="ir.actions.act_window">
+        <field name="name">Menus</field>
+        <field name="res_model">kits.b2b.menus</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <record id="kits_b2b_pages_action" model="ir.actions.act_window">
+        <field name="name">Pages</field>
+        <field name="res_model">kits.b2b.pages</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+    <record id="kits_b2b_wishlist_action" model="ir.actions.act_window">
+        <field name="name">Wishlist</field>
+        <field name="res_model">kits.b2b.product.wishlist</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+    <record id="kits_b2b_recent_view_action" model="ir.actions.act_window">
+        <field name="name">Recent View</field>
+        <field name="res_model">kits.b2b.recent.view</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+</odoo>

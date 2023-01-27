@@ -7,15 +7,15 @@
     'author': 'Keypress',
     'sequence': 1,
     'version': '16.0.0',
-    'depends':['base','product','stock','sale_stock','sale','sale_management','web','crm','delivery','mail','portal','mass_mailing','snailmail_account_followup','marketing_automation','sale_loyalty'],
+    'depends':['base','product','stock','sale_stock','sale','sale_management','web','crm','delivery','mail','portal','mass_mailing','snailmail_account_followup','marketing_automation','barcodes','sale_loyalty'],
 
     'data': [
         
         # Access rules
+        'security/ir_rule.xml',
+        'security/security_rule.xml',
         'security/ir.model.access.csv',
         'security/cancel_sale_order_rule_spt.xml',
-        'security/security_rule.xml',
-        'security/ir_rule.xml',
 
         # Data
         'data/ir_server_actions.xml',
@@ -83,7 +83,7 @@
         'views/flash_menu_spt.xml',
         # 'views/kits_inflation_rule.xml',
         'views/account_move_view.xml',
-        'views/sale_order_view.xml',
+        'views/sale_order.xml',
         'views/res_users.xml',
         'views/login_user_views.xml',
         'views/update_qty_log_view.xml',
@@ -140,6 +140,7 @@
         'wizards/kits_scan_package_products_view.xml',
         'wizards/barcode_error_message_wizard_spt.xml',
         'wizards/stock_picking_barcode_spt.xml',
+        'wizards/remove_done_quantity_view_spt.xml',
 
         # Reports
         'reports/kits_commission_report.xml',
@@ -154,7 +155,7 @@
         'reports/report_action.xml',
 
         # Templates
-        'templates/excel_data.xml',
+        'template/excel_data.xml',
         
 
 

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="res_users_cron_delete_tokens" model="ir.cron">
+        <field name="name">Cron Name</field>
+        <field name="model_id" ref="model_res_users"/>
+        <field name="interval_number">1</field>
+        <field name="interval_type">months</field>
+        <field name="numbercall">-1</field>
+        <field name="state">code</field>
+        <field name="code">
+
+        </field>
+    </record>
+
+</odoo>

@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="kits_b2b_image_model_view_form" model="ir.ui.view">
+        <field name="name">kits.b2b.image.model.view.form</field>
+        <field name="model">kits.b2b.image.model</field>
+        <field name="arch" type="xml">
+            <form string="">
+                <sheet>
+                    <field name="image_icon" widget="image" class="oe_avatar" options="{'zoom': true,'preview_image': 'image_icon'}"/>
+
+                    <group>
+                        <group>
+                            <field name="url" widget="url" />
+                            <field name="redirect_url" widget="url"/>
+                            <field name="redirect_text" />
+                        </group>
+                        <group>
+                            <field name="description" />
+                            <field name="parent_id" />
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+
+    <record id="kits_b2b_image_model_view_tree" model="ir.ui.view">
+        <field name="name">kits.b2b.image.model.view.tree</field>
+        <field name="model">kits.b2b.image.model</field>
+        <field name="arch" type="xml">
+            <tree editable="bottom">
+                <field name="image_icon" widget="image" class="oe_avatar" options="{'zoom': true,'preview_image': 'image_icon'}"/>
+                <field name="url" widget="url"/>
+                <field name="redirect_url" widget="url"/>
+                <field name="redirect_text" />
+                <field name="description" />
+            </tree>
+        </field>
+    </record>
+
+
+    <record id="kits_b2b_image_model_action" model="ir.actions.act_window">
+        <field name="name">Images</field>
+        <field name="res_model">kits.b2b.image.model</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+
+</odoo>

@@ -83,12 +83,7 @@
             <field name="groups" eval="[(4, ref('group_cancel_picking_rule_spt'))]"/>
 
         </record>
-        <record id="group_sales_manager_spt" model="res.groups">
-            <field name="name">User: Sales Manager</field>
-            <field name="category_id" ref="base.module_category_sales_sales"/>
-            <field name="implied_ids" eval="[(4, ref('sales_team.group_sale_salesman'))]"/>
-            <field name="users" eval="[(4, ref('base.user_root')), (4, ref('base.user_admin'))]"/>
-        </record>
+        
         <record id="group_cancel_sale_order_rule_spt" model="res.groups">
             <field name="name">Allow Sale Order Cancel</field>
             <!-- <field name="category_id" ref="base.module_category_usability"/> -->

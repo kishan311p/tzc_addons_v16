@@ -76,7 +76,7 @@ class remove_product_spt(models.TransientModel):
                             else:
                                 vals.update({'sequence': 0})
 
-                            new_line_ids = self.line_ids.create(vals)                                                                    
+                            new_line_ids = self.line_ids.new(vals)                                                                    
                             self.line_ids += new_line_ids
             else:
                 raise UserError(_("Scanned Product can not be found in order."))

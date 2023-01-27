@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="kits_b2b_user_token_view_form" model="ir.ui.view">
+        <field name="name">kits.b2b.user.token.view.form</field>
+        <field name="model">kits.b2b.user.token</field>
+        <field name="arch" type="xml">
+            <form string="">
+                <sheet>
+                    <group>
+                        <field name="user_id" />
+                        <field name="expiry_date" />
+                    </group>
+                    <group>
+                        <field name="login_token" />
+                        <field name="address_token" />
+                        <field name="order_token" />
+                        <field name="payment_token" />
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="kits_b2b_user_token_view_tree" model="ir.ui.view">
+        <field name="name">kits.b2b.user.token.view.tree</field>
+        <field name="model">kits.b2b.user.token</field>
+        <field name="arch" type="xml">
+            <tree string="" create="0" edit="0" decoration-danger="token_expired==True">
+                <field name="user_id" />
+                <field name="login_token" />
+                <field name="address_token" />
+                <field name="order_token" />
+                <field name="payment_token" />
+                <field name="expiry_date" />
+                <field name="token_expired" invisible="1" />
+            </tree>
+        </field>
+    </record>
+
+</odoo>

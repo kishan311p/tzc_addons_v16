@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="sale_order_inherit_kits_b_to_b_website" model="ir.ui.view">
+        <field name="name">sale.order.view.form.inherit.kits.b.to.b.website</field>
+        <field name="model">sale.order</field>
+        <field name="inherit_id" ref="sale.view_order_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='currency_id']" position="replace">
+                    <field name="currency_id" invisible="1"/>
+                    <field name="b2b_currency_id"  options="{'no_open': True, 'no_create': True}"/>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>

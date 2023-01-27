@@ -127,7 +127,7 @@
             <field name="res_model">flash.menu.spt</field>
         </record>
 
-        <!-- <menuitem name="Flash Sale" groups="base.group_system" action="action_flash_menu_spt" id="menu_action_flash_menu_spt" parent="sale.sale_menu_root" sequence="200"/> -->
+        <menuitem name="Flash Sale" groups="base.group_system" action="action_flash_menu_spt" id="menu_action_flash_menu_spt" parent="sale.sale_menu_root" sequence="30"/>
 
     </data>
 </odoo>

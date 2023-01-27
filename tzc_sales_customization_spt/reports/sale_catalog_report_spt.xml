@@ -52,7 +52,6 @@
             name="tzc_sales_customization_spt.confirm_catalog_report_template_spt"
             print_report_name="'Catalog - %s' % (object.catalog_id.name)"
             menu="False"
-
         />
 
         <report 

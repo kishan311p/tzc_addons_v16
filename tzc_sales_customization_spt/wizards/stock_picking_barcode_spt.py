@@ -113,7 +113,7 @@ class stock_picking_barcode_spt(models.TransientModel):
                         vals.update({'sequence': sequence - len(self.line_ids)})
                 else:
                     vals.update({'sequence': 0})
-                new_line_ids = self.line_ids.create(vals)                                                                    
+                new_line_ids = self.line_ids.new(vals)                                                                    
                 self.line_ids += new_line_ids
                 notify_type = self.with_context(product_quantity=qty).get_notify_type(stock_move)
                 self.get_notify(barcode,notify_type)
@@ -132,16 +132,37 @@ class stock_picking_barcode_spt(models.TransientModel):
         return notification_type
     
     def get_notify(self,barcode,type):
+        # notification = []
+        # notification.append([user.partner_id, 'simple_notification', body])
+        # body = {
+        #                     'type': 'simple_notification',
+        #                     'title': 'Outgoing Mail Server Failed',
+        #                     'message': _("Outgoing mail server '{}' is not working.".format(server.name)),
+        #                     'sticky': True,
+        #                     'warning': True
+        #                 }
+        # self.env['bus.bus']._sendmany(notification)
         if type == 'user_connection':
+            notification = []
             invite_partner = self.env.user.partner_id
             product_name = self.env['product.product'].search([('barcode','=',barcode)]).variant_name
             if invite_partner:
-                title = _("Extra Item Scanned")
-                message = _("%s is scanned")% product_name
-                self.env['bus.bus'].sendone(
-                        (self._cr.dbname, 'res.partner', invite_partner.id),
-                        {'type': type,'title': title, 'message': message, 'sticky': False}
-                    )
+                body = {
+                    'type': type,
+                    'title': _("Extra Item Scanned"),
+                    'message': _("%s is scanned")% product_name,
+                    'sticky': False,
+                }
+                notification.append([invite_partner, 'simple_notification', body])
+                self.env['bus.bus']._sendmany(notification)
+
+                # title = _("Extra Item Scanned")
+                # message = _("%s is scanned")% product_name
+                # self.env['bus.bus']._sendone(
+                #         (self._cr.dbname, 'res.partner', invite_partner.id),
+                #         {'type': type,'title': title, 'message': message, 'sticky': False},
+                #         message=message
+                #     )
             
     def on_barcode_scanned(self, barcode):
         self._add_product(barcode)
@@ -302,7 +323,7 @@ class stock_picking_barcode_spt(models.TransientModel):
                 'view_mode': 'form',
                 'target': 'new',
                 'res_id':self.id,
-                'res_model': 'sale.barcode.order.spt',
+                'res_model': 'stock.picking.barcode.spt',
                 'type': 'ir.actions.act_window',
                 }
         else:
