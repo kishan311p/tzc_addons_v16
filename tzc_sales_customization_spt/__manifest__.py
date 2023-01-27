@@ -79,7 +79,6 @@
         'views/internal_flag_view_spt.xml',
         'views/kits_shipping_error_log_view.xml',
         'views/kits_double_move_log.xml',
-        'views/pending_order_spt_view.xml',
         'views/flash_menu_spt.xml',
         # 'views/kits_inflation_rule.xml',
         'views/account_move_view.xml',
