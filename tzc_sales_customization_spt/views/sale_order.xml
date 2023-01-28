@@ -723,7 +723,7 @@
     </record>
 
     
-    <menuitem id="sale.menu_sale_report" name="Reporting" parent="sale.sale_menu_root" sequence="100"/>
+    <menuitem id="sale.menu_sale_report" name="Reporting" parent="sale.sale_menu_root" sequence="32"/>
     <menuitem id="sale.menu_report_product_all" name="Sales" action="sale.action_order_report_all" parent="sale.menu_sale_report" sequence="1" groups="base.group_system"/>
     <menuitem id="sale.menu_sale_order" name="Orders" action="sale.action_orders" parent="sale.sale_order_menu" groups="sales_team.group_sale_salesman" sequence="11"/>
     <menuitem id="sale_menu_config_activity_type" name="Activity Types" action="mail_activity_type_action_config_sale" parent="sale.menu_sale_config" groups="base.group_system"/>
@@ -731,7 +731,7 @@
     <menuitem id="menu_abandoned_cart_order" name="Abandoned Cart Orders" action="action_abandoned_cart_order" parent="sale.sale_order_menu" sequence="41" groups="base.group_system"/>
     <menuitem id="menu_unfulfilled_order" name="Unfulfilled Orders" action="action_unfulfilled_order" parent="sale.sale_order_menu" sequence="42" groups="base.group_system"/>
     <!-- <menuitem action="sale_coupon.sale_coupon_program_action_promo_program" id="sale_coupon.menu_promotion_type_config" parent="sale.product_menu_catalog" name="Promotion Programs" groups="base.group_system" sequence="4"/> -->
-    <menuitem id="menu_download_images" name="Download Images" action="action_download_images" parent="sale.product_menu_catalog" groups="base.group_system"/>
+    <menuitem id="menu_download_images" name="Download Images" action="action_download_images" parent="sale.product_menu_catalog" groups="base.group_system" sequence="38"/>
     <menuitem id="sale.menu_product_pricelist_main" name="Pricelists" parent="sale.menu_sale_config" action="product.product_pricelist_action2" groups="base.group_system" sequence="3" active="True"/>
     <menuitem id="refresh_product_images_menu" name="Refresh Images" action="refresh_product_image" parent="sale.sale_menu_root" sequence="400" groups="base.group_system"/>
     <record id="tzc_sales_customization_inherit_form_view" model="ir.ui.view">
@@ -827,5 +827,15 @@
 
         </field>
     </record>
+    <record id="sale.menu_sale_invoicing" model="ir.ui.menu">
+        <field name="active" eval="False"/>
+    </record>
+    <record id="sale_loyalty.menu_discount_loyalty_type_config" model="ir.ui.menu">
+        <field name="active" eval="False"/>
+    </record>
+    <record id="sale_loyalty.menu_gift_ewallet_type_config" model="ir.ui.menu">
+        <field name="active" eval="False"/>
+    </record>
+    
 
 </odoo>

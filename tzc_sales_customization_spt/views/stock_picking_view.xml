@@ -556,7 +556,15 @@
             </xpath>
         </field>
     </record>
-
+    <record id="stock.menu_product_variant_config_stock" model="ir.ui.menu">
+        <field name="active" eval="False"/>
+    </record>
+    <record model="ir.ui.menu" id="stock.product_product_menu">
+        <field name="name">Products</field>
+    </record>
+    <record model="ir.actions.act_window" id="stock.stock_product_normal_action">
+        <field name="name">Products</field>
+    </record>
 </data>
 
 

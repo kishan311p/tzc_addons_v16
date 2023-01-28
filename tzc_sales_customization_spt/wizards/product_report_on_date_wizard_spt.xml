@@ -33,5 +33,5 @@
         <field name="target">new</field>
     </record>
 
-    <menuitem id='menuproduct_report_on_date_wizard' name="Inventory At Date" action="action_product_report_on_date_info_wizard" parent="sale.menu_sale_report" sequence="150" />
+    <menuitem id='menuproduct_report_on_date_wizard' name="Inventory At Date" action="action_product_report_on_date_info_wizard" parent="sale.menu_sale_report" sequence="16" />
 </odoo>

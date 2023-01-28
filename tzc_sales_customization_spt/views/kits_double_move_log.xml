@@ -70,6 +70,6 @@
                 </search>
             </field>
         </record>
-        <menuitem id="menu_kits_double_move_log" name="Picking's Double Moves" action="action_kits_double_move_log" parent="sale.menu_sale_report" groups="base.group_system" />
+        <menuitem id="menu_kits_double_move_log" name="Picking's Double Moves" action="action_kits_double_move_log" parent="sale.menu_sale_report" groups="base.group_system" sequence="12"/>
     </data>
 </odoo>

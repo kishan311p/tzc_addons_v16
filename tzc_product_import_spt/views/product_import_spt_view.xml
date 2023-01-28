@@ -113,8 +113,8 @@
 			<field name="view_mode">tree,form</field>
 		</record>
 
-		<menuitem id="menu_main_product_import_spt" groups="base.group_system" name="Product Import" action="action_product_import_spt" parent='sale.product_menu_catalog' sequence="3"/>
-		<menuitem id="product_import_report_menu" name="Product Import Report" action="action_import_product_report" groups="base.group_system" parent="sale.menu_sale_report"/>
-		<menuitem id="menu_product_data" name="All Product Export" action="action_product_data" groups="base.group_system" parent="sale.menu_sale_report"/>
+		<menuitem id="menu_main_product_import_spt" groups="base.group_system" name="Product Import" action="action_product_import_spt" parent='sale.product_menu_catalog' sequence="35"/>
+		<menuitem id="product_import_report_menu" name="Product Import Report" action="action_import_product_report" groups="base.group_system" parent="sale.menu_sale_report" sequence="8"/>
+		<menuitem id="menu_product_data" name="All Product Export" action="action_product_data" groups="base.group_system" parent="sale.menu_sale_report" sequence="14"/>
 	</data>
 </odoo>

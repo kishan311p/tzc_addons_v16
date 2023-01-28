@@ -37,7 +37,7 @@
             <field name="target">new</field>
         </record>
 
-        <menuitem name="Shipping Cost Analysis" action="action_shipping_cost_analysis" id="menu_action_shipping_cost_analysis" groups="base.group_system" parent="sale.menu_sale_report"/>
+        <menuitem name="Shipping Cost Analysis" action="action_shipping_cost_analysis" id="menu_action_shipping_cost_analysis" groups="base.group_system" parent="sale.menu_sale_report" sequence="11"/>
 
     </data>
 </odoo>

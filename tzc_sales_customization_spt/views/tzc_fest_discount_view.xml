@@ -783,7 +783,7 @@
             </field>
         </record>
 
-        <menuitem id="menu_tzc_fest_discount" name="Special Discount" action="action_tzc_fest_discount" parent="sale.sale_menu_root" groups="base.group_system,tzc_sales_customization_spt.group_marketing_user" sequence="50"/>
+        <menuitem id="menu_tzc_fest_discount" name="Special Discount" action="action_tzc_fest_discount" parent="sale.sale_menu_root" groups="base.group_system,tzc_sales_customization_spt.group_marketing_user" sequence="100"/>
         <!-- ,tzc_sales_customization_spt.group_marketing_user -->
     </data>
 </odoo>

@@ -37,7 +37,7 @@
             <field name="target">new</field>
         </record>
 
-        <menuitem name="Reserved Product" action="action_reserved_product_report" id="menu_reserved_product_report" parent="sale.menu_sale_report" groups="base.group_system"/>
+        <menuitem name="Reserved Product" action="action_reserved_product_report" id="menu_reserved_product_report" parent="sale.menu_sale_report" groups="base.group_system" sequence="13"/>
 
     </data>
 </odoo>

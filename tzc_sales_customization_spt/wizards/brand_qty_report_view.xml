@@ -72,5 +72,5 @@
         <field name="target">new</field>
     </record>
 
-    <menuitem id='menu_brand_qty_report' name="Monthly Brand Sales Report" action="action_brand_qty_report_wizard" parent="sale.menu_sale_report" sequence="1000" />
+    <menuitem id='menu_brand_qty_report' name="Monthly Brand Sales Report" action="action_brand_qty_report_wizard" parent="sale.menu_sale_report" sequence="18" />
 </odoo>

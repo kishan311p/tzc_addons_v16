@@ -35,7 +35,7 @@
             <field name="target">new</field>
         </record>
 
-        <menuitem id="menu_shipped_orders_report_wizard" name="Shipped Orders Report" action="action_shipped_orders_report_wizard" groups="base.group_system" parent="sale.menu_sale_report" />
+        <menuitem id="menu_shipped_orders_report_wizard" name="Shipped Orders Report" action="action_shipped_orders_report_wizard" groups="base.group_system" parent="sale.menu_sale_report" sequence="5"/>
     </data>
 
 </odoo>

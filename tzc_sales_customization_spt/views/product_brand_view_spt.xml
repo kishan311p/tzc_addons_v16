@@ -101,7 +101,7 @@
                 </tree>
             </field>
         </record>
-        <menuitem name="Products Configuration " groups="base.group_system" id="menu_action_product_custom_spt" parent="sale.sale_menu_root" sequence="100" />
+        <menuitem name="Products Configuration " groups="base.group_system" id="menu_action_product_custom_spt" parent="sale.sale_menu_root" sequence="250" />
         <menuitem name="Brand" action="action_product_brand_spt" id="menu_action_product_brand_spt" parent="menu_action_product_custom_spt" sequence="1" />
         <!-- <menuitem name="Brand" action="action_product_brand_spt" groups="mass_mailing.group_mass_mailing_user" id="menu_in_website_action_product_brand_spt" parent="website.menu_website_configuration" sequence="21"/> -->
     </data>

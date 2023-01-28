@@ -472,6 +472,6 @@
             </field>
         </record>
         <menuitem id="refresh_product_images_menu" name="Refresh Images" action="refresh_product_image" parent="sale.sale_menu_root" sequence="200" groups="base.group_system"/>
-        <menuitem id="menu_product_data" name="All Product Export" action="action_product_data" groups="base.group_system" parent="sale.menu_sale_report"/>
+        <!-- <menuitem id="menu_product_data" name="All Product Export" action="action_product_data" groups="base.group_system" parent="sale.menu_sale_report"/> -->
     </data>
 </odoo>

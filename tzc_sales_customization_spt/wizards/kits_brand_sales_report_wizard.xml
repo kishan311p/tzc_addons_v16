@@ -33,6 +33,6 @@
             <field name="res_model">kits.brand.sales.report.wizard</field>
             <field name="target">new</field>
         </record>
-        <menuitem id="menu_product_detail_wizard" name="Brand Sales Report" action="action_kits_brand_sales_report_wizard" groups="base.group_system" parent="sale.menu_sale_report" />
+        <menuitem id="menu_product_detail_wizard" name="Brand Sales Report" action="action_kits_brand_sales_report_wizard" groups="base.group_system" parent="sale.menu_sale_report" sequence="6"/>
     </data>
 </odoo>

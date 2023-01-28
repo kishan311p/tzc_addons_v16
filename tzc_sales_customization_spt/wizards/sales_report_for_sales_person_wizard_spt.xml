@@ -42,7 +42,7 @@
 
         </record>
 
-        <menuitem name="Sales Person Report" action="action_sales_person_report_spt" id="menu_action_sales_person_report_spt" groups="base.group_system" parent="sale.menu_sale_report" sequence="4"/>
+        <menuitem name="Sales Person Report" action="action_sales_person_report_spt" id="menu_action_sales_person_report_spt" groups="base.group_system" parent="sale.menu_sale_report" sequence="3"/>
 
 
     </odoo>

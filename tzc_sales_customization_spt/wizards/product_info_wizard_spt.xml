@@ -180,7 +180,7 @@
             <field name="view_mode">form</field>
             <field name="target">new</field>
         </record>
-        <menuitem id="menu_open_wizard_to_print_filtered_excel" name="Product Search/Export" action="action_open_product_info_wizard_spt" parent="sale.menu_sale_report" sequence="150"/>
+        <menuitem id="menu_open_wizard_to_print_filtered_excel" name="Product Search/Export" action="action_open_product_info_wizard_spt" parent="sale.menu_sale_report" sequence="15"/>
     </data>
 
 </odoo>

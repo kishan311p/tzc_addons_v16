@@ -116,7 +116,7 @@
         </record>
         <!-- sales/product -->
         <menuitem id="kits_menu_combo_products" groups="base.group_system" name="Package Products"
-            action="kits_package_product_action_view" parent='sale.product_menu_catalog' />
+            action="kits_package_product_action_view" parent='sale.product_menu_catalog' sequence="40"/>
         <!-- website/ -->
         <!-- <menuitem id="kits_menu_website_combo_products" groups="base.group_system"
         name="Package Products" action="kits_package_product_action_view"
