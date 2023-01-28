@@ -162,12 +162,6 @@
                 action = records.action_edit_products()
             </field>
         </record>
-        <record id="action_product_data" model="ir.actions.server">
-            <field name="name">All Product Export</field>
-            <field name="model_id" ref="model_product_product"/>
-            <field name="state">code</field>
-            <field name="code">action = env.get('product.product').action_product_data()</field>
-        </record>
         <record id="model_sale_order_action_share" model="ir.actions.server">
             <field name="groups_id" eval="[(4, ref('tzc_sales_customization_spt.group_cancel_picking_rule_spt'))]"/>
             <field name="name">Cancel Picking Order</field>

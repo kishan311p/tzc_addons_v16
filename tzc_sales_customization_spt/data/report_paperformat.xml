@@ -17,7 +17,7 @@
             <field name="header_spacing">35</field>
             <field name="dpi">90</field>
         </record>
-        
+
         <record id="shipped_orders_landscape_paperformat" model="report.paperformat">
             <field name="name">shipped orders</field>
             <field name="default" eval="True" />

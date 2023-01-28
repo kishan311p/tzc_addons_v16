@@ -34,7 +34,7 @@ class ProductBrandSpt(models.Model):
     brand_image = fields.Binary('Brand Image')
     desc_heading = fields.Char('Description Heading')
     brand_seo_keyword = fields.Char('Brand SEO Keyword',copy=False,help="Make sure that seo Keyword doesn't containt whitespace,slash(\,/).")
-    # is_logo_published = fields.Boolean('Publish logo',help='Publish logo after set logo image to show in brands slider.')
+    is_logo_published = fields.Boolean('Publish logo',help='Publish logo after set logo image to show in brands slider.')
     
     eyeglass_avl_brand = fields.Boolean(string='Available Eyeglass Brand')
     sunglass_avl_brand = fields.Boolean(string='Available Sunglass Brand')
