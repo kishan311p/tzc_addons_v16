@@ -11,7 +11,6 @@ class ProductBrandSpt(models.Model):
     kits_product_ids = fields.One2many('product.product','brand',string="Brand ")
     description = fields.Text('   Description', translate=True)
     # website_id = fields.Many2one("website", string="Website")
-    logo = fields.Binary('Logo File')
     logo = fields.Char('Logo File')
     sequence = fields.Integer('Sequence', default=1, help="Gives the sequence order when displaying.")
     brand_link = fields.Char('Brand website link')

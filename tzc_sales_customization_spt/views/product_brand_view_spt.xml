@@ -49,10 +49,10 @@
                             <label for="is_brand_page" string="Brand Page" class="col-sm-1 p-0 pt-3" />
                             <field name="is_brand_page" />
                         </div> -->
-                        <!-- <div>
+                        <div>
                             <label for="is_logo_published" string="Publish Logo" class="col-sm-1 p-0 pt-3" />
                             <field name="is_logo_published" />
-                        </div> -->
+                        </div>
                         <xpath>
                             <notebook>
                                 <page string="Products" readonly="1">

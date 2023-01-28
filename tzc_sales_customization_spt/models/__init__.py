@@ -23,7 +23,6 @@ from . import sale_order_backup_spt
 from . import sale_order_backup_line_spt
 from . import kits_package_restriction
 from . import kits_package_order_line
-# from . import order_payment
 from . import shipping_provider_spt
 from . import stock_picking
 from . import kits_inflation

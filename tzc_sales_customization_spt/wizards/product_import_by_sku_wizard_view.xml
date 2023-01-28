@@ -27,5 +27,15 @@
             </field>
         </record>
 
+        <record id="action_product_import_by_sku_wizard" model="ir.actions.act_window">
+            <field name="view_mode">form</field>
+            <field name="view_mode">form</field>
+            <field name="name">Product Import by SKU</field>
+            <field name="res_model">product.import.by.sku.wizard</field>
+            <field name="target">new</field>
+        </record>
+
+        <menuitem name="Product Import By SKU" action="action_product_import_by_sku_wizard" id="menu_product_import_by_sku_wizard" parent="sale.menu_sale_report" groups="base.group_system"/>
+
     </data>
 </odoo>

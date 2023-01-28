@@ -21,8 +21,11 @@ class res_users(models.Model):
             pass
         return commission_id
     def _get_manager_domain(self):
-        users = self.env.ref('tzc_sales_customization_spt.group_sales_manager_spt').sudo().users
-        return [('id','in',users.ids)]
+        try:
+            users = self.env.ref('tzc_sales_customization_spt.group_sales_manager_spt').sudo().users
+            return [('id','in',users.ids)]
+        except:
+            return []
 
     is_salesperson = fields.Boolean('Is Salesperson',compute="_compute_is_sales_person",store=True,compute_sudo=True)
     manager_id = fields.Many2one('res.users',"Manager ",domain=_get_manager_domain)

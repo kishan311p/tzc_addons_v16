@@ -1,0 +1,27 @@
+<?xml version='1.0' encoding='utf-8'?>
+<odoo>
+    <data>
+        <record id="update_picking_order_wizard_form_view" model="ir.ui.view">
+            <field name="name">update.picking.order.wizard.form.view</field>
+            <field name="model">kits.update.picking.wizard</field>
+            <field name="arch" type="xml">
+                <form>
+                    <sheet>
+                        <group>
+                            <group>
+                                <field name="partner_id" readonly="1"/>
+                            </group>
+                            <group>
+                                <field name="sale_order_ids" domain="[('partner_id', '=', partner_id),('state','in',('draft','sent','received'))]" widget="many2many_tags" options="{'no_create':True,'no_create_edit':True}"/>
+                            </group>
+                        </group>
+                    </sheet>
+                    <footer>
+                        <button string="Process" name="action_update" type="object" class="oe_highlight"/>
+                        <button string="Cancel" class="btn-secondary" special="cancel" />
+                    </footer>
+                </form>
+            </field>
+        </record>
+    </data>
+</odoo>
