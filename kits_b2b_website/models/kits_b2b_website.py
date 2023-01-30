@@ -19,6 +19,9 @@ class kits_b2b_website(models.Model):
     stock_location_id = fields.Many2one('stock.location', string='Stock Location')
     virtual_location_id = fields.Many2one('stock.location', string='Virtual Location')
     recommended_products_ids = fields.Many2many('product.product', string='Recommended Products')
+    shipping = fields.Html('Shipping')
+    privacy_policy = fields.Html('Privacy Policy')
+    terms_and_conditions = fields.Html('Terms and Conditions')
 
 
     @api.depends('logo')

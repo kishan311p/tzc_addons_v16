@@ -138,7 +138,7 @@ class res_partner(models.Model):
         for partner in self:  
             if 'customer_type' in vals.keys() and partner.customer_type == 'b2c' and vals['customer_type'] in ['b2b_regular']:
                 config_parameter = config_parameter_obj.sudo().get_param('user_ids_spt', False)
-                user_ids =user_obj.search([('id','in',eval(config_parameter)+partner.user_id.ids)])
+                user_ids =user_obj.search([('id','in',eval(config_parameter or '[]')+partner.user_id.ids)])
                 # approve email for customer
                 self.env.ref('tzc_sales_customization_spt.tzc_mail_template_customer_approve_notify_spt').sudo().send_mail(partner.id,force_send=True,email_values={'partner_ids':[(6,0,partner.ids)]})
                 # approve email for salesperson and admin

@@ -79,19 +79,7 @@
             <field name="perm_unlink" eval="False"/>
         </record>
 
-        <!-- <record id="sales_manager_rule_for_pending_catalog_spt" model="ir.rule">
-            <field name="name">Sales Manager For Pending Catalog</field>
-            <field ref="model_pending_catalog_spt" name="model_id"/>
-            <field name="domain_force">['|',('user_id','=',user.id),('user_id','in',user.allow_user_ids.ids)]</field>
-            <field name="groups" eval="[(4, ref('tzc_sales_customization_spt.group_sales_manager_spt'))]"/>
-        </record>
 
-        <record id="sales_manager_rule_for_order_catalog_spt" model="ir.rule">
-            <field name="name">Sales Manager For Order Catalog</field>
-            <field ref="model_pending_order_spt" name="model_id"/>
-            <field name="domain_force">['|',('user_id','=',user.id),('user_id','in',user.allow_user_ids.ids)]</field>
-            <field name="groups" eval="[(4, ref('tzc_sales_customization_spt.group_sales_manager_spt'))]"/>
-        </record> -->
         <record id="rule_own_partner_salesperson" model="ir.rule">
             <field name="name">View Own partner</field>
             <field ref="base.model_res_partner" name="model_id"/>

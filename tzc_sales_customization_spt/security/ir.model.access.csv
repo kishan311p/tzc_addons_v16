@@ -49,7 +49,7 @@ access_add_shipping_cost_wizard,access.add.shipping.cost.wizard,model_add_shippi
 access_kits_package_order_line,access.kits.package.order.line,model_kits_package_order_line,,1,1,1,1
 access_kits_wizard_return_picking,access.kits.wizard.return.picking,model_kits_wizard_return_picking,,1,1,1,1
 access_kits_create_credit_note_wizard,access.kits.create.credit.note.wizard,model_kits_create_credit_note_wizard,,1,1,1,1
-access_kits_message_wizard,access.kits.messasge.wizard,model_kits_message_wizard,,1,1,1,1,
+access_kits_message_wizard,access.kits.messasge.wizard,model_kits_message_wizard,,1,1,1,1
 access_kits_generate_payment_link_wizard,access.kits.generate.payment.link.wizard,model_kits_generate_payment_link_wizard,,1,1,1,1
 access_sale_order_report_wizard_spt,access.sale.order.report.wizard.spt,model_sale_order_report_wizard_spt,,1,1,1,1
 access_import_order_lines_wizard_spt,access.import.order.lines.wizard.spt,model_import_order_lines_wizard_spt,,1,1,1,1
@@ -96,6 +96,3 @@ access_update_qty_log,access.update.qty.log,model_update_qty_log,,1,1,1,1
 access_login_user_detail,login_user_detail_login_detail,model_login_detail,,1,1,1,1
 access_remove_done_quantity_spt,access.remove.done.quantity.spt,model_remove_done_quantity_spt,,1,1,1,1
 access_remove_stock_done_qty_line_spt,access.remove.stock.done.qty.line.spt,model_remove_stock_done_qty_line_spt,,1,1,1,1
-access_kits_update_picking_wizard,access.kits.update.picking.wizard,model_kits_update_picking_wizard,,1,1,1,1
-access_delivery_recovery_selection_wizard,access.delivery.recovery.selection.wizard,model_delivery_recovery_selection_wizard,,1,1,1,1
-

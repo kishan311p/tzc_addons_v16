@@ -346,7 +346,7 @@ class sale_order(models.Model):
 
     def compute_all(self):
         for record in self:
-            record._compute_all()
+            record._amount_all()
         return True
         # pass
     
@@ -562,9 +562,6 @@ class sale_order(models.Model):
                         'sticky': True,
                     }
                 }
-
-    def create_pending_order(self):
-        self.env['pending.order.spt'].search([('state','=','pending'),('execution_time','<',datetime.now())]).create_sale_order()
 
     @api.model
     def default_get(self, default_fields):

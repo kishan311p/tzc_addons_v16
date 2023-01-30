@@ -253,11 +253,11 @@ class res_users(models.Model):
     @api.model
     def _check_credentials(self, password,env):
         result = super(res_users, self)._check_credentials(password,self.env)
-        ip_address = request.httprequest.environ['REMOTE_ADDR']
-        vals = {'name': self.name,
-                'ip_address': ip_address
-                }
-        self.env['login.detail'].sudo().create(vals)
+        # ip_address = request.httprequest.environ['REMOTE_ADDR']
+        # vals = {'name': self.name,
+        #         'ip_address': ip_address
+        #         }
+        # self.env['login.detail'].sudo().create(vals)
         return result
 
     def action_reset_password(self):

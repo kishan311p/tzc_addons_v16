@@ -8,7 +8,7 @@ class python_script_runner(models.Model):
     
     name=fields.Char(string='Name',size=1024,required=True)
     code=fields.Text(string='Python Code',required=True)
-    result=fields.Text(string='Result',readonly=True)
+    result=fields.Text(string='Result' ,readonly=True)
         
     
     def execute_script(self):

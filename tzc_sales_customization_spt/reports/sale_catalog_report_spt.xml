@@ -44,17 +44,6 @@
         />
 
         <report 
-            id="action_confirm_catalog_report_spt"
-            string="Catalog"
-            model="pending.order.spt" 
-            report_type="qweb-pdf"
-            file="tzc_sales_customization_spt.confirm_catalog_report_template_spt" 
-            name="tzc_sales_customization_spt.confirm_catalog_report_template_spt"
-            print_report_name="'Catalog - %s' % (object.catalog_id.name)"
-            menu="False"
-        />
-
-        <report 
             id="action_catalog_report_pdf"
             string="Catalog"
             model="kits.wizard.download.catalog.excel" 
