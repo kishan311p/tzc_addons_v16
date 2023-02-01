@@ -39,7 +39,9 @@ class res_partner(models.Model):
     business_fax = fields.Char('Business fax')
     business_type = fields.Char('Type of Business')
     contact_name_spt = fields.Char('Contact Name')
-    last_logged_on = fields.Datetime('Last Logged On',compute="_get_partner_data")
+    
+    # last_logged_on = fields.Datetime('Last Logged On',compute="_get_partner_data")
+
     last_order_date = fields.Datetime('Last Order Date',compute="_compute_info_fields",store=True)
     last_order_id = fields.Many2one('sale.order','Last Order',compute="_compute_info_fields",store=True)
     last_order_value = fields.Char('Last Order Value',compute="_compute_info_fields",store=True)
@@ -101,6 +103,7 @@ class res_partner(models.Model):
         return [[code, name] for code,_, name,active,image in self.env['res.lang'].get_available()]
 
     kits_lang = fields.Selection(_get_all_data,string='Language',default=_get_default_lang)
+
 
     def write(self,vals):
         user_obj = self.env['res.users']
@@ -246,6 +249,7 @@ class res_partner(models.Model):
             # else:
             #     record.catalog_count = 0.0
 
+ 
     @api.onchange('is_customer')
     def _onchange_customer_rank(self):
         for record in self:
@@ -332,7 +336,7 @@ class res_partner(models.Model):
         self.ensure_one()
         if self.check_partner_access_right():
             return {
-                'name':_('Chagne Country'),
+                'name':_('Change Country'),
                 'type':'ir.actions.act_window',
                 'res_model':'kits.change.contact.country',
                 'view_mode':'form',
@@ -450,6 +454,7 @@ class res_partner(models.Model):
             'context':{'default_success_partner_ids':[(6,0,success)],'default_failed_partner_ids':[(6,0,failed)],'default_verify_mail_success':success_message,'default_verify_mail_failed':failed_messsage},
             "target":"new",
         }
+
 
     @api.model
     def _get_view(self, view_id=None, view_type='form',**options):
@@ -642,7 +647,7 @@ class res_partner(models.Model):
                 config_parameter = config_parameter_obj.sudo().get_param('user_ids_spt', False)
                 user_ids =user_obj.search([('id','=',eval(config_parameter)+res.user_id.ids)])
                 self.env.ref('tzc_sales_customization_spt.tzc_mail_template_customer_approve_notify_spt').sudo().send_mail(res.id,force_send=True,email_values={'partner_ids':[(6,0,res.ids)]})
-                # self.env.ref('tzc_sales_customization_spt.tzc_mail_template_customer_approve_notify_salesperson_spt').sudo().send_mail(res.id,force_send=True,email_values={'partner_ids':[(6,0,user_ids.mapped('partner_id').ids)]})
+                self.env.ref('tzc_sales_customization_spt.tzc_mail_template_customer_approve_notify_salesperson_spt').sudo().send_mail(res.id,force_send=True,email_values={'partner_ids':[(6,0,user_ids.mapped('partner_id').ids)]})
         if res.customer_rank or res.is_customer:
                 res._onchange_is_customer()
                 res._onchange_customer_rank()
@@ -651,6 +656,7 @@ class res_partner(models.Model):
             self.env['customer.index'].create({'created': str(res.id)})
 
         return res
+
 
     def unlink(self):
         res = super(res_partner,self).unlink()
@@ -728,56 +734,6 @@ class res_partner(models.Model):
             'res_id': wizard_id.id,
             'target': 'new',
         }
-
-    @api.model
-    def _fields_view_get(self, view_id=None, view_type='form', toolbar=False, submenu=False):
-        fields_list = ['name','email','phone','mobile']
-        button_list = ['action_view_opportunity','schedule_meeting',str(self.env.ref('sale.act_res_partner_2_sale_order').id),'action_view_partner_invoices','action_catalogs']
-        res = super(res_partner, self)._fields_view_get(view_id=view_id, view_type=view_type, toolbar=toolbar, submenu=submenu)
-        if view_type == 'form':
-            doc = etree.fromstring(res['arch'])
-            is_admin = not self.env.user.has_group('base.group_system')
-            is_manager = self.env.user.has_group('tzc_sales_customization_spt.group_sales_manager_spt')
-            if is_admin:
-                for email_node in  doc.xpath('//field[@name="email"]'):
-                    email_node.attrib['readonly'] = '1' if not is_manager else '0'
-                for country_id_node in  doc.xpath('//field[@name="country_id"]'):
-                    country_id_node.attrib['readonly'] = '1' if not is_manager else '0'
-                for company_type_node in  doc.xpath('//field[@name="company_type"]'):
-                    company_type_node.attrib['readonly'] = '1'
-                for is_vendor_node in  doc.xpath('//field[@name="is_vendor"]'):
-                    is_vendor_node.attrib['readonly'] = '1'
-                for is_customer_node in  doc.xpath('//field[@name="is_customer"]'):
-                    is_customer_node.attrib['readonly'] = '1'
-                for user_id in doc.xpath('//field[@name="user_id"]'):
-                    user_id.attrib['readonly'] = '1' if not is_admin or not is_manager else '0'
-            for country_id in doc.xpath('//field[@name="country_id"]'):
-                country_id.attrib['readonly'] = '1'
-            for state_id in doc.xpath('//field[@name="state_id"]'):
-                state_id.attrib['readonly'] = '1'
-            res['arch'] = etree.tostring(doc, encoding='unicode')
-            if not self._context.get('resend') or not self._context.get('campaign') or not self._context.get('raise_campaign'):
-                soup = BeautifulSoup(res['arch'], "html.parser")
-                fields = soup.find_all('field')
-                notebook = soup.find_all('notebook')
-                buttons = soup.find_all('button')
-                for field in fields:
-                    if field.attrs.get('name') not in fields_list:
-                        field['attrs'] =  "{'invisible':[('access_field_flag','=',False)]}"
-                for book in notebook:
-                    book['attrs'] =  "{'invisible':[('access_field_flag','=',False)]}"
-                for btn in buttons:
-                    if btn.attrs.get('name') in button_list:
-                        btn['attrs'] =  "{'invisible':[('access_field_flag','=',False)]}"
-                for div in soup.find_all('div'):
-                    if div.attrs.get('role') == 'status':
-                        div['attrs'] =  "{'invisible':[('access_field_flag','=',False)]}"
-                for label in soup.find_all('label'):
-                    if label.attrs.get('name') == 'address_name':
-                        label['attrs'] =  "{'invisible':[('access_field_flag','=',False)]}"
-                soup.find_all('group')[1]['attrs'] = "{'invisible':[('access_field_flag','=',False)]}"
-                res['arch'] = str(soup)
-        return res
     
     def action_open_eto_wizard(self):
         wizard_id = self.env['eto.partner.wizard.spt'].create({
@@ -994,7 +950,7 @@ class res_partner(models.Model):
         #                     'default_composition_mode': 'mass_mail',
         #                     'default_partner_to': ','.join(str(id.id) for id in self),
         #                     'default_use_template': True,
-        #                     'default_template_id': self.env.ref('mail.email_template_partner').id,
+        #                     'default_template_id': self.env.ref('tzc_sales_customization_spt.email_template_partner').id,
         #                     'default_no_auto_thread':False,
         #                     'campaign' : True,
         #                     'default_mail_server_id':eval(self.env['ir.config_parameter'].sudo().get_param('mass_mailing.mail_server_id')),
@@ -1200,13 +1156,13 @@ class res_partner(models.Model):
                 pass
 
     
-    def export_customer_action(self):
-        try:
-            res_company_id = self.env.ref("base.main_company")
-            # self.env['kits.quickbooks.backend'].with_context(backend_id=res_company_id.kits_quickbooks_backend_id).action_test_connection()
-            self.env['kits.quickbooks.backend'].with_context(backend_id=res_company_id.kits_quickbooks_backend_id, product_ids=self).export_customer_action()
-        except Exception as e:
-            raise UserError(_(str(e)))
+    # def export_customer_action(self):
+    #     try:
+    #         res_company_id = self.env.ref("base.main_company")
+    #         # self.env['kits.quickbooks.backend'].with_context(backend_id=res_company_id.kits_quickbooks_backend_id).action_test_connection()
+    #         self.env['kits.quickbooks.backend'].with_context(backend_id=res_company_id.kits_quickbooks_backend_id, product_ids=self).export_customer_action()
+    #     except Exception as e:
+    #         raise UserError(_(str(e)))
 
     # def _compute_get_coupons(self):
     #     sale_order_obj = self.env['sale.order']
@@ -1240,12 +1196,12 @@ class res_partner(models.Model):
                 'domain': [('partner_ids','=',self.id)]
             }
 
-    def signup_prepare(self, signup_type="signup", expiration=False):
-        """ generate a new token for the partners with the given validity
-        """
-        if signup_type == 'reset' and expiration:            
-            expiration = now(hours=int(self.env['ir.config_parameter'].sudo().get_param('tzc_sales_customization_spt.reset_pass_expire_hours')))
-        return super(res_partner,self).signup_prepare(signup_type=signup_type,expiration=expiration)
+    # def signup_prepare(self, signup_type="signup", expiration=False):
+    #     """ generate a new token for the partners with the given validity
+    #     """
+    #     if signup_type == 'reset' and expiration:            
+    #         expiration = now(hours=int(self.env['ir.config_parameter'].sudo().get_param('tzc_sales_customization_spt.reset_pass_expire_hours')))
+    #     return super(res_partner,self).signup_prepare(signup_type=signup_type,expiration=expiration)
 
     def get_product_price(self,product,partner):
         if partner and type(partner) == int:

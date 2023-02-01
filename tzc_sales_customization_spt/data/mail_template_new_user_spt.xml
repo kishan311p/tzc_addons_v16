@@ -1,0 +1,199 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="0">
+        <!-- Email template -->
+        <record id="tzc_mail_template_new_user_spt" model="mail.template">
+            <field name="name">New User Notification</field>
+            <field name="email_from">"ETO-Support" &lt;{{(object.company_id.catchall_email or user.email)}}&gt;</field>
+            <field name="subject">A new customer has just registered on teameto.com</field>
+            <!-- <field name="partner_to">${object.partner_id.id}</field> -->
+            <!-- <field name="email_to">${(object.login and '%s &lt;%s&gt;' % (object.partner_id.name, object.login) or '')|safe}</field> -->
+            <field name="model_id" ref="base.model_res_partner"/>
+            <field name="auto_delete" eval="False"/>
+            <field name="lang">{{object.lang}}</field>
+            <field name="body_html" type="html">
+                <table border="0" cellpadding="0" cellspacing="0" style="padding-top: 16px; background-color: #F1F1F1; font-family:Verdana, Arial,sans-serif; color: #454748; width: 100%; border-collapse:separate;">
+                    <tr>
+                        <td align="center">
+                            <table border="0" cellpadding="0" cellspacing="0" width="590" style="padding: 16px; background-color: white; color: #454748; border-collapse:separate;">
+                                <tbody>
+                                    <!-- HEADER -->
+                                    <tr>
+                                        <td align="center" style="min-width: 590px;">
+                                            <t t-if="object.env.cr.dbname != 'eto_production'">
+                                                <div class="corner-ribbon" style="top: 5%;position:absolute;width: 165px;font-weight: bold;color: #dc0e0e;font-size: 36px;text-align: center;">TEST</div>
+                                                
+                                            </t>
+                                            <table border="0" cellpadding="0" cellspacing="0" width="590" style="min-width: 590px; background-color: white; padding: 0px 8px 0px 8px; border-collapse:separate;">
+                                                <tr>
+                                                    <td valign="middle" style="width: 245px;">
+                                                        <!-- <span style="font-size: 10px;">Your Order</span> -->
+                                                        <!-- <br/> -->
+                                                        <span style="font-size: 20px; font-weight: bold;">
+                                                            <t t-out="object.name"/>
+                                                        </span>
+                                                    </td>
+                                                    <td valign="middle" style="width: 145px;" align="right">
+                                                        <img src="/web/image?model=res.company&amp;id=1&amp;field=logo" style="padding: 0px; margin: 0px; height: auto; width: 280px;" t-att-alt="object.env['res.company'].browse(1).name"/>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td colspan="2" style="text-align:center;">
+                                                        <hr width="100%" style="background-color:rgb(204,204,204);border:medium none;clear:both;display:block;font-size:0px;min-height:1px;line-height:0; margin:16px 0px 16px 0px;"/>
+                                                    </td>
+                                                </tr>
+                                            </table>
+                                        </td>
+                                    </tr>
+                                    <!-- CONTENT -->
+                                    <td align="center" style="min-width: 590px;">
+                                        <table border="0" cellpadding="0" cellspacing="0" width="590" style="min-width: 590px; background-color: white; padding: 0px 8px 0px 8px; border-collapse:separate;">
+                                            <tr>
+                                                <td valign="top" style="font-size: 13px;">
+
+
+                                                    <p style="margin-top: 0px;">Hello,</p>
+                                                    <p>A new customer <t t-out="object.name"/> has just signed up on the teameto.com website. Please review the customer and follow up to grant them access.</p>
+                                                    <!-- <br/> -->
+                                                    <table class="table table-bordered" style="border: 1px solid #black;border-collapse: collapse;">
+
+                                                        <tbody>
+                                                            <tr style="border: 1px solid black;">
+                                                                <td style="border: 1px solid black;width: 200px;padding-left: 5px;">Company Name</td>
+                                                                <td style="border: 1px solid black;width: 200px;padding-left: 5px;">
+                                                                    <span style="color:rgb(69, 71, 72);font-family: &quot;Lucida Grande&quot;, Helvetica, Verdana, Arial, sans-serif;">
+                                                                           <t t-out="object.name or ''"/>
+                                                                    </span>
+                                                                    <br/>
+                                                                </td>
+                                                            </tr>
+                                                            <tr style="border: 1px solid black;">
+                                                                <td style="border: 1px solid black;width: 200px;padding-left: 5px;">Contact Name</td>
+                                                                <td style="border: 1px solid black;width: 200px;padding-left: 5px;">
+                                                                    <span style="color:rgb(69, 71, 72);font-family: &quot;Lucida Grande&quot;, Helvetica, Verdana, Arial, sans-serif;"><t t-out="object.contact_name_spt or ''"/></span>
+                                                                    <br/>
+                                                                </td>
+                                                            </tr>
+                                                            <tr style="border: 1px solid black;">
+                                                                <td style="border: 1px solid black;width: 200px;padding-left: 5px;">Email</td>
+                                                                <td style="border: 1px solid black;width: 200px;padding-left: 5px;">
+                                                                    <span style="color:rgb(69, 71, 72);font-family: &quot;Lucida Grande&quot;, Helvetica, Verdana, Arial, sans-serif;"><t t-out="object.email or ''"/></span>
+                                                                    <br/>
+                                                                </td>
+                                                            </tr>
+                                                            <tr style="border: 1px solid black;">
+                                                                <td style="border: 1px solid black;width: 200px;padding-left: 5px;">Address</td>
+                                                                <td style="border: 1px solid black;width: 200px;padding-left: 5px;">
+                                                                    <span style="color:rgb(69, 71, 72);font-family: &quot;Lucida Grande&quot;, Helvetica, Verdana, Arial, sans-serif;">
+                                                                        <t t-out="object.street or ''"/>
+                                                                        <br/>
+                                                                        <t t-out="object.street2 or ''"/>
+                                                                    </span>
+                                                                </td>
+                                                            </tr>
+                                                            <tr style="border: 1px solid black;">
+                                                                <td style="border: 1px solid black;width: 200px;padding-left: 5px;">City</td>
+                                                                <td style="border: 1px solid black;width: 200px;padding-left: 5px;">
+                                                                    <span style="color:rgb(69, 71, 72);font-family: &quot;Lucida Grande&quot;, Helvetica, Verdana, Arial, sans-serif;"><t t-out="object.city or ''"/></span>
+                                                                    <br/>
+                                                                </td>
+                                                            </tr>
+                                                            <tr style="border: 1px solid black;">
+                                                                <td style="border: 1px solid black;width: 200px;padding-left: 5px;">Country</td>
+                                                                <td style="border: 1px solid black;width: 200px;padding-left: 5px;">
+                                                                    <span style="color:rgb(69, 71, 72);font-family: &quot;Lucida Grande&quot;, Helvetica, Verdana, Arial, sans-serif;"><t t-out="object.country_id.name or ''"/></span>
+                                                                    <br/>
+                                                                </td>
+                                                            </tr>
+                                                            <tr style="border: 1px solid black;">
+                                                                <td style="border: 1px solid black;width: 200px;padding-left: 5px;">State/Province</td>
+                                                                <td style="border: 1px solid black;width: 200px;padding-left: 5px;">
+                                                                    <span style="color:rgb(69, 71, 72);font-family: &quot;Lucida Grande&quot;, Helvetica, Verdana, Arial, sans-serif;"><t t-out="object.state_id.name or ''"/></span>
+                                                                    <br/>
+                                                                </td>
+                                                            </tr>
+                                                            <tr style="border: 1px solid black;">
+                                                                <td style="border: 1px solid black;width: 200px;padding-left: 5px;">Zip/Postal Code</td>
+                                                                <td style="border: 1px solid black;width: 200px;padding-left: 5px;">
+                                                                    <span style="color:rgb(69, 71, 72);font-family: &quot;Lucida Grande&quot;, Helvetica, Verdana, Arial, sans-serif;"><t t-out="object.zip or ''"/></span>
+                                                                    <br/>
+                                                                </td>
+                                                            </tr>
+                                                            <tr style="border: 1px solid black;">
+                                                                <td style="border: 1px solid black;width: 200px;padding-left: 5px;">Phone Number</td>
+                                                                <td style="border: 1px solid black;width: 200px;padding-left: 5px;">
+                                                                    <span style="color:rgb(69, 71, 72);font-family: &quot;Lucida Grande&quot;, Helvetica, Verdana, Arial, sans-serif;"><t t-out="object.phone or ''"/></span>
+                                                                    <br/>
+                                                                </td>
+                                                            </tr>
+                                                            <tr style="border: 1px solid black;">
+                                                                <td style="border: 1px solid black;width: 200px;padding-left: 5px;">Fax Number</td>
+                                                                <td style="border: 1px solid black;width: 200px;padding-left: 5px;">
+                                                                    <span style="color:rgb(69, 71, 72);font-family: &quot;Lucida Grande&quot;, Helvetica, Verdana, Arial, sans-serif;"><t t-out="object.business_fax or ''"/></span>
+                                                                    <br/>
+                                                                </td>
+                                                            </tr>
+
+                                                        </tbody>
+                                                    </table>
+                                                    <!-- <br/> -->
+                                                    <p style="margin-bottom: 0px;">Thank you,<br/>
+                                                       ETO Support
+                                                    </p>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td style="text-align:center;">
+                                                    <hr width="100%" style="background-color:rgb(204,204,204);border:medium none;clear:both;display:block;font-size:0px;min-height:1px;line-height:0; margin: 16px 0px 16px 0px;"/>
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                    <!-- FOOTER -->
+                                    <tr>
+                                        <td align="center" style="min-width: 590px;">
+                                            <table border="0" cellpadding="0" cellspacing="0" width="590" style="min-width: 590px; background-color: white; font-size: 11px; padding: 0px 8px 0px 8px; border-collapse:separate;">
+                                                <tr>
+                                                    <td valign="middle" align="left">
+                                                    <t t-out="object.env['res.company'].browse(1).name"/>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td valign="middle" align="left" style="opacity: 0.7;">
+                                                    <t t-out="object.env['res.company'].browse(1).phone"/>
+                                                        <t t-if="object.env['res.company'].browse(1).email">
+                                                        |                                                        <a t-attf-href="'mailto:%s' % {{object.env['res.company'].browse(1).email}}" style="text-decoration:none; color: #454748;"><t t-out="object.env['res.company'].browse(1).email"/></a>
+                                                            
+                                                        </t>
+                                                        <t t-if="object.env['res.company'].browse(1).website">
+                                                            |                                                        <a t-attf-href="'%s' % {{object.env['res.company'].browse(1).website}}" style="text-decoration:none; color: #454748;">
+                                                            <t t-out="object.env['res.company'].browse(1).website"/>
+                                                        </a>
+                                                        </t>
+                                                    </td>
+                                                </tr>
+                                            </table>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </td>
+                    </tr>
+                    <!-- POWERED BY -->
+                    <tr>
+                        <td align="center" style="min-width: 590px;">
+                            <table border="0" cellpadding="0" cellspacing="0" width="590" style="min-width: 590px; background-color: #F1F1F1; color: #454748; padding: 8px; border-collapse:separate;">
+                                <tr>
+                                    <td style="text-align: center; font-size: 13px;">
+                                    Powered by <a target="_blank" href="www.teameto.com" style="color: #7693f8;">ETO</a>
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                </table>
+
+            </field>
+        </record>
+    </data>
+</odoo>

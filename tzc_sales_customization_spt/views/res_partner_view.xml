@@ -36,6 +36,9 @@
                 <xpath expr="//field[@name='state_id']" position="attributes">
                     <attribute name="invisible">1</attribute>
                 </xpath>
+                <xpath expr="//sheet/notebook/page[@name='sales_purchases']/group/group/field[@name='user_id']" position="attributes">
+                    <attribute name="readonly">1</attribute>
+                </xpath>
                 <xpath expr="//sheet/div/h1/field[@name='name']" position="attributes">
                     <attribute name="invisible">1</attribute>
                 </xpath>
@@ -87,10 +90,9 @@
                 <xpath expr="//button[@name='open_partner_ledger']" position="attributes">
                     <attribute name="invisible">1</attribute>
                 </xpath>
-                
-                <!-- <field name="property_payment_method_id" position="attributes">
+                <xpath expr="//notebook/page[@name='sales_purchases']/group/group[2]/field[@name='property_payment_method_id']" position="attributes">
                     <attribute name="invisible">1</attribute>
-                </field> -->
+                </xpath>
 
                 <xpath expr="//sheet/notebook/page[@name='sales_purchases']/group/group/field[@name='user_id']" position="after">
                     <field name="sales_person_id"/>
@@ -109,13 +111,6 @@
                 </xpath>
                 <xpath expr="//notebook/page[@name='internal_notes']/group" position="attributes">
                     <attribute name="invisible">1</attribute>
-                </xpath>
-                <xpath expr="//notebook/page[@name='accounting']/group" position="inside">
-                    <group name="accounting_entries">
-                        <field invisible="1" name="currency_id" can_create="true" can_write="true" modifiers="{'invisible':true,'readonly':true}"/>
-                        <!-- <field name="property_account_receivable_id" can_create="true" can_write="true" modifiers="{'invisible':[['access_field_flag','=',false]],'required':true}"/>
-                        <field name="property_account_payable_id" can_create="true" can_write="true" modifiers="{'invisible':[['access_field_flag','=',false]],'required':true}"/> -->
-                    </group>
                 </xpath>
                 <xpath expr="//notebook" position="inside">
                     <page name="mail_verification_details" string="Mail Verification Details">
@@ -172,6 +167,35 @@
                 </xpath>
             </field>
         </record>
+        <record id="res_partner_short_inherit_srearch_view_spt" model="ir.ui.view">
+            <field name="name">res.partner.short.inherit.srearch.view.spt</field>
+            <field name="model">res.partner</field>
+            <field name="inherit_id" ref="base.view_res_partner_filter"/>
+            <field name="arch" type="xml">
+                <field name="name" position="after">
+                    <field name="city"/>
+                    <field name="state_id"/>
+                    <field name="zip"/>
+                    <field name="country_id"/>
+                    <field name="kits_lang"/>
+                </field>
+                <filter name="inactive" position="before">
+                    <filter name="sales_manager" string="Sales Manager" domain="[('is_salesmanager', '=', True)]"/>
+                    <separator/>
+                    <filter name="customer_type_filter_fs" string="ETO Is B2C" domain="[('customer_type', '=', 'b2c')]"/>
+                    <filter name="customer_type_filter_b2b_regular" string="ETO Is B2B Regular" domain="[('customer_type', '=', 'b2b_regular')]"/>
+                    <filter name="customer_type_filter_b2b_fs" string="ETO Is B2B FS" domain="[('customer_type', '=', 'b2b_fs')]"/>
+                    <separator/>
+                    <filter name="not_approved_for_pricing" string="Not Approved For Price" domain="[('user_ids.share', '=',True),('user_ids.state', '=','new')]"/>
+                    <separator/>
+                    <filter name="filter_verified_email" string="Verified Email" domain="[('is_email_verified','=',True)]" />
+                    <separator/>
+                    <filter name="filter_portal_access" string="Granted Portal Access" domain="[('is_granted_portal_access','=',True)]" />
+                    <filter name="language" context="{'group_by':'kits_lang'}" string="Language" />
+                    <separator/>
+                </filter>
+            </field>
+        </record>
 
         <!-- <record id="action_website_new_partners_spt" model="ir.actions.act_window">
             <field name="name">New Signups</field>
@@ -179,17 +203,6 @@
             <field name="view_mode">tree,form</field>
             <field name="domain">[('customer_type','=','b2c'),('signup_from_website','=',True)]</field>
         </record> -->
-        <record id="res_partner_website_filter_inherit_srearch_view_spt" model="ir.ui.view">
-            <field name="name">res.partner.website_filter.inherit.srearch.view.spt</field>
-            <field name="model">res.partner</field>
-            <field name="inherit_id" ref="base.view_res_partner_filter"/>
-            <field name="arch" type="xml">
-                <filter name="inactive" position="before">
-                    <filter name="signup_from_website" string="Signup From Website" domain="[('signup_from_website', '=', True)]"/>
-                    <separator/>
-                </filter>
-            </field>
-        </record>
 
         <record id="action_campaign_template" model="ir.actions.act_window">
             <field name="name">Campaign Templates</field>
@@ -219,7 +232,7 @@
             <field name="arch" type="xml">
                 <xpath expr="//tree" position="attributes">
                     <attribute name="default_order">last_order_date desc, create_date desc</attribute>
-                    <attribute name="delete">0</attribute>
+                    <attribute name="delete">false</attribute>
                 </xpath>
                 <xpath expr="//tree" position="inside">
                     <field name='updated_on' string="Last Updated On" optional="show"/>

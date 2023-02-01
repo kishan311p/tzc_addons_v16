@@ -68,7 +68,6 @@ access_kits_commission_rules,access.kits.commission.rules,model_kits_commission_
 access_kits_assign_salesperson_wizard,access.kits.assign.salesperson.wizard,model_kits_assign_salesperson_wizard,,1,1,1,1
 access_kits_commission_lines,access.kits.commission.lines,model_kits_commission_lines,,1,1,1,0
 access_sales_commission_report_wizard,access.sales.commission.report.wizard,model_sales_commission_report_wizard,,1,1,1,1
-access_kits_change_commission_rule,access.kits.change.commission.rule,model_kits_change_commission_rule,,1,1,1,1
 access_kits_customers_report_wizard,access.kits.customers.report.wizard,model_kits_customers_report_wizard,,1,1,1,1
 access_kits_replace_sales_person_wizard,access.kits.replace.sales.person.wizard,model_kits_replace_sales_person_wizard,,1,1,1,1
 access_kits_replace_sales_manager_wizard,access.kits.replace.sales.manager.wizard,model_kits_replace_sales_manager_wizard,,1,1,1,1

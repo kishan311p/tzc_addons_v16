@@ -12,10 +12,11 @@
     'data': [
         
         # Access rules
+        'security/res_groups.xml',
         'security/ir_rule.xml',
-        'security/security_rule.xml',
         'security/ir.model.access.csv',
         'security/cancel_sale_order_rule_spt.xml',
+        # 'security/security_rule.xml',
 
         # Data
         'data/ir_server_actions.xml',
@@ -36,8 +37,15 @@
         'data/mail_template_notify_admin_partner_country_change.xml',
         'data/pricelist.xml',
         'data/seq.xml',
-        # 'data/mail_change_commission_rule_for_salesperson.xml',
+        'data/mail_template_notify_admin_partner_country_change.xml',
+        'data/mail_change_commission_rule_for_salesperson.xml',
+        # 'data/error_message_mail_template.xml',
+        'data/base_mail_template_spt.xml',
+        'data/mail_template_bulk_mail_sent.xml',
+        'data/activate_account_data.xml',
+        'data/signup_confirmation_data.xml',
         'data/mail_template_customer_approve_notify.xml',
+        'data/mail_template_new_user_spt.xml',
         'data/stock_picking_mail_templates.xml',
 
         # Views
@@ -82,8 +90,8 @@
         'views/flash_menu_spt.xml',
         # 'views/kits_inflation_rule.xml',
         'views/account_move_view.xml',
-        'views/sale_order.xml',
-        'views/res_users.xml',
+        'views/sale_order_view.xml',
+        'views/res_users_view.xml',
         'views/login_user_views.xml',
         # 'views/update_qty_log_view.xml',
 

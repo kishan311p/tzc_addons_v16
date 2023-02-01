@@ -1,0 +1,455 @@
+<?xml version='1.0' encoding='utf-8'?>
+<odoo>
+    <data>
+
+        <record id="auth_signup.reset_password_email" model="mail.template">
+            <field name="name">Auth Signup: Reset Password</field>
+            <field name="model_id" ref="base.model_res_users"/>
+            <field name="subject">Did you request a password reset?</field>
+            <field name="email_from">"ETO-Support" &lt;{{(object.company_id.catchall_email or user.email)}}&gt;</field>
+            <!-- <field name="email_from">"${object.company_id.name | safe}" &lt;${(object.company_id.email or user.email) | safe}&gt;</field> -->
+            <field name="email_to">{{object.email_formatted }}</field>
+            <field name="body_html" type="html">
+                <table border="0" cellpadding="0" cellspacing="0" style="padding-top: 16px; background-color: #F1F1F1; font-family:Verdana, Arial,sans-serif; color: #454748; width: 100%; border-collapse:separate;">
+                    <tr>
+                        <td align="center">
+                            <table border="0" cellpadding="0" cellspacing="0" width="590" style="padding: 16px; background-color: white; color: #454748; border-collapse:separate;">
+                                <tbody>
+                                    <!-- HEADER -->
+                                    <tr>
+                                        <td align="center" style="min-width: 590px;">
+
+                                            <t t-if="object.env.cr.dbname != 'eto_production'">
+                                                <div class="corner-ribbon" style="top: 5%;position:absolute;width: 165px;font-weight: bold;color: #dc0e0e;font-size: 36px;text-align: center;">TEST</div>
+                                            </t>
+
+                                            <table border="0" cellpadding="0" cellspacing="0" width="590" style="min-width: 590px; background-color: white; padding: 0px 8px 0px 8px; border-collapse:separate;">
+                                                <tr>
+                                                    <td valign="middle" style="width: 245px;">
+                                                        <!-- <span style="font-size: 10px;">Your Account</span>
+                                                    <br/> -->
+                                                        <span style="font-size: 20px; font-weight: bold;">
+                                                            <t t-out="object.name"/>
+                                                        </span>
+                                                    </td>
+                                                    <td valign="middle" style="width: 145px;" align="right">
+                                                        <img src="/web/image?model=res.company&amp;id=1&amp;field=logo" style="padding: 0px; margin: 0px; height: auto; width: 280px;" t-att-alt="object.user_id.company_id.name"/>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td colspan="2" style="text-align:center;">
+                                                        <hr width="100%" style="background-color:rgb(204,204,204);border:medium none;clear:both;display:block;font-size:0px;min-height:1px;line-height:0; margin:16px 0px 16px 0px;"/>
+                                                    </td>
+                                                </tr>
+                                            </table>
+                                        </td>
+                                    </tr>
+                                    <!-- CONTENT -->
+                                    <tr>
+                                        <td align="center" style="min-width: 590px;">
+                                            <table border="0" cellpadding="0" cellspacing="0" width="590" style="min-width: 590px; background-color: white; padding: 0px 8px 0px 8px; border-collapse:separate;">
+                                                <tr>
+                                                    <td valign="top" style="font-size: 13px;">
+                                                        <div>
+                                                            <p style="margin-top:0px;">Dear <t t-out="object.name"/>
+ ,</p>
+                                                            <!-- <br/> -->
+                                                            <!-- <br/> -->
+                                                            <p>A password reset was requested for the teameto.com account linked to this email. You may change your password by following this link which will remain valid for 24 hours:<br/>
+                                                            <div style="margin: 16px 0px 16px 0px;">
+                                                                <a t-attf-href="{{object.signup_url}}" style="background-color: #7693f8; padding: 8px 16px 8px 16px; text-decoration: none; color: #fff; border-radius: 5px; font-size:13px;">
+                                Change password
+                                                                </a>
+                                                            </div>
+                        If you did not request a password reset, you can simply ignore this email.</p>
+                                                        <!-- <br/> -->
+                                                        <p>Thank you,<br/>
+ETO Support</p>
+                                                        <!-- <br/> -->
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td style="text-align:center;">
+                                                    <hr width="100%" style="background-color:rgb(204,204,204);border:medium none;clear:both;display:block;font-size:0px;min-height:1px;line-height:0; margin: 16px 0px 16px 0px;"/>
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                </tr>
+                                <!-- FOOTER -->
+                                <tr>
+                                    <td align="left" style="min-width: 590px;">
+                                        <table border="0" cellpadding="0" cellspacing="0" width="590" style="min-width: 590px; background-color: white; font-size: 11px; padding: 0px 8px 0px 8px; border-collapse:separate;">
+                                            <tr>
+                                                <td valign="middle" align="left">
+                                                    <t t-out="object.company_id.name"/>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td valign="middle" align="left" style="opacity: 0.7;">
+                                                    <t t-out="object.company_id.phone"/>
+                                                    <t t-if="object.company_id.email">
+                        
+                |                                                        <a t-attf-href="'mailto:%s' % {{object.company_id.email}}" style="text-decoration:none; color: #454748;" t-out="object.company_id.email">
+                                                            <!-- <t /> -->
+                                                        </a>
+                                                    </t>
+                                                    <t t-if="object.company_id.website">
+                        |                                                        <a t-attf-href="'%s' % {{object.company_id.website}}" style="text-decoration:none; color: #454748;">
+                                                            <t t-out="object.company_id.website"/>
+                                                        </a>
+
+                                                    </t>
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </td>
+                </tr>
+                <!-- POWERED BY -->
+                <tr>
+                    <td align="center" style="min-width: 590px;">
+                        <table border="0" cellpadding="0" cellspacing="0" width="590" style="min-width: 590px; background-color: #F1F1F1; color: #454748; padding: 8px; border-collapse:separate;">
+                            <tr>
+                                <td style="text-align: center; font-size: 13px;">
+        Powered by <a target="_blank" href="www.teameto.com" style="color: #7693f8;">ETO</a>
+                                </td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+            </table>
+        </field>
+        <field name="lang">{{object.lang}}</field>
+        <field name="auto_delete" eval="True"/>
+        <!-- <field name="user_signature" eval="False"/> -->
+    </record>
+
+    <record id="auth_signup.mail_template_data_unregistered_users" model="mail.template">
+        <field name="name">Auth Signup: Unregistered Users</field>
+        <field name="model_id" ref="base.model_res_users"/>
+        <field name="subject">Reminder for unregistered users</field>
+        <field name="email_from">{{object.company_id.partner_id.email_formatted}}</field>
+        <field name="email_to">{{object.email_formatted}}</field>
+        <field name="body_html" type="html">
+            <table border="0" cellpadding="0" cellspacing="0" style="background-color: #F1F1F1; font-family:Verdana, Arial,sans-serif; color: #454748; width: 100%; border-collapse:separate;">
+                <tr>
+                    <td align="center">
+                        <table border="0" cellpadding="0" cellspacing="0" width="590" style="padding: 16px; background-color: white; color: #454748; border-collapse:separate;">
+                            <tbody>
+                                <!-- HEADER -->
+                                <tr>
+                                    <td align="center" style="min-width: 590px;">
+                                        <t t-if="object.env.cr.dbname != 'eto_production'">
+                                            <div class="corner-ribbon" style="top: 5%;position:absolute;width: 165px;font-weight: bold;color: #dc0e0e;font-size: 36px;text-align: center;">TEST</div>
+                                        </t>
+                                        <table border="0" cellpadding="0" cellspacing="0" width="590" style="min-width: 590px; background-color: white; padding: 0px; border-collapse:separate;">
+                                            <tr>
+                                                <td valign="middle" style="width: 245px;">
+                                                    <!-- <span style="font-size: 10px;">Your Account</span> -->
+                                                    <br/>
+                                                    <span style="font-size: 20px; font-weight: bold;">
+                        Pending Invitations
+                                                    </span>
+                                                </td>
+                                                <td valign="middle" style="width: 145px;" align="right">
+                                                    <img src="/web/image?model=res.company&amp;id=1&amp;field=logo" style="padding: 0px; margin: 0px; height: auto; width: 280px;" t-att-alt="object.user_id.company_id.name"/>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td colspan="2" style="text-align:center;">
+                                                    <hr width="100%" style="background-color:rgb(204,204,204);border:medium none;clear:both;display:block;font-size:0px;min-height:1px;line-height:0; margin:16px 0px 16px 0px;"/>
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                </tr>
+                                <!-- CONTENT -->
+                                <tr>
+                                    <td align="center" style="min-width: 590px;">
+                                        <table border="0" cellpadding="0" cellspacing="0" width="590" style="min-width: 590px; background-color: white; padding: 0px 8px 0px 8px; border-collapse:separate;">
+                                            <t t-set="invited_users" t-value="ctx.get('invited_users',[])"/>
+                                            <!-- <td style="text-align : left">
+                                    <span style="font-size: 20px; font-weight: bold;">
+                        Pending Invitations
+                                    </span>
+                                    <br/>
+                                    <br/>
+                                </td> -->
+                                            <tr>
+                                                <td valign="top" style="font-size: 13px;">
+                                                    <div>
+                                                        <p style="margin-top:0px;">Dear <t t-out="object.name or ''"/>
+,</p>
+                                                        <!-- <br/> -->
+                                                        <!-- <br/> -->
+                                                        <p>You added the following user(s) to your database but they haven't registered yet:
+                                                            <ul>
+                                                                <t t-foreach="invited_users" t-as="invited_user">
+                                                                    <li t-out="invited_user or ''"></li>
+                                                                </t>
+                                                            </ul>
+                        Follow up with them so they can access your database and start working with you.</p>
+                                                        <br />
+                                                        <!-- <br/> -->
+                                                        <!-- Have a nice day!<br />
+                        <br/>
+The ${object.company_id.name} Team -->
+                                                        <p style="margin-bottom:0px;">Thank you,<br/>
+                                ETO Support</p>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td style="text-align:center;">
+                                                    <hr width="100%" style="background-color:rgb(204,204,204);border:medium none;clear:both;display:block;font-size:0px;min-height:1px;line-height:0; margin: 16px 0px 16px 0px;"/>
+                                                </td>
+                                            </tr>
+                                            <!-- FOOTER -->
+                                            <tr>
+                                                <td align="left" style="min-width: 590px;">
+                                                    <table border="0" cellpadding="0" cellspacing="0" width="590" style="min-width: 590px; background-color: white; font-size: 11px; padding: 0px 8px 0px 8px; border-collapse:separate;">
+                                                        <tr>
+                                                            <td valign="middle" align="left">
+                                                                <t t-out="object.company_id.name"/>
+                                                            </td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td valign="middle" align="left" style="opacity: 0.7;">
+                                                                <t t-out="object.company_id.phone"/>
+                                                                <t t-if="object.company_id.email">
+                        |                                                                    <a t-attf-href="'mailto:%s' % {{object.company_id.email}}" style="text-decoration:none; color: #454748;">
+                                                                        <t t-out="object.company_id.email"/>
+                                                                    </a>
+
+                                                                </t>
+                                                                <t t-if="object.company_id.website">
+                        |                                                                    <a t-attf-href="'%s' % {{object.company_id.website}}" style="text-decoration:none; color: #454748;">
+                                                                        <t t-out="object.company_id.website"/>
+                                                                    </a>
+
+                                                                </t>
+                                                            </td>
+                                                        </tr>
+                                                    </table>
+                                                </td>
+                                            </tr>
+
+
+                                        </table>
+                                    </td>
+                                </tr>
+                            </tbody>
+
+                        </table>
+                    </td>
+                </tr>
+                <!-- POWERED BY -->
+                <tr>
+                    <td align="center" style="min-width: 590px;">
+                        <table border="0" cellpadding="0" cellspacing="0" width="590" style="min-width: 590px; background-color: #F1F1F1; color: #454748; padding: 8px; border-collapse:separate;">
+                            <tr>
+                                <td style="text-align: center; font-size: 13px;">
+        Powered by <a target="_blank" href="www.teameto.com" style="color: #7693f8;">ETO</a>
+                                </td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+            </table>
+        </field>
+        <field name="lang">{{object.partner_id.lang}}</field>
+        <field name="auto_delete" eval="True"/>
+        <!-- user_signature is not available -->
+        <!-- <field name="user_signature" eval="False"/> -->
+    </record>
+    <record id="portal.mail_template_data_portal_welcome" model="mail.template">
+        <field name="name">Portal: new user</field>
+        <field name="model_id" ref="portal.model_portal_wizard_user"/>
+        <field name="subject">You have been invited to enjoy Everything Optical</field>
+        <field name="email_from">"ETO-Support" &lt;{{(object.user_id.company_id.catchall_email or user.email)}}&gt;</field>
+        <!-- <![CDATA[ETO-Support <${ |safe}>]]> -->
+        <field name="email_to">{{object.user_id.email_formatted }}</field>
+        <field name="body_html" type="html">
+            <table border="0" cellpadding="0" cellspacing="0" style="padding-top: 16px; background-color: #F1F1F1; font-family:Verdana, Arial,sans-serif; color: #454748; width: 100%; border-collapse:separate;">
+                <tr>
+                    <td align="center">
+                        <table border="0" cellpadding="0" cellspacing="0" width="590" style="padding: 16px; background-color: white; color: #454748; border-collapse:separate;">
+                            <tbody>
+                                <!-- HEADER -->
+                                <tr>
+                                    <td align="center" style="min-width: 590px;">
+                                        <t t-if="object.env.cr.dbname != 'eto_production'">
+                                            <div class="corner-ribbon" style="top: 5%;position:absolute;width: 165px;font-weight: bold;color: #dc0e0e;font-size: 36px;text-align: center;">TEST</div>
+                                        </t>
+                                        <table border="0" cellpadding="0" cellspacing="0" width="590" style="min-width: 590px; background-color: white; padding: 0px 8px 0px 8px; border-collapse:separate;">
+                                            <tr>
+                                                <td valign="middle" style="width: 245px;">
+                                                    <!-- <span style="font-size: 10px;">Your Account</span>
+                                                        <br/> -->
+                                                    <span style="font-size: 20px; font-weight: bold;">
+                                                        <t t-out="object.user_id.name"/>
+                                                    </span>
+                                                </td>
+                                                <td valign="middle" style="width: 145px;" align="right">
+                                                    <img src="/web/image?model=res.company&amp;id=1&amp;field=logo" style="padding: 0px; margin: 0px; height: auto; width: 280px;" t-att-alt="object.user_id.company_id.name"/>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td colspan="2" style="text-align:center;">
+                                                    <hr width="100%" style="background-color:rgb(204,204,204);border:medium none;clear:both;display:block;font-size:0px;min-height:1px;line-height:0; margin:16px 0px 16px 0px;"/>
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                </tr>
+                                <!-- CONTENT -->
+                                <tr>
+                                    <td align="center" style="min-width: 590px;">
+                                        <table border="0" cellpadding="0" cellspacing="0" width="590" style="min-width: 590px; background-color: white; padding: 0px 8px 0px 8px; border-collapse:separate;">
+                                            <tr>
+                                                <td valign="top" style="font-size: 13px;">
+                                                    <div>
+                                                        <p style="margin-top:0px;">Dear <t t-out="object.user_id.name or ''"/>
+,</p>
+                                                        <!-- <br/> -->
+                                                        <p>You have been invited to access the exclusive web portal at <t t-out="object.user_id.company_id.name"/>
+. From the comfort of your home or eyecare practice, you will be able to view products, place orders, and track your invoices.</p>
+                                                        <p>This portal is used exclusively for our active customers, and offers the greatest value in eyewear worldwide.</p>
+                                                        <p>Simply click on this link below and when you arrive on the <a href="http://">teameto.com</a> website, enter a password. Once you have entered the password, you are ready to Shop and Place Orders.</p>
+                                                        <p>
+                                                            <t t-out='object.user_id.signup_url'/>
+                                                        </p>
+                                                        <p>If you have any issues accessing your account or if you need help processing orders, please contact our technical help at <a href="mailto:support@teameto.com">support@teameto.com</a>.
+                                                        </p>
+                                                        <!-- <br/> -->
+                                                        <p style="margin-bottom:0px;">Thank you,<br/>
+                                                            ETO Support</p>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td style="text-align:center;">
+                                                    <hr width="100%" style="background-color:rgb(204,204,204);border:medium none;clear:both;display:block;font-size:0px;min-height:1px;line-height:0; margin: 16px 0px 16px 0px;"/>
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                </tr>
+                                <!-- FOOTER -->
+                                <tr>
+                                    <td align="center" style="min-width: 590px;">
+                                        <table border="0" cellpadding="0" cellspacing="0" width="590" style="min-width: 590px; background-color: white; font-size: 11px; padding: 0px 8px 0px 8px; border-collapse:separate;">
+                                            <tr>
+                                                <td valign="middle" align="left">
+                                                    <t t-out="object.user_id.company_id.name"/>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td valign="middle" align="left" style="opacity: 0.7;">
+                                                    <t t-out="object.user_id.company_id.phone"/>
+                                                    <t t-if="object.user_id.company_id.email">
+        |                                                        <a t-attf-href="'mailto:%s' % {{ object.user_id.company_id.email }}" style="text-decoration:none; color: #454748;" t-out='object.user_id.company_id.email'></a>
+                                                    </t>
+                                                    <t t-if="object.user_id.company_id.website">
+        |                                                        <a t-attf-href="'%s' % {{ object.user_id.company_id.website }}" style="text-decoration:none; color: #454748;" t-out="object.user_id.company_id.website"></a>
+
+                                                    </t>
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </td>
+                </tr>
+                <!-- POWERED BY -->
+                <tr>
+                    <td align="center" style="min-width: 590px;">
+                        <table border="0" cellpadding="0" cellspacing="0" width="590" style="min-width: 590px; background-color: #F1F1F1; color: #454748; padding: 8px; border-collapse:separate;">
+                            <tr>
+                                <td style="text-align: center; font-size: 13px;">
+                                    Powered by <a target="_blank" href="www.teameto.com" style="color: #7693f8;">ETO</a>
+                                </td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+            </table>
+        </field>
+        <field name="lang">{{object.partner_id.lang}}</field>
+        <field name="auto_delete" eval="True"/>
+        <!-- <field name="user_signature" eval="False"/> -->
+    </record>
+    <record id="account.email_template_edi_invoice" model="mail.template">
+        <field name="name">Invoice: Send by email</field>
+        <field name="model_id" ref="account.model_account_move"/>
+        <field name="email_from">{{(object.invoice_user_id.email_formatted or user.email_formatted)}}</field>
+        <field name="reply_to">{{(object.user_id.company_id.catchall_email)}},{{(object.invoice_user_id.email)}}</field>
+        <field name="partner_to">{{object.partner_id.id}}</field>
+        <field name="subject">Your invoice from Everything Optical (ETO) is ready</field>
+        <field name="body_html" type="html">
+            <div style="margin: 0px; padding: 0px;">
+                <p style="margin: 0px; padding: 0px; font-size: 13px;">
+        Dear
+        <t t-if="object.partner_id.parent_id">
+            <t t-out="object.partner_id.name"/> <t t-out="object.partner_id.parent_id.name"/> ,
+        </t>
+        <t t-else="">
+            <t t-out="object.partner_id.name"/>,
+        </t>
+        <br/>
+        <br/>
+        Your
+        <t t-if="object.name">
+            invoice <strong><t t-out="object.name"/></strong>
+        </t>
+        <t t-else="">
+            invoice
+        </t>
+        <t t-if="object.invoice_origin">
+            (from Sales order  <t t-out="object.invoice_origin"/>
+        </t>
+        is ready.
+        <t t-if="object.payment_state == 'paid'">
+            This invoice is already paid.
+        </t>
+        <br/>
+        <br/>
+        <p><a t-attf-href="{{object.get_base_url()}}/my/invoices/{{object.id}}?{{object.get_access_token_spt()}}" style="background-color:#7693f8 !important; padding: 10px; text-decoration: none; color: #fff; border-radius: 5px; font-size: 16px;" class="o_default_snippet_text">View Invoice</a></p>
+                    <br />
+            You can reply to this email if you have any questions, or reach out to your Account Manager for more help.
+                    <br />
+                    <br />
+        Thank you,<br/>
+        ETO Support
+                        <!-- Please remit payment at your earliest convenience. -->
+                <p>
+                <t t-if="object.invoice_user_id.signature">
+                <!-- <t t-if="not is_html_empty(object.invoice_user_id.signature)"> -->
+            <br /><br />
+            <t t-out="object.invoice_user_id.signature or ''"></t>
+        </t>
+            </p>
+        </p>
+            <a t-attf-href="{{object.get_base_url()}}/report/pdf/account.report_invoice_with_payments/{{object.id}}">
+                <img src="/tzc_sales_customization_spt/static/src/img/pdf.png" style="height:60px;width:100px;"/>
+            </a>
+        </div>
+
+    </field>
+    <!-- <field name="report_template" ref="account.account_invoices"/>
+<field name="report_name">Invoice_${(object.name or '').replace('/','_')}${object.state == 'draft' and '_draft' or ''}</field> -->
+    <field name="lang">{{object.partner_id.lang}}</field>
+    <!-- <field name="user_signature" eval="False"/> -->
+    <field name="auto_delete" eval="False"/>
+</record>
+
+
+</data>
+</odoo>

@@ -7,12 +7,12 @@
             <field name="email_from">"ETO-Support" &lt;{{(object.user_id.company_id.catchall_email)}}&gt;</field>
             <!-- <field name="email_from">${user.email_formatted | safe}</field> -->
             <field name="subject">Your request is approved.</field>
-            <field name="partner_to">{{ (object.id) }}</field>
+            <field name="partner_to">{{ object.id }}</field>
             <field name="model_id" ref="base.model_res_partner"/>
             <field name="auto_delete" eval="False"/>
             <!-- <field name="report_template" ref="tzc_sales_customization_spt.action_report_saleorder_catalog_spt"/>
             <field name="report_name">Catalog ${(object.name or '')}</field> -->
-            <!-- <field name="lang">${object.lang}</field> -->
+            <field name="lang">{{ object.lang }}</field>
             <field name="body_html" type="html">
                 <table border="0" cellpadding="0" cellspacing="0" style="padding-top: 16px; background-color: #F1F1F1; font-family:Verdana, Arial,sans-serif; color: #454748; width: 100%; border-collapse:separate;">
                     <tr>
@@ -22,10 +22,8 @@
                                     <!-- HEADER -->
                                     <tr>
                                         <td align="center" style="min-width: 590px;">
-                                            <t>
-                                            % if object.env.cr.dbname != 'eto_production':
+                                            <t t-if="object.env.cr.dbname != 'eto_production'">
                                                 <div class="corner-ribbon" style="top: 5%;position:absolute;width: 165px;font-weight: bold;color: #dc0e0e;font-size: 36px;text-align: center;">TEST</div>
-                                            % endif
                                             </t>
                                             <table border="0" cellpadding="0" cellspacing="0" width="590" style="min-width: 590px; background-color: white; padding: 0px 8px 0px 8px; border-collapse:separate;">
                                                 <tr>
@@ -36,7 +34,7 @@
                                                         </span>
                                                     </td>
                                                     <td valign="middle" style="width: 145px;" align="right">
-                                                        <img src="/web/image?model=res.company&amp;id=1&amp;field=logo" style="padding: 0px; margin: 0px; height: auto; width: 280px;" alt="${object.env['res.company'].browse(1).name}"/>
+                                                        <img src="/web/image?model=res.company&amp;id=1&amp;field=logo" style="padding: 0px; margin: 0px; height: auto; width: 280px;" t-att-alt="object.env['res.company'].browse(1).name"/>
                                                     </td>
                                                 </tr>
                                                 <tr>
@@ -57,7 +55,7 @@
                                                         <p>Congratulations! Your account has been verified! Your savings start now!
                                                         <br/>
                                                         <br/>
-                                                        You can now access the Everything Optical (ETO) wholesale website and place orders directly.by visiting <a target="_blank" href="www.teameto.com">www.teameto.com</a>. To login, you must use the email and password used when you registered your account.
+                                                        You can now access the Everything Optical (ETO) wholesale website and place orders directly by visiting <a target="_blank" href="www.teameto.com">www.teameto.com</a>. To login, you must use the email and password used when you registered your account.
                                                         <br/>
                                                         If you need any assistance, you may contact your Account Manager or you may email us at <a href="mailto:support@teameto.com">support@teameto.com</a>.</p>
                                                     <p style="margin-bottom:0px;">Thank you,<br/>ETO Support</p>
@@ -77,27 +75,20 @@
                                             <table border="0" cellpadding="0" cellspacing="0" width="590" style="min-width: 590px; background-color: white; font-size: 11px; padding: 0px 8px 0px 8px; border-collapse:separate;">
                                                 <tr>
                                                     <td valign="middle" align="left">
-                                                        <!-- ${object.env['res.company'].browse(1).name} -->
                                                         <t t-out="object.env['res.company'].browse(1).name"/>
                                                     </td>
                                                 </tr>
                                                 <tr>
                                                     <td valign="middle" align="left" style="opacity: 0.7;">
                                                         <t t-out="object.env['res.company'].browse(1).phone"/>
-                                                        <!-- ${object.env['res.company'].browse(1).phone} -->
-                                                        <!-- % if object.env['res.company'].browse(1).email -->
                                                         <t t-if="object.env['res.company'].browse(1).email">
-                                                            | <a href="'mailto:%s' % ${object.env['res.company'].browse(1).email}" style="text-decoration:none; color: #454748;">${object.env['res.company'].browse(1).email}</a>
+                                                        |                                                        <a t-attf-href="'mailto:%s' % {{object.env['res.company'].browse(1).email}}" style="text-decoration:none; color: #454748;"><t t-out="object.env['res.company'].browse(1).email"/></a>
+                                                            
                                                         </t>
                                                         <t t-if="object.env['res.company'].browse(1).website">
-                                                            | <a href="'%s' % ${object.env['res.company'].browse(1).website}" style="text-decoration:none; color: #454748;"/>
+                                                            |                                                        <a t-attf-href="'%s' %  {{object.env['res.company'].browse(1).website}}" style="text-decoration:none; color: #454748;">
+                                                            <t t-out="object.env['res.company'].browse(1).website"/></a>
                                                         </t>
-                                                        <!-- % endif -->
-                                                        <!-- % if object.env['res.company'].browse(1).website
-                                                            |                                                        <a href="'%s' % ${object.env['res.company'].browse(1).website}" style="text-decoration:none; color: #454748;">
-                                                            ${object.env['res.company'].browse(1).website}
-                                                        </a>
-                                                        % endif -->
                                                     </td>
                                                 </tr>
                                             </table>
@@ -108,7 +99,7 @@
                         </td>
                     </tr>
                     <!-- POWERED BY -->
-                    <!-- <tr>
+                    <tr>
                         <td align="center" style="min-width: 590px;">
                             <table border="0" cellpadding="0" cellspacing="0" width="590" style="min-width: 590px; background-color: #F1F1F1; color: #454748; padding: 8px; border-collapse:separate;">
                                 <tr>
@@ -118,7 +109,7 @@
                                 </tr>
                             </table>
                         </td>
-                    </tr> -->
+                    </tr>
                 </table>
 
             </field>
@@ -126,13 +117,13 @@
 
         <record id="tzc_mail_template_customer_approve_notify_salesperson_spt" model="mail.template">
             <field name="name">Customer Approve Email Notify Salesperson</field>
-            <field name="email_from">"ETO-Support" &lt;${(object.user_id.company_id.catchall or '')|safe}&gt;</field>
+            <field name="email_from">"ETO-Support" &lt;{{ (object.user_id.company_id.catchall_email or '') }}&gt;</field>
             <!-- <field name="email_from">${object.user_id.email_formatted | safe}</field> -->
-            <field name="subject">${(object.name or '')|safe} has been approved on teameto.com</field>
-            <field name="email_to">${(object.user_id.email or '')|safe}</field>
+            <field name="subject">{{(object.name or '')}} has been approved on teameto.com</field>
+            <field name="email_to">{{(object.user_id.email or '')}}</field>
             <field name="model_id" ref="base.model_res_partner"/>
             <field name="auto_delete" eval="False"/>
-            <field name="lang">${object.lang}</field>
+            <field name="lang">{{object.lang}}</field>
             <field name="body_html" type="html">
                 <table border="0" cellpadding="0" cellspacing="0" style="padding-top: 16px; background-color: #F1F1F1; font-family:Verdana, Arial,sans-serif; color: #454748; width: 100%; border-collapse:separate;">
                     <tr>
@@ -142,21 +133,19 @@
                                     <!-- HEADER -->
                                     <tr>
                                         <td align="center" style="min-width: 590px;">
-                                            <t>
-                                            % if object.env.cr.dbname != 'eto_production':
+                                            <t t-if="object.env.cr.dbname != 'eto_production'">
                                                 <div class="corner-ribbon" style="top: 5%;position:absolute;width: 165px;font-weight: bold;color: #dc0e0e;font-size: 36px;text-align: center;">TEST</div>
-                                            % endif
                                             </t>
                                             <table border="0" cellpadding="0" cellspacing="0" width="590" style="min-width: 590px; background-color: white; padding: 0px 8px 0px 8px; border-collapse:separate;">
                                                 <tr>
                                                     <td valign="middle" style="width: 245px;">
                                                         <br/>
                                                         <span style="font-size: 20px; font-weight: bold;">
-                                                            ${object.name}
+                                                             <t t-out="object.name"/>
                                                         </span>
                                                     </td>
                                                     <td valign="middle" style="width: 145px;" align="right">
-                                                        <img src="/web/image?model=res.company&amp;id=1&amp;field=logo" style="padding: 0px; margin: 0px; height: auto; width: 280px;" alt="${object.env['res.company'].browse(1).name}"/>
+                                                        <img src="/web/image?model=res.company&amp;id=1&amp;field=logo" style="padding: 0px; margin: 0px; height: auto; width: 280px;" t-att-alt="object.env['res.company'].browse(1).name"/>
                                                     </td>
                                                 </tr>
                                                 <tr>
@@ -172,9 +161,9 @@
                                         <table border="0" cellpadding="0" cellspacing="0" width="590" style="min-width: 590px; background-color: white; padding: 0px 8px 0px 8px; border-collapse:separate;">
                                             <tr>
                                                 <td valign="top" style="font-size: 13px;">
-                                                    <p style="margin-top:0px;">Hello ${object.user_id.name}, </p>
+                                                    <p style="margin-top:0px;">Hello <t t-out="object.user_id.name"/>, </p>
                                                     <!-- <br/> -->
-                                                    <p>Client ${object.name} has been approved, and they can now access their pricing and place orders.
+                                                    <p>Client <t t-out="object.name"/> has been approved, and they can now access their pricing and place orders.
                                                     Please follow up with the client.</p>
                                                     <!-- <br/> -->
                                                     <p style="margin-bottom:0px;">Thank you,<br/>
@@ -195,20 +184,20 @@
                                             <table border="0" cellpadding="0" cellspacing="0" width="590" style="min-width: 590px; background-color: white; font-size: 11px; padding: 0px 8px 0px 8px; border-collapse:separate;">
                                                 <tr>
                                                     <td valign="middle" align="left">
-                                                        ${object.env['res.company'].browse(1).name}
+                                                        <t t-out="object.env['res.company'].browse(1).name"/>
                                                     </td>
                                                 </tr>
                                                 <tr>
                                                     <td valign="middle" align="left" style="opacity: 0.7;">
-                                                        ${object.env['res.company'].browse(1).phone}
-                                                        % if object.env['res.company'].browse(1).email
-                                                        |                                                        <a href="'mailto:%s' % ${object.env['res.company'].browse(1).email}" style="text-decoration:none; color: #454748;">${object.env['res.company'].browse(1).email}</a>
-                                                        % endif
-                                                        % if object.env['res.company'].browse(1).website
-                                                            |                                                        <a href="'%s' % ${object.env['res.company'].browse(1).website}" style="text-decoration:none; color: #454748;">
-                                                            ${object.env['res.company'].browse(1).website}
-                                                        </a>
-                                                        % endif
+                                                        <t t-out="object.env['res.company'].browse(1).phone"/>
+                                                        <t t-if="object.env['res.company'].browse(1).email">
+                                                        |                                                        <a t-attf-href="'mailto:%s' % {{object.env['res.company'].browse(1).email}}" style="text-decoration:none; color: #454748;"><t t-out="object.env['res.company'].browse(1).email"/></a>
+                                                            
+                                                        </t>
+                                                        <t t-if="object.env['res.company'].browse(1).website">
+                                                            |                                                        <a t-attf-href="'%s' %  {{object.env['res.company'].browse(1).website}}" style="text-decoration:none; color: #454748;">
+                                                            <t t-out="object.env['res.company'].browse(1).website"/></a>
+                                                        </t>
                                                     </td>
                                                 </tr>
                                             </table>

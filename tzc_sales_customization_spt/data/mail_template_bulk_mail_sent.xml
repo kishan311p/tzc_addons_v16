@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="0">
+        <!-- Email template -->
+        <record id="tzc_mail_template_bulk_email_spt" model="mail.template">
+            <field name="name">Salesperson Notify</field>
+            <field name="email_from">{{(user.email)}}</field>
+            <field name="subject"></field>
+            <field name="email_to">{{(object.partner_id.email)}}</field>
+            <field name="model_id" ref="base.model_res_users"/>
+            <field name="auto_delete" eval="False"/>
+            <field name="lang">{{object.partner_id.lang}}</field>
+            <field name="body_html" type="html">
+                <t t-if="object.env.cr.dbname != 'eto_production'">
+                    <div class="corner-ribbon" style="top: 5%;position:absolute;width: 165px;font-weight: bold;color: #dc0e0e;font-size: 36px;text-align: center;">TEST</div>
+                    
+                </t>
+                <div>
+                    <h4>Add content</h4>
+                    <br/>
+                    <p style="margin-bottom:0px;">Thank you,<br/>
+                    
+                    ETO Support</p>
+            </div>
+
+            </field>
+        </record>
+
+
+    </data>
+</odoo>

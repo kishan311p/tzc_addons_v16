@@ -17,7 +17,6 @@ from . import product_template
 from . import product_label_line
 from . import kits_package_product
 from . import kits_package_product_line
-from . import sale_order
 from . import sale_order_line
 from . import sale_order_backup_spt
 from . import sale_order_backup_line_spt
@@ -62,3 +61,5 @@ from . import sale_catalog
 from . import sale_catalog_line
 from . import product_packaging
 from . import update_qty_log
+from . import mail_thread
+from . import mail_tracking_value

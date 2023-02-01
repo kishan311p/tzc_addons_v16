@@ -37,15 +37,10 @@ To login, you must use the email and password used when you registered your acco
 
         </field>
     </record>
+
+        <!--not present in 16 base. Definition of an email template with an empty body that will be used in partner mailing. Used to give a
+            basis for email recipients, name and to ease the definition of a further elaborated template. -->
     <record id="email_template_partner" model="mail.template">
-        <field name="name">Partner Mass Mail</field>
-        <field name="model_id" ref="base.model_res_partner"/>
-        <field name="partner_to">{{object.id}}</field>
-        <!-- <field name="user_signature" eval="True"/> -->
-        <field name="auto_delete" eval="True"/>
-        <field name="lang">{{object.lang}}</field>
-    </record>
-    <record id="mail_email_template_partner" model="mail.template">
         <field name="name">Partner Mass Mail</field>
         <field name="model_id" ref="base.model_res_partner"/>
         <field name="partner_to">{{object.id}}</field>
