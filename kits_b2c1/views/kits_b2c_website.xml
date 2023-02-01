@@ -1,12 +1,6 @@
 <?xml version='1.0' encoding='utf-8'?>
 <odoo>
     <data>
-
-        <record id="website_kits_b2c1" model="kits.b2c.website">
-            <field name="name">B2C1</field>
-            <field name="website_name">b2c1</field>
-        </record>
-
         <record id="inherit_b2c1_kits_b2c_website_view_form" model="ir.ui.view">
             <field name="name">inherit.b2c1.kits.b2c.website.view.form</field>
             <field name="model">kits.b2c.website</field>

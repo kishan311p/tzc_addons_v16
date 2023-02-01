@@ -1,6 +1,32 @@
 <?xml version='1.0' encoding='utf-8'?>
 <odoo>
     <data>
+        <record id="website_kits_b2c1" model="kits.b2c.website">
+            <field name="name">B2C1</field>
+            <field name="website_name">b2c1</field>
+            <field name="logo_public_url">https://cdn.teameto.com/data/B2C1/header-images/BLINKERS%20LOGO12.jpeg</field>
+            <field name="favicon_public_url">https://cdn.teameto.com/data/B2C1/header-images/BLINKERS%20LOGO%201.jpeg</field>
+            <field name="url">https://staging.onespex.com</field>
+            <field name="return_product_days">14</field>
+            <field name="sale_order_sequence_id" ref="kits_multi_website.multi_website_sale_order_sequence"/>
+            <field name="invoice_sequence_id" ref="kits_multi_website.multi_website_invoice_sequence"/>
+            <field name="return_request_sequence_id" ref="kits_multi_website.multi_website_return_request_sequence"/>
+            <field name="contact">+1 905 944 9786</field>
+            <field name="company_email">support@onespex.com</field>
+            <field name="contact_icon_url">https://cdn.teameto.com/data/B2C1/footer-images/contact-icon.jpeg</field>
+            <field name="mail_icon_url">https://cdn.teameto.com/data/B2C1/footer-images/mail-icon.jpeg</field>
+            <field name="facebook_icon_url">https://cdn.teameto.com/data/B2C1/footer-images/ftr-icon-fb2.svg</field>
+            <field name="men_image_url">https://cdn.teameto.com/data/B2C1/gender-images/men-cat.png</field>
+            <field name="women_image_url">https://cdn.teameto.com/data/B2C1/gender-images/women_-at.jpeg</field>
+            <field name="kids_image_url">https://cdn.teameto.com/data/B2C1/gender-images/kids-cat.jpeg</field>
+            <field name="twitter_icon_url">https://cdn.teameto.com/data/B2C1/footer-images/ftr-icon-twitter2.svg</field>
+            <field name="instagram_icon_url">https://cdn.teameto.com/data/B2C1/footer-images/ftr-icon-instagram2.svg</field>
+            <field name="youtube_icon_url">https://cdn.teameto.com/data/B2C1/footer-images/ftr-icon-youtube2.svg</field>
+            <field name="shop_page_keyword">Shop Page Meta Keyword</field>
+            <field name="shop_page_title">Shop Page Meta Title</field>
+            <field name="shop_page_description">Shop Page Meta Description</field>
+            <field name="canonical_url">https://www.canonical.onespex.com/</field>
+        </record>
         <record id="free_shipping_rule" model="kits.free.shipping.rule">
             <field name="free_shipping_days">10</field>
             <field name="name">Apply if country rule not found</field>
@@ -21,6 +47,98 @@
         <record id="other_reason" model="kits.multi.website.return.request.reason">
             <field name="name">Other reason</field>
             <field name="website_id" ref="kits_b2c1.website_kits_b2c1" />
+        </record>
+        <record id="shoppage_banner_1" model="kits.multi.website.shoppage.banner">
+            <field name="image_public_url">https://cdn.teameto.com/data/B2C1/shoppage-banner-images/new-eyeglass.png</field>
+            <field name="mobile_image_public_url">	https://cdn.teameto.com/data/B2C1/shoppage-banner-images/mobile-shoppage-banner-1.jpeg</field>
+            <field name="redirect_url">https://www.eto.keypress.in/shop	</field>
+            <field name="website_id" ref="kits_b2c1.website_kits_b2c1" />
+        </record>
+        <record id="faq_1" model="kits.key.value.model">
+            <field name="name">What do I need to order?</field>
+            <field name="value">Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. 3 wolf moon officia aute, non cupidatat skateboard dolor brunch. Food truck quinoa nesciunt laborum eiusmod. Brunch 3 wolf moon tempor, sunt aliqua put a bird on it squid single-origin coffee nulla assumenda shoreditch et. Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt sapiente ea proident. Ad vegan excepteur butcher vice lomo. Leggings occaecat craft beer farm-to-table, raw denim aesthetic synth nesciunt you probably haven't heard of them accusamus labore sustainable VHS.</field>
+            <field name="website_id" ref="kits_b2c1.website_kits_b2c1" />
+        </record>
+        <record id="faq_2" model="kits.key.value.model">
+            <field name="name">What do I need to order?</field>
+            <field name="value">Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. 3 wolf moon officia aute, non cupidatat skateboard dolor brunch. Food truck quinoa nesciunt laborum eiusmod. Brunch 3 wolf moon tempor, sunt aliqua put a bird on it squid single-origin coffee nulla assumenda shoreditch et. Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt sapiente ea proident. Ad vegan excepteur butcher vice lomo. Leggings occaecat craft beer farm-to-table, raw denim aesthetic synth nesciunt you probably haven't heard of them accusamus labore sustainable VHS.</field>
+            <field name="website_id" ref="kits_b2c1.website_kits_b2c1" />
+        </record>
+
+        <record id="kits_b2bc1_website_page_home_page" model="kits.b2c1.website.page">
+            <field name="name">Home Page</field>
+            <field name="page_type">homepage</field>
+            <field name="website_id" ref="kits_b2c1.website_kits_b2c1" />
+        </record>
+        <record id="kits_b2bc1_case_product_category" model="kits.b2c1.menu.category">
+            <field name="name">Case</field>
+            <field name="sequence">111</field>
+        </record>
+        <record id="kits_b2bc1_eyeglass_product_category" model="kits.b2c1.menu.category">
+            <field name="name">Eyeglass</field>
+            <field name="sequence">1</field>
+        </record>
+        <record id="kits_b2bc1_flash_sale_product_category" model="kits.b2c1.menu.category">
+            <field name="name">Flash Sale</field>
+            <field name="sequence">1111</field>
+        </record>
+        <record id="kits_b2bc1_sunglass_product_category" model="kits.b2c1.menu.category">
+            <field name="name">Sunglass</field>
+            <field name="sequence">11</field>
+        </record>
+        <record id="kits_b2c1_website_menu_eyeglasses" model="kits.b2c1.website.menu">
+            <field name="name">EYEGLASSES</field>
+            <field name="menu_icon_url">	https://cdn.teameto.com/data/B2C1/header-images/eyeglasses.svg</field>
+            <field name="is_mega_menu">True</field>
+            <field name="product_filter">category</field>
+            <field name="website_id" ref="kits_b2c1.website_kits_b2c1" />
+            <field name="product_category_ids" eval="[(4, ref('kits_b2bc1_eyeglass_product_category'))]" />
+            <field name="sequence">1</field>
+        </record>
+        <record id="kits_b2c1_website_menu_sunglasses" model="kits.b2c1.website.menu">
+            <field name="name">SUNGLASSES</field>
+            <field name="menu_icon_url">https://cdn.teameto.com/data/B2C1/header-images/sunglasses.svg</field>
+            <field name="is_mega_menu">True</field>
+            <field name="product_filter">category</field>
+            <field name="website_id" ref="kits_b2c1.website_kits_b2c1" />
+            <field name="product_category_ids" eval="[(4, ref('kits_b2bc1_sunglass_product_category'))]" />
+            <field name="sequence">2</field>
+        </record>
+        <record id="kits_b2c1_website_menu_new_arrival" model="kits.b2c1.website.menu">
+            <field name="name">NEW ARRIVAL</field>
+            <field name="menu_icon_url">https://cdn.teameto.com/data/B2C1/header-images/new_arrival.jpeg</field>
+            <field name="is_mega_menu">True</field>
+            <field name="product_filter">new_arrivals</field>
+            <field name="website_id" ref="kits_b2c1.website_kits_b2c1" />
+            <field name="sequence">3</field>
+            <field name="new_arrivals">True</field>
+        </record>
+        <record id="kits_b2c1_website_menu_on_sale" model="kits.b2c1.website.menu">
+            <field name="name">ON SALE</field>
+            <field name="menu_icon_url">https://cdn.teameto.com/data/B2C1/header-images/on_sale.png</field>
+            <field name="is_mega_menu">True</field>
+            <field name="product_filter">sale_type</field>
+            <field name="website_id" ref="kits_b2c1.website_kits_b2c1" />
+            <field name="sequence">4</field>
+            <field name="sale_type_on_sale">True</field>
+        </record>
+        <record id="kits_b2c1_website_menu_contact_us" model="kits.b2c1.website.menu">
+            <field name="name">CONTACT US</field>
+            <field name="menu_icon_url">https://cdn.teameto.com/data/B2C1/header-images/contact_us.png</field>
+            <field name="website_id" ref="kits_b2c1.website_kits_b2c1" />
+            <field name="sequence">5</field>
+            <field name="metadata_title">onespex</field>
+            <field name="metadata_keyword">onespex</field>
+            <field name="metadata_description">onespex</field>
+        </record>
+        <record id="kits_b2c1_website_menu_our_story" model="kits.b2c1.website.menu">
+            <field name="name">Our Story</field>
+            <field name="menu_icon_url">https://cdn.teameto.com/data/B2C1/header-images/our_story.png</field>
+            <field name="website_id" ref="kits_b2c1.website_kits_b2c1" />
+            <field name="sequence">6</field>
+            <field name="metadata_title">onespex</field>
+            <field name="metadata_keyword">onespex</field>
+            <field name="metadata_description">onespex</field>
         </record>
     </data>
 </odoo>

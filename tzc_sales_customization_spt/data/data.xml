@@ -3,7 +3,7 @@
 
     <data noupdate="1">
         <record id="usd_public_pricelist_spt" model="product.pricelist">
-            <field name="name">Public Pricelist (USD)</field>
+            <field name="name">USD Price List</field>
         </record>
         <record id="product.group_product_variant" model="res.groups">
             <field name="users" eval="[Command.link(ref('base.user_root')), Command.link(ref('base.user_admin'))]"/>

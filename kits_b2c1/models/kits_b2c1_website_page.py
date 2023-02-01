@@ -3,9 +3,7 @@ from odoo import api, fields, models, _
 class kits_b2c1_website_page(models.Model):
     _name = "kits.b2c1.website.page"
     
-    kits_web_url = "https://eto.keypress.in"
-    name = fields.Char("Name")
-    
+    kits_web_url = "https://eto.keypress.in"    
     website_id = fields.Many2one("kits.b2c.website","Website")
 
     @api.model

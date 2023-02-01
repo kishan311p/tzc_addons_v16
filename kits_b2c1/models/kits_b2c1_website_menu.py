@@ -13,7 +13,7 @@ class kits_b2c1_website_menu(models.Model):
     menu_icon = fields.Char("Menu Icon",compute="_compute_menu_icon",store=True)
     menu_icon_url = fields.Char("Menu Icon URL")
 
-    product_category_ids = fields.Many2many("product.category","website_menu_product_category_rel","website_menu_id","product_category_id","Product Categories") 
+    product_category_ids = fields.Many2many("kits.b2c1.menu.category","website_menu_p_category_rel","website_menu_id","product_category_id","Product Categories") 
     sale_type = fields.Selection([('on_sale','On Sale'), ('clearance','Clearence')])
     sale_type_on_sale = fields.Boolean("On Sale")
     sale_type_clearence = fields.Boolean("Clearence")
