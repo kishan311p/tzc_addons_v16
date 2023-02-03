@@ -329,6 +329,116 @@
             <field name="redirect_url">https://staging.onespex.com/shop	</field>
             <field name="website_page_id" ref="kits_b2bc1_website_page_home_page" />
         </record>
+        <record id="b2c1_attribute_filter_line_azzaro_eyewear_eyeglass" model="kits.multi.website.attribute.filter.line">
+            <field name="image_url">https://cdn.teameto.com/data/B2C1/eyeglass-brand-images/azzaro.jpeg</field>
+            <field name="image_name">Azzaro Eyewear</field>
+            <field name="attribute_filter_id" ref="attribute_filter_eyeglasses_brands" />
+        </record>
+        <record id="b2c1_attribute_filter_line_carrera_eyewear_eyeglass" model="kits.multi.website.attribute.filter.line">
+            <field name="image_url">https://cdn.teameto.com/data/B2C1/eyeglass-brand-images/carrera.jpeg</field>
+            <field name="image_name">Carrera Eyewear</field>
+            <field name="attribute_filter_id" ref="attribute_filter_eyeglasses_brands" />
+        </record>
+        <record id="b2c1_attribute_filter_line_not_sweaters_eyewear_eyeglass" model="kits.multi.website.attribute.filter.line">
+            <field name="image_url">https://cdn.teameto.com/data/B2C1/eyeglass-brand-images/not-sweaters.jpeg</field>
+            <field name="image_name">Not Sweaters Eyewear</field>
+            <field name="attribute_filter_id" ref="attribute_filter_eyeglasses_brands" />
+        </record>
+        <record id="b2c1_attribute_filter_line_boucheron_eyewear_eyeglass" model="kits.multi.website.attribute.filter.line">
+            <field name="image_url">https://cdn.teameto.com/data/B2C1/eyeglass-brand-images/boucheron.jpeg</field>
+            <field name="image_name">Boucheron Eyewear</field>
+            <field name="attribute_filter_id" ref="attribute_filter_eyeglasses_brands" />
+        </record>
+        <record id="b2c1_attribute_filter_line_aviator_eyeglasses" model="kits.multi.website.attribute.filter.line">
+            <field name="image_url">https://cdn.teameto.com/data/B2C1/eyeglass-shape-images/hm-pilot-eyeglassses.jpeg</field>
+            <field name="image_name">Aviator Eyeglasses</field>
+            <field name="attribute_filter_id" ref="attribute_filter_bestselling_eyeglasses_shapes" />
+        </record>
+        <record id="b2c1_attribute_filter_line_cateye_eyeglasses" model="kits.multi.website.attribute.filter.line">
+            <field name="image_url">https://cdn.teameto.com/data/B2C1/eyeglass-shape-images/hm-cateye-eyeglassses.jpeg</field>
+            <field name="image_name">Cateye Eyeglasses</field>
+            <field name="attribute_filter_id" ref="attribute_filter_bestselling_eyeglasses_shapes" />
+        </record>
+        <record id="b2c1_attribute_filter_line_rectangle_eyeglasses" model="kits.multi.website.attribute.filter.line">
+            <field name="image_url">https://cdn.teameto.com/data/B2C1/eyeglass-shape-images/hm-rectangle-eyeglassses.jpeg</field>
+            <field name="image_name">Rectangle Eyeglasses</field>
+            <field name="attribute_filter_id" ref="attribute_filter_bestselling_eyeglasses_shapes" />
+        </record>
+        <record id="b2c1_attribute_filter_line_shield_eyeglasses" model="kits.multi.website.attribute.filter.line">
+            <field name="image_url">https://cdn.teameto.com/data/B2C1/eyeglass-shape-images/hm-clubmaster-eyeglassses.jpeg</field>
+            <field name="image_name">Shield Eyeglasses</field>
+            <field name="attribute_filter_id" ref="attribute_filter_bestselling_eyeglasses_shapes" />
+        </record>
+        <record id="b2c1_attribute_filter_line_round_eyeglasses" model="kits.multi.website.attribute.filter.line">
+            <field name="image_url">https://cdn.teameto.com/data/B2C1/eyeglass-shape-images/hm-round-eyeglassses.jpeg</field>
+            <field name="image_name">Round Eyeglasses</field>
+            <field name="attribute_filter_id" ref="attribute_filter_bestselling_eyeglasses_shapes" />
+        </record>
+        <record id="b2c1_attribute_filter_line_oval_eyeglasses" model="kits.multi.website.attribute.filter.line">
+            <field name="image_url">https://cdn.teameto.com/data/B2C1/eyeglass-shape-images/hm-hexagon-eyeglassses.jpeg</field>
+            <field name="image_name">Oval Eyeglasses</field>
+            <field name="attribute_filter_id" ref="attribute_filter_bestselling_eyeglasses_shapes" />
+        </record>
+        <record id="b2c1_attribute_filter_line_kings-of-past_eyewear_sunglass" model="kits.multi.website.attribute.filter.line">
+            <field name="image_url">https://cdn.teameto.com/data/B2C1/sunglass-brand-images/kings-of-past.jpeg</field>
+            <field name="image_name">Kings Of Past Eyewear</field>
+            <field name="attribute_filter_id" ref="attribute_filter_sunglasses_brands" />
+        </record>
+        <record id="b2c1_attribute_filter_line_carrera_eyewear_sunglass" model="kits.multi.website.attribute.filter.line">
+            <field name="image_url">https://cdn.teameto.com/data/B2C1/sunglass-brand-images/carrera.jpeg</field>
+            <field name="image_name">Carrera Eyewear</field>
+            <field name="attribute_filter_id" ref="attribute_filter_sunglasses_brands" />
+        </record>
+        <record id="b2c1_attribute_filter_line_redbull_eyewear_sunglass" model="kits.multi.website.attribute.filter.line">
+            <field name="image_url">https://cdn.teameto.com/data/B2C1/sunglass-brand-images/redbull.jpeg</field>
+            <field name="image_name">Redbull Eyewear</field>
+            <field name="attribute_filter_id" ref="attribute_filter_sunglasses_brands" />
+        </record>
+        <record id="b2c1_attribute_filter_line_seraphin_eyewear_sunglass" model="kits.multi.website.attribute.filter.line">
+            <field name="image_url">https://cdn.teameto.com/data/B2C1/sunglass-brand-images/seraphin.jpeg</field>
+            <field name="image_name">Seraphin Eyewear</field>
+            <field name="attribute_filter_id" ref="attribute_filter_sunglasses_brands" />
+        </record>
+        <record id="b2c1_attribute_filter_line_dunhill_eyewear_sunglass" model="kits.multi.website.attribute.filter.line">
+            <field name="image_url">https://cdn.teameto.com/data/B2C1/sunglass-brand-images/dunhill.jpeg</field>
+            <field name="image_name">Dunhill Eyewear</field>
+            <field name="attribute_filter_id" ref="attribute_filter_sunglasses_brands" />
+        </record>
+        <record id="b2c1_attribute_filter_line_isaac_mizrahi_eyewear_sunglass" model="kits.multi.website.attribute.filter.line">
+            <field name="image_url">https://cdn.teameto.com/data/B2C1/sunglass-brand-images/isaac-mizrahi.png</field>
+            <field name="image_name">Isaac Mizrahi Eyewear</field>
+            <field name="attribute_filter_id" ref="attribute_filter_sunglasses_brands" />
+        </record>
+        <record id="b2c1_attribute_filter_line_aviator_sunglasses" model="kits.multi.website.attribute.filter.line">
+            <field name="image_url">https://cdn.teameto.com/data/B2C1/sunglass-shape-images/hm-pilot-sunglassses.jpeg</field>
+            <field name="image_name">Aviator Sunglasses</field>
+            <field name="attribute_filter_id" ref="attribute_filter_bestselling_sunglasses_shapes" />
+        </record>
+        <record id="b2c1_attribute_filter_line_cateye_sunglasses" model="kits.multi.website.attribute.filter.line">
+            <field name="image_url">https://cdn.teameto.com/data/B2C1/sunglass-shape-images/hm-cateye-sunglassses.jpeg</field>
+            <field name="image_name">Cateye Sunglasses</field>
+            <field name="attribute_filter_id" ref="attribute_filter_bestselling_sunglasses_shapes" />
+        </record>
+        <record id="b2c1_attribute_filter_line_rectangle_sunglasses" model="kits.multi.website.attribute.filter.line">
+            <field name="image_url">https://cdn.teameto.com/data/B2C1/sunglass-shape-images/hm-wraparound-sunglassses.jpeg</field>
+            <field name="image_name">Rectangle Sunglasses</field>
+            <field name="attribute_filter_id" ref="attribute_filter_bestselling_sunglasses_shapes" />
+        </record>
+        <record id="b2c1_attribute_filter_line_shield_sunglasses" model="kits.multi.website.attribute.filter.line">
+            <field name="image_url">https://cdn.teameto.com/data/B2C1/sunglass-shape-images/hm-clubmaster-sunglassses.jpeg</field>
+            <field name="image_name">Shield Sunglasses</field>
+            <field name="attribute_filter_id" ref="attribute_filter_bestselling_sunglasses_shapes" />
+        </record>
+        <record id="b2c1_attribute_filter_line_round_sunglasses" model="kits.multi.website.attribute.filter.line">
+            <field name="image_url">https://cdn.teameto.com/data/B2C1/sunglass-shape-images/hm-round-sunglassses.jpeg</field>
+            <field name="image_name">Round Sunglasses</field>
+            <field name="attribute_filter_id" ref="attribute_filter_bestselling_sunglasses_shapes" />
+        </record>
+        <record id="b2c1_attribute_filter_line_oval_sunglasses" model="kits.multi.website.attribute.filter.line">
+            <field name="image_url">https://cdn.teameto.com/data/B2C1/sunglass-shape-images/hm-clubmaster-sunglassses.jpeg</field>
+            <field name="image_name">Oval Sunglasses</field>
+            <field name="attribute_filter_id" ref="attribute_filter_bestselling_sunglasses_shapes" />
+        </record>
     </data>
 </odoo>
 
