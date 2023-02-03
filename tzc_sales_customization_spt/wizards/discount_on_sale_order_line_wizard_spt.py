@@ -113,6 +113,7 @@ class discount_on_sale_order_line_wizard_spt(models.TransientModel):
                             })
                             order_line_ids._onchange_discount_spt()
                         order_line_ids.order_id.write({'updated_by':self.env.user.id,'updated_on':datetime.now()})
+                        order_line_ids.order_id._amount_all()
                     else:
                         for line in order_line_ids:
                             unit_discount_price = round(line.unit_discount_price - ((line.unit_discount_price*record.additional_dis_per)/100),2)

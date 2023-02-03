@@ -70,7 +70,6 @@ class SaleOrderLine(models.Model):
     #         	unit_discount_price = price_unit - (price_unit * record.discount)* 0.01
     #             record.update({'price_unit':price_unit,'unit_discount_price': unit_discount_price})
 
-
     @api.depends('product_id','price_unit','unit_discount_price','picked_qty','product_uom_qty','discount','tax_id','move_ids','move_ids.quantity_done')
     def _compute_picked_qty(self):
         move_obj = self.env['stock.move']

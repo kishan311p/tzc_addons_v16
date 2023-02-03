@@ -96,3 +96,4 @@ access_login_user_detail,login_user_detail_login_detail,model_login_detail,,1,1,
 access_remove_done_quantity_spt,access.remove.done.quantity.spt,model_remove_done_quantity_spt,,1,1,1,1
 access_remove_stock_done_qty_line_spt,access.remove.stock.done.qty.line.spt,model_remove_stock_done_qty_line_spt,,1,1,1,1
 access_kits_update_picking_wizard,access.kits.update.picking.wizard,model_kits_update_picking_wizard,,1,1,1,1
+access_delivery_recovery_selection_wizard,access.delivery.recovery.selection.wizard,model_delivery_recovery_selection_wizard,,1,1,1,1

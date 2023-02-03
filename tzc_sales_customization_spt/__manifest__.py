@@ -147,7 +147,7 @@
         'wizards/barcode_error_message_wizard_spt.xml',
         'wizards/stock_picking_barcode_spt.xml',
         'wizards/kits_update_picking_wizard_view.xml',
-        # 'wizards/delivery_recovery_selection_wizard_view.xml',
+        'wizards/delivery_recovery_selection_wizard_view.xml',
         'wizards/remove_done_quantity_view_spt.xml',
 
         # Reports

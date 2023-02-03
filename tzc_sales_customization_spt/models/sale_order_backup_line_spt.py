@@ -22,6 +22,7 @@ class sale_order_backup_line_spt(models.Model):
     is_fs = fields.Boolean("Is FS?")
     sale_type = fields.Selection([('clearance','Clearance'),('on_sale','On Sale')],'Sale Type')
     is_pack_order_line = fields.Boolean('Backup Pack Order Line')
+    package_id = fields.Many2one('kits.package.product','Package')
     
     def _compute_sutotal(self):
         for record in self:

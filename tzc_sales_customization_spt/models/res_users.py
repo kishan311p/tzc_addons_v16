@@ -73,7 +73,6 @@ class ResUsers(models.Model):
     # )
     # token_ids = fields.One2many('kits.b2b.user.token', 'user_id', string='Token')
 
-
     @api.depends('groups_id')
     def _compute_is_sales_person(self):
         for rec in self:

@@ -446,7 +446,6 @@ class sale_order(models.Model):
                         'sticky': True,
                     }
                 }
-        # pass
 
 
     def action_update_order_qty(self):
@@ -785,6 +784,7 @@ class sale_order(models.Model):
             else:
                 rec.is_same_delivery_address = False
 
+    @api.depends('order_line')
     def _amount_all(self):
         """
         Compute the total amounts of the SO.
@@ -2395,8 +2395,6 @@ class sale_order(models.Model):
                         'target': 'new',
                         'context': {'default_sale_id': record.id,'default_partner_id':record.partner_id.id }
                     }
-
-    
 
     #kits_package_product
     package_order = fields.Boolean('Pack Order',compute="_compute_package_order",store=True,compute_sudo=True)
