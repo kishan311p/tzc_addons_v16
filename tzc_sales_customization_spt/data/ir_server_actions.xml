@@ -240,6 +240,7 @@
             if records:
                 action = records.action_grant_portal_access_spt()</field>
         </record>
+
         <record id="portal.partner_wizard_action_create_and_open" model="ir.actions.server">
             <field name="binding_model_id" eval='False'/>
         </record>
@@ -380,7 +381,7 @@
             <field name="code">action = records.action_delete_user()</field>
         </record>
 
-        <record model="ir.actions.server" id="account_followup.action_account_reports_customer_statements_do_followup">
+        <!-- <record model="ir.actions.server" id="account_followup.action_account_reports_customer_statements_do_followup">
             <field name="name">Process follow-ups</field>
             <field name="model_id" ref="base.model_res_partner"/>
             <field name="groups_id" eval="[(4, ref('base.group_system'))]"/>
@@ -388,9 +389,10 @@
             <field name="state">code</field>
             <field name="code">
                 if records:
-                    action = records.execute_followup()
+                    action = records.action_manually_process_automatic_followups()
             </field>
-        </record>
+        </record> -->
+
         <record id="model_res_user_action_sent_mail_spt" model="ir.actions.server">
             <field name="groups_id" eval="[(4, ref('base.group_system'))]"/>
             <field name="name">Send Bulk Mails </field>

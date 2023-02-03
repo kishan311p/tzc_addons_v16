@@ -7,7 +7,7 @@
     'author': 'Keypress',
     'sequence': 1,
     'version': '16.0.0',
-    'depends':['base','product','stock','sale_stock','sale','sale_management','web','crm','delivery','mail','portal','mass_mailing','snailmail_account_followup','marketing_automation','barcodes','sale_loyalty'],
+    'depends':['base','product','stock','sale_stock','sale','sale_management','crm','delivery','mail','portal','mass_mailing','snailmail_account_followup','marketing_automation','barcodes','sale_loyalty'],
 
     'data': [
         
@@ -90,7 +90,6 @@
         'views/flash_menu_spt.xml',
         # 'views/kits_inflation_rule.xml',
         'views/account_move_view.xml',
-        'views/sale_order_view.xml',
         'views/res_users_view.xml',
         'views/login_user_views.xml',
         # 'views/update_qty_log_view.xml',

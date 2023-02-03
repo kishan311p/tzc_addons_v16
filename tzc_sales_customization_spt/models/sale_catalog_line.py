@@ -62,9 +62,9 @@ class sale_catalog_line(models.Model):
                 unit_discount_price = 0.0
             record.unit_discount_price = unit_discount_price
     
-    def get_pending_order_line_qty(self,partner):
-        line = self.env['pending.order.line.spt'].search([('pending_order_id.customer_id','=',partner.id),('cataog_line_id','=',self.id)],limit=1)
-        return int(line.qty)
+    # def get_pending_order_line_qty(self,partner):
+    #     line = self.env['pending.order.line.spt'].search([('pending_order_id.customer_id','=',partner.id),('cataog_line_id','=',self.id)],limit=1)
+    #     return int(line.qty)
 
     @api.onchange('product_pro_id')
     def _onchange_product_pro_id_spt(self):

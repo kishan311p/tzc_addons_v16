@@ -161,7 +161,6 @@ class kits_customers_report_wizard(models.TransientModel):
                 sheet.column_dimensions['V'].width = 20
             else:
                 sheet.cell(row=row_index, column=1).value = partner.create_date.strftime("%d-%m-%Y") if partner.create_date else ''
-                sheet.cell(row=row_index, column=2).value = partner.last_logged_on.strftime("%d-%m-%Y") if partner.last_logged_on else ''
                 sheet.cell(row=row_index, column=3).value = partner.name if partner.name else ''
                 sheet.cell(row=row_index, column=4).value = dict(self.env['res.partner']._fields['customer_type'].selection).get(partner.customer_type)
                 sheet.cell(row=row_index, column=5).value = partner.phone if partner.phone else ''

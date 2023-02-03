@@ -654,6 +654,7 @@ class res_partner(models.Model):
 
         return res
 
+
     def unlink(self):
         res = super(res_partner,self).unlink()
         if not self.env.context.get('confirm_delete') and (not self.env.user.has_group('base.group_system') or not self.env.user.has_group('tzc_sales_customization_spt.group_sales_manager_spt')):

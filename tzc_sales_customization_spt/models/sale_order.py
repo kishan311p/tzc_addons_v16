@@ -400,7 +400,7 @@ class sale_order(models.Model):
             cancel_order_ids = self.filtered(lambda x:x.state == 'cancel')
             if not cancel_order_ids:
                 for record in self:
-                    if record.state in ['draft','sent','received','sale'] or (record.state not in ['draft','sent','received','sale'] and self.env.user.has_group('cancel_sale_order_spt.group_cancel_sale_order_rule_spt')):
+                    if record.state in ['draft','sent','received','sale'] or (record.state not in ['draft','sent','received','sale'] and self.env.user.has_group('tzc_sales_customization_spt.group_cancel_sale_order_rule_spt')):
                         picking_ids = self.env['stock.picking'].search([('sale_id','=',record.id)])
                         if picking_ids:
                             return_ids = self.env['stock.return.picking'].search([('picking_id','in',picking_ids.ids)])
