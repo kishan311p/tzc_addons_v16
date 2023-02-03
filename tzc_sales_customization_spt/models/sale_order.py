@@ -17,14 +17,12 @@ import shutil
 import openpyxl
 import xlsxwriter
 from openpyxl.writer.excel import ExcelWriter
-# from odoo.modules import get_module_resource
 from lxml import etree
 from bs4 import BeautifulSoup
 import logging
 from odoo import api, fields, models, SUPERUSER_ID, _
 from odoo.http import request
 from odoo.addons.website.models import ir_http
-# from odoo.addons.website_sale_coupon.controllers.main import WebsiteSale
 from odoo.exceptions import UserError
 from odoo.modules import get_module_resource
 import os
@@ -162,23 +160,10 @@ class sale_order(models.Model):
         self.ensure_one()
         if self.state == 'scanned':
             picking_id = self.picking_ids.filtered(lambda x:x.state != 'cancel')
-            # content, content_type = self.env.ref('sale.action_report_pro_forma_invoice').sudo().render_qweb_pdf(self.id)
-            # doc_name = "Sales Order %s.pdf"% str(self.name)
-            # attchment_id = self.env['ir.attachment'].create({
-            #     'name': doc_name,
-            #     'type': 'binary',
-            #     'datas': base64.encodestring(content),
-            #     'res_model':'stock.picking',
-            #     # 'res_id': self.id,
-            #     'res_id': picking_id.id,
-            # })
-            # if not self._context.get('fulfilled'):
             template_id = self.env.ref('tzc_sales_customization_spt.tzc_picking_ready_notification_to_salesperson_spt')
             template_id.send_mail(picking_id.id,force_send=True)
             ready_to_ship_template_id = self.env.ref('tzc_sales_customization_spt.tzc_email_template_order_ready_to_ship')
             ready_to_ship_template_id.send_mail(self.id,force_send=True,email_layout_xmlid="mail.mail_notification_light")
-            # template_id.with_context({'default_attachment_ids':[(6,0,[attchment_id.id])]}).send_mail(picking_id.id,force_send=True)
-            # if not picking_id._context.get('fulfilled'):
             picking_id.write({'state':'assigned'})
             self.write({'state': 'scan'})
             self.order_approved_by = self.env.user.partner_id.id
@@ -229,19 +214,7 @@ class sale_order(models.Model):
     def action_quotation_send(self):
         ''' Opens a wizard to compose an email, with relevant mail template loaded by default '''
         self.ensure_one()
-        # if self.state not in ['draft','sent','sale','scan','shipped','draft_inv','open_inv']:
-        #     return {
-        #         'type': 'ir.actions.client',
-        #         'tag': 'display_notification',
-        #         'params': {
-        #                 'title': 'Something is wrong.',
-        #                 'message': 'Please reload your screen.',
-        #                 'sticky': True,
-        #             }
-        #         }
-        # else:
         template_id = self.env.ref('tzc_sales_customization_spt.mail_template_notify_customer_order_completion') if self.state in ['draft_inv','open_inv','scan','shipped'] else self._find_mail_template()
-        # template_id = self._find_mail_template()
         lang = self.env.context.get('lang')
         template = self.env['mail.template'].browse(template_id)
         if template_id.lang:
@@ -2322,7 +2295,7 @@ class sale_order(models.Model):
             mail_context = {
                 'default_model': 'sale.order',
                 'default_res_id': self.ids[0],
-                'default_template_id': self.env.ref('kits_bambora_payment.mail_template_customer_send_payment_link').id,
+                'default_template_id': self.env.ref('tzc_sales_customization_spt.mail_template_customer_send_payment_link').id,
                 'default_partner_ids': self.partner_id.ids,
                 'default_use_template':True,
                 'default_composition_mode': 'comment',
@@ -2572,7 +2545,6 @@ class sale_order(models.Model):
                                 'is_pack_order_line': True,
                                 'package_line_id': pack_line.id or False,
                                 'price_unit': record.partner_id.property_product_pricelist.get_product_price(product_line.product_id,product_line.qty * pack_line.qty,record.partner_id),
-                                # 'is_fs':bool(product_line.product_id.eto_sale_method == 'fs'),
                                 'sale_type':product_line.product_id.sale_type,
                             })
                             if record.partner_id.property_product_pricelist.currency_id.name == 'CAD':
@@ -2624,7 +2596,6 @@ class sale_order(models.Model):
                     #Merge same product lines
                     record.merge_order_lines()
                     #checked stock
-                    # record.check_stock_spt()
                     for line in record.order_line:
                         backup_order_line_list.append((0,0,{
                             'product_id':line.product_id.id,

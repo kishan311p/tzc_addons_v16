@@ -104,7 +104,6 @@ class res_partner(models.Model):
 
     kits_lang = fields.Selection(_get_all_data,string='Language',default=_get_default_lang)
 
-
     def write(self,vals):
         user_obj = self.env['res.users']
         config_parameter_obj = self.env['ir.config_parameter'].sudo()
@@ -249,7 +248,6 @@ class res_partner(models.Model):
             # else:
             #     record.catalog_count = 0.0
 
- 
     @api.onchange('is_customer')
     def _onchange_customer_rank(self):
         for record in self:
@@ -455,7 +453,6 @@ class res_partner(models.Model):
             "target":"new",
         }
 
-
     @api.model
     def _get_view(self, view_id=None, view_type='form',**options):
         fields_list = ['name','email','phone','mobile','same_vat_partner_id']
@@ -657,7 +654,6 @@ class res_partner(models.Model):
 
         return res
 
-
     def unlink(self):
         res = super(res_partner,self).unlink()
         if not self.env.context.get('confirm_delete') and (not self.env.user.has_group('base.group_system') or not self.env.user.has_group('tzc_sales_customization_spt.group_sales_manager_spt')):
@@ -734,6 +730,56 @@ class res_partner(models.Model):
             'res_id': wizard_id.id,
             'target': 'new',
         }
+
+    @api.model
+    def _fields_view_get(self, view_id=None, view_type='form', toolbar=False, submenu=False):
+        fields_list = ['name','email','phone','mobile']
+        button_list = ['action_view_opportunity','schedule_meeting',str(self.env.ref('sale.act_res_partner_2_sale_order').id),'action_view_partner_invoices','action_catalogs']
+        res = super(res_partner, self)._fields_view_get(view_id=view_id, view_type=view_type, toolbar=toolbar, submenu=submenu)
+        if view_type == 'form':
+            doc = etree.fromstring(res['arch'])
+            is_admin = not self.env.user.has_group('base.group_system')
+            is_manager = self.env.user.has_group('tzc_sales_customization_spt.group_sales_manager_spt')
+            if is_admin:
+                for email_node in  doc.xpath('//field[@name="email"]'):
+                    email_node.attrib['readonly'] = '1' if not is_manager else '0'
+                for country_id_node in  doc.xpath('//field[@name="country_id"]'):
+                    country_id_node.attrib['readonly'] = '1' if not is_manager else '0'
+                for company_type_node in  doc.xpath('//field[@name="company_type"]'):
+                    company_type_node.attrib['readonly'] = '1'
+                for is_vendor_node in  doc.xpath('//field[@name="is_vendor"]'):
+                    is_vendor_node.attrib['readonly'] = '1'
+                for is_customer_node in  doc.xpath('//field[@name="is_customer"]'):
+                    is_customer_node.attrib['readonly'] = '1'
+                for user_id in doc.xpath('//field[@name="user_id"]'):
+                    user_id.attrib['readonly'] = '1' if not is_admin or not is_manager else '0'
+            for country_id in doc.xpath('//field[@name="country_id"]'):
+                country_id.attrib['readonly'] = '1'
+            for state_id in doc.xpath('//field[@name="state_id"]'):
+                state_id.attrib['readonly'] = '1'
+            res['arch'] = etree.tostring(doc, encoding='unicode')
+            if not self._context.get('resend') or not self._context.get('campaign') or not self._context.get('raise_campaign'):
+                soup = BeautifulSoup(res['arch'], "html.parser")
+                fields = soup.find_all('field')
+                notebook = soup.find_all('notebook')
+                buttons = soup.find_all('button')
+                for field in fields:
+                    if field.attrs.get('name') not in fields_list:
+                        field['attrs'] =  "{'invisible':[('access_field_flag','=',False)]}"
+                for book in notebook:
+                    book['attrs'] =  "{'invisible':[('access_field_flag','=',False)]}"
+                for btn in buttons:
+                    if btn.attrs.get('name') in button_list:
+                        btn['attrs'] =  "{'invisible':[('access_field_flag','=',False)]}"
+                for div in soup.find_all('div'):
+                    if div.attrs.get('role') == 'status':
+                        div['attrs'] =  "{'invisible':[('access_field_flag','=',False)]}"
+                for label in soup.find_all('label'):
+                    if label.attrs.get('name') == 'address_name':
+                        label['attrs'] =  "{'invisible':[('access_field_flag','=',False)]}"
+                soup.find_all('group')[1]['attrs'] = "{'invisible':[('access_field_flag','=',False)]}"
+                res['arch'] = str(soup)
+        return res
     
     def action_open_eto_wizard(self):
         wizard_id = self.env['eto.partner.wizard.spt'].create({

@@ -16,7 +16,6 @@
         'security/ir_rule.xml',
         'security/ir.model.access.csv',
         'security/cancel_sale_order_rule_spt.xml',
-        # 'security/security_rule.xml',
 
         # Data
         'data/ir_server_actions.xml',
@@ -37,7 +36,6 @@
         'data/mail_template_notify_admin_partner_country_change.xml',
         'data/pricelist.xml',
         'data/seq.xml',
-        'data/mail_template_notify_admin_partner_country_change.xml',
         'data/mail_change_commission_rule_for_salesperson.xml',
         # 'data/error_message_mail_template.xml',
         'data/base_mail_template_spt.xml',
@@ -47,6 +45,8 @@
         'data/mail_template_customer_approve_notify.xml',
         'data/mail_template_new_user_spt.xml',
         'data/stock_picking_mail_templates.xml',
+        'data/payment_mail_template.xml',
+        'data/send_payment_link_mail_template.xml',
 
         # Views
         'views/product_product_view.xml',
@@ -147,6 +147,8 @@
         'wizards/kits_scan_package_products_view.xml',
         'wizards/barcode_error_message_wizard_spt.xml',
         'wizards/stock_picking_barcode_spt.xml',
+        'wizards/kits_update_picking_wizard_view.xml',
+        # 'wizards/delivery_recovery_selection_wizard_view.xml',
         'wizards/remove_done_quantity_view_spt.xml',
 
         # Reports

@@ -164,31 +164,26 @@
             </xpath> -->
             <xpath expr="//group[@name='note_group']" position="replace">
                     <div align="right">
-                        <button style="font-size:30px;" icon="fa-money" help="Admin Fee" name="action_add_admin_fee" type="object" attrs="{'invisible':[('state','in',['scan','shipped','open_inv','cancel','merged','draft_inv'])]}"/>
-                        <button style="font-size:30px;" icon="fa-percent" help="Additional Discount" name="action_add_aditional_discount" type="object" attrs="{'invisible':[('state','in',['scan','shipped','open_inv','cancel','merged','paid','draft_inv'])]}"/>
-                        <button style="font-size:30px;" icon="fa-truck" help="Shipping Cost" name="action_add_shipping_cost" type="object" attrs="{'invisible':[('state','in',['scan','shipped','open_inv','cancel','merged','paid','draft_inv'])]}"/>
+                        <button class='button_order_icon' icon="fa-money" help="Admin Fee" name="action_add_admin_fee" type="object" attrs="{'invisible':[('state','in',['scan','shipped','open_inv','cancel','merged','draft_inv'])]}"/>
+                        <button class='button_order_icon' icon="fa-percent" help="Additional Discount" name="action_add_aditional_discount" type="object" attrs="{'invisible':[('state','in',['scan','shipped','open_inv','cancel','merged','paid','draft_inv'])]}"/>
+                        <button class='button_order_icon' icon="fa-truck" help="Shipping Cost" name="action_add_shipping_cost" type="object" attrs="{'invisible':[('state','in',['scan','shipped','open_inv','cancel','merged','paid','draft_inv'])]}"/>
                     </div>
                     <group name="note_group" >
                         <group>
-                            <div colspan="4">
-                                <group string="Original Order" attrs="{'invisible':[('state','in',['draft','sent','received'])]}" col="2">
-                                    <field name="amount_untaxed" invisible="1" widget='monetary' options="{'currency_field': 'currency_id'}"/>
-                                    <field name="amount_without_discount" string="Subtotal" widget='monetary' options="{'currency_field': 'currency_id'}"/>
-                                    <field name="shipping_cost" string="Original Shipping Cost" widget='monetary' options="{'currency_field': 'currency_id'}"/>
-                                    <field name="amount_is_shipping_total" string="Shipping Cost"/>
-                                    <field name="amount_is_admin" string="Admin Fee" />
-                                    <field name="amount_discount" widget='monetary' options="{'currency_field': 'currency_id'}"/>
-                                    <field name="amount_tax" string='Tax' widget='monetary' options="{'currency_field': 'currency_id'}"/>
-                                    <div class="oe_inline o_td_label">
-                                        <label for="amount_total" string="Total" attrs="{'invisible':[('state','not in',['draft','sent','received'])]}"/>
-                                        <label for="amount_total" string="Order Total" attrs="{'invisible':[('state','in',['draft','sent','received'])]}"/>
-                                    </div>
-                                    <field name="amount_total" nolabel="1" widget='monetary' options="{'currency_field': 'currency_id'}"/>
-
-                                </group>
-                            </div>
-
-                            <field name="note" nolabel="1" placeholder="Terms and conditions..."/>
+                            <group string="Original Order" attrs="{'invisible':[('state','in',['draft','sent','received'])]}" col="2">
+                                <field name="amount_untaxed" invisible="1" widget='monetary' options="{'currency_field': 'currency_id'}"/>
+                                <field name="amount_without_discount" string="Subtotal" widget='monetary' options="{'currency_field': 'currency_id'}"/>
+                                <field name="shipping_cost" string="Original Shipping Cost" widget='monetary' options="{'currency_field': 'currency_id'}"/>
+                                <field name="amount_is_shipping_total" string="Shipping Cost"/>
+                                <field name="amount_is_admin" string="Admin Fee" />
+                                <field name="amount_discount" widget='monetary' options="{'currency_field': 'currency_id'}"/>
+                                <field name="amount_tax" string='Tax' widget='monetary' options="{'currency_field': 'currency_id'}"/>
+                                <div class="oe_inline o_td_label">
+                                    <label for="amount_total" string="Total" attrs="{'invisible':[('state','not in',['draft','sent','received'])]}"/>
+                                    <label for="amount_total" string="Order Total" attrs="{'invisible':[('state','in',['draft','sent','received'])]}"/>
+                                </div>
+                                <field name="amount_total" nolabel="1" widget='monetary' options="{'currency_field': 'currency_id'}"/>
+                            </group>
                         </group>
 
                         <group class="oe_subtotal_footer oe_right" attrs="{'invisible':[('state','not in',['draft','sent','received'])]}" colspan="2" name="orignal_sale_total">
@@ -225,6 +220,7 @@
                         </group>
                         <div class="oe_clear"/>
                     </group>
+                    <field name="note" nolabel="1" placeholder="Terms and conditions..."/>
                 </xpath>
             <button name="action_preview_sale_order" position="before">
                     <button name="action_get_backup_order" type="object" class="oe_stat_button" icon="fa-chevron-circle-right" attrs="{'invisible': [('count_backup_order', '=', 0)]}">
@@ -352,21 +348,21 @@
                                 <field name="payment_status" readonly="1" />
                             </group>
                             <group>
-                                <div class="col">
-                                    <div class="row">
-                                        <button string="Approve Payment" name="action_order_payment_approval" type="object" class="oe_highlight" groups="base.group_system,tzc_sales_customization_spt.group_sales_manager_spt,sales_team.group_sale_salesman" attrs="{'invisible':[('state','in',['paid','cancel','merged','draft','sent','received'])]}"/>
+                                <div class="col" style="width:193px;">
+                                    <div class="row" >
+                                        <button string="Approve Payment" name="action_order_payment_approval" type="object" class="oe_highlight" groups="base.group_system,tzc_sales_customization_spt.group_sales_manager_spt,sales_team.group_sale_salesman" attrs="{'invisible':[('state','in',['paid','cancel','merged','draft','sent','received'])]}" />
                                     </div>
+                                    <br/>
                                     <div class="row">
-                                        <button string="Generate a Payment Link" name="action_generate_payment_link" type="object" class="oe_highlight" groups="base.group_system,tzc_sales_customization_spt.group_sales_manager_spt,sales_team.group_sale_salesman" style="margin-top:10px;" attrs="{'invisible':[('state','in',['paid','cancel','merged','draft','sent','received'])]}"/>
+                                        <button string="Generate a Payment Link" name="action_generate_payment_link" type="object" class="oe_highlight" groups="base.group_system,tzc_sales_customization_spt.group_sales_manager_spt,sales_team.group_sale_salesman" attrs="{'invisible':[('state','in',['paid','cancel','merged','draft','sent','received'])]}"/>
                                     </div>
+                                    <br/>
                                     <div class="row">
-                                        <button string="Send Payment Link" name="send_payment_link_mail" type="object" class="oe_highlight" style="margin-top:10px;" attrs="{'invisible':[('state','in',['paid','cancel','merged','draft','sent','received'])]}"/>
+                                        <button string="Send Payment Link" name="send_payment_link_mail" type="object" class="oe_highlight" attrs="{'invisible':[('state','in',['paid','cancel','merged','draft','sent','received'])]}"/>
                                     </div>
                                 </div>
                             </group>
-                            <group>
                             <div class ='col-3'>
-                            <group string="Payments">
                                 <field name="payment_ids" nolabel="1" readonly="1">
                                     <tree decoration-success="state == 'approve'" decoration-warning="is_manual_paid == True" decoration-danger="state == 'decliend'" default_order="create_date">
                                         <field name="is_manual_paid" invisible="1"/>
@@ -376,9 +372,7 @@
                                         <field name="state" />
                                     </tree>
                                 </field>
-                            </group>
                             </div>
-                            </group>
                             
                         </group>
                     </page>
@@ -412,12 +406,12 @@
                             <group>
                                 <div class="o_row d-flex">
                                     <label for="estimate_shipping_cost" style="font-weight: bold;" attrs="{'invisible':[('state','in',('cancel','merged'))]}" />
-                                    <div class="col-1" >
+                                    <!-- <div class="col-1" > -->
 
-                                        <field name="estimate_shipping_cost" style = "margin-left: 71px;" widget="monetary" nolabel="1" readonly="1" force_save="1" attrs="{'invisible':[('state','in',('cancel','merged'))]}" />
-                                    </div>
+                                        <field name="estimate_shipping_cost" style = "margin-left: 14px;margin-right: 67px;" widget="monetary" nolabel="1" readonly="1" force_save="1" attrs="{'invisible':[('state','in',('cancel','merged'))]}" />
+                                    <!-- </div> -->
                                     <div class="col-10">
-                                        <button name="action_check_shipping_cost" type="object" style="font-size:20px; margin-left: 100px;" attrs="{'invisible':[('state','in',('cancel','merged'))]}">
+                                        <button name="action_check_shipping_cost" class="button_order_icon" type="object" attrs="{'invisible':[('state','in',('cancel','merged'))]}">
                                             <i class="fa fa-truck" title="Done" />
                                         </button>
                                     </div>
@@ -825,6 +819,22 @@
                 <attribute name="optional">show</attribute>
             </xpath>
 
+        </field>
+    </record>
+    <record id="view_sale_order_inherit_delivery_view" model="ir.ui.view">
+        <field name="name">view.sale.order.inherit.delivery.view</field>
+        <field name="model">sale.order</field>
+        <field name="inherit_id" ref="delivery.view_order_form_with_carrier"/>
+        <field name="arch" type="xml">
+            <xpath expr="//button[@name='action_open_delivery_wizard'][1]" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+            <xpath expr="//button[@name='action_open_delivery_wizard'][2]" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+            <xpath expr="//button[@name='action_open_delivery_wizard'][3]" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
         </field>
     </record>
     <record id="sale.menu_sale_invoicing" model="ir.ui.menu">

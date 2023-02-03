@@ -7,6 +7,9 @@
             <field name="model">stock.picking</field>
             <field name="inherit_id" ref="stock.view_picking_form"/>
             <field name="arch" type="xml">
+                <xpath expr="//button[@name='do_print_picking']" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </xpath>
                 <xpath expr="//button[@name='action_cancel']" position="replace">
                     <button name="action_product_qty_delivery_order_cancel" invisible="1" string="Cancel Without Delivery Qty" class="oe_highlight" attrs="{'invisible': [('state', '=','cancel')]}" groups="tzc_sales_customization_spt.group_cancel_picking_rule_spt" type="object" />
                 </xpath>
@@ -246,7 +249,7 @@
                 <attribute name="invisible">1</attribute>
             </xpath>
             <xpath expr="//field[@name='owner_id']" position="after">
-                <field name="shipping_id" attrs="{'invisible':[('state','in',('cancel','merged'))],'readonly':[('state','in',['done','cancel'])]}" widget="selection"/>
+                <field name="shipping_id" attrs="{'invisible':[('state','in',['cancel','merged'])],'readonly':[('state','in',['done','cancel'])]}" widget="selection"/>
                 <field name="provider" invisible="1"/>
             </xpath>
 
@@ -384,67 +387,67 @@
                 <field name="fright" attrs="{'invisible':[('is_ups','=',False)]}"/>
             </xpath>
             <xpath expr="//group[@name='carrier_data']" position="inside">
+                <label for="shipping_weight" string="Weight for shipping"/>
+                <div>
+                    <field name="shipping_weight" class="oe_inline"/>
+                    <field name="weight_uom_name" nolabel="1" class="oe_inline" style="margin-left:5px"/>
+                </div>
                 <label for="weight_of_cases" />
                 <div>
-                    <field name="weight_of_cases" />
-                        kg
+                    <field name="weight_of_cases" class="oe_inline"/> kg
                 </div>
                 <label for="weight_total_kg" />
                 <div>
-                    <field name="weight_total_kg" />
-                        kg
+                    <field name="weight_total_kg" class="oe_inline"/> kg
                 </div>
                 <label for="actual_weight" />
                 <div>
-                    <field name="actual_weight" readonly="1" force_save="1"/>
-                        kg
+                    <field name="actual_weight" readonly="1" force_save="1" class="oe_inline"/> kg
                 </div>
             </xpath>
             <xpath expr="//group[@name='other_infos']" position="after">
-                <group>
-                    <field name="file_name" invisible="1"/>
-                    <field name="is_provider_pick_up" invisible="1"/>
-                    <div>
-                        <div class="o_row d-flex">
-                            <label for="calulate_shipping_cost" style="font-weight: bold;" attrs="{'invisible':[('state','in',('cancel','merged'))]}"/>
-                            <div class="col-12">
-                                <field name="calulate_shipping_cost" widget="monetary" force_save="1" attrs="{'invisible':[('state','in',('cancel','merged'))],'readonly':[('state','in',['done','cancel','assigned'])]}"/>
-                            </div>
-                        </div>
-                        <div>
-                            <button name="add_shipping_cost" type="object" attrs="{'invisible':[('state','in',('done','cancel','merged'))]}">
-                                <i class="fa fa-arrow-right mr-1" />
-                                    Add Shipping Cost
-                            </button>
-                            <button name="get_rate" type="object" attrs="{'invisible':[('state','in',('done','cancel','merged'))]}">
-                                <i class="fa fa-arrow-right mr-1" />
-                                    Get Rate
-                            </button>
-                        </div>
-                        <div class="o_row d-flex">
-                            <label for="shipping_label" style="font-weight:bold;"/>
-                            <div class="col-12">
-                                <field name="shipping_label" readonly="1" filename="file_name"/>
-                            </div>
-                        </div>
-                        <div>
-                            <button name="get_label" type="object" attrs="{'invisible':[('state','in',('done','cancel','merged'))]}">
-                                <i class="fa fa-arrow-right mr-1" />
-                                    Get Label
-                            </button>
-                        </div>
-                        <div class="o_row d-flex">
-                            <label for="tracking_number_spt" style="font-weight:bold;" attrs="{'invisible':['|',('state','in',('cancel','merged')),('is_provider_pick_up','=',True)]}"/>
-                            <div class="col-12">
-                                <field name="tracking_number_spt" attrs="{'invisible':['|',('state','in',('cancel','merged')),('is_provider_pick_up','=',True)],'readonly':['|',('state','in',['done','cancel'])]}"/>
-                            </div>
+                <field name="file_name" invisible="1"/>
+                <field name="is_provider_pick_up" invisible="1"/>
+                <div>
+                    <div class="o_row d-flex">
+                        <label for="calulate_shipping_cost" style="font-weight: bold;" attrs="{'invisible':[('state','in',('cancel','merged'))]}"/>
+                        <div class="col-12">
+                            <field name="calulate_shipping_cost" widget="monetary" force_save="1" attrs="{'invisible':[('state','in',('cancel','merged'))],'readonly':[('state','in',['done','cancel','assigned'])]}"/>
                         </div>
                     </div>
-                </group>
-                <div class="d-block mt-4" attrs="{'invisible':[('is_fedex','=',False)]}">
+                    <div>
+                        <button name="add_shipping_cost" type="object" attrs="{'invisible':[('state','in',('done','cancel','merged'))]}">
+                            <i class="fa fa-arrow-right mr-1" />
+                                Add Shipping Cost
+                        </button>
+                        <button name="get_rate" type="object" attrs="{'invisible':[('state','in',('done','cancel','merged'))]}">
+                            <i class="fa fa-arrow-right mr-1" />
+                                Get Rate
+                        </button>
+                    </div>
+                    <div class="o_row d-flex">
+                        <label for="shipping_label" style="font-weight:bold;"/>
+                        <div class="col-12">
+                            <field name="shipping_label" readonly="1" filename="file_name"/>
+                        </div>
+                    </div>
+                    <div>
+                        <button name="get_label" type="object" attrs="{'invisible':[('state','in',('done','cancel','merged'))]}">
+                            <i class="fa fa-arrow-right mr-1" />
+                                Get Label
+                        </button>
+                    </div>
+                    <div class="o_row d-flex">
+                        <label for="tracking_number_spt" style="font-weight:bold;" attrs="{'invisible':['|',('state','in',('cancel','merged')),('is_provider_pick_up','=',True)]}"/>
+                        <div class="col-12">
+                            <field name="tracking_number_spt" attrs="{'invisible':['|',('state','in',('cancel','merged')),('is_provider_pick_up','=',True)],'readonly':[('state','in',['done','cancel'])]}"/>
+                        </div>
+                    </div>
+                </div>
+                <div class="d-block mt-4 col-lg-12" attrs="{'invisible':[('is_fedex','=',False)]}">
                     <h1 style="color: #666666;">Fedex Shipping Details</h1>
                 </div>
-                <div class="d-block mt-4" attrs="{'invisible':[('is_ups','=',False)]}">
+                <div class="d-block mt-4 col-lg-12" attrs="{'invisible':[('is_ups','=',False)]}">
                     <h1 style="color: #666666;">UPS Shipping Details</h1>
                 </div>
                 <group string="Recipient Information" attrs="{'invisible':[('is_fedex','=',False),('is_ups','=',False)]}">
@@ -476,9 +479,9 @@
                         <field name="kits_country_id" placeholder="Country" class="o_address_country" readonly="1" attrs="{'readonly':[('state','in',['done','cancel'])]}" options="{'no_open': True,'no_create': True, 'no_create_edit':True}"/>
                     </div>
                 </group>
-                <div class="d-block mt-4" attrs="{'invisible':[('is_ups','=',False)]}">
+                <div class="d-block mt-4 col-lg-12" attrs="{'invisible':[('is_ups','=',False)]}">
                     <div role="alert" class="alert alert-info text-left" style="margin-left:10px; margin-right:2px; font-size:19px;">
-                            Note : If your order weight is smaller than 68.04 kg (150 lb), It consider as a small shipment.
+                        Note : If your order weight is smaller than 68.04 kg (150 lb), It consider as a small shipment.
                     </div>
                 </div>
                 <group string="Package and shipment details" attrs="{'invisible':[('is_ups','=',False),('is_fedex','=',False)]}">
@@ -535,10 +538,10 @@
                 <attribute name="string">Shipping Details</attribute>
                 <attribute name="attrs">{'readonly':[('state','in',['done','cancel'])]}</attribute>
             </xpath>
-            <xpath expr="//field[@name='carrier_tracking_ref']" position="attributes">
+            <xpath expr="//label[@for='carrier_tracking_ref']" position="attributes">
                 <attribute name="invisible">1</attribute>
             </xpath>
-            <xpath expr="//label[@for='carrier_tracking_ref']" position="attributes">
+            <xpath expr="//div[@name='tracking']" position="attributes">
                 <attribute name="invisible">1</attribute>
             </xpath>
             <xpath expr="//button[@name='cancel_shipment']" position="attributes">

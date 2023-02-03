@@ -8,21 +8,34 @@
             <field name="arch" type="xml">
                 <xpath expr="//notebook" position="inside">
                     <page string="Excel Token">
-                        <!-- <group>
-                            <group> -->
-                                <div class="d-flex">
-                                    <label for="excel_token" style="font-weight: bold;"/>
-                                    <div>
-                                        <field name="excel_token"/>
-                                    </div>
-                                    <div class="col-2">
-                                        <button name="action_token_generator" type="object" class="btn-link" confirm="Are you sure you want to change Excel Token ?">
-                                            <i class="fa fa-fw fa-refresh" title="Refresh"/>
-                                        </button>
-                                    </div>
-                                </div>
-                            <!-- </group>
-                        </group> -->
+                        <div class="d-flex">
+                            <label for="excel_token" style="font-weight: bold;"/>
+                            <div>
+                                <field name="excel_token"/>
+                            </div>
+                            <div class="col-2">
+                                <button name="action_token_generator" type="object" class="btn-link" confirm="Are you sure you want to change Excel Token ?">
+                                    <i class="fa fa-fw fa-refresh" title="Refresh"/>
+                                </button>
+                            </div>
+                        </div>
+                    </page>
+                    <page string="Bambora Payment Acquirer" groups="base.group_system">
+                        <group>
+                            <group string="Bambora Account Details">
+                                <field name="account_type" widget="radio"/>
+                                
+                                <field name="sand_box_merchant_id_usd" attrs="{'invisible':[('account_type','!=','sand_box')]}"/>
+                                <field name="sand_box_hash_value_usd" attrs="{'invisible':[('account_type','!=','sand_box')]}"/>
+                                <field name="sand_box_merchant_id_cad" attrs="{'invisible':[('account_type','!=','sand_box')]}"/>
+                                <field name="sand_box_hash_value_cad" attrs="{'invisible':[('account_type','!=','sand_box')]}"/>
+
+                                <field name="production_merchant_id_usd" attrs="{'invisible':[('account_type','!=','production')]}"/>
+                                <field name="production_hash_value_usd" attrs="{'invisible':[('account_type','!=','production')]}"/>
+                                <field name="production_merchant_id_cad" attrs="{'invisible':[('account_type','!=','production')]}"/>
+                                <field name="production_hash_value_cad" attrs="{'invisible':[('account_type','!=','production')]}"/>
+                            </group>
+                        </group>
                     </page>
                 </xpath>
             </field>

@@ -7,22 +7,91 @@ from odoo.addons.auth_signup.models.res_users import SignupError
 from odoo.addons.web.controllers.main import ensure_db, Home
 from odoo.addons.base_setup.controllers.main import BaseSetup
 from odoo.exceptions import UserError
+from odoo.addons.web.controllers.main import ReportController
+import datetime
+import json
 
 _logger = logging.getLogger(__name__)
 
+class kits_ReportController(http.Controller):
+    @http.route(['/bambora/approved','/bambora/declined'], type='http', auth='public', website=True, method=['GET', 'POST'], csrf=False)
+    def get_payment_status(self,**kw):
+        payment_status = False
+        order_number = False
+        paid_amount = 0.0 
+        amount = 0.0
+        transaction_id = False
 
-# class AuthSignupHome(Home):
-#     def do_signup(self, qcontext):
-#         res = super(AuthSignupHome,self).do_signup(qcontext)
-#         if qcontext and 'login' in qcontext.keys():
-#             user_id = request.env['res.users'].sudo().search([('login','=',qcontext['login'])],limit=1)
-#             ip_address = request.httprequest.environ['REMOTE_ADDR']
-#             if user_id:
-#                 user_id.sudo().write({
-#                    'signup_user_ip': str(ip_address),
-#                 })
-#         return res
+        for split_url in request.httprequest.url.split('&'):
+            if split_url.split('=')[0] == 'trnOrderNumber':
+                order_number = split_url.split('=')[1]
+            elif split_url.split('=')[0] == 'trnAmount':
+                paid_amount = split_url.split('=')[1]
+                amount = split_url.split('=')[1] # for email template
+            # elif split_url.split('=')[0] == 'trnDate':
+            #     str_trn_date = split_url.split('=')[1]
+            #     transaction_date = str_trn_date.replace("%2F",'/').replace("%3A",':').replace("+",' ')
+            elif split_url.split('=')[0] == 'trnId':
+                transaction_id = split_url.split('=')[1]
+            elif '?' in split_url and 'trnApproved' in split_url.split('?')[1]:
+                if split_url.split('?')[1].split('=')[1] == '1':
+                    payment_status = 'approved'
+                else:
+                    payment_status = 'declined'
 
+        order_id = request.env['sale.order'].sudo().search([('name','like',order_number)])
+        invoice_id = order_id.invoice_ids.filtered(lambda x:x.state != 'cancel')
+        payment_obj = request.env['order.payment'].sudo()
+        same_transaction_line_id = request.env['order.payment'].sudo().search([('transaction_id','=',transaction_id)])
+        if order_number and payment_status:
+            status = 'approve' if payment_status == 'approved' else 'decliend'
+            if transaction_id and not same_transaction_line_id:
+                payment_obj.create({'order_id':order_id.id,'amount':float(paid_amount),'state':status,'mode_of_payment':'bambora','is_manual_paid':False,'transaction_id':transaction_id})
+
+        if order_number and payment_status == 'approved':
+            if not same_transaction_line_id:
+                if order_id and order_id.state not in ['draft','sent','recived']:
+                    total_paid_amount = sum(payment_obj.search([('order_id','=',order_id.id),('state','=','approve')]).mapped('amount'))
+                    # paid_amount = paid_amount if not total_paid_amount else total_paid_amount
+                    order_id.amount_paid = paid_amount
+                    if order_id.picked_qty_order_total == float(paid_amount):
+                        order_id.is_paid = True
+
+                    order_id.payment_link = False
+
+                    if total_paid_amount < order_id.picked_qty_order_total:
+                        order_id.payment_status = 'partial'
+                    elif total_paid_amount == order_id.picked_qty_order_total:
+                        order_id.payment_status = 'full'
+                    elif total_paid_amount > order_id.picked_qty_order_total:
+                        order_id.payment_status = 'over'
+
+                    template_id = request.env.ref('tzc_sales_customization_spt.mail_template_for_approve_payment')
+                    template_id = template_id.with_context(order = order_id.name,date=datetime.datetime.now().strftime("%d-%m-%Y %H:%M:%S"),amount = order_id.currency_id.name + ' ' + order_id.currency_id.symbol + str(amount))
+                    template_id.sudo().send_mail(order_id.id,force_send=True,email_layout_xmlid="mail.mail_notification_light")
+                    # email_layout_xmlid
+
+                if order_id and invoice_id and invoice_id.commission_line_ids:
+                    if order_id.payment_status in ['full','over']:
+                        invoice_id.commission_line_ids.write({'state':'paid'})
+                    else:
+                        invoice_id.commission_line_ids.write({'state':'draft'})
+        else:
+            template_id = request.env.ref('tzc_sales_customization_spt.mail_template_for_decline_payment')
+            template_id = template_id.with_context(order = order_id.name,date=datetime.datetime.now().strftime("%d-%m-%Y %H:%M:%S"),amount = order_id.currency_id.name + ' ' + order_id.currency_id.symbol + str(amount))
+            template_id.sudo().send_mail(order_id.id,force_send=True,email_layout_xmlid="mail.mail_notification_light")
+
+        # transaction_date = datetime.datetime.now().strftime("%m/%d/%y %H:%M:%S %2p") + ' (UTC)'
+        # values = {
+        #     'order': order_id if order_id else False,
+        #     'order_number':order_number if order_number else False,
+        #     'paid_amount':round(float(paid_amount),2) if paid_amount else False,
+        #     'transaction_date':transaction_date if transaction_date else False,
+        #     'payment_status':payment_status if payment_status else False,
+        #     'transaction_id':transaction_id if transaction_id else False,
+        #     'trnurl':request.httprequest.url,
+        # }
+        # return request.render("tzc_website.thankyou_page",values)
 
 class Website_brands(http.Controller):
     @http.route(['/product-export'], type="http", auth="public", website=True, sitemap=False)
@@ -92,3 +161,15 @@ class Website_brands(http.Controller):
             "list_of_files": request._cr.fetchall(),
         }
         return request.render("tzc_sales_customization_spt.template_export_product", data)
+
+# class AuthSignupHome(Home):
+#     def do_signup(self, qcontext):
+#         res = super(AuthSignupHome,self).do_signup(qcontext)
+#         if qcontext and 'login' in qcontext.keys():
+#             user_id = request.env['res.users'].sudo().search([('login','=',qcontext['login'])],limit=1)
+#             ip_address = request.httprequest.environ['REMOTE_ADDR']
+#             if user_id:
+#                 user_id.sudo().write({
+#                    'signup_user_ip': str(ip_address),
+#                 })
+#         return res

@@ -112,6 +112,13 @@
                 <xpath expr="//notebook/page[@name='internal_notes']/group" position="attributes">
                     <attribute name="invisible">1</attribute>
                 </xpath>
+                <xpath expr="//notebook/page[@name='accounting']/group" position="inside">
+                    <group name="accounting_entries">
+                        <field invisible="1" name="currency_id" can_create="true" can_write="true" modifiers="{'invisible':true,'readonly':true}"/>
+                        <!-- <field name="property_account_receivable_id" can_create="true" can_write="true" modifiers="{'invisible':[['access_field_flag','=',false]],'required':true}"/>
+                        <field name="property_account_payable_id" can_create="true" can_write="true" modifiers="{'invisible':[['access_field_flag','=',false]],'required':true}"/> -->
+                    </group>
+                </xpath>
                 <xpath expr="//notebook" position="inside">
                     <page name="mail_verification_details" string="Mail Verification Details">
                         <group>
@@ -167,6 +174,7 @@
                 </xpath>
             </field>
         </record>
+
         <record id="res_partner_short_inherit_srearch_view_spt" model="ir.ui.view">
             <field name="name">res.partner.short.inherit.srearch.view.spt</field>
             <field name="model">res.partner</field>

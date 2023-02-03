@@ -95,3 +95,4 @@ access_update_qty_log,access.update.qty.log,model_update_qty_log,,1,1,1,1
 access_login_user_detail,login_user_detail_login_detail,model_login_detail,,1,1,1,1
 access_remove_done_quantity_spt,access.remove.done.quantity.spt,model_remove_done_quantity_spt,,1,1,1,1
 access_remove_stock_done_qty_line_spt,access.remove.stock.done.qty.line.spt,model_remove_stock_done_qty_line_spt,,1,1,1,1
+access_kits_update_picking_wizard,access.kits.update.picking.wizard,model_kits_update_picking_wizard,,1,1,1,1

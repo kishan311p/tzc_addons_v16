@@ -75,7 +75,6 @@
                 action = records.action_remove_on_sale()
             </field>
         </record>
-
         <record model="ir.actions.server" id="action_product_published_spt">
             <field name="groups_id" eval="[(4, ref('base.group_system'))]"/>
             <field name="name">Published</field>
@@ -202,7 +201,6 @@
             </field>
             <field name="sequence">20</field>
         </record> -->
-
         <record id="ir_actions_server_follow_up_salesperson" model="ir.actions.server">
             <field name="name">Send To Salesperson</field>
             <field name="model_id" ref="sale.model_sale_order"/>
@@ -242,7 +240,6 @@
             if records:
                 action = records.action_grant_portal_access_spt()</field>
         </record>
-
         <record id="portal.partner_wizard_action_create_and_open" model="ir.actions.server">
             <field name="binding_model_id" eval='False'/>
         </record>
@@ -331,7 +328,6 @@
                     action = records.action_contact_mass_mailing()
             </field>
         </record>
-
         <record id="action_res_partner_delete" model="ir.actions.server">
             <field name="groups_id" eval="[(4, ref('base.group_system')),(4, ref('tzc_sales_customization_spt.group_sales_manager_spt'))]"/>
             <field name="name">Delete</field>
@@ -364,7 +360,7 @@
             <field name="binding_model_id" eval="False" />
         </record>
 
-        <!-- <record id="action_unarchive_users" model="ir.actions.server">
+        <record id="action_unarchive_users" model="ir.actions.server">
             <field name="name">Unarchive</field>
             <field name="model_id" ref="model_res_users"/>
             <field name="binding_model_id" ref="model_res_users"/>
@@ -373,7 +369,7 @@
             if records:
                 action = records.action_unarchive_uers()
             </field>
-        </record> -->
+        </record>
 
         <record id="action_res_user_delete" model="ir.actions.server">
             <field name="groups_id" eval="[(4, ref('base.group_system')),(4, ref('tzc_sales_customization_spt.group_sales_manager_spt'))]"/>
@@ -384,7 +380,7 @@
             <field name="code">action = records.action_delete_user()</field>
         </record>
 
-        <!-- <record model="ir.actions.server" id="account_followup.action_account_reports_customer_statements_do_followup">
+        <record model="ir.actions.server" id="account_followup.action_account_reports_customer_statements_do_followup">
             <field name="name">Process follow-ups</field>
             <field name="model_id" ref="base.model_res_partner"/>
             <field name="groups_id" eval="[(4, ref('base.group_system'))]"/>
@@ -392,10 +388,9 @@
             <field name="state">code</field>
             <field name="code">
                 if records:
-                    action = records.action_manually_process_automatic_followups()
+                    action = records.execute_followup()
             </field>
-        </record> -->
-
+        </record>
         <record id="model_res_user_action_sent_mail_spt" model="ir.actions.server">
             <field name="groups_id" eval="[(4, ref('base.group_system'))]"/>
             <field name="name">Send Bulk Mails </field>

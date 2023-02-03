@@ -7,15 +7,13 @@
             <field name="arch" type="xml">
                 <form>
                     <sheet>
-                        <group>
-                            <div role="alert" class="alert alert-info" style="font-size:15px;">
-                                <field name="kits_message" readonly="1"/>       
-                            </div>
-                        </group>
+                        <div role="alert" class="alert alert-info" style="font-size:15px;">
+                            <field name="kits_message" readonly="1" />
+                        </div>
                     </sheet>
                     <footer>
-                        <button string="Yes" name="action_confirm" type="object" class="oe_highlight"/>
-                        <button string="Cancel" type="object" special="cancel"/>
+                        <button string="Yes" name="action_confirm" type="object" class="oe_highlight" />
+                        <button string="Cancel" type="object" special="cancel" />
                     </footer>
                 </form>
             </field>

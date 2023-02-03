@@ -11,3 +11,4 @@ class order_payment(models.Model):
     is_manual_paid = fields.Boolean('Manually Paid')
     mode_of_payment = fields.Selection([('cash','Cash'),('cheque','Cheque'),('bank','Bank Transfer'),('wire','Wire Transfer'),('bambora','Bambora Payment')],'Payment Method')
     payment_description = fields.Text('Description')
+    transaction_id = fields.Char('Transaction ID')

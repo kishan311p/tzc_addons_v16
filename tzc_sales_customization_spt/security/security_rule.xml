@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data noupdate="0">
-
         <!-- Categories -->
         <record model="ir.module.category" id="module_category_partner_access">
             <field name="name">Partner Access</field>
@@ -20,7 +19,7 @@
         <!-- B2B Groups -->
         <record id="group_sales_manager_spt" model="res.groups">
             <field name="name">User: Sales Manager</field>
-            <field name="category_id" ref="base.module_category_sales_sales"/>
+            <field name="category_id" ref="base.module_category_sales_sales" />
             <field name="implied_ids" eval="[(4, ref('sales_team.group_sale_salesman'))]" />
             <field name="users" eval="[(4, ref('base.user_root')), (4, ref('base.user_admin'))]" />
         </record>
@@ -35,6 +34,11 @@
         <record id="group_cancel_sale_order_rule_spt" model="res.groups">
             <field name="name">Allow Sale Order Cancel</field>
         </record>
+        <record id="group_revert_order_to_quotation_spt" model="res.groups">
+            <field name="name">Revert order to Quotation</field>
+            <field name="category_id" ref="base.module_category_usability"/>
+            <field name="users" eval="[(4, ref('base.user_root')), (4, ref('base.user_admin'))]"/>
+        </record>
         <record id="group_cancel_picking_rule_spt" model="res.groups">
             <field name="name">Allow Delivery Cancel</field>
         </record>
@@ -48,6 +52,9 @@
             <field name="name">User</field>
             <field name="category_id" ref="backup_category" />
         </record>
+        <record id="account.group_account_invoice" model="res.groups">
+            <field name="rule_groups" eval="[(3, ref('account.account_move_see_all'))]"/>
+        </record>
         <record id="sales_team.group_sale_salesman_all_leads" model="res.groups">
             <field name="name">User: All Documents</field>
             <field name="category_id" ref="base.module_category_sales_sales"/>
@@ -58,22 +65,35 @@
             <field name="name">Access of Marketing User</field>
             <field name="implied_ids" eval="[(4, ref('tzc_sales_customization_spt.group_partner_access_manager')),(4, ref('marketing_automation.group_marketing_automation_user')),(4, ref('account.group_account_invoice')),(4, ref('sales_team.group_sale_salesman'))]"/>
         </record>
-        <record id="group_revert_order_to_quotation_spt" model="res.groups">
-            <field name="name">Revert order to Quotation</field>
-            <field name="category_id" ref="base.module_category_usability"/>
-            <field name="users" eval="[(4, ref('base.user_root')), (4, ref('base.user_admin'))]"/>
-        </record>
 
         <!-- B2C Groups -->
         <record id="kits_multi_website_group" model="res.groups">
             <field name="name">B2C: Administrator</field>
             <field name="users" eval="[(4, ref('base.user_root')), (4, ref('base.user_admin'))]"/>
         </record>
-
-        <!-- Account Move -->
-        <record id="account.group_account_invoice" model="res.groups">
-            <field name="rule_groups" eval="[(3, ref('account.account_move_see_all'))]"/>
+        <record id="group_cancel_picking_rule_spt" model="res.groups">
+            <field name="name">Allow Delivery Cancel</field>
         </record>
 
+        <record id="cancel_picking_rule_spt" model="ir.rule">
+            <field name="name">Allow Delivery Cancel</field>
+            <field name="model_id" ref="model_stock_picking"/>
+            <field name="global" eval="False"/>
+
+            <field name="groups" eval="[(4, ref('group_cancel_picking_rule_spt'))]"/>
+
+        </record>
+        <record id="group_cancel_sale_order_rule_spt" model="res.groups">
+            <field name="name">Allow Sale Order Cancel</field>
+            <!-- <field name="category_id" ref="base.module_category_usability"/> -->
+
+        </record>
+        <record id="group_revert_order_to_quotation_spt" model="res.groups">
+            <field name="name">Revert order to Quotation</field>
+            <field name="category_id" ref="base.module_category_usability"/>
+            <field name="users" eval="[(4, ref('base.user_root')), (4, ref('base.user_admin'))]"/>
+        </record>
     </data>
+
+
 </odoo>

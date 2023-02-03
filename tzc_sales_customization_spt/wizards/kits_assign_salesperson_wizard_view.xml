@@ -25,17 +25,17 @@
                                 <field name="hide_button" invisible="1" />
                                 <field name="new_manager_id" attrs="{'invisible':[('hide_button','=',True)],'readonly':[('readonly_new_manager','=',True)]}" options="{'no_create':True,'no_open':True}" />
                             </group>
-                        </group>
-                        <group>
-                            <field name="partner_ids" readonly="1" options="{'no_create': True, 'no_create_edit' : True}" attrs="{'invisible':[('hide_button','=',False)]}">
-                                <tree>
-                                    <field name="internal_id"/>
-                                    <field name="contact_name_spt"/>
-                                    <field name="email"/>
-                                    <field name="user_id"/>
-                                    <field name="customer_type"/>
-                                </tree>
-                            </field>
+                            <group>
+                                <field name="partner_ids" readonly="1" options="{'no_create': True, 'no_create_edit' : True}" attrs="{'invisible':[('hide_button','=',False)]}">
+                                    <tree>
+                                        <field name="internal_id"/>
+                                        <field name="contact_name_spt"/>
+                                        <field name="email"/>
+                                        <field name="user_id"/>
+                                        <field name="customer_type"/>
+                                    </tree>
+                                </field>
+                            </group>
                         </group>
                     </sheet>
                     <footer>
