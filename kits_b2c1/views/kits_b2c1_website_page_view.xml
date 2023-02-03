@@ -42,7 +42,7 @@
                                 </group>
                                 <group>
                                     <group>
-                                        <field name="eyeglass_banner_image_1" height="75px" options="{'zoom': true,'preview_image':'eyeglass_banner_image_1', 'size': [75,75]}"/>
+                                        <field name="eyeglass_banner_image_1" widget="image" options="{'zoom': true,'preview_image':'eyeglass_banner_image_1', 'size': [75,75]}"/>
                                         <field name="eyeglass_banner_image_1_url" />
                                         <field name="eyeglass_banner_image_gender_1" />
                                     </group>

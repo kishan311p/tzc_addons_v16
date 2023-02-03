@@ -50,7 +50,7 @@
         </record>
         <record id="shoppage_banner_1" model="kits.multi.website.shoppage.banner">
             <field name="image_public_url">https://cdn.teameto.com/data/B2C1/shoppage-banner-images/new-eyeglass.png</field>
-            <field name="mobile_image_public_url">	https://cdn.teameto.com/data/B2C1/shoppage-banner-images/mobile-shoppage-banner-1.jpeg</field>
+            <field name="mobile_image_public_url">https://cdn.teameto.com/data/B2C1/shoppage-banner-images/mobile-shoppage-banner-1.jpeg</field>
             <field name="redirect_url">https://www.eto.keypress.in/shop	</field>
             <field name="website_id" ref="kits_b2c1.website_kits_b2c1" />
         </record>
@@ -62,12 +62,6 @@
         <record id="faq_2" model="kits.key.value.model">
             <field name="name">What do I need to order?</field>
             <field name="value">Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. 3 wolf moon officia aute, non cupidatat skateboard dolor brunch. Food truck quinoa nesciunt laborum eiusmod. Brunch 3 wolf moon tempor, sunt aliqua put a bird on it squid single-origin coffee nulla assumenda shoreditch et. Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt sapiente ea proident. Ad vegan excepteur butcher vice lomo. Leggings occaecat craft beer farm-to-table, raw denim aesthetic synth nesciunt you probably haven't heard of them accusamus labore sustainable VHS.</field>
-            <field name="website_id" ref="kits_b2c1.website_kits_b2c1" />
-        </record>
-
-        <record id="kits_b2bc1_website_page_home_page" model="kits.b2c1.website.page">
-            <field name="name">Home Page</field>
-            <field name="page_type">homepage</field>
             <field name="website_id" ref="kits_b2c1.website_kits_b2c1" />
         </record>
         <record id="kits_b2bc1_case_product_category" model="kits.b2c1.menu.category">
@@ -86,9 +80,100 @@
             <field name="name">Sunglass</field>
             <field name="sequence">11</field>
         </record>
+        <record id="kits_b2bc1_website_page_home_page" model="kits.b2c1.website.page">
+            <field name="name">Home Page</field>
+            <field name="page_type">homepage</field>
+            <field name="website_id" ref="kits_b2c1.website_kits_b2c1" />
+            <field name="eyeglass_banner_image_1_url">https://cdn.teameto.com/data/B2C1/eyeglass-banner-images/men-eyeglasses-banner.jpeg</field>
+            <field name="eyeglass_banner_image_2_url">https://cdn.teameto.com/data/B2C1/eyeglass-banner-images/women-eyeglasses-banner.jpeg</field>
+            <field name="eyeglass_banner_image_1_public_url">https://cdn.teameto.com/data/B2C1/eyeglass-banner-images/men-eyeglasses-banner.jpeg</field>
+            <field name="eyeglass_banner_image_category" ref="kits_b2bc1_eyeglass_product_category"/>
+            <field name="eyeglass_banner_image_gender_1">male</field>
+            <field name="eyeglass_banner_image_gender_2">female</field>
+            <field name="eyeglass_banner_image_2_public_url">https://cdn.teameto.com/data/B2C1/eyeglass-banner-images/women-eyeglasses-banner.jpeg</field>
+            <field name="image_1_url">https://staging.onespex.com/shop</field>
+            <field name="image_2_url">https://staging.onespex.com/shop</field>
+            <field name="image_1_public_url">https://cdn.teameto.com/data/B2C1/images/image-1.jpeg</field>
+            <field name="image_2_public_url">https://cdn.teameto.com/data/B2C1/images/image-2.jpeg</field>
+            <field name="sunglass_banner_image_1_public_url">https://cdn.teameto.com/data/B2C1/sunglass-banner-images/men-sunglasses-banner.jpeg</field>
+            <field name="sunglass_banner_image_2_public_url">https://cdn.teameto.com/data/B2C1/sunglass-banner-images/women-sunglasses-banner.jpeg</field>
+            <field name="sunglass_banner_image_category" ref="kits_b2bc1_sunglass_product_category"/>
+            <field name="sunglass_banner_image_gender_1">male</field>
+            <field name="sunglass_banner_image_gender_2">female</field>
+            <field name="sunglass_banner_image_1_url">https://staging.onespex.com/shop?gender=male&amp;type=2</field>
+            <field name="sunglass_banner_image_2_url">https://staging.onespex.com/shop?gender=female&amp;type=2</field>
+            <field name="guide_image_1_url">https://staging.onespex.com/size-guide</field>
+            <field name="guide_image_2_url">https://staging.onespex.com/Prescription-guide</field>
+            <field name="guide_image_3_url">https://staging.onespex.com/face-guide</field>
+            <field name="guide_image_1_name">Size &amp; Fit Guide</field>
+            <field name="guide_image_2_name">Prescription Guide</field>
+            <field name="guide_image_3_name">Frame &amp; Face Shape Guide</field>
+            <field name="guide_image_1_public_url">https://cdn.teameto.com/data/B2C1/guide-images/face-guide.jpeg</field>
+            <field name="guide_image_2_public_url">https://cdn.teameto.com/data/B2C1/guide-images/face-shape-guide.jpeg</field>
+            <field name="guide_image_3_public_url">https://cdn.teameto.com/data/B2C1/guide-images/prescription-guide.jpeg</field>
+            <field name="guide_section_name">Stuck Somewhere? Try Our Guides!</field>
+            <field name="guide_section_description">Peek into our quick guides that'll make you a 'Pro' at your purchase every time!</field>
+            <field name="ad_image_1_public_url">https://cdn.teameto.com/data/B2C1/poster-images/poster-image-1.jpeg</field>
+            <field name="ad_image_2_public_url">https://cdn.teameto.com/data/B2C1/poster-images/poster-image-2.jpeg</field>
+            <field name="ad_image_1_url">https://staging.onespex.com/shop</field>
+            <field name="ad_image_2_url">https://staging.onespex.com/shop</field>
+            <field name="offer_main_image_url">https://staging.onespex.com/shop</field>
+            <field name="offer_image_1_url">https://staging.onespex.com/shop</field>
+            <field name="offer_image_2_url">https://staging.onespex.com/shop</field>
+            <field name="offer_image_3_url">https://staging.onespex.com/shop</field>
+            <field name="offer_main_image_public_url">https://staging.onespex.com/shop</field>
+            <field name="offer_image_1_public_url">https://cdn.teameto.com/data/B2C1/offer-images/offer-image-2.jpeg</field>
+            <field name="offer_image_2_public_url">https://cdn.teameto.com/data/B2C1/offer-images/offer-image-3.jpeg</field>
+            <field name="offer_image_3_public_url">https://cdn.teameto.com/data/B2C1/offer-images/offer-image-4.jpeg</field>
+            <field name="aspect_image_1_public_url">https://cdn.teameto.com/data/B2C1/aspect-images/ftr-made-in-india.jpeg</field>
+            <field name="aspect_image_2_public_url">https://cdn.teameto.com/data/B2C1/aspect-images/ftr-best-quality.jpeg</field>
+            <field name="aspect_image_3_public_url">https://cdn.teameto.com/data/B2C1/aspect-images/ftr-faster-delivery.jpeg</field>
+            <field name="aspect_image_4_public_url">https://cdn.teameto.com/data/B2C1/aspect-images/ftr-easy-returns.jpeg</field>
+            <field name="aspect_image_5_public_url">https://cdn.teameto.com/data/B2C1/aspect-images/ftr-secure-payment.jpeg
+ </field>
+            <field name="aspect_image_1_name">100% MADE IN INDIA</field>
+            <field name="aspect_image_2_name">HIGH QUALITY PRODUCTS</field>
+            <field name="aspect_image_3_name">FAST TRACK DELIVERY</field>
+            <field name="aspect_image_4_name">14-DAY EASY RETURNS</field>
+            <field name="aspect_image_5_name">100% SECURE PAYMENT</field>
+            <field name="aspect_image_1_url">https://staging.onespex.com/shop</field>
+            <field name="aspect_image_2_url">https://staging.onespex.com/shop</field>
+            <field name="aspect_image_3_url">https://staging.onespex.com/shop</field>
+            <field name="aspect_image_4_url">https://staging.onespex.com/shop</field>
+            <field name="aspect_image_5_url">https://staging.onespex.com/shop</field>
+            <field name="lens_feature_image_1_url">https://staging.onespex.com/shop</field>
+            <field name="lens_feature_image_2_url">https://staging.onespex.com/shop</field>
+            <field name="lens_feature_image_3_url">https://staging.onespex.com/shop</field>
+            <field name="lens_feature_image_4_url">https://staging.onespex.com/shop</field>
+            <field name="lens_feature_image_5_url">https://staging.onespex.com/shop</field>
+            <field name="lens_feature_image_6_url">https://staging.onespex.com/shop</field>
+            <field name="lens_feature_image_7_url">https://staging.onespex.com/shop</field>
+            <field name="lens_feature_image_8_url">https://staging.onespex.com/shop</field>
+            <field name="lens_feature_image_1_name">Blocks Blue Light</field>
+            <field name="lens_feature_image_2_name">Eliminates Glare</field>
+            <field name="lens_feature_image_3_name">Blocks UV Light</field>
+            <field name="lens_feature_image_4_name">Resists Scratches</field>
+            <field name="lens_feature_image_5_name">Resists Fingerprints &amp; Smudges</field>
+            <field name="lens_feature_image_6_name">Repels Water &amp; Liquids</field>
+            <field name="lens_feature_image_7_name">Repels Dust Particles</field>
+            <field name="lens_feature_image_8_name">Reduces Color &amp; Image Distortion</field>
+            <field name="lens_feature_image_1_public_url">https://cdn.teameto.com/data/B2C1/lens-feature-images/know-lens-img1-grey.jpeg</field>
+            <field name="lens_feature_image_2_public_url">https://cdn.teameto.com/data/B2C1/lens-feature-images/know-lens-img2-grey.jpeg</field>
+            <field name="lens_feature_image_3_public_url">https://cdn.teameto.com/data/B2C1/lens-feature-images/know-lens-img3-grey.jpeg</field>
+            <field name="lens_feature_image_4_public_url">https://cdn.teameto.com/data/B2C1/lens-feature-images/know-lens-img4-grey.jpeg</field>
+            <field name="lens_feature_image_5_public_url">https://cdn.teameto.com/data/B2C1/lens-feature-images/know-lens-img5-grey.jpeg</field>
+            <field name="lens_feature_image_6_public_url">https://cdn.teameto.com/data/B2C1/lens-feature-images/know-lens-img6-grey.jpeg</field>
+            <field name="lens_feature_image_7_public_url">https://cdn.teameto.com/data/B2C1/lens-feature-images/know-lens-img7-grey.jpeg</field>
+            <field name="lens_feature_image_8_public_url">https://cdn.teameto.com/data/B2C1/lens-feature-images/know-lens-img8-grey.jpeg</field>
+            <field name="lens_feature_section_name">Our Lens Features At A Glance</field>
+            <field name="lens_feature_section_description">Our lenses are designed keeping your comfort &amp; versatile lifestyle in mind. Get the best of features with your lenses here at EyeMyEye!</field>
+            <field name="homepage_keyword"></field>
+            <field name="homepage_title"></field>
+            <field name="homepage_keyword"></field>
+        </record>
         <record id="kits_b2c1_website_menu_eyeglasses" model="kits.b2c1.website.menu">
             <field name="name">EYEGLASSES</field>
-            <field name="menu_icon_url">	https://cdn.teameto.com/data/B2C1/header-images/eyeglasses.svg</field>
+            <field name="menu_icon_url">https://cdn.teameto.com/data/B2C1/header-images/eyeglasses.svg</field>
             <field name="is_mega_menu">True</field>
             <field name="product_filter">category</field>
             <field name="website_id" ref="kits_b2c1.website_kits_b2c1" />
@@ -139,6 +224,110 @@
             <field name="metadata_title">onespex</field>
             <field name="metadata_keyword">onespex</field>
             <field name="metadata_description">onespex</field>
+        </record>
+        <record id="product_slider_category_trending_eyeglasses" model="kits.multi.website.product.slider.category">
+            <field name="name">Trending Eyeglasses</field>
+            <field name="limit">10</field>
+            <field name="sequence">1</field>
+            <field name="website_id" ref="kits_b2c1.website_kits_b2c1" />
+        </record>
+        <record id="product_slider_category_pocket_friendly_frames" model="kits.multi.website.product.slider.category">
+            <field name="name">Pocket-Friendly Frames</field>
+            <field name="limit">10</field>
+            <field name="sequence">2</field>
+            <field name="website_id" ref="kits_b2c1.website_kits_b2c1" />
+        </record>
+        <record id="product_slider_category_trending_sunglasses" model="kits.multi.website.product.slider.category">
+            <field name="name">Trending Sunglasses</field>
+            <field name="limit">10</field>
+            <field name="sequence">3</field>
+            <field name="website_id" ref="kits_b2c1.website_kits_b2c1" />
+        </record>
+        <record id="product_slider_category_premium_in_your_pocket" model="kits.multi.website.product.slider.category">
+            <field name="name">Premium in your Pocket</field>
+            <field name="limit">10</field>
+            <field name="sequence">4</field>
+            <field name="website_id" ref="kits_b2c1.website_kits_b2c1" />
+        </record>
+        <record id="product_slider_category_season_latest_lollection" model="kits.multi.website.product.slider.category">
+            <field name="name">Season’s Latest Collection</field>
+            <field name="limit">10</field>
+            <field name="sequence">5</field>
+            <field name="website_id" ref="kits_b2c1.website_kits_b2c1" />
+        </record>
+        <record id="product_slider_category_color_blind_glasses" model="kits.multi.website.product.slider.category">
+            <field name="name">Color Blind Glasses</field>
+            <field name="limit">10</field>
+            <field name="sequence">6</field>
+            <field name="website_id" ref="kits_b2c1.website_kits_b2c1" />
+        </record>
+        <record id="product_slider_category_premium_sunglasses" model="kits.multi.website.product.slider.category">
+            <field name="name">Premium Sunglasses</field>
+            <field name="limit">10</field>
+            <field name="sequence">7</field>
+            <field name="website_id" ref="kits_b2c1.website_kits_b2c1" />
+        </record>
+        <record id="product_slider_category_protect_eyes_with_polarized_sunglasses" model="kits.multi.website.product.slider.category">
+            <field name="name">Protect Eyes With Polarized Sunglasses</field>
+            <field name="limit">10</field>
+            <field name="sequence">8</field>
+            <field name="website_id" ref="kits_b2c1.website_kits_b2c1" />
+        </record>
+        <record id="attribute_filter_eyeglasses_brands" model="kits.multi.website.attribute.filter">
+            <field name="name">Eyeglasses Brands</field>
+            <field name="is_slider">TRUE</field>
+            <field name="filter_section_description">Dazzle &amp; captivate all eyes with Eyeglasses from International Brands</field>
+            <field name="primary_attribute_filter_type">category</field>
+            <field name="secondary_attribute_filter_type">brand</field>
+            <field name="website_id" ref="kits_b2c1.website_kits_b2c1" />
+        </record>
+        <record id="attribute_filter_bestselling_eyeglasses_shapes" model="kits.multi.website.attribute.filter">
+            <field name="name">Bestselling Eyeglasses Shapes</field>
+            <field name="is_slider">FALSE</field>
+            <field name="filter_section_description">Set new trends around with these eyemazing Eyeglasses Shapes!</field>
+            <field name="primary_attribute_filter_type">category</field>
+            <field name="secondary_attribute_filter_type">shape</field>
+            <field name="website_id" ref="kits_b2c1.website_kits_b2c1" />
+        </record>
+        <record id="attribute_filter_sunglasses_brands" model="kits.multi.website.attribute.filter">
+            <field name="name">Sunglasses Brands</field>
+            <field name="is_slider">TRUE</field>
+            <field name="filter_section_description">Time to shade the Sun with Sunglasses from International Brands</field>
+            <field name="primary_attribute_filter_type">category</field>
+            <field name="secondary_attribute_filter_type">brand</field>
+            <field name="website_id" ref="kits_b2c1.website_kits_b2c1" />
+        </record>
+        <record id="attribute_filter_bestselling_sunglasses_shapes" model="kits.multi.website.attribute.filter">
+            <field name="name">Bestselling Sunglasses Shapes</field>
+            <field name="is_slider">FALSE</field>
+            <field name="filter_section_description">Make your Sun-strolling fun with these popular Sunglasses shapes. Take a pick from below!</field>
+            <field name="primary_attribute_filter_type">category</field>
+            <field name="secondary_attribute_filter_type">shape</field>
+            <field name="website_id" ref="kits_b2c1.website_kits_b2c1" />
+        </record>
+        <record id="kits_multi_website_shoppage_banner_1" model="kits.multi.website.shoppage.banner">
+            <field name="image_public_url">https://cdn.teameto.com/data/B2C1/homepage-main-banner-images/banner-1.jpeg</field>
+            <field name="mobile_image_public_url">https://cdn.teameto.com/data/B2C1/homepage-main-banner-images/mobile-banner-1.jpeg</field>
+            <field name="redirect_url">https://staging.onespex.com/shop	</field>
+            <field name="website_page_id" ref="kits_b2bc1_website_page_home_page" />
+        </record>
+        <record id="kits_multi_website_shoppage_banner_2" model="kits.multi.website.shoppage.banner">
+            <field name="image_public_url">https://cdn.teameto.com/data/B2C1/homepage-main-banner-images/banner-2.jpeg</field>
+            <field name="mobile_image_public_url">https://cdn.teameto.com/data/B2C1/homepage-main-banner-images/mobile-banner-2.jpeg</field>
+            <field name="redirect_url">https://staging.onespex.com/shop	</field>
+            <field name="website_page_id" ref="kits_b2bc1_website_page_home_page" />
+        </record>
+        <record id="kits_multi_website_shoppage_banner_3" model="kits.multi.website.shoppage.banner">
+            <field name="image_public_url">https://cdn.teameto.com/data/B2C1/homepage-main-banner-images/banner-3.jpeg</field>
+            <field name="mobile_image_public_url">https://cdn.teameto.com/data/B2C1/homepage-main-banner-images/mobile-banner-3.jpeg</field>
+            <field name="redirect_url">https://staging.onespex.com/shop	</field>
+            <field name="website_page_id" ref="kits_b2bc1_website_page_home_page" />
+        </record>
+        <record id="kits_multi_website_shoppage_banner_4" model="kits.multi.website.shoppage.banner">
+            <field name="image_public_url">https://cdn.teameto.com/data/B2C1/homepage-main-banner-images/banner-4.jpeg</field>
+            <field name="mobile_image_public_url">https://cdn.teameto.com/data/B2C1/homepage-main-banner-images/mobile-banner-4.jpeg</field>
+            <field name="redirect_url">https://staging.onespex.com/shop	</field>
+            <field name="website_page_id" ref="kits_b2bc1_website_page_home_page" />
         </record>
     </data>
 </odoo>

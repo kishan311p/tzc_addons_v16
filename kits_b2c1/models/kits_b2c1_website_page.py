@@ -23,7 +23,7 @@ class kits_b2c1_website_page(models.Model):
     eyeglass_banner_image_1_url = fields.Char("Eyeglass Banner Image 1 Redirect URL")
     eyeglass_banner_image_2 = fields.Char("Eyeglass Banner Image 2",compute="_compute_eyeglass_banner_image_2",store=True)
     eyeglass_banner_image_2_url = fields.Char("Eyeglass Banner Image 2 Redirect URL")
-    eyeglass_banner_image_category = fields.Many2one("product.category","Eyeglass Banner Image Category")
+    eyeglass_banner_image_category = fields.Many2one("kits.b2c1.menu.category","Eyeglass Banner Image Category")
     eyeglass_banner_image_gender_1 = fields.Selection([('male','Male'),('female','Female'),('m/f','Unisex')],string="Eyeglass Banner Image Gender")
     eyeglass_banner_image_gender_2 = fields.Selection([('male','Male'),('female','Female'),('m/f','Unisex')],string="Eyeglass Banner Image Gender")
 
@@ -37,7 +37,7 @@ class kits_b2c1_website_page(models.Model):
     sunglass_banner_image_1_url = fields.Char("Sunglass Banner Image 1 Redirect URL")
     sunglass_banner_image_2 = fields.Char("Sunglass Banner Image 2",compute="_compute_sunglass_banner_image_2",store=True)
     sunglass_banner_image_2_url = fields.Char("Sunglass Banner Image 2 Redirect URL")
-    sunglass_banner_image_category = fields.Many2one("product.category","Sunglass Banner Image Category")
+    sunglass_banner_image_category = fields.Many2one("kits.b2c1.menu.category","Sunglass Banner Image Category")
     sunglass_banner_image_gender_1 = fields.Selection([('male','Male'),('female','Female'),('m/f','Unisex')],string="Sunglass Banner Image Gender")
     sunglass_banner_image_gender_2 = fields.Selection([('male','Male'),('female','Female'),('m/f','Unisex')],string="Sunglass Banner Image Gender")
 

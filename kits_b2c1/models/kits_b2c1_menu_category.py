@@ -6,4 +6,4 @@ class kits_b2c1_menu_category(models.Model):
     
     name = fields.Char("Name")
     sequence = fields.Integer()
-    
+    categ_id = fields.Many2one('product.category', string='Category')
