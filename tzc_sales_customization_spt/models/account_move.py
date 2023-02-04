@@ -322,7 +322,7 @@ class account_move(models.Model):
             move.amount_total_in_currency_signed = abs(move.amount_total) if move.move_type == 'entry' else -(sign * move.amount_total)
 
             # Compute 'invoice_payment_state'.
-            if move.type == 'entry':
+            if move.move_type == 'entry':
                 move.invoice_payment_state = False
             elif move.state == 'posted' and is_paid:
                 if move.id in in_payment_set:
