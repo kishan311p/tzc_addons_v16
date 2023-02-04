@@ -54,10 +54,6 @@
                 </field>
             </page>
         </xpath>
-        
-        <xpath expr="//button[@name='action_quotation_send']" position="before">
-            <button name="action_view_sale_advance_payment_inv" string="Create Invoice" type="object" context="{'default_advance_payment_method': 'delivered'}" class='oe_highlight' attrs="{'invisible': [('state','not in',['shipped'])]}" groups="account.group_account_invoice"/>
-        </xpath>
 
             <xpath expr="//tree/field[@name='product_template_id']" position="after">
                 <field name="is_fs" readonly="1" force_save="1"/>

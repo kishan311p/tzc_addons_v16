@@ -63,3 +63,4 @@ from . import product_packaging
 from . import update_qty_log
 from . import mail_thread
 from . import mail_tracking_value
+from . import account_move_line

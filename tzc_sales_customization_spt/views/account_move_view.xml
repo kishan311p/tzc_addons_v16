@@ -2,18 +2,294 @@
 <odoo>
 
     <data>
-        <record id="kits_sales_commission_inherit_account_move_form_view" model="ir.ui.view">
-            <field name="name">kits.sales.commission.inherit.account.move.form.view</field>
+        <record id="view_move_form_inherit_tzc" model="ir.ui.view">
+            <field name="name">view.move.form.inherit.tzc</field>
             <field name="model">account.move</field>
-            <field name="inherit_id" ref="account.view_move_form" />
+            <field name="inherit_id" ref="account.view_move_form"/>
             <field name="arch" type="xml">
+                <xpath expr="//field[@name='invoice_line_ids']" position="attributes">
+                    <attribute name="readonly">1</attribute>
+                </xpath>
+
+                <xpath expr="//field[@name='invoice_line_ids']/tree" position="replace">
+                    <tree editable="bottom" string="Journal Items" decoration-muted="is_shipping_product==True or is_admin == True or is_global_discount == True" default_order="product_id">
+                        <control>
+                            <create name="add_line_control" string="Add a line"/>
+                            <create name="add_section_control" string="Add a section" context="{'default_display_type': 'line_section'}"/>
+                            <create name="add_note_control" string="Add a note" context="{'default_display_type': 'line_note'}"/>
+                        </control>
+
+                        <!-- Displayed fields -->
+                        <field name="sequence" widget="handle"/>
+                        <field name="product_id" options="{'no_create': True}" optional="show" domain="
+                                                    context.get('default_move_type') in ('out_invoice', 'out_refund', 'out_receipt')
+                                                    and [('sale_ok', '=', True), '|', ('company_id', '=', False), ('company_id', '=', parent.company_id)]
+                                                    or [('purchase_ok', '=', True), '|', ('company_id', '=', False), ('company_id', '=', parent.company_id)]
+                                               "/>
+                        <field name="is_shipping_product" invisible="1"/>
+                        <field name="is_admin" invisible="1"/>
+                        <field name="is_global_discount" invisible="1"/>
+                        <field name="name" widget="section_and_note_text" optional="show"/>
+                        <field name="is_fs"/>
+                        <field name="sale_type"/>
+                        <field name="is_promotion_applied"/>
+                        <field name="product_categ_id" string="Category"/>
+                        <field name="account_id" context="{'partner_id': partner_id, 'move_type': parent.move_type}" groups="account.group_account_readonly" options="{'no_create': True}" domain="[('deprecated', '=', False), ('account_type', 'not in', ('asset_receivable', 'liability_payable')), ('company_id', '=', parent.company_id), ('is_off_balance', '=', False)]" attrs="{'required': [('display_type', 'not in', ('line_note', 'line_section'))]}"/>
+                        <field name="analytic_distribution" widget="analytic_distribution" groups="analytic.group_analytic_accounting" optional="show" options="{'product_field': 'product_id', 'account_field': 'account_id'}" business_domain_compute="parent.move_type in ['out_invoice', 'out_refund', 'out_receipt'] and 'invoice' or parent.move_type in ['in_invoice', 'in_refund', 'in_receipt'] and 'bill' or 'general'"/>
+                        <field name="quantity" optional="show"/>
+                        <field name="product_uom_category_id" invisible="1"/>
+                        <field name="product_uom_id" string="UoM" groups="uom.group_uom" optional="show"/>
+                        <field name="price_unit" string="Price"/>
+                        <field name="discount_unit_price"/>
+                        <field name="tax_ids" widget="many2many_tags" domain="[('type_tax_use', '=?', parent.invoice_filter_type_domain), ('company_id', '=', parent.company_id), ('country_id', '=', parent.tax_country_id)]" context="{'append_type_to_tax_name': not parent.invoice_filter_type_domain}" options="{'no_create': True}" optional="show"/>
+                        <field name="discount" string="Disc.%" optional="show"/>
+                        <field name="unit_discount_price"/>
+                        <field name="price_subtotal" string="Subtotal" groups="account.group_show_line_subtotals_tax_excluded"/>
+                        <field name="price_total" string="Total" groups="account.group_show_line_subtotals_tax_included"/>
+
+                        <!-- Others fields -->
+                        <field name="partner_id" invisible="1"/>
+                        <field name="currency_id" invisible="1"/>
+                        <field name="company_id" invisible="1"/>
+                        <field name="company_currency_id" invisible="1"/>
+                        <field name="display_type" force_save="1" invisible="1"/>
+                        <!-- /l10n_in_edi.test_edi_json -->
+                        <!-- required for @api.onchange('product_id') -->
+                        <field name="product_uom_id" invisible="1"/>
+                    </tree>
+                </xpath>
+                <xpath expr="//group[@id='header_right_group']" position="after">
+                    <group>
+                        <field name="updated_on" readonly="1"/>
+                        <field name="updated_by" readonly="1"/>
+                    </group>
+                </xpath>
+                <xpath expr="//button[@name='action_invoice_sent'][2]" position="attributes">
+                    <attribute name="class">oe_highlight</attribute>
+                    <attribute name="string">Send</attribute>
+                </xpath>
+                <xpath expr="//button[@name='action_reverse']" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </xpath>
+                <xpath expr="//group[@name='sale_info_group']/field[@name='partner_bank_id']" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </xpath>
+                <xpath expr="//group[@name='sale_info_group']/label[@for='ref']" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </xpath>
+                <xpath expr="//group[@name='sale_info_group']/field[@name='ref']" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </xpath>
+                <xpath expr="//group[@id='header_right_group']/field[@name='partner_bank_id']" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </xpath>
+                <xpath expr="//field[@name='partner_id']" position="attributes">
+                    <attribute name="context">{
+                        'res_partner_search_mode': (context.get('default_type', 'entry') in ('out_invoice', 'out_refund', 'out_receipt') and 'customer') or (context.get('default_type', 'entry') in ('in_invoice', 'in_refund', 'in_receipt') and 'supplier') or False,
+                        'show_address': 1, 'default_is_company': True, 'show_vat': True}</attribute>
+                    <!-- 'show_address': 1, 'default_is_company': True, 'show_vat': True,'default_name':True}</attribute> -->
+                </xpath>
+                <xpath expr="//field[@name='partner_id']" position="after">
+                    <label for="street" invisible="0" string=""/>
+                    <div>
+                        <div class="o_address_format">
+                            <field name="street" placeholder="Street..." class="o_address_street" readonly="1"/>
+                            <field name="street2" placeholder="Street 2..." class="o_address_street" readonly="1"/>
+                            <field name="city" placeholder="City" class="o_address_city" readonly="1"/>
+                            <field name="state_id" class="o_address_state" placeholder="State" options="{&quot;no_open&quot;: True}" readonly="1"/>
+                            <field name="postal_code" placeholder="ZIP" class="o_address_zip" readonly="1"/>
+                            <field name="country_id" placeholder="Country" class="o_address_country" options="{&quot;no_open&quot;: True,'no_create': True, 'no_create_edit':True}" readonly="1"/>
+                        </div>
+                    </div>
+                </xpath>
+                <xpath expr="//field[@name='invoice_source_email']" position="attributes">
+                    <attribute name="readonly">1</attribute>
+                </xpath>
+                <xpath expr="//field[@name='invoice_cash_rounding_id']" position="attributes">
+                    <attribute name="readonly">1</attribute>
+                </xpath>
+                <xpath expr="//field[@name='fiscal_position_id']" position="attributes">
+                    <attribute name="readonly">1</attribute>
+                </xpath>
+                <xpath expr="//field[@name='invoice_incoterm_id']" position="attributes">
+                    <attribute name="readonly">1</attribute>
+                </xpath>
+                <xpath expr="//field[@name='invoice_user_id']" position="attributes">
+                    <attribute name="readonly">1</attribute>
+                </xpath>
+                <xpath expr="//field[@name='invoice_origin']" position="attributes">
+                    <attribute name="readonly">1</attribute>
+                </xpath>
+                <xpath expr="//field[@name='narration']" position="attributes">
+                    <attribute name="readonly">1</attribute>
+                </xpath>
+                <xpath expr="//field[@name='company_id']" position="attributes">
+                    <attribute name="readonly">1</attribute>
+                </xpath>
+                <xpath expr="//field[@name='to_check']" position="attributes">
+                    <attribute name="readonly">1</attribute>
+                </xpath>
+                <xpath expr="//field[@name='reversed_entry_id']" position="attributes">
+                    <attribute name="readonly">1</attribute>
+                </xpath>
+                <xpath expr="//field[@name='auto_post']" position="attributes">
+                    <attribute name="readonly">1</attribute>
+                </xpath>
+
+                <xpath expr="//field[@name='line_ids']" position="attributes">
+                    <attribute name="readonly">1</attribute>
+                </xpath>
+                <xpath expr="//field[@name='company_id']" position="attributes">
+                    <attribute name="readonly">1</attribute>
+                </xpath>
+                <xpath expr="//field[@name='company_id']" position="attributes">
+                    <attribute name="readonly">1</attribute>
+                </xpath>
+                <xpath expr="//field[@name='currency_id']" position="attributes">
+                    <attribute name="readonly">1</attribute>
+                </xpath>
+                <xpath expr="//field[@name='journal_id']" position="attributes">
+                    <attribute name="readonly">1</attribute>
+                </xpath>
+                <xpath expr="//field[@name='invoice_date_due']" position="attributes">
+                    <attribute name="readonly">1</attribute>
+                </xpath>
+                <xpath expr="//field[@name='invoice_payment_term_id']" position="attributes">
+                    <attribute name="readonly">1</attribute>
+                </xpath>
+                <xpath expr="//field[@name='date']" position="attributes">
+                    <attribute name="readonly">1</attribute>
+                </xpath>
+                <xpath expr="//field[@name='invoice_date']" position="attributes">
+                    <attribute name="readonly">1</attribute>
+                </xpath>
+                <xpath expr="//field[@name='partner_id']" position="attributes">
+                    <attribute name="readonly">1</attribute>
+                </xpath>
+                <xpath expr="//field[@name='ref']" position="attributes">
+                    <attribute name="readonly">1</attribute>
+                </xpath>
+                <xpath expr="//field[@name='invoice_vendor_bill_id']" position="attributes">
+                    <attribute name="readonly">1</attribute>
+                </xpath>
+                <xpath expr="//button[@name='preview_invoice']" position="attributes">
+                    <attribute name="class">oe_highlight</attribute>
+                </xpath>
+                <xpath expr="//button[@name='action_reverse']" position="attributes">
+                    <attribute name="class">oe_highlight</attribute>
+                </xpath>
+                <xpath expr="//button[@name='button_draft']" position="attributes">
+                    <attribute name="class">oe_highlight</attribute>
+                </xpath>
+                <xpath expr="//button[@name='button_cancel']" position="attributes">
+                    <attribute name="class">oe_highlight</attribute>
+                </xpath>
+                <xpath expr="//field[@name='invoice_user_id']" position="attributes">
+                    <attribute name="domain">[('is_salesperson','=',True)]</attribute>
+                    <attribute name="options">{'no_create':True,'no_open':True}</attribute>
+                </xpath>
+                <xpath expr="//field[@name='invoice_user_id']" position="after">
+                    <field name="sale_manager_id" attrs="{'readonly' : [('is_admin','=',False)]}" options="{'no_create':True}"/>
+                </xpath>
+                <xpath expr="//field[@name='invoice_date']" position="after">
+                    <field name="applied_promo_code" readonly="1" force_save="1" />
+                </xpath>
+
+                <!-- <button name="button_cancel" position="after">
+                    <button name="excel_order_report" type="object" string="Invoice report" />
+                </button> -->
+
+
+
+                <xpath expr="//button[@name='action_post']" position="attributes">
+                    <attribute name="string">Confirm Invoice</attribute>
+                </xpath>
+                <xpath expr="//button[@id='account_invoice_payment_btn']" position="attributes">
+                    <attribute name="attrs">{'invisible': ['|', '|', ('state', '!=', 'posted'), ('payment_state', '!=', 'not_paid'), ('move_type', 'not in', ('out_invoice', 'out_refund','in_refund', 'out_receipt', 'in_receipt'))]}</attribute>
+
+                    <attribute name="groups">account.group_account_user</attribute>
+                </xpath>
+
+                <xpath expr="//div[hasclass('oe_title')][1]" position="before">
+                    <div class="row">
+                        <div class="col-10"/>
+                        <div class="col-2 text-right">
+                            <label for="ordered_qty"/>
+                            <field name="ordered_qty" />
+                            <br/>
+                            <label for="delivered_qty"/>
+                            <field name="delivered_qty" />
+                            <br/>
+                            <label for="picked_qty"/>
+                            <field name="picked_qty" />
+                            <field name="is_admin" invisible="1" />
+                        </div>
+                    </div>
+                </xpath>
+
+                <xpath expr="//field[@name='tax_totals']" position="replace">
+                    <field name="amount_without_discount" />
+                    <field name="amount_is_shipping_total" string="Shipping Cost"/>
+                    <field name="amount_is_admin" string="Admin Fee"/>
+                    <field name="amount_discount"/>
+                    <field name="amount_tax" string="Tax"/>
+                    <field name="global_discount" readonly="1" invisible="1"/>
+                    <field name="amount_total" class="oe_subtotal_footer_separator" colspan="2"/>
+                    <field name="tax_totals" invisible="1" nolabel="1" colspan="2" attrs="{'readonly': ['|', ('state', '!=', 'draft'), '&amp;', ('move_type', 'not in', ('in_invoice', 'in_refund')), ('quick_edit_mode', '=', False)]}"/>
+                </xpath>
+                <!-- <xpath expr="//field[@name='partner_id']" position="attributes">
+                    <attribute name="domain">[('company_type','=','company'),('is_company','=',True),'|', ('company_id', '=', False), ('company_id', '=', company_id)]</attribute>
+                </xpath> -->
+                <xpath expr="//div[hasclass('oe_title')]/h1[1]" position="after">
+                    <div name='update_name' class="col-2">
+                        <label for="sequence_name"/>
+                        <field name="sequence_name" placeholder="eg. 001" />
+                        <button name="update_name" type="object" class="oe_stat_button" icon="fa-refresh"/>
+                    </div>
+                </xpath>
+
+                <xpath expr="//field[@name='partner_id']" position="attributes">
+                    <attribute name="options">{'no_create': True}</attribute>
+
+                </xpath>
+                
+                <xpath expr="//kanban" position="attributes">
+                    <attribute name="default_order">product_id</attribute>
+                </xpath>
+                <xpath expr="//div[@name='button_box']" position="inside">
+                    <button name="action_invoice_to_order" type="object" icon="fa-shopping-bag">
+                        <div class="o_field_widget o_stat_info">
+                            Order
+                        </div>
+                    </button>
+                </xpath>
+
+                <xpath expr="//sheet/group[1]/group[@id='header_right_group']" position="inside">
+                    <field name="quickbooks_invoice_id" invisible="1" />
+                </xpath>
+                <xpath expr="//sheet/div[hasclass('oe_button_box')]" position="inside">
+                    <button name="action_get_return_credit_notes" type="object" class="oe_stat_button" icon="fa-credit-card" attrs="{'invisible': [('count_return_credit_notes', '=', 0)]}">
+                        <field name="count_return_credit_notes" widget="statinfo" string="Credit Notes" readonly="1" />
+                    </button>
+                </xpath>
+                <xpath expr="//group[@id='header_right_group']" position="inside">
+                    <field name="inv_payment_status" invisible="1"/>
+                    <field name="is_commission_paid" readonly="1" invisible="1"/>
+                    <field name="filtere_state" invisible="1"/>
+                </xpath>
+                <xpath expr="//sheet/widget[@name='web_ribbon']" position="replace">
+                    <widget name="web_ribbon" title="Fully  Paid" attrs="{'invisible': [('inv_payment_status','in',['partial','over',False])]}"/>
+                    <widget name="web_ribbon" title="Partial  Paid" attrs="{'invisible': [('inv_payment_status','in',['over','full',False])]}"/>
+                    <widget name="web_ribbon" title="Over  Paid" attrs="{'invisible': [('inv_payment_status','in',['partial','full',False])]}"/>
+                </xpath>
+
                 <!-- <xpath expr="//sheet/widget[@name='web_ribbon']" position="replace">
                     <widget name="web_ribbon" title="Paid" attrs="{'invisible': [('is_commission_paid','=',False)]}"/>
                 </xpath> -->
                 <xpath expr="//notebook/page[@id='aml_tab']" position="after">
                     <page name="commission_lines" string="Commissions" id="commission_lines" attrs="{'invisible':[('state','!=','posted')]}" groups="base.group_system">
                         <field name="commission_line_ids" readonly="1" context="{'default_create_type':'manual'}">
-                            <tree decoration-danger="create_type == 'manual'" decoration-info="create_type == 'by_system'" >
+                            <tree decoration-danger="create_type == 'manual'" decoration-info="create_type == 'by_system'">
                                 <field name="create_type" invisible="1" />
                                 <field name="state" invisible="1" />
                                 <field name="name" attrs="{'readonly':[('create_type','=','by_system')]}"/>
@@ -24,17 +300,19 @@
                             <form>
                                 <sheet>
                                     <div>
-                                        <h3><field name="name" readonly="1"/></h3>
+                                        <h3>
+                                            <field name="name" readonly="1"/>
+                                        </h3>
                                     </div>
                                     <group>
                                         <group>
-                                            <field name="create_type"  invisible="1" />
-                                            <field name="commission_for"  attrs="{'readonly':[('create_type','=','by_system')]}" />
-                                            <field name="user_id"  attrs="{'readonly':[('create_type','=','by_system')]}" options="{'no_create':True,'no_open':True}" />
+                                            <field name="create_type" invisible="1" />
+                                            <field name="commission_for" attrs="{'readonly':[('create_type','=','by_system')]}" />
+                                            <field name="user_id" attrs="{'readonly':[('create_type','=','by_system')]}" options="{'no_create':True,'no_open':True}" />
                                         </group>
                                         <group>
                                             <field name="rule_id" force_save="1" readonly="1" options="{'no_create':True,'no_open':True}"/>
-                                            <field name="amount"  attrs="{'readonly':[('create_type','=','by_system')]}" />
+                                            <field name="amount" attrs="{'readonly':[('create_type','=','by_system')]}" />
                                         </group>
                                     </group>
                                 </sheet>
@@ -45,30 +323,115 @@
             </field>
         </record>
 
-        <!-- <record id="kits_sales_commission_inherit_account_move_tree_view" model="ir.ui.view">
-            <field name="name">kits.sales.commission.inherit.account.move.tree.view</field>
-            <field name="model">account.move</field>
-            <field name="inherit_id" ref="account.view_invoice_tree" />
+        <record id="inherit_account_invoice_send_wizard_form" model="ir.ui.view">
+            <field name="name">inherit.account.invoice.send.wizard.form</field>
+            <field name="model">account.invoice.send</field>
+            <field name="inherit_id" ref="account.account_invoice_send_wizard_form"/>
             <field name="arch" type="xml">
-                <xpath expr="//field[@name='invoice_payment_state']" position="replace">
-                    <field name="kits_payment_status" string="Payment"/>
+                <xpath expr="//div[@name='option_print']" position="attributes">
+                    <attribute name="invisible">1</attribute>
                 </xpath>
             </field>
-        </record> -->
+        </record>
 
-        <!-- <record id="kits_sales_commission_inherit_account_move_search_view" model="ir.ui.view">
-            <field name="name">kits.sales.commission.inherit.account.move.search.view</field>
+        <record id="view_account_move_tree_inherit_tzc" model="ir.ui.view">
+            <field name="name">view.account.move.tree.inherit.tzc</field>
+            <field name="model">account.move</field>
+            <field name="inherit_id" ref="account.view_invoice_tree"/>
+            <field name="arch" type="xml">
+                <!-- <xpath expr="//field[@name='invoice_payment_state']" position="replace">
+                    <field name="kits_payment_status" string="Payment"/>
+                </xpath> -->
+                <xpath expr="//tree" position="replace">
+                    <tree string="Invoices" decoration-info="state == 'draft'" decoration-muted="state == 'cancel'" banner_route="/account/account_invoice_onboarding" js_class="account_tree">
+                        <field name="name" optional="show"/>
+                        <field name="partner_id" invisible="1" optional="show"/>
+                        <field name="invoice_source_email" invisible="1" optional="show"/>
+                        <field name="invoice_partner_display_name" invisible="context.get('default_type') not in ('in_invoice', 'in_refund','in_receipt')" groups="base.group_user" string="Vendor" optional="show"/>
+                        <field name="invoice_partner_display_name" invisible="context.get('default_type') not in ('out_invoice', 'out_refund','out_receipt')" groups="base.group_user" string="Customer" optional="show"/>
+                        <field name="invoice_date" optional="show" invisible="context.get('default_type') not in ('in_invoice', 'in_refund','in_receipt')" string="Bill Date" />
+                        <field name="invoice_date" optional="show" invisible="context.get('default_type') not in ('out_invoice', 'out_refund','out_receipt')" string="Invoice Date"/>
+                        <field name="invoice_origin" optional="show" string="Source Document"/>
+                        <field name="payment_reference" readonly="1" optional="show" invisible="context.get('default_type') in ('out_invoice', 'out_refund','out_receipt')"/>
+                        <field name="ref" optional="show" invisible="1"/>
+                        <field name="invoice_user_id" optional="show" invisible="context.get('default_type') not in ('out_invoice', 'out_refund','out_receipt')" string="Sales Person"/>
+                        <!-- <field name="team_id" invisible="context.get('default_type') not in ('out_invoice', 'out_refund','out_receipt')" optional="show"/> -->
+                        <field name="team_id" invisible="1" optional="show"/>
+                        <field name="company_id" groups="base.group_multi_company" options="{'no_create': True}" optional="show"/>
+                        <field name="invoice_date_due" optional="show"/>
+                        <field name="amount_is_admin" string="Admin Fee" optional="show"/>
+                        <field name="amount_tax" string="Tax" sum="Total" optional="show"/>
+                        <field name="amount_residual" string="Amount Due" sum="Amount Due" optional="show"/>
+                        <field name="amount_total" string="Total" sum="Total" optional="show"/>
+                        <field name="currency_id" optional="show"/>
+                        <field name="country_id" optional="hide"/>
+                        <field name="company_currency_id" invisible="1" optional="show"/>
+                        <field name="state" optional="show"/>
+                        <field name="inv_payment_status" optional="show"/>
+                        <field name="move_type" invisible="context.get('default_type', True)" optional="show"/>
+                    </tree>
+                </xpath>
+            </field>
+        </record>
+
+
+        <record id="kits_view_move_form_inherit_tzc" model="ir.ui.view">
+            <field name="name">kits.view.move.form.inherit.tzc</field>
+            <field name="model">account.move</field>
+            <field name="inherit_id" ref="sale.account_invoice_form" />
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='campaign_id']" position="attributes">
+                    <attribute name="readonly">1</attribute>
+                </xpath>
+                <xpath expr="//field[@name='medium_id']" position="attributes">
+                    <attribute name="readonly">1</attribute>
+                </xpath>
+                <xpath expr="//field[@name='source_id']" position="attributes">
+                    <attribute name="readonly">1</attribute>
+                </xpath>
+                <xpath expr="//field[@name='partner_shipping_id']" position="replace">
+                    <field name="partner_shipping_id" options="{'no_create': True}" domain="['|', ('company_id', '=', False), ('company_id', '=', company_id),'|','&amp;',('type','=','delivery'),('parent_id','=',partner_id),('id','=',partner_id)]" readonly="1"/>
+                    <field name="ref" />
+                </xpath>
+                <xpath expr="//field[@name='team_id']" position="attributes">
+                    <attribute name="readonly">1</attribute>
+                </xpath>
+            </field>
+        </record>
+
+        <record id="kits_bambora_payment_inherit_account_move_search_view" model="ir.ui.view">
+            <field name="name">kits.bambora.payment.inherit.account.move.search.view</field>
             <field name="model">account.move</field>
             <field name="inherit_id" ref="account.view_account_invoice_filter" />
             <field name="arch" type="xml">
-                <filter name="paid" position="replace">
-                    <filter name="paid" string="Paid" domain="[('is_commission_paid', '=',True)]"/>
+                <!-- <filter name="closed" position="replace">
+                    <filter name="closed" string="Paid" domain="[('is_commission_paid', '=',True)]"/>
                 </filter>
                 <filter name="unpaid" position="replace">
                     <filter name="unpaid" string="Not Paid" domain="[('is_commission_paid', '=', False)]"/>
+                </filter> -->
+                <xpath expr="//group/filter[@name='salesperson']" position="after">
+                    <filter name="groupby_sales_manager" string="Sales Manager" context="{'group_by':'sale_manager_id'}"/>
+                </xpath>
+
+                <xpath expr="//search" position="inside">
+                    <field name="filtere_state" string="Payment Status"/>
+                </xpath>
+                <xpath expr="//group" position="inside">
+                    <filter string="Payment Status" name="payment_status" context="{'group_by':'filtere_state'}"/>
+                </xpath>
+                <filter name="closed" position="replace">
+                    <filter name="fully_paid" string="Fully Paid" domain="[('filtere_state', '=','full')]"/>
                 </filter>
+
+                <filter name="open" position="replace">
+                    <filter name="partial_paid" string="Partial Paid" domain="[('filtere_state', '=', 'partial')]"/>
+                    <filter name="over_paid" string="Over Paid" domain="[('filtere_state', '=', 'over')]"/>
+                </filter>
+                <separator/>
             </field>
-        </record> -->
+        </record>
+
     </data>
 
 </odoo>
