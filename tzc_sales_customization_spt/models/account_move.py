@@ -323,14 +323,14 @@ class account_move(models.Model):
 
             # Compute 'invoice_payment_state'.
             if move.move_type == 'entry':
-                move.invoice_payment_state = False
+                move.payment_state = False
             elif move.state == 'posted' and is_paid:
                 if move.id in in_payment_set:
-                    move.invoice_payment_state = 'in_payment'
+                    move.payment_state = 'in_payment'
                 else:
-                    move.invoice_payment_state = 'paid'
+                    move.payment_state = 'paid'
             else:
-                move.invoice_payment_state = 'not_paid'
+                move.payment_state = 'not_paid'
 
 
     @api.model
