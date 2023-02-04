@@ -8,6 +8,13 @@
         <record id="product.group_product_variant" model="res.groups">
             <field name="users" eval="[Command.link(ref('base.user_root')), Command.link(ref('base.user_admin'))]"/>
         </record>
+        <record id="product.group_discount_per_so_line" model="res.groups">
+            <field name="users" eval="[Command.link(ref('base.user_root')), Command.link(ref('base.user_admin'))]"/>
+        </record>
+        <record id="shipping_provider_pick_up" model="shipping.provider.spt">
+            <field name="name">Pick Up</field>
+            <field name="provider">fixed</field>
+        </record>
     </data>
     <data noupdate="0">
 
