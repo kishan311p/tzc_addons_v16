@@ -320,14 +320,12 @@ class account_move(models.Model):
             move.amount_total_signed = abs(total) if move.move_type == 'entry' else -total
             move.amount_residual_signed = total_residual
             move.amount_total_in_currency_signed = abs(move.amount_total) if move.move_type == 'entry' else -(sign * move.amount_total)
-            is_paid = self.env['account.payment'].search([('move_id','=',move.id)])
-            in_payment_set = move.amount_residual -sum(is_paid.mapped('amount'))
             # Compute 'invoice_payment_state'.
             if move.move_type == 'entry':
                 move.payment_state = False
-            elif move.state == 'posted' and is_paid:
-                if move.id in in_payment_set:
-                    move.payment_state = 'in_payment'
+            elif move.state == 'posted':
+                if  move.amount_residual > 0:
+                    move.payment_state = 'not_paid'
                 else:
                     move.payment_state = 'paid'
             else:
