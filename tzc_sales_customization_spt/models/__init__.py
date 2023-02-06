@@ -20,6 +20,7 @@ from . import kits_package_product_line
 from . import sale_order_line
 from . import sale_order_backup_spt
 from . import sale_order_backup_line_spt
+from . import ir_report_action
 from . import kits_package_restriction
 from . import kits_package_order_line
 from . import shipping_provider_spt

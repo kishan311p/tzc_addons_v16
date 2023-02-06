@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <data>
+        <record id="kits_wizard_download_catalog_excel_form_view" model="ir.ui.view">
+            <field name="name">kits.wizard.download.catalog.excel.form.view</field>
+            <field name="model">kits.wizard.download.catalog.excel</field>
+            <field name="arch" type="xml">
+                <form>
+                    <sheet>
+                        <group>
+                            <field name="partner_ids" invisible="1"/>
+                            <field name="partner_id" options="{'no_create':True,'no_create_edit':True,'no_open':True}" invisible="context.get('from_action',False)" domain="[('id', 'in', partner_ids)]"/>
+                            <field name="currency" widget="radio" invisible="not context.get('from_action',False)"/>
+                        </group>
+                    </sheet>
+                    <footer>
+                        <button name="action_download_report" type="object" string="Download Excel Report" class="oe_highlight" invisible="context.get('from_action',False)" />
+                        <button name="action_download_report_pdf" type="object" string="Download PDF Report" class="oe_highlight" invisible="context.get('from_action',False)" />
+                        <button name="action_download_report_without_customer" type="object" string="Download" class="oe_highlight" invisible="not context.get('from_action',False)" />
+                        <span style="padding-left:5px;margin-right:5px;">OR</span>
+                        <button special="cancel" type="object" string="Cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+    </data>
+
+</odoo>

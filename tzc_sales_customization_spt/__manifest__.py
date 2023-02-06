@@ -45,6 +45,7 @@
         'data/mail_template_customer_approve_notify.xml',
         'data/mail_template_new_user_spt.xml',
         'data/stock_picking_mail_templates.xml',
+	'data/mail_template_catalog_pending.xml',
         'data/payment_mail_template.xml',
         'data/send_payment_link_mail_template.xml',
 
@@ -93,6 +94,7 @@
         'views/res_users_view.xml',
         'views/login_user_views.xml',
         # 'views/update_qty_log_view.xml',
+        'views/sale_catalog.xml',
 
         # Wizard
         'wizards/kits_warning_wizard_view.xml',
@@ -143,6 +145,10 @@
         'wizards/kits_replace_sales_manager_wizard_view.xml',
         'wizards/kits_change_commission_rule_view.xml',
         'wizards/paid_amount_wizard_view.xml',
+	 'wizards/discount_on_catalog_line_wizard_spt.xml',
+        'wizards/kits_wizard_download_catalog_excel_view.xml',
+        'wizards/create_catalog_quotation_wizard_spt.xml',
+        'wizards/catalog_process_error_wizard_view_spt.xml',
         'wizards/kits_scan_package_products_view.xml',
         'wizards/barcode_error_message_wizard_spt.xml',
         'wizards/stock_picking_barcode_spt.xml',
@@ -153,6 +159,7 @@
         # Reports
         'reports/kits_commission_report.xml',
         'reports/sales_commission_pdf_report.xml',
+        'reports/catalog_report_template_spt.xml',
         'reports/sale_catalog_report_spt.xml',
         'reports/report_template_sales_preson_spt.xml',
         'reports/shipped_orders_report_spt.xml',
@@ -164,8 +171,6 @@
 
         # Templates
         'template/excel_data.xml',
-        
-
 
     ],
 

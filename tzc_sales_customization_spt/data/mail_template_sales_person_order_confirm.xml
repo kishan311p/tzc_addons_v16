@@ -118,7 +118,7 @@
             <field name="auto_delete" eval="False"/>
             <!-- <field name="report_template" ref="sale.action_report_saleorder"/> -->
             <!-- <field name="report_name">Order {{(object.name or '')}}</field> -->
-            <field name="lang">{{object.partner_id.l ang}}</field>
+            <field name="lang">{{object.partner_id.lang}}</field>
             <field name="body_html" type="html">
                 <table border="0" cellpadding="0" cellspacing="0" style="padding-top: 16px; background-color: #F1F1F1; font-family:Verdana, Arial,sans-serif; color: #454748; width: 100%; border-collapse:separate;">
                     <tr>

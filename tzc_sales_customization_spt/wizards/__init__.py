@@ -43,6 +43,10 @@ from . import kits_replace_sales_person_wizard
 from . import kits_replace_sales_manager_wizard
 from . import kits_change_commission_rule
 from . import paid_amount_wizard
+from . import discount_on_catalog_line_wizard_spt
+from . import kits_wizard_download_catalog_excel
+from . import create_catalog_quotation_wizard_spt
+from . import catalog_process_error_wizard_spt
 from . import product_report_on_date_wizard_spt
 from . import bank_inventory_report_wizard
 from . import brand_qty_report

@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <data>
+        <record id="create_catalog_quotation_wizard_spt_form_view" model="ir.ui.view">
+            <field name="name">create.catalog.quotation.wizard.spt.form.view</field>
+            <field name="model">create.catalog.quotation.wizard.spt</field>
+            <field name="arch" type="xml">
+                <form>
+                    <sheet>
+                       <group>
+                            <group>
+                                <field name="domain_parnter_ids" invisible="1"/>
+                                <field name="partner_ids" widget="many2many_tags" options="{'no_create': True}" domain="[('id','in',domain_parnter_ids)]" required="1"/>
+                            </group>
+                            <group/>
+                        </group>
+                    </sheet>
+                    <footer>
+                        <button name="btn_process" type="object" string="Process" class="oe_highlight" />
+                        <span style="margin-left:5px;margin-right:5px;">
+                            OR
+                        </span>
+                        <button special="cancel" type="object" string="Cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+    </data>
+</odoo>

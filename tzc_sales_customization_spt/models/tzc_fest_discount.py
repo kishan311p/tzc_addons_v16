@@ -138,64 +138,64 @@ class tzc_fest_discount(models.Model):
                 raise UserError(f'You can not have 2 discount campaigns at the same time please First Deactivate {active_rec.name}')
 
     def action_active(self):
-        special_discount_menu_id = self.env.ref('tzc_website.tzc_black_special_friday_sale')
-        main_menu_id = self.env['website.menu'].search([('name','like','Top Menu for Website 2')],limit=1)
+        # special_discount_menu_id = self.env.ref('tzc_website.tzc_black_special_friday_sale')
+        # main_menu_id = self.env['website.menu'].search([('name','like','Top Menu for Website 2')],limit=1)
         for rec in self:
             rec.is_active = False
-            special_discount_menu_id.parent_id = False
-            self.env.ref('tzc_website.tzc_sale').parent_id = main_menu_id
+            # special_discount_menu_id.parent_id = False
+            # self.env.ref('tzc_website.tzc_sale').parent_id = main_menu_id
 
     def action_deactive(self):
         active_rec = self.search([('is_active','=',True)])
-        special_discount_menu_id = self.env.ref('tzc_website.tzc_black_special_friday_sale')
-        main_menu_id = self.env['website.menu'].search([('name','like','Top Menu for Website 2')],limit=1)
+        # special_discount_menu_id = self.env.ref('tzc_website.tzc_black_special_friday_sale')
+        # main_menu_id = self.env['website.menu'].search([('name','like','Top Menu for Website 2')],limit=1)
         for rec in self:
             if not active_rec:
                 rec.is_active = True
-                if rec.to_date and rec.to_date >= datetime.now().date():
-                    special_discount_menu_id.parent_id = main_menu_id.id if main_menu_id else None
-                    self.env.ref('tzc_website.tzc_sale').parent_id = False
-                else:
-                    if self.env.ref('tzc_website.tzc_sale').parent_id:
-                        self.env.ref('tzc_website.tzc_sale').parent_id = main_menu_id
-                    if special_discount_menu_id.parent_id:
-                        special_discount_menu_id.parent_id = False
+                # if rec.to_date and rec.to_date >= datetime.now().date():
+                #     special_discount_menu_id.parent_id = main_menu_id.id if main_menu_id else None
+                #     self.env.ref('tzc_website.tzc_sale').parent_id = False
+                # else:
+                #     if self.env.ref('tzc_website.tzc_sale').parent_id:
+                #         self.env.ref('tzc_website.tzc_sale').parent_id = main_menu_id
+                #     if special_discount_menu_id.parent_id:
+                #         special_discount_menu_id.parent_id = False
             else:
                 raise UserError(f'You can not have 2 discount campaigns at the same time please First Deactivate {active_rec.name}')
 
     # This method is for home page banner xml.
-    def check_validity(self,active_fest_id=None):
-        if active_fest_id:
-            applicable = False
-            if active_fest_id.from_date and active_fest_id.to_date :
-                if active_fest_id.from_date <= datetime.now().date() and active_fest_id.to_date >= datetime.now().date():
-                    applicable = True
-            elif active_fest_id.from_date:
-                if active_fest_id.from_date <= datetime.now().date():
-                    applicable = True
-            elif active_fest_id.to_date:
-                if active_fest_id.to_date >= datetime.now().date():
-                    applicable = True
-            else:
-                if not active_fest_id.from_date:
-                    applicable = True
-                if not active_fest_id.to_date:
-                    applicable = True
-        else:
-            applicable = False
+    # def check_validity(self,active_fest_id=None):
+    #     if active_fest_id:
+    #         applicable = False
+    #         if active_fest_id.from_date and active_fest_id.to_date :
+    #             if active_fest_id.from_date <= datetime.now().date() and active_fest_id.to_date >= datetime.now().date():
+    #                 applicable = True
+    #         elif active_fest_id.from_date:
+    #             if active_fest_id.from_date <= datetime.now().date():
+    #                 applicable = True
+    #         elif active_fest_id.to_date:
+    #             if active_fest_id.to_date >= datetime.now().date():
+    #                 applicable = True
+    #         else:
+    #             if not active_fest_id.from_date:
+    #                 applicable = True
+    #             if not active_fest_id.to_date:
+    #                 applicable = True
+    #     else:
+    #         applicable = False
     
-        return applicable
+    #     return applicable
 
     def check_special_discount(self):
-        active_fest_id = self.env['tzc.fest.discount'].search([('is_active','=',True)])
+        active_fest_id = self.search([('is_active','=',True)])
         if active_fest_id:
             for rec in active_fest_id:
                 if rec.to_date and rec.to_date < datetime.now().date():
                     rec.is_active = False
-                    self.env.ref('tzc_website.tzc_black_special_friday_sale').parent_id = False
-                    main_menu_id = self.env['website.menu'].search([('name','like','Top Menu for Website 2')],limit=1)
-                    self.env.ref('tzc_website.tzc_sale').parent_id = main_menu_id if main_menu_id else False
-                    for internal_user in self.env.ref('base.group_user').users:
-                        template_id = self.env.ref('tzc_sales_customization_spt.mail_template_notify_internal_user_sale_end')
-                        template_id.email_to = internal_user.email
-                        template_id.with_context(user_name=internal_user.name).send_mail(rec.id,force_send=True,notif_layout="mail.mail_notification_light")
+                    # self.env.ref('tzc_website.tzc_black_special_friday_sale').parent_id = False
+                    # main_menu_id = self.env['website.menu'].search([('name','like','Top Menu for Website 2')],limit=1)
+                    # self.env.ref('tzc_website.tzc_sale').parent_id = main_menu_id if main_menu_id else False
+                    # for internal_user in self.env.ref('base.group_user').users:
+                    #     template_id = self.env.ref('tzc_sales_customization_spt.mail_template_notify_internal_user_sale_end')
+                    #     template_id.email_to = internal_user.email
+                    #     template_id.with_context(user_name=internal_user.name).send_mail(rec.id,force_send=True,notif_layout="mail.mail_notification_light")

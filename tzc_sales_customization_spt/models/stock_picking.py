@@ -1602,29 +1602,7 @@ class stock_picking(models.Model):
             rec_name = '%s (%s)'%(rec.origin,rec.name)
             name.append((rec.id,rec_name))
         return name
-    
-    def action_delivery_restore(self):
-        self.ensure_one()
-        if self.state not in ['confirmed','in_scanning']:
-            return {
-                'type': 'ir.actions.client',
-                'tag': 'display_notification',
-                'params': {
-                        'title': 'Something is wrong.',
-                        'message': 'Please reload your screen.',
-                        'sticky': True,
-                    }
-                }
-        else:
-            return {
-                "name":_("Recover Delivery"),
-                "type":"ir.actions.act_window",
-                "res_model":"delivery.recovery.selection.wizard",
-                "view_mode":"form",
-                "target":"new",
-                "context":{'default_sale_id':self.sale_id.id}
-            }
-    
+
     def button_open_package_scan(self):
         self.ensure_one()
         return {

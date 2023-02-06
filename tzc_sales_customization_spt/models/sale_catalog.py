@@ -8,6 +8,7 @@ from werkzeug.urls import url_encode
 from datetime import datetime
 from datetime import date
 from lxml import etree
+from datetime import datetime, timedelta
 
 class SaleCatalog(models.Model):
     _name = 'sale.catalog'
@@ -55,12 +56,14 @@ class SaleCatalog(models.Model):
     cron_interval_time = fields.Integer(compute='compute_get_interval_time',compute_sudo=True)
     cron_interval_type = fields.Char(compute='compute_get_interval_time',compute_sudo=True)
     accept_decline_flag = fields.Boolean('Accept/Decline Flag')
+    execution_time = fields.Datetime('Execution Time')
+    customer_id = fields.Many2one('res.partner')
 
-    # @api.onchange('user_id')
-    # def _onchange_get_manager(self):
-    #     for rec in self:
-    #         partner_ids = self.env['res.partner'].search([('user_id','=',rec.user_id.id),('customer_type','=','b2b_regular'),('active','=',True)])
-    #         rec.partner_ids = [(6,0,partner_ids.mapped('id'))]
+    @api.onchange('user_id')
+    def _onchange_get_manager(self):
+        for rec in self:
+            partner_ids = self.env['res.partner'].search([('user_id','=',rec.user_id.id),('customer_type','=','b2b_regular'),('active','=',True)])
+            rec.partner_ids = [(6,0,partner_ids.mapped('id'))]
 
     @api.onchange('user_id')
     def _onchange_partner_ids(self):
@@ -232,15 +235,15 @@ class SaleCatalog(models.Model):
     def default_get(self, fields):
         vals = super(SaleCatalog, self).default_get(fields)
         usd_public_pricelist = self.env.ref('tzc_sales_customization_spt.usd_public_pricelist_spt')
-        vals['name'] = self.env['ir.sequence'].next_by_code('sale.catalog.spt') or 'New'
+        vals['name'] = self.env['ir.sequence'].next_by_code('sale.catalog') or 'New'
         vals['pricelist_id'] = usd_public_pricelist.id
         return vals
 
-    # @api.depends('pending_catalog_ids')
-    # def _get_pending_catalog_count(self):
-    #     for record in self:
-    #         record.pending_catalog_count = len(record.pending_catalog_ids.filtered(lambda x:x.state == 'draft'))
-    #         record.catalog_sent_count = len(record.pending_catalog_ids.filtered(lambda x:x.state == 'sent'))
+    @api.depends('state')
+    def _get_pending_catalog_count(self):
+        for record in self:
+            record.pending_catalog_count = len(self.search([]).filtered(lambda x:x.state == 'draft'))
+            record.catalog_sent_count = len(self.search([]).filtered(lambda x:x.state == 'pending'))
 
     @api.depends('sale_order_ids')
     def _get_sale_order_count(self):
@@ -256,7 +259,7 @@ class SaleCatalog(models.Model):
 
     def cancel_catalog(self):
         for record in self:
-            self.env['pending.catalog.spt'].search_count([('catalog_id','in',record.ids)])
+            # self.env['pending.catalog.spt'].search_count([('catalog_id','in',record.ids)])
             #record.pending_catalog_ids.unlink()
             record.state = 'cancel'
 
@@ -315,7 +318,7 @@ class SaleCatalog(models.Model):
 
 
     def send_catalogs_to_customers_spt(self):
-        pending_catalog_obj = self.env['pending.catalog.spt']
+        # pending_catalog_obj = self.env['pending.catalog.spt']
         for record in self:
             #check customer is added or not
             if not record.partner_ids:
@@ -325,13 +328,13 @@ class SaleCatalog(models.Model):
             if not self._context.get('out_of_stock'):
                 record.check_catalog_stock_spt()
             
-            #create pending catalog
-            for customer in record.partner_ids:
-                pending_catalog_obj.create({
-                    'customer_id':customer.id,
-                    'catalog_id':record.id,
-                    'state':'draft',
-                })
+            # #create pending catalog
+            # for customer in record.partner_ids:
+            #     pending_catalog_obj.create({
+            #         'customer_id':customer.id,
+            #         'catalog_id':record.id,
+            #         'state':'draft',
+            #     })
             record.send_out = datetime.now()
             record.state = 'pending'
     
@@ -439,16 +442,16 @@ class SaleCatalog(models.Model):
         else:
             raise UserError(_("You can not give discount after %s."%(self.state)))
 
-    def action_catalog_visitors_spt(self):
-        self.ensure_one()
+    # def action_catalog_visitors_spt(self):
+    #     self.ensure_one()
 
-        return {
-            'type': 'ir.actions.act_window',
-            'name': _('Catalog Visitors'),
-            'res_model': 'catalog.visitors.spt',
-            'view_mode': 'tree',
-            'domain': [('catalog_id','=',self.id)],
-        }
+    #     return {
+    #         'type': 'ir.actions.act_window',
+    #         'name': _('Catalog Visitors'),
+    #         'res_model': 'catalog.visitors.spt',
+    #         'view_mode': 'tree',
+    #         'domain': [('catalog_id','=',self.id)],
+    #     }
 
     def line_ordering_by_product(self):
         product_list = []
@@ -484,60 +487,37 @@ class SaleCatalog(models.Model):
 
 
 
-    def schedule_catalog_to_send(self):
-        self.ensure_one()
-        zero_qty_product_lines,manage_qty_product_lines = [],[]
-        if not self.partner_ids:
-            raise UserError("Please Select Customer First, Under The Customers Tab")
-        else:
-            for line in self.line_ids:
-                if self.base_on_qty == 'total_qty':
-                    if line.product_pro_id.qty_available <= 0:
-                        zero_qty_product_lines.append(line.id)
-                    elif line.product_qty > line.product_pro_id.qty_available:
-                        manage_qty_product_lines.append(line.id)
-                    else:
-                        pass
-                elif self.base_on_qty == 'available_qty':
-                    available_qty = line.product_pro_id.actual_stock if line.product_pro_id.on_consignment else line.product_pro_id.available_qty_spt
-                    if available_qty <= 0:
-                        zero_qty_product_lines.append(line.id)
-                    elif line.product_qty > available_qty:
-                        manage_qty_product_lines.append(line.id)
-                    else:
-                        pass
-                else:
-                    pass
-            if zero_qty_product_lines or manage_qty_product_lines:
-                return {
-                    "name":_("User Warning"),
-                    "type":"ir.actions.act_window",
-                    "res_model":"catalog.process.error.wizard.spt",
-                    "view_mode":"form",
-                    "context":{
-                        "default_catalog_id":self.id,
-                        "default_zero_qty_products":[(6,0,self.env['sale.catalog.line'].browse(zero_qty_product_lines).sorted(lambda x: x.product_pro_id.name).ids)],
-                        "default_managed_qty_products":[(6,0,self.env['sale.catalog.line'].browse(manage_qty_product_lines).sorted(lambda x: x.product_pro_id.name).ids)],
-                        'total_spt': True if  self.base_on_qty == 'available_qty' else False,
-                        'available_spt':True if  self.base_on_qty == 'total_qty' else False,
-                        'zero_qty': True if not zero_qty_product_lines else False,
-                        'available_qty': True if not manage_qty_product_lines else False,
-                    },
-                    "target":"new",
-                }
-            else: 
-                allow_out_of_stock = True if self.base_on_qty == 'allow_out_of_stock' else False
-                self.with_context(out_of_stock=allow_out_of_stock).send_catalogs_to_customers_spt()
+    def send_catalog(self):
+        # catalog_visitors_obj = self.env['catalog.visitors.spt']
+        # for record in self:
+        if self.state != 'done':
+            for customer_id in self.partner_ids:
+                self.customer_id =  customer_id
+                customer_template_id = self.env.ref('tzc_sales_customization_spt.tzc_email_template_catalog_spt')
+                customer_template_id.with_context(customer_id=customer_id).send_mail(self.id,email_values={'email_to': customer_id.email},force_send=True)
+                sales_person_template_id = self.env.ref('tzc_sales_customization_spt.tzc_email_template_catalog_confirmation_spt')
+                sales_person_template_id.with_context(customer_id=customer_id).send_mail(self.id,force_send=True)
+                # catalog_visitors_obj.create({
+                #     'catalog_id':self.id,
+                #     'customer_id':customer_id.id,
+                # })
+        if not self.execution_time:
+            last_record = self.search([('state','=','done')],limit=1)
+            if last_record:
+                self.execution_time = last_record.execution_time + timedelta(minutes=int(self.env['ir.config_parameter'].sudo().get_param('tzc_sales_customization_spt.order_delay', default=0)))            
+        self.state = 'pending'
+        self._get_pending_catalog_count()
 
 
-    def action_pending_catalog_spt(self):
-        return {
-                "name":_("Pending Catalog"),
-                "type":"ir.actions.act_window",
-                "res_model":"pending.catalog.spt",
-                "view_mode":"tree",
-                'domain': [('catalog_id','in',self.ids),('state','=','draft')]
-        }
+
+    # def action_pending_catalog_spt(self):
+    #     return {
+    #             "name":_("Pending Catalog"),
+    #             "type":"ir.actions.act_window",
+    #             "res_model":"pending.catalog.spt",
+    #             "view_mode":"tree",
+    #             'domain': [('catalog_id','in',self.ids),('state','=','draft')]
+    #     }
         
 
     def action_mapping_qty(self):
@@ -641,3 +621,8 @@ class SaleCatalog(models.Model):
         if source_id.email:
             address += source_id.email 
         return address
+
+    def get_access_token_spt(self,customer_id=False):
+        self.ensure_one()
+        auth_param = url_encode(customer_id.signup_get_auth_param()[customer_id.id])
+        return auth_param

@@ -73,6 +73,11 @@ access_kits_replace_sales_person_wizard,access.kits.replace.sales.person.wizard,
 access_kits_replace_sales_manager_wizard,access.kits.replace.sales.manager.wizard,model_kits_replace_sales_manager_wizard,,1,1,1,1
 access_business_type_spt,access.business.type.spt,model_business_type_spt,,1,1,1,1
 access_internal_flag_spt,access.internal.flag.spt,model_internal_flag_spt,,1,1,1,1
+access_sale_catalog,access_sale_catalog,model_sale_catalog,,1,1,1,0
+access_sale_catalog_line,access_sale_catalog_line,model_sale_catalog_line,,1,1,1,1
+access_kits_wizard_download_catalog_excel,access.kits.wizard.download.catalog.excel,model_kits_wizard_download_catalog_excel,,1,1,1,0
+access_discount_on_catalog_line_wizard_spt,access.discount.on.catalog.line.wizard.spt,model_discount_on_catalog_line_wizard_spt,,1,1,1,0
+access_create_catalog_quotation_wizard_spt,access.create.catalog.quotation.wizard.spt,model_create_catalog_quotation_wizard_spt,,1,1,1,0
 access_sales_report_for_sales_person_wizard_spt,access.sales.report.for.sales.person.wizard.spt,model_sales_report_for_sales_person_wizard_spt,,1,1,1,1
 access_shipped_orders_report_wizard_spt,access.shipped.orders.report.wizard.spt,model_shipped_orders_report_wizard_spt,,1,1,1,1
 access_kits_brand_sales_report_wizard,access.kits.brand.sales.report.wizard,model_kits_brand_sales_report_wizard,,1,1,1,1

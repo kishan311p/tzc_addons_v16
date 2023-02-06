@@ -1,0 +1,223 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <record id="action_view_quotations" model="ir.actions.act_window">
+            <field name="name">Quotations</field>
+            <field name="res_model">sale.order</field>
+            <field name="domain">[('catalog_id', '=', active_id)]</field>
+            <field name="context">{'default_catalog_id': active_id}</field>
+        </record>
+
+        <!-- Product Catalog form view -->
+        <record id="view_sale_catalog_form" model="ir.ui.view">
+            <field name="name">sale_catalog_form_view</field>
+            <field name="model">sale.catalog</field>
+            <field name="arch" type="xml">
+                <form>
+                    <header>
+                        <field name="state" widget="statusbar" statusbar_visible="draft,pending,done,cancel"/>
+                        <button name="action_mapping_qty" string="Map Live QTY" type="object" class="oe_highlight" attrs="{'invisible': [('state','not in',['draft'])]}" />
+                        <button name="action_discount_wizard" type="object" string="Bulk Discount" class="oe_highlight" attrs="{'invisible': [('state','in',('cancel','done'))]}"/>
+                        <button name="send_catalog" string="Send Catalog" type="object" class="oe_highlight" />
+                        <!-- <button name="send_catalog" string="Send Catalog" type="object" class="oe_highlight" attrs="{'invisible': [('state','in',('pending','done','cancel'))]}" /> -->
+                        <button name="action_download_excel_report" class="oe_highlight" type="object" string="Download Catalog"/>
+                        <button name="action_order_quotation" string="Create Quotation" type="object" class="oe_highlight" attrs="{'invisible': [('state','in',('pending','done','cancel'))]}"/>
+                        <button name="cancel_catalog" class="oe_highlight" string="Cancel" type="object" attrs="{'invisible': [('state','in',('cancel'))]}" confirm="This catalog will be cancel."/>
+                    </header>
+                    <div class="alert alert-danger text-center o_form_header" role="status">
+                        <div>
+                            <strong>some customers are not mailgun approved,</strong><br/>
+                            <strong>so a pending catalog record will not be created of that customer.</strong>
+                        </div>
+                    </div>
+                    <!-- <div class="alert alert-success text-center o_form_header" role="status" attrs="{'invisible':[('state','not in',['pending'])]}">
+                        <div>
+                            
+                            <strong>Your catalog is scheduled to be sent after 
+                                    <field name="cron_interval_time" readonly="1"/> -
+                                    <field name="cron_interval_type" readonly="1"/>.<br/> If you want to send it now, click on Pending Catalog, then click on Send Now.</strong>
+                        </div>
+                    </div> -->
+                    <sheet>
+                        <div class="oe_button_box" name="button_box">
+                            <!-- <button class="oe_stat_button" type="object" name="action_catalog_visitors_spt" icon="fa-users">
+                                <div class="o_stat_info">
+                                    <field name="visitors" class="o_stat_value"/>
+                                    <span class="o_stat_text">#Visits</span>
+                                </div>
+                            </button> -->
+                            <!-- <button class="oe_stat_button" icon="fa-send" readonly="1">
+                                <div class="o_stat_info">
+                                    <field name="catalog_sent_count" class="o_stat_value"/>
+                                    <span class="o_stat_text">Sent Catalog</span>
+                                </div>
+                            </button> -->
+                            <!-- <button class="oe_stat_button" type="object" name="action_pending_catalog_spt" icon="fa-clock-o">
+                                <div class="o_stat_info">
+                                    <field name="pending_catalog_count" class="o_stat_value"/>
+                                    <span class="o_stat_text">Pending Catalog</span>
+                                </div>
+                            </button>-->
+                            <button class="oe_stat_button" type="action" name="%(action_view_quotations)d" icon="fa-pencil-square-o">
+                                <div class="o_stat_info">
+                                    <field name="sale_order_count" class="o_stat_value"/>
+                                    <span class="o_stat_text"> Quotation(s) </span>
+                                </div>
+                            </button> 
+                            <button class="oe_stat_button" type="object" name="toggle_active" icon="fa-archive">
+                                <field name="active" widget="boolean_button" options="{'terminology': 'archive'}"/>
+                            </button>
+                        </div>
+                        <div class="oe_title">
+                            <h1>
+                                <field name="name" required="1"/>
+                            </h1>
+                        </div>
+                        <group>
+                            <group>
+                                <label for='description'/>
+                                <div>
+                                    <div class="o_address_format">
+                                        <field name="description" attrs="{'readonly':[('state','not in',['draft','validate'])]}"/>
+                                        <br/>
+                                        <field name="description_1" nolabel="1" attrs="{'readonly':[('state','not in',['draft','validate'])]}"/>
+                                        <br/>
+                                        <field name="description_2" nolabel="1" attrs="{'readonly':[('state','not in',['draft','validate'])]}"/>
+                                    </div>
+                                </div>
+                                <field name="create_uid" string="Created By" readonly="1"/>
+                                <field name="user_id" string="Salesperson" domain="[('is_salesperson','=',True)]" attrs="{'readonly':[('state','not in',['draft'])]}"/>
+                                <field name="pricelist_id" attrs="{'readonly':[('state','not in',['draft','validate'])],'required' : [('state','=','draft')]}"/>
+                                <field name="expiry_date" />
+                            </group>
+                            <group>
+                                <field name="base_on_qty" attrs="{'readonly':[('state','not in',['draft'])]}"/>
+                            </group>
+                        </group>
+                        <notebook>
+                            <page name="catalog_lines" string="Catalog Lines">
+                                <field name="line_ids" mode="tree" attrs="{'readonly':[('state','not in',['draft','validate'])]}">
+                                    <tree editable="bottom" create="1" delete="1" string="Catalog Lines" default_order="product_pro_id">
+                                        <field name="image_catalog_product_url" class="oe_avatar" string="Primary Image" widget="image" options="{'zoom': true,'thumb_image':'image_catalog_product_url','preview_image':'image_catalog_product_url','size': [300, 90]}"/>
+                                        <field name="image_catalog_product_secondary_url" class="oe_avatar" string="Secondary Image" widget="image" style="margin-left:10px;" options="{'zoom': true,'thumb_image':'image_catalog_product_secondary_url','preview_image':'image_catalog_product_secondary_url','size': [300, 90]}"/>                                       <field name="product_pro_id" options="{'no_create': True}" style="font-weight: bold;"/>
+                                        <field name="sale_type"/>
+                                        <field name="product_categ_id" string="Category"/>
+                                        <field name="name" invisible="1"/>
+                                        <field name="variant_name" invisible="1"/>
+                                        <field name="product_uom_id" groups="uom.group_uom" />
+                                        <field name="product_price_msrp" readonly="1" force_save="1"/>
+                                        <field name="product_price_wholesale" string="Wholesale" readonly="1" force_save="1"/>
+                                        <field name="product_price" readonly="1" force_save="1"/>
+                                        <field name="unit_discount_price" readonly="1" force_save="1"/>
+                                        <field name="product_qty" />
+                                        <field name="product_qty_available" string="On Hand QTY"/>
+                                        <field name="qty_available_spt" />
+                                        <field name="discount" />
+                                        <field name="is_special_discount" invisible="1"/>
+                                        <field name="price_subtotal" sum="Subtotal"/>
+                                    </tree>
+                                </field>
+                            </page>
+                            <page name="customer" string="Customers">
+                                <field name="partner_ids" attrs="{'readonly':[('state','not in',['draft','validate','manage_qtys'])]}" force_save="1">
+                                    <tree editable="bottom" create="1" delete="1" decoration-success="mailgun_verification_status == 'approved'" decoration-danger="mailgun_verification_status == 'rejected'">
+                                        <field name="mailgun_verification_status" />
+                                        <field name="internal_id" />
+                                        <field name="display_name" />
+                                        <field name="contact_name_spt" />
+                                        <field name="phone" />
+                                        <field name="email" />
+                                        <!-- <field name="last_logged_on" /> -->
+                                        <field name="last_order_id" />
+                                        <field name="last_order_date" />
+                                        <field name="last_order_value" />
+                                        <field name="street" />
+                                        <field name="street2" />
+                                        <field name="city" />
+                                        <field name="state_id" />
+                                        <field name="territory" />
+                                        <field name="country_id" />
+                                        <field name="user_id" />
+                                        <field name="sale_order_count" />
+                                        <field name="total_invoiced_count" />
+                                        <field name="customer_type" />
+                                        <field name="user_state" />
+                                        <field name="is_company" />
+                                        <field name="is_customer" />
+                                        <field name="is_salesmanager" />
+                                        <field name="is_vendor" />
+                                        <field name="is_email_verified" />
+                                        <field name="is_granted_portal_access" />
+                                        <field name="catalog_count" />
+                                        <field name="updated_on" />
+                                        <field name="updated_by" />
+                                    </tree>
+                                </field>
+                            </page>
+                        </notebook>
+                    </sheet>
+
+                    <div class="oe_chatter">
+                        <field name="message_follower_ids" widget="mail_followers"/>
+                        <field name="activity_ids" widget="mail_activity"/>
+                        <field name="message_ids" widget="mail_thread"/>
+                    </div>
+
+                </form>
+            </field>
+        </record>
+
+        <!-- Product Catalog tree view -->
+        <record id="view_sale_catalog_tree" model="ir.ui.view">
+            <field name="name">sale_catalog_tree_view</field>
+            <field name="model">sale.catalog</field>
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="create_date" optional="show"/>
+                    <field name="send_out" optional="show"/>
+                    <field name="create_uid" optional="show"/>
+                    <field name="user_id" string="Salesperson" optional="show"/>
+                    <field name="name" optional="show"/>
+                    <field name="description" optional="show"/>
+                    <field name="visitors" string="#Visits" optional="show"/>
+                    <field name="customer_count" string="#Catalog Sent" optional="show"/>
+                    <field name="pending_catalog_count" string="#Pending Catalog" optional="show"/>
+                    <field name="sale_order_count" string="#Order Created" optional="show"/>
+                    <field name="catalog_total" string="Total Amount"  optional="show"/>
+                    <field name="partner_ids" string="Customers" widget="many2many_tags" optional="show"/>
+                    <field name="state" optional="show"/>
+
+                </tree>
+            </field>
+        </record>
+
+        <!-- Product Catalog search view -->
+        <record id="view_sale_catalog_search" model="ir.ui.view">
+            <field name="name">sale_catalog_search_view</field>
+            <field name="model">sale.catalog</field>
+            <field name="arch" type="xml">
+                <search>
+                    <field name="name"/>
+                    <field name="create_uid"/>
+                    <field name="user_id" string="Salesperson"/>
+                    <separator/>
+                    <filter name="archived" string="Archived" domain="[('active', '=', False)]"/>
+                    <group expand="0" string="Group By">
+                        <filter string="Status" name="catalog_state" domain="[]" context="{'group_by': 'state'}"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+
+        <!-- Catalog Action -->
+        <record id="sale_catalog_action" model="ir.actions.act_window">
+            <field name="name">Catalogs</field>
+            <field name="res_model">sale.catalog</field>
+            <field name="view_mode">tree,form</field>
+            <field name="context">{}</field>
+        </record>
+        <menuitem id="menu_main_sale_catalog" name="Catalogs" action="sale_catalog_action" parent="sale.sale_menu_root" sequence="32"/>
+        <!-- <menuitem id="menu_sale_catalog" name="Catalogs" action="sale_catalog_action" parent="menu_main_sale_catalog" sequence="1"/> -->
+    </data>
+</odoo>

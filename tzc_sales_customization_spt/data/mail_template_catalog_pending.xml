@@ -1,0 +1,522 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="0">
+
+        <record id="tzc_email_template_catalog_spt" model="mail.template">
+            <field name="name">Catalog - Send by Email</field>
+            <field name="email_from">{{(object.user_id.email and '%s &lt;%s&gt;' % (object.user_id.name, object.user_id.email) or '')}}</field>
+            <field name="subject">{{object.user_id.company_id.name}} has sent you an exclusive catalog to review ({{object.name or 'n/a' }})</field>
+            <field name="model_id" ref="model_sale_catalog"/>
+            <field name="reply_to">{{(object.user_id.company_id.catchall_email,object.user_id.email)}}</field>
+            <!-- <field name="report_template" ref="tzc_sales_customization_spt.action_catalog_report_spt"/>
+            <field name="report_name">Quotation ${(object.name or '')}</field> -->
+            <field name="auto_delete" eval="False"/>
+            <field name="body_html" type="html">
+                <table border="0" cellpadding="0" cellspacing="0" style="padding-top: 16px; background-color: #F1F1F1; font-family:Verdana, Arial,sans-serif; color: #454748; width: 100%; border-collapse:separate;">
+                    <tr>
+                        <t t-set="customer_id" t-value="object._context.get('customer_id')"/>
+                        <td align="center">
+                            <table border="0" cellpadding="0" cellspacing="0" style="padding: 16px; background-color: white; color: #454748; border-collapse:separate;">
+                                <tbody>
+                                    <tr>
+                                        <td align="center" style="min-width:1000px;">
+                                            <t>
+                                                <t t-if="object.env.cr.dbname != 'eto_production'">
+                                                    <div class="corner-ribbon" style="top: 5%;position:absolute;width: 165px;font-weight: bold;color: #dc0e0e;font-size: 36px;text-align: center;">TEST</div>
+                                                </t>
+                                            </t>
+                                            <table border="0" cellpadding="0" cellspacing="0" style="min-width: 1000px; background-color: white; padding: 0px 8px 0px 8px;border-collapse:separate;width:100%;">
+                                                <tr>
+                                                    <td valign="middle" style="width: 345px;">
+                                                        <span style="font-size: 20px; font-weight: bold;">
+                                                            <t t-out="object.name"/>
+                                                        </span>
+                                                    </td>
+                                                    <td valign="middle" style="width: 145px;" align="right">
+                                                        <img  src="/web/image/res.company/1/logo" style="padding: 0px; margin: 0px; height: auto; width: 280px;" t-attf-alt="{{customer_id.user_id.company_id.name}}"/>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td colspan="2" style="text-align:center;">
+                                                        <hr width="100%" style="background-color:rgb(204,204,204);border:medium none;clear:both;display:block;font-size:0px;min-height:1px;line-height:0; margin:16px 0px 16px 0px;width:100%;"/>
+                                                    </td>
+                                                </tr>
+                                            </table>
+                                        </td>
+                                    </tr>
+                                    <td align="center" style="min-width: 590px;">
+                                        <table border="0" cellpadding="0" cellspacing="0" style="min-width: 590px; background-color: white; padding: 0px 8px 0px 8px; border-collapse:separate;width:100%;">
+                                            <tr>
+                                                <td valign="top" style="font-size: 13px;">
+                                                    <t t-set="sub_total" t-value="0.00"/>
+                                                    <t t-set="total" t-value="0.00"/>
+                                                    <t t-set="total_discount" t-value="0.00"/>
+                                                    <t t-set="onsale_price" t-value="0.00"/>
+                                                    <p style="margin-top:0px;">
+                                                        Dear <t t-out="customer_id.name"/>,
+                                                    </p>
+                                                    <t t-if="object.description or object.description_1 or object.description_2">
+                                                        <t t-if="object.description">
+                                                            <t t-out="object.description"/>
+                                                        </t>
+                                                        <t t-if="object.description_1">
+                                                            <t t-out="object.description_1"/>
+                                                        </t>
+                                                        <t t-if="object.description_2">
+                                                            <t t-out="object.description_2"/>
+                                                        </t>
+                                                    </t>
+                                                    <br/>
+                                                    <center>
+                                                        <a t-attf-href="{{object.get_base_url()}}/my/catalog/{{object.id}}+'?'+{{object.get_access_token_spt(customer_id)}}" style="background-color:#7693f8 !important; padding: 20px; text-decoration: none; color: #fff; border-radius: 5px; font-size: 16px;" class="o_default_snippet_text">
+                                                            View Catalog
+                                                        </a>
+                                                    </center>
+                                                    <br/>
+                                                    <br/>
+                                                    <table style="border: 1px solid #dbdde0;border-collapse:collapse;width: 100%;">
+                                                        <thead>
+                                                            <tr>
+                                                                <th style="padding: 10px;width: 20%;" colspan="2">
+                                                                    <img src="/web/image?model=res.company&amp;id=1&amp;field=logo" style="height: 30px;" alt="Logo"/>
+                                                                </th>
+                                                                <th style="padding: 10px;text-align: center;width: 20%;">Product</th>
+                                                                <th style="padding: 10px;text-align: center;width: 8%;">Qty</th>
+                                                                <th style="padding: 10px;text-align: center;width: 8%;">Price <br/>(<span><t t-out="customer_id.property_product_pricelist.currency_id.name"/></span>)
+                                                                    
+                                                                </th>
+                                                                <th style="padding: 10px;text-align: center;width: 8%;">Subtotal <br/>(<span><t t-out="customer_id.property_product_pricelist.currency_id.name"/></span>)
+                                                                </th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                            <t t-if="object.line_ids">
+                                                                <t t-foreach="object.get_sorted_products(object.line_ids)" t-as="line">
+                                                                    <t t-set="total_discount" t-value="total_discount + (line.unit_discount_price * line.product_qty) - line.price_subtotal"/>
+                                                                    <t t-set="sub_total" t-value="line.price_subtotal + sub_total"/>
+                                                                    <t t-set="total" t-value="sub_total - total_discount"/>
+                                                                </t>
+                                                            </t>
+                                                            <tr>
+                                                                <td style="border: 1px solid #dbdde0; padding: 10px;">
+                                                                    <t t-set="special_discount" t-value="line.product_pro_id.get_black_special_friday_sale()"/>
+                                                                    <t t-if="line.sale_type">
+                                                                        <style>
+                                                                            .te_ribbon-wrapper kits_ribbon #style_3.label_div {
+                                                                                display: inline-block;
+                                                                                width: auto;
+                                                                                font-size: 0.8125rem;
+                                                                                background-color: #353e47;
+                                                                                position: absolute;
+                                                                                top: 10px;
+                                                                                right: unset;
+                                                                                bottom: unset;
+                                                                                left: 0px;
+                                                                                z-index: 1;
+                                                                                overflow: hidden;
+                                                                                @media (max-width:767px){
+                                                                                    font-size: 0.0125rem;
+                                                                                }
+                                                                            }
+                                                                            .te_ribbon-wrapper kits_ribbon #style_3.label_div .te_label_name.te_label_name_wish {
+                                                                                padding: 2px 4px !important;
+                                                                            }
+                                                                            .te_ribbon-wrapper kits_ribbon #style_3.label_div .te_label_name.te_label_name_wish:before {
+                                                                                //content: "\f02b";
+                                                                                font-family: FontAwesome;
+                                                                                margin-right: 5px;
+                                                                                font-size: 8px;
+                                                                            }
+                                                                        </style>
+                                                                    </t>
+                                                                    <t t-if="line.is_special_discount">
+                                                                        <img height="25px" t-attf-src="data:image/*;base64,{{special_discount.get('icon')}}"/>
+                                                                    </t>
+                                                                    <t t-else="">
+                                                                        <t t-if="line.sale_type  == 'clearance'">
+                                                                            <div class="te_ribb on-wrapper" style="color:white">
+                                                                                <span class="style_3 label_div kits_label_name" id="style_3" style="background-color:#990000;font-weight: bold;top: auto !important;left: 24px !important;font-size: 12px;">
+                                                                                    <span class="p-1 te_label_name te_label_name_wish">Clearance</span>
+                                                                                </span>
+                                                                            </div> 
+                                                                        </t>
+                                                                        <t t-if="line.sale_type  == 'on_sale'">
+                                                                            <div class="te_ribb on-wrapper kits_ribbon" style="color:white">
+                                                                                <span class="style_3 label_div" id="style_3" style="background-color:#e50000;font-weight: bold;top: auto !important;left: 24px !important;font-size: 12px;">
+                                                                                    <span class="p-1 te_label_name te_label_name_wish">Sale</span>
+                                                                                </span>
+                                                                            </div>
+                                                                        </t>
+                                                                    </t>
+                                                                    <img width="250px" t-attf-src="{{line.product_pro_id.image_url}}"/>
+                                                                </td>
+                                                                <td style="border: 1px solid #dbdde0; padding: 10px;">
+                                                                    <img width="250px" t-attf-src="{{line.product_pro_id.image_secondary_url}}"/>
+                                                                </td>
+                                                                <!--name-->
+                                                                <td style="text-align: center; border: 1px solid #dbdde0; padding: 10px;text-transform: capitalize;">
+                                                                    <p>
+                                                                        <t t-if="line.product_pro_id.brand">
+                                                                            <t t-out="line.product_pro_id.brand.name"/>
+                                                                        </t>
+                                                                        <t t-else="">
+                                                                            N/A
+                                                                        </t>
+                                                                        <br/>
+                                                                        <t t-if="line.product_pro_id.model">
+                                                                            <t t-out="line.product_pro_id.model.name"/>
+                                                                        </t>
+                                                                        <t t-else="">
+                                                                            N/A
+                                                                        </t>
+                                                                        <t t-if="line.product_pro_id.color_code">
+                                                                            <t t-out="line.product_pro_id.color_code.name"/>
+                                                                        </t>
+                                                                        <t t-else="">
+                                                                            00
+                                                                        </t>
+                                                                        <t t-if="line.product_pro_id.eye_size">
+                                                                            <t t-out="line.product_pro_id.eye_size.name"/>
+                                                                        </t>
+                                                                        <t t-else="">
+                                                                            00
+                                                                        </t>
+                                                                        <t t-if="line.product_pro_id.bridge_size">
+                                                                            <t t-out="line.product_pro_id.bridge_size.name"/>
+                                                                        </t>
+                                                                        <t t-else="">
+                                                                            00
+                                                                        </t>
+                                                                        <t t-if="line.product_pro_id.temple_size">
+                                                                            <t t-out="line.product_pro_id.temple_size.name"/>
+                                                                        </t>
+                                                                        <t t-else="">
+                                                                            00
+                                                                        </t>
+                                                                        <t t-if="line.product_pro_id.categ_id">
+                                                                            <t t-out="line.product_pro_id.categ_id.name"/>
+                                                                        </t>
+                                                                    </p>
+                                                                    <br/>
+                                                                    <div>
+                                                                        <div>
+                                                                    <p style="font-size: 10px;">
+                                                                        <span>
+                                                                            Retail Price: <t t-out="'%.2f' %line.product_pro_id.price_msrp"/><br/>
+                                                                            Wholesale Price: <t t-out="'%.2f' %line.product_pro_id.price_wholesale"/>
+                                                                        </span>
+                                                                    </p>
+                                                                        </div>
+                                                                    </div>
+                                                                </td>
+                                    
+                                                                <td style="text-align: center; border: 1px solid #dbdde0; padding: 10px;">
+                                                                    <p >
+                                                                        <t t-if="line.product_qty">
+                                                                            <t t-out="'%.0f' %line.product_qty"/>
+                                                                        </t>
+                                                                        <t t-if="not line.product_qty">
+                                                                            -
+                                                                        </t>
+                                                                    </p>
+                                                                </td>
+                                    
+                                    
+                                                                <td style="text-align: center; border: 1px solid #dbdde0; padding: 2px;">
+                                                                    <t t-set="pricelist_price" t-value="customer_id.property_product_pricelist._get_product_price(line.product_pro_id,line.product_qty,line.product_pro_id.uom_id)"/>
+                                                                    <t t-set="unit_discount_price" t-value=" pricelist_price - (pricelist_price * line.discount)*0.01"/>
+                                                                    <t t-if="line.sale_type == 'on_sale'">
+                                                                    <t t-if="customer_id.property_product_pricelist.currency_id.name == 'USD'">
+                                                                        <t t-set="onsale_price" t-value="line.product_pro_id.on_sale_usd"/>
+                                                                    </t>
+                                                                    <t t-else="">
+                                                                        <t t-set="onsale_price" t-value="line.product_pro_id.on_sale_cad"/>
+                                                                    </t>
+                                                                    </t>
+                                                                    <t t-if="line.sale_type == 'clearance'">
+                                                                    <t t-if="customer_id.property_product_pricelist.currency_id.name == 'USD'">
+                                                                        <t t-set="onsale_price" t-value="line.product_pro_id.clearance_usd"/>
+                                                                    </t>
+                                                                    <t t-else="">
+                                                                        <t t-set="onsale_price" t-value="line.product_pro_id.clearance_usd"/>
+                                                                    </t>
+                                                                    </t>
+                                                                    <t t-if="pricelist_price != unit_discount_price">
+                                                                        <p style="color: #ff0000;text-decoration:line-through;">
+                                                                            <b style="color:#454748;">
+                                                                                <t t-out="customer_id.property_product_pricelist.currency_id.symbol"/>
+                                                                                <t t-if="pricelist_price">
+                                                                                    <t t-out="'%.2f' % pricelist_price"/>
+                                                                                </t>
+                                                                                <t t-if="not pricelist_price">
+                                                                                    0.00
+                                                                                </t>
+                                                                            </b>
+                                                                        </p>
+                                                                        <t t-set="onsale_price" t-value="onsale_price - ((line.discount*0.01) * onsale_price)"/>
+                                                                        <p style="white-space: nowrap;color:#ff0000;">
+                                                                            <t t-if="unit_discount_price">
+                                                                                <t t-out="customer_id.property_product_pricelist.currency_id.symbol"/>
+                                                                                <t t-if="not line.sale_type">
+                                                                                    <t t-out="'%.2f' % unit_discount_price"/>
+                                                                                </t>
+                                                                                <t t-else="">
+                                                                                    <t t-out="'%.2f' % onsale_price"/>
+                                                                                </t>
+                                                                            </t>
+                                                                            <t t-if="not unit_discount_price">
+                                                                                0.00
+                                                                            </t>
+                                                                        </p>
+                                                                    </t>
+                                                                    <t t-else="">
+                                                                        <p style="color: #454748;">
+                                                                            <b>
+                                                                                <t t-out="customer_id.property_product_pricelist.currency_id.symbol"/>
+                                                                                <t t-if="pricelist_price">
+                                                                                    <t t-if="not line.sale_type">
+                                                                                        <t t-out="'%.2f' % pricelist_price"/>
+                                                                                    </t>
+                                                                                    <t t-else="">
+                                                                                        <t t-out="'%.2f' %onsale_price"/>
+                                                                                    </t>
+                                                                                </t>
+                                                                                <t t-if="not pricelist_price">
+                                                                                    0.00
+                                                                                </t>
+                                                                            </b>
+                                                                        </p>
+                                                                    </t>
+                                                                </td>
+                                                                <t t-set="onsale_price" t-value="onsale_price * line.product_qty"/>
+                                                                <td style="text-align: center; border: 1px solid #dbdde0; padding: 10px;">
+                                                                    <p >
+                                                                        <t t-set="line_total" t-value="unit_discount_price * line.product_qty"/>
+                                                                        <t t-if="line_total">
+                                                                            <t t-out="customer_id.property_product_pricelist.currency_id.symbol"/>
+                                                                            <t t-if="not line.sale_type">
+                                                                                <t t-out="'%.2f' % line_total"/>
+                                                                            </t>
+                                                                            <t t-else="">
+                                                                                <t t-out="'%.2f' %onsale_price"/>
+                                                                            </t>
+                                                                        </t>
+                                                                        <t t-if="not line_total">
+                                                                            <t t-out="customer_id.property_product_pricelist.currency_id.symbol"/>
+                                                                            0.00
+                                                                        </t>
+                                                                    </p>
+                                                                </td>
+                                                            </tr>
+                                                        </tbody>
+                                                    </table>
+                                                    <br/>
+                                                    <br/>
+                                                    <center>
+                                                        <a t-attf-href="{{object.get_base_url()}}/my/catalog/{{object.id}}+'?'+{{object.get_access_token_spt(customer_id)}}" style="background-color:#7693f8 !important; padding: 20px; text-decoration: none; color: #fff; border-radius: 5px; font-size: 16px;" class="o_default_snippet_text">
+                                                            View Catalog
+                                                        </a>
+                                                        <br/>
+                                                        <br/>
+                                                        <br/>
+                                                    </center>
+                                                    <br/>
+                                                    <p>
+                                                        You can reply to this email if you have any questions, or reach out to your Account Manager for more help.
+                                                    </p>
+                                                    <p style="margin-bottom:0px;">Thank you,</p>
+                                                    <p style="color:#888888;margin:0px;">
+                                                        <t t-if="object.user_id and object.user_id.name">
+                                                            <t t-out="object.user_id.name"/>
+                                                        </t>
+                                                        <t t-else="">
+                                                            ETO Support
+                                                        </t>
+                                                    </p>
+                                                    <a t-attf-href="{{object.get_base_url()}}/report/pdf/tzc_sales_customization_spt.catalog_report_template_spt/{{object.id}}">
+                                                        <img src="/tzc_sales_customization_spt/static/src/img/pdf.png" style="height:60px;width:100px;"/>
+                                                    </a>
+                                                    <p>
+                                                        <t t-if="object.user_id.signature">
+                                                            <t t-out="object.user_id.signature"/>
+                                                        </t>
+                                                    </p>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td style="text-align:center;">
+                                                    <hr width="100%" style="background-color:rgb(204,204,204);border:medium none;clear:both;display:block;font-size:0px;min-height:1px;line-height:0; margin: 16px 0px 16px 0px;"/>
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                    <tr>
+                                        <td align="left" style="min-width: 100%">
+                                            <table border="0" cellpadding="0" cellspacing="0" width="590" style="min-width: 90px; background-color: white; font-size: 11px; padding: 0px 8px 0px 8px; border-collapse:separate;">
+                                                <tr>
+                                                    <td valign="middle" align="left">
+                                                        <t t-out="object.user_id.company_id.name"/>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td valign="middle" align="left" style="opacity: 0.7;">
+                                                        <t t-out="object.user_id.company_id.phone"/>
+                                                        <t t-if="object.user_id.company_id.email">
+                                                            | <a t-att-href="'mailto:%s' % {{object.user_id.company_id.email}}" style="text-decoration:none; color: #454748;"><t t-out="object.user_id.company_id.email"/></a>
+                                                        </t>
+                                                        <t t-if="object.user_id.company_id.website">
+                                                            | <a t-att-href="'%s' % {{object.user_id.company_id.website}}" style="text-decoration:none; color: #454748;"><t t-out="object.user_id.company_id.website"/></a>
+                                                        </t>
+                                                    </td>
+                                                </tr>
+                                            </table>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </td>
+                    </tr>
+                    <!-- POWERED BY -->
+                    <tr>
+                        <td align="center" style="min-width: 100%">
+                            <table border="0" cellpadding="0" cellspacing="0" width="590" style="min-width: 100%; background-color: #F1F1F1; color: #454748; padding: 8px; border-collapse:separate;">
+                                <tr>
+                                    <td style="text-align: center; font-size: 13px;">
+                                    Powered by <a target="_blank" href="www.teameto.com" style="color: #7693f8;">ETO</a>
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                </table>
+            </field>
+        </record>
+
+
+        <record id="tzc_email_template_catalog_confirmation_spt" model="mail.template">
+            <field name="name">Salesperson Catalog Sent Confirmation</field>
+            <field name="email_from">"ETO-Support" &lt;{{(object.user_id.company_id.catchall_email or user.email)}}&gt;</field>
+            <!-- <field name="email_from">${(user.email)}</field> -->
+            <field name="subject">Catalog ({{object.name}}) sent successfully to {{object._context.get('customer_id').name}} </field>
+            <field name="email_to">{{(object.user_id.email)}}</field>
+            <field name="model_id" ref="tzc_sales_customization_spt.model_sale_catalog"/>
+            <field name="auto_delete" eval="False"/>
+            <field name="lang">{{object._context.get('customer_id').lang}}</field>
+            <field name="body_html" type="html">
+                <table border="0" cellpadding="0" cellspacing="0" style="padding-top: 16px; background-color: #F1F1F1; font-family:Verdana, Arial,sans-serif; color: #454748; width: 100%; border-collapse:separate;">
+                    <tr>
+                        <t t-set="customer_id" t-value="object._context.get('customer_id')"/>
+                        <td align="center">
+                            <table border="0" cellpadding="0" cellspacing="0" width="590" style="padding: 16px; background-color: white; color: #454748; border-collapse:separate;">
+                                <tbody>
+                                    <!-- HEADER -->
+                                    <tr>
+                                        <td align="center" style="min-width: 590px;">
+                                            <t>
+                                                <t t-if="object.env.cr.dbname != 'eto_production'" >
+                                                    <div class="corner-ribbon" style="top: 5%;position:absolute;width: 165px;font-weight: bold;color: #dc0e0e;font-size: 36px;text-align: center;">TEST</div>
+                                                </t>
+                                            </t>
+                                            <table border="0" cellpadding="0" cellspacing="0" width="590" style="min-width: 590px; background-color: white; padding: 0px 8px 0px 8px; border-collapse:separate;">
+                                                <tr>
+                                                    <td valign="middle" style="width: 245px;">
+                                                        <!-- <span style="font-size: 10px;">Your Account</span>
+                                                        <br/> -->
+                                                        <span style="font-size: 20px; font-weight: bold;">
+                                                            <t t-out="object.user_id.name"/>
+                                                        </span>
+                                                    </td>
+                                                    <td valign="middle" style="width: 145px;" align="right">
+                                                        <img src="/web/image/res.company/1/logo" style="padding: 0px; margin: 0px; height: auto; width: 280px;" t-attf-alt="{{object.user_id.company_id.name}}"/>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td colspan="2" style="text-align:center;">
+                                                        <hr width="100%" style="background-color:rgb(204,204,204);border:medium none;clear:both;display:block;font-size:0px;min-height:1px;line-height:0; margin:16px 0px 16px 0px;"/>
+                                                    </td>
+                                                </tr>
+                                            </table>
+                                        </td>
+                                    </tr>
+                                    <!-- CONTENT -->
+                                    <tr>
+                                        <td align="left" style="min-width: 590px;">
+                                        <table border="0" cellpadding="0" cellspacing="0" width="590" style="min-width: 590px; background-color: white; padding: 0px 8px 0px 8px; border-collapse:separate;">
+                                            <tr>
+                                                <td valign="top" style="font-size: 13px;">
+                                                    <p style="margin-top:0px;">Hello <t t-out="object.user_id.name"/>,</p>
+                                                    <!-- <br/> -->
+                                                    <p>Catalog <b>(<t t-out="object.name"/>)</b> has been successfully sent to customer <b><t t-out="customer_id.name"/>.</b>
+                                                        <br/>
+                                                       Kindly follow up with the client.
+                                                    </p>
+                                                    <!-- <br/> -->
+                                                    <p style="margin-bottom:0px;">Thank you,<br/>
+                                                        ETO Support</p>
+                                                        <!-- <br/> -->
+                                                        <a t-attf-href="{{object.get_base_url()}}/report/pdf/tzc_sales_customization_spt.catalog_report_template_spt/{{object.id}}">
+                                                            <img src="/tzc_sales_customization_spt/static/src/img/pdf.png" style="height:60px;width:100px;" />
+                                                        </a>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td style="text-align:center;">
+                                                    <hr width="100%" style="background-color:rgb(204,204,204);border:medium none;clear:both;display:block;font-size:0px;min-height:1px;line-height:0; margin: 16px 0px 16px 0px;"/>
+                                                </td>
+                                            </tr>
+                                        </table>
+                                        </td>
+                                    </tr>
+                                    <!-- FOOTER -->
+                                    <tr>
+                                        <td align="left" style="min-width: 590px;">
+                                            <table border="0" cellpadding="0" cellspacing="0" width="590" style="min-width: 590px; background-color: white; font-size: 11px; padding: 0px 8px 0px 8px; border-collapse:separate;">
+                                                <tr>
+                                                    <td valign="middle" align="left">
+                                                        <t t-out="object.user_id.company_id.name"/>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td valign="middle" align="left" style="opacity: 0.7;">
+                                                        <t t-out="object.user_id.company_id.phone"/>
+                                                        <t t-if="object.user_id.company_id.email">
+                                                            <a t-attf-href="'mailto:%s' % {{object.user_id.company_id.email}}" style="text-decoration:none; color: #454748;"><t t-out="object.user_id.company_id.email"/></a>
+                                                        </t>
+                                                        <t t-if="object.user_id.company_id.website">
+                                                            <a t-attf-href="'%s' % {{object.user_id.company_id.website}}" style="text-decoration:none; color: #454748;"><t t-out="object.user_id.company_id.website"/></a>
+                                                        </t>
+                                                        <!-- % if object.user_id.company_id.email
+                                                        |                                                        <a href="'mailto:%s' % {{object.user_id.company_id.email}}" style="text-decoration:none; color: #454748;"><t t-out="object.user_id.company_id.email"/></a>
+                                                        % endif
+                                                        % if object.user_id.company_id.website
+                                                            |                                                        <a href="'%s' % {{object.user_id.company_id.website}}" style="text-decoration:none; color: #454748;">
+                                                            {{object.user_id.company_id.website}}
+                                                        </a>
+                                                        % endif -->
+                                                    </td>
+                                                </tr>
+                                            </table>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </td>
+                    </tr>
+                    <!-- POWERED BY -->
+                    <tr>
+                        <td align="center" style="min-width: 590px;">
+                            <table border="0" cellpadding="0" cellspacing="0" width="590" style="min-width: 590px; background-color: #F1F1F1; color: #454748; padding: 8px; border-collapse:separate;">
+                                <tr>
+                                    <td style="text-align: center; font-size: 13px;">
+                                    Powered by <a target="_blank" href="www.teameto.com" style="color: #7693f8;">ETO</a>
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                </table>
+            </field>
+        </record>
+
+    </data>
+</odoo>
