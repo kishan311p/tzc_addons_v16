@@ -15,7 +15,8 @@ class product_rim_type_spt(models.Model):
     sunglass_avl_rim_type = fields.Boolean(string="Available Sunglass Rim Type")
     new_arrival_avl_rim_type = fields.Boolean(string="Available New Arrival Rim Type")
     sale_avl_rim_type = fields.Boolean(string="Available sale Rim Type")
-
+    image_url = fields.Char('Image Url')
+    image = fields.Char('Image',related='image_url')
 
     def _compute_rim_type_products(self):
         for record in self:

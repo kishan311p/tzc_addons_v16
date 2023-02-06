@@ -16,7 +16,9 @@ class product_shape_spt(models.Model):
     sunglass_avl_shape = fields.Boolean(string="Available Sunglass Shape")
     new_arrival_avl_shape = fields.Boolean(string="Available New Arrival Shape")
     sale_avl_shape = fields.Boolean(string="Available sale Shape")
-    
+    image_url = fields.Char('Image Url')
+    image = fields.Char('Image',related='image_url')
+        
     def _compute_shape_products(self):
         for record in self:
             products = self.env['product.product'].search([("shape_id",'in',record.ids)])
