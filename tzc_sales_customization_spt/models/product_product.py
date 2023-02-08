@@ -9,7 +9,18 @@ import re
 import random
 import requests
 import base64
-
+class product_template(models.Model):
+    _inherit = 'product.product'
+    
+    def action_open_quants(self):
+        res = super(product_template,self).action_open_quants()
+        if isinstance(res, dict) and res.get('context',False):
+            ctx = dict()
+            ctx = res.get('context').copy()
+            ctx.update({'kits_update_product_date': True})
+            res['context'] = ctx
+        return res
+    
 class ProductProduct(models.Model):
     _inherit = 'product.product'
 
