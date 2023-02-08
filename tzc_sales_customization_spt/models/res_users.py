@@ -7,27 +7,10 @@ import uuid
 from lxml import etree
 
 _logger = logging.getLogger(__name__)
-
-class ResUsers(models.Model):
+class res_users(models.Model):
     _name = 'res.users'
     _inherit = ['res.users','mail.thread']
-
-
-    def _get_manager_domain(self):
-        try:
-            users = self.env.ref('tzc_sales_customization_spt.group_sales_manager_spt').sudo().users
-            return [('id','in',users.ids)]
-        except:
-            return []
-
-    manager_id = fields.Many2one('res.users',"Manager ",domain=_get_manager_domain)
-    allow_user_ids = fields.One2many('res.users','manager_id','Sales Persons')
-    contact_allowed_countries = fields.Many2many('res.country','res_user_contact_allowed_country_rel','res_user_id','res_country_id','Sales Manager\'s  Designated Countries',tracking=True)
-    is_salesperson = fields.Boolean('Is Salesperson',compute="_compute_is_sales_person",store=True,compute_sudo=True)
-    country_ids = fields.Many2many('res.country','spt_res_user_res_country_rel','res_user_id','res_country_id','Sales Person\'s Notification Countries',tracking=True)
-    is_warehouse = fields.Boolean("Is Wareshouse")    
-    hidden_menu_ids = fields.Many2many('ir.ui.menu','ir_ui_menu_res_users_rel','menu_id','user_id','Hidden Menus')
-    is_sales_manager = fields.Boolean('Is Sales Manager',compute="_compute_is_sales_manager")
+    
     def _get_default_commission_rule(self):
         commission_id = False
         try:
@@ -37,8 +20,28 @@ class ResUsers(models.Model):
         except:
             pass
         return commission_id
+    def _get_manager_domain(self):
+        try:
+            users = self.env.ref('tzc_sales_customization_spt.group_sales_manager_spt').sudo().users
+            return [('id','in',users.ids)]
+        except:
+            return []
 
+    is_salesperson = fields.Boolean('Is Salesperson',compute="_compute_is_sales_person",store=True,compute_sudo=True)
+    manager_id = fields.Many2one('res.users',"Manager ",domain=_get_manager_domain)
+    allow_user_ids = fields.One2many('res.users','manager_id','Sales Persons')
+    is_email_verified = fields.Boolean(string='User Verified')
+    country_ids = fields.Many2many('res.country','spt_res_user_res_country_rel','res_user_id','res_country_id','Sales Person\'s Notification Countries',tracking=True)
+    show_country_ids = fields.Boolean(compute="_compute_show_country_ids")
+    contact_allowed_countries = fields.Many2many('res.country','res_user_contact_allowed_country_rel','res_user_id','res_country_id','Sales Manager\'s  Designated Countries',tracking=True)
+    is_internal_user = fields.Boolean(string="Is Internal User")
+    show_contact_allowed_countries = fields.Boolean(compute="_compute_show_allowed_countries")
+    manager_country_ids = fields.Many2many('res.country','res_country_manager_country_rel','res_user_id','res_manager_country_id',compute="_compute_manager_country_ids",string="Manager's Countries")
+
+    is_warehouse = fields.Boolean("Is Wareshouse")    
+    hidden_menu_ids = fields.Many2many('ir.ui.menu','ir_ui_menu_res_users_rel','menu_id','user_id','Hidden Menus')
     commission_rule_id = fields.Many2one('kits.commission.rules','Salesperson Commission Rule',default=_get_default_commission_rule)
+    is_sales_manager = fields.Boolean('Is Sales Manager',compute="_compute_is_sales_manager")
     manager_commission_rule_id = fields.Many2one('kits.commission.rules','Manager Commission rule')
     signup_user_ip = fields.Char('Signup User IP ')
     alias_id = fields.Many2one('mail.alias', 'Alias', ondelete="set null", required=False,
@@ -77,7 +80,105 @@ class ResUsers(models.Model):
     def _compute_is_sales_person(self):
         for rec in self:
             rec.is_salesperson = rec.has_group('sales_team.group_sale_salesman')
+    
+    def _is_salesmanager(self):
+        self.ensure_one()
+        return self.has_group('tzc_sales_customization_spt.group_sales_manager_spt')
 
+    def _compute_manager_country_ids(self):
+        managers = self.env['res.users'].search([('allow_user_ids','in',self.ids)])
+        self.manager_country_ids = [(6,0,managers.mapped('contact_allowed_countries').ids)]
+
+    def _compute_show_allowed_countries(self):
+        if self.has_group("tzc_sales_customization_spt.group_sales_manager_spt"):
+            self.show_contact_allowed_countries = True
+        else:
+            self.show_contact_allowed_countries = False
+        self.is_internal_user= self.has_group('base.group_user')
+
+    @api.constrains('country_ids','contact_allowed_countries')
+    def check_country_assign(self):
+        message =''
+        user_obj = self.env['res.users']
+        can_not_assign = []
+        if self.country_ids:
+            for country_id in self.country_ids:
+                user_id = user_obj.search([('id','!=',self.id),('is_salesperson','=',True),('country_ids','in',country_id.ids)])
+                if user_id and user_id.id:
+                    can_not_assign.append("Country %s is already assigned to %s sales person."%(country_id.name,user_id.name))
+        if self.contact_allowed_countries:
+            for allow_country_id in self.contact_allowed_countries:
+                user_id = user_obj.search([('id','!=',self.id),('is_salesmanager','=',True),('contact_allowed_countries','in',allow_country_id.ids)])
+                if user_id:
+                    can_not_assign.append("Country %s is already assigned to %s sales manager."%(allow_country_id.name,','.join(user_id.mapped('name'))))
+        if len(can_not_assign) > 0:
+            message = '\n'.join(can_not_assign)
+            print(message)
+            raise UserError(_(message))
+
+    # @api.depends('is_salesperson')
+    def _compute_show_country_ids(self):
+        if self.is_salesperson == True or self.has_group("tzc_sales_customization_spt.group_sales_manager_spt"):
+            self.show_country_ids = True
+        else:
+            self.show_country_ids = False
+
+    @api.model
+    def _fields_view_get(self, view_id=None, view_type='form', toolbar=False, submenu=False):
+        res = super(res_users, self)._fields_view_get(view_id=view_id, view_type=view_type, toolbar=toolbar, submenu=submenu)
+        if view_type == 'form':
+            doc = etree.fromstring(res['arch'])
+            for manager_id in doc.xpath("//field[@name='manager_id']"):
+                manager_id.attrib['readonly'] = '0' if self.env.user.has_group('base.group_system') else '1'
+            res['arch'] = etree.tostring(doc, encoding='unicode')
+        return res
+    
+    # def write(self,vals):
+    #     if self.contact_allowed_countries:
+    #         if vals.get('contact_allowed_countries') and (not vals.get('contact_allowed_countries')[0][-1] or vals.get('contact_allowed_countries')[0][0] == 5):
+    #             if self._context.get('active_model') and self._context.get('active_model') != 'res.users':
+    #                 raise UserError('You can not remove Sales manager designated countries.')
+    #     return super(res_users,self).write(vals)
+
+    def action_archive_uers(self):
+        user_ids = self
+        customer_ids_list = []
+        for user in self:
+            customer_ids = self.env['res.partner'].search([('user_id','=',user.id)])
+            customer_ids_list.extend(customer_ids.ids)
+            if customer_ids:
+                user_ids -= user 
+
+        # sales_person_manager = self.filtered(lambda x:x.is_salesperson or x.is_salesmanager).ids
+        # success_message = "Out of %s users %s users will going to be archived."%(len(self),len(self - self.browse(sales_person_manager)))
+        # failed_message = 'The following %s users will not going to be archived because they might be salesperson or sales manager.'%(len(sales_person_manager))
+        success_message = "Out of %s users %s users will going to be archived."%(len(self),len(user_ids))
+        failed_message = 'This internal user is set as a salesperson, so you can not archive it. Please change the salesperson in the following contact.'
+        return {
+                'name': _('User Messages'),
+                'type': 'ir.actions.act_window',
+                'res_model': "error.message.wizard",
+                'view_type': 'form',
+                'view_mode': 'form',
+                'target': 'new',
+                'context': {
+                    'default_success_message':success_message,
+                    "default_failed_message":failed_message,
+                    'default_failed_user_ids':[(6,0,(self - user_ids).ids)],
+                    'default_user_ids': [(6,0,self.ids)],
+                    'default_failed_partner_ids': [(6,0,customer_ids_list)],
+                }
+            }
+
+    def action_unarchive_uers(self):
+        for rec in self:
+            rec.active = True
+
+    def unlink(self):
+        try:
+            return super(res_users,self).unlink()
+        except Exception as e:
+            raise UserError('This user cannot be deleted since there might be some data attached to it. You may delete those data and try again.\n\n'+e.pgerror)
     
     def render_template(self):
         if self._context.get('error_report'):
@@ -98,7 +199,7 @@ class ResUsers(models.Model):
         #     wk_website_loyalty_points = wk_loyalty_program_id._fetch_signup_loyalty_points()
         #     if wk_website_loyalty_points:
         #         values['wk_website_loyalty_points'] = wk_website_loyalty_points
-        #         res = super(ResUsers, self).create(values)
+        #         res = super(res_users, self).create(values)
         #         res.partner_id.wk_website_loyalty_points =wk_website_loyalty_points
         #         history_vals = {
         #             'partner_id': res.partner_id.id,
@@ -110,7 +211,7 @@ class ResUsers(models.Model):
 
         #         self.env['website.loyalty.history'].sudo().create(history_vals)
 
-        return super(ResUsers, self).create(values)
+        return super(res_users, self).create(values)
 
     def write(self, values):
         self.env['ir.ui.menu'].clear_caches()
@@ -123,17 +224,12 @@ class ResUsers(models.Model):
 	
         if 'email' in values.keys() and values['email']:
             values.update({'email':values['email'].lower()})
-        return super(ResUsers, self).write(values)
+        return super(res_users, self).write(values)
 
     @api.depends('groups_id')
     def _compute_is_sales_manager(self):
         for rec in self:
             rec.is_sales_manager = rec.has_group('tzc_sales_customization_spt.group_sales_manager_spt')
-    
-    def _is_salesmanager(self):
-        self.ensure_one()
-        return self.has_group('tzc_sales_customization_spt.group_sales_manager_spt')
-
 
     def kits_b2b_user_verification_sent_email(self):
         mail_template = self.env.ref('tzc_sales_customization_spt.mail_template_user_signup_confirmation')
@@ -143,7 +239,6 @@ class ResUsers(models.Model):
     
     def get_image(self):
         return {'image': self.partner_id.image_128}
-
 
     def action_change_salesperson_rule(self):
         return {
@@ -165,15 +260,15 @@ class ResUsers(models.Model):
             'target':'new',
             }
 
-    # @api.model
-    # def _check_credentials(self, password):
-    #     result = super(ResUsers, self)._check_credentials(password)
-    #     ip_address = request.httprequest.environ['REMOTE_ADDR']
-    #     vals = {'name': self.name,
-    #             'ip_address': ip_address
-    #             }
-    #     self.env['login.detail'].sudo().create(vals)
-    #     return result
+    @api.model
+    def _check_credentials(self, password,env):
+        result = super(res_users, self)._check_credentials(password,self.env)
+        # ip_address = request.httprequest.environ['REMOTE_ADDR']
+        # vals = {'name': self.name,
+        #         'ip_address': ip_address
+        #         }
+        # self.env['login.detail'].sudo().create(vals)
+        return result
 
     def action_reset_password(self):
         """ create signup token for each user, and send their signup url by email """
@@ -315,8 +410,6 @@ class ResUsers(models.Model):
                 'context':mail_context,
             }
 
-
-
     def action_user_customer(self):
         tree_view = self.env.ref('base.view_partner_tree')
         form_view = self.env.ref('base.view_partner_form')
@@ -386,93 +479,6 @@ class ResUsers(models.Model):
         record = self.get_filtere_contact()
         self.customer_count = len(record)
 
-    
-    def _compute_manager_country_ids(self):
-        managers = self.env['res.users'].search([('allow_user_ids','in',self.ids)])
-        self.manager_country_ids = [(6,0,managers.mapped('contact_allowed_countries').ids)]
-
-    def _compute_show_allowed_countries(self):
-        if self.has_group("tzc_sales_customization_spt.group_sales_manager_spt"):
-            self.show_contact_allowed_countries = True
-        else:
-            self.show_contact_allowed_countries = False
-        self.is_internal_user= self.has_group('base.group_user')
-
-    @api.constrains('country_ids','contact_allowed_countries')
-    def check_country_assign(self):
-        message =''
-        user_obj = self.env['res.users']
-        can_not_assign = []
-        if self.country_ids:
-            for country_id in self.country_ids:
-                user_id = user_obj.search([('id','!=',self.id),('is_salesperson','=',True),('country_ids','in',country_id.ids)])
-                if user_id and user_id.id:
-                    can_not_assign.append("Country %s is already assigned to %s sales person."%(country_id.name,user_id.name))
-        if self.contact_allowed_countries:
-            for allow_country_id in self.contact_allowed_countries:
-                user_id = user_obj.search([('id','!=',self.id),('is_salesmanager','=',True),('contact_allowed_countries','in',allow_country_id.ids)])
-                if user_id:
-                    can_not_assign.append("Country %s is already assigned to %s sales manager."%(allow_country_id.name,','.join(user_id.mapped('name'))))
-        if len(can_not_assign) > 0:
-            message = '\n'.join(can_not_assign)
-            print(message)
-            raise UserError(_(message))
-
-    def _compute_show_country_ids(self):
-        if self.is_salesperson == True or self.has_group("tzc_sales_customization_spt.group_sales_manager_spt"):
-            self.show_country_ids = True
-        else:
-            self.show_country_ids = False
-
-    @api.model
-    def _fields_view_get(self, view_id=None, view_type='form', toolbar=False, submenu=False):
-        res = super(ResUsers, self)._fields_view_get(view_id=view_id, view_type=view_type, toolbar=toolbar, submenu=submenu)
-        if view_type == 'form':
-            doc = etree.fromstring(res['arch'])
-            for manager_id in doc.xpath("//field[@name='manager_id']"):
-                manager_id.attrib['readonly'] = '0' if self.env.user.has_group('base.group_system') else '1'
-            res['arch'] = etree.tostring(doc, encoding='unicode')
-        return res
-
-    def action_archive_uers(self):
-        user_ids = self
-        customer_ids_list = []
-        for user in self:
-            customer_ids = self.env['res.partner'].search([('user_id','=',user.id)])
-            customer_ids_list.extend(customer_ids.ids)
-            if customer_ids:
-                user_ids -= user 
-
-        # sales_person_manager = self.filtered(lambda x:x.is_salesperson or x.is_salesmanager).ids
-        # success_message = "Out of %s users %s users will going to be archived."%(len(self),len(self - self.browse(sales_person_manager)))
-        # failed_message = 'The following %s users will not going to be archived because they might be salesperson or sales manager.'%(len(sales_person_manager))
-        success_message = "Out of %s users %s users will going to be archived."%(len(self),len(user_ids))
-        failed_message = 'This internal user is set as a salesperson, so you can not archive it. Please change the salesperson in the following contact.'
-        return {
-                'name': _('User Messages'),
-                'type': 'ir.actions.act_window',
-                'res_model': "error.message.wizard",
-                'view_type': 'form',
-                'view_mode': 'form',
-                'target': 'new',
-                'context': {
-                    'default_success_message':success_message,
-                    "default_failed_message":failed_message,
-                    'default_failed_user_ids':[(6,0,(self - user_ids).ids)],
-                    'default_user_ids': [(6,0,self.ids)],
-                    'default_failed_partner_ids': [(6,0,customer_ids_list)],
-                }
-            }
-
-    def action_unarchive_uers(self):
-        for rec in self:
-            rec.active = True
-
-    def unlink(self):
-        try:
-            return super(ResUsers,self).unlink()
-        except Exception as e:
-            raise UserError('This user cannot be deleted since there might be some data attached to it. You may delete those data and try again.\n\n'+e.pgerror)
 
     def reset_password(self, login):
         """ retrieve the user corresponding to login (login or email),

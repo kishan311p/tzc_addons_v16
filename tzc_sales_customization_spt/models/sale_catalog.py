@@ -5,10 +5,9 @@ import base64
 import requests
 import json
 from werkzeug.urls import url_encode
-from datetime import datetime
+from datetime import datetime,timedelta
 from datetime import date
 from lxml import etree
-from datetime import datetime, timedelta
 
 class SaleCatalog(models.Model):
     _name = 'sale.catalog'
@@ -509,15 +508,6 @@ class SaleCatalog(models.Model):
         self._get_pending_catalog_count()
 
 
-
-    # def action_pending_catalog_spt(self):
-    #     return {
-    #             "name":_("Pending Catalog"),
-    #             "type":"ir.actions.act_window",
-    #             "res_model":"pending.catalog.spt",
-    #             "view_mode":"tree",
-    #             'domain': [('catalog_id','in',self.ids),('state','=','draft')]
-    #     }
         
 
     def action_mapping_qty(self):
