@@ -93,15 +93,14 @@
         <xpath expr="//tree/field[@name='price_unit']" position="after">
             <field name="unit_discount_price" force_save="1" attrs="{'readonly':['|','|',('is_admin','=',True),('is_global_discount','=',True),('state','not in',['draft','sent','received','in_scanning','sale','scanned'])]}" />
         </xpath>
-
         <xpath expr="//tree/field[@name='discount']" position="after">
             <field name="fix_discount_price" readonly="1" attrs="{'readonly':['|','|',('is_admin','=',True),('is_shipping_product','=',True),('state','not in',['draft','sent','received','in_scanning','sale','scanned'])]}" groups="product.group_discount_per_so_line"/>
             <field name="picked_qty_subtotal" readonly="1" />
         </xpath>
 
-        <xpath expr="//tree/field[@name='price_unit']" position="after">
+        <!-- <xpath expr="//tree/field[@name='price_unit']" position="after">
             <field name="unit_discount_price" readonly="1" />
-        </xpath>
+        </xpath> -->
 
         <xpath expr="//tree/field[@name='qty_invoiced']" position="attributes">
             <attribute name="invisible">1</attribute>
@@ -222,8 +221,7 @@
                     <attribute name="attrs">{'readonly':['|','|',('is_shipping_product','=',True),('is_admin','=',True),('state','not in',['draft','sent','received'])]}</attribute>
                     <attribute name="force_save">1</attribute>
                 </xpath>
-                <xpath expr="//field[@name='order_line']/tree/field[@name='discount']"
-                    position="attributes">
+                <xpath expr="//field[@name='order_line']/tree/field[@name='discount']" position="attributes">
                     <attribute name="attrs">{'readonly':['|','|',('is_admin','=',True),('is_shipping_product','=',True),('state','not in',['draft','sent','received','in_scanning','sale','scanned'])]}</attribute>
                 </xpath>
                 <xpath expr="//field[@name='order_line']/tree/field[@name='product_id']"
@@ -466,6 +464,12 @@
                 <xpath expr="//page[@name='order_lines']/field[@name='order_line']/tree/field[@name='product_template_id']" position="replace">
                     <field name="product_id" options="{'no_open': True, 'no_create': True}" attrs = "{'readonly':['|','|',('is_admin','=',True),('is_shipping_product','=',True),('state','not in',['draft','sent','received'])]}"/>
                 </xpath>
+                <xpath expr="//page[@name='order_lines']/field[@name='order_line']/tree/field[@name='product_packaging_id']" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </xpath>
+                <xpath expr="//page[@name='order_lines']/field[@name='order_line']/tree/field[@name='product_packaging_qty']" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </xpath>
                 <xpath expr="//sheet/div[@name='button_box']" position="inside">
                     <button class="oe_stat_button" context="{'surpass_restriction_kits':True}" name="merge_order_lines" icon="fa-compress" type="object" invisible="1">
                     <!-- <button class="oe_stat_button" context="{'surpass_restriction_kits':True}" name="merge_order_lines" icon="fa-compress" type="object" attrs="{'invisible':[('state','not in',('draft','sent','received'))]}"> -->
@@ -528,14 +532,14 @@
                                 <field name="message" readonly="1"/>
                             </div>
                         </div>
-                        <div class="col-sm-2 text-right">
-                            <label for="ordered_qty"/>
+                        <div class="col-sm-2 text-end">
+                            <label for="ordered_qty" style="margin-right: 5%;"/>
                             <field name="ordered_qty" />
                             <br/>
-                            <label for="delivered_qty"/>
+                            <label for="delivered_qty" style="margin-right: 5%;"/>
                             <field name="delivered_qty" />
                             <br/>
-                            <label for="picked_qty" string="Picked Quantity"/>
+                            <label for="picked_qty" string="Picked Quantity" style="margin-right: 5%;"/>
                             <field name="picked_qty" />
                             <newline/>
                             <!-- <field name="check_line_qty" invisible="1"/> -->
@@ -615,27 +619,6 @@
                 <!-- <field name="_barcode_scanned" widget="barcode_handler" invisible="1"/> -->
                 <field name="source_spt" invisible="1" />
             </field>
-            <xpath expr="//sheet" position="before">
-                <field name="is_not_product_aval_qty_flag" invisible="1" />
-                <div class="alert alert-danger text-center o_form_header" role="status"
-                    attrs="{'invisible':['|',('is_not_product_aval_qty_flag','=',False),('state','not in',['draft','sent','received','sale','in_scanning','scanned','scan'])]}">
-                    <div>
-                        <strong>Some ordered products do not have enough quantity. To reset the
-                            order quantity to the available quantity, please</strong>
-                            <![CDATA[&nbsp;]]>
-                        <button string="Click Here" name="action_update_order_qty" type="object"
-                            class="oe_highlight" />
-                    </div>
-                </div>
-                <field name="cart_discount_availability" invisible="1" />
-                <div class="alert alert-success alert-dismissable d-print-none text-center"
-                    role="status" attrs="{'invisible':[('cart_discount_availability','=',False)]}">
-                    <strong>This order is eligible for an additional <field name="cart_discount"
-                            nolabel="1" readonly="1" />% discount on a minimum order value of <field
-                            name="cart_to_price" nolabel="1" readonly="1" /><![CDATA[&nbsp;]]><field
-                            name="currency_name" />.</strong>
-                </div>
-            </xpath>
             <xpath expr="//button[@name='action_quotation_send'][2]" position="attributes">
                 <attribute name="attrs">{'invisible':[('state','in',('draft','sent','received','sale','in_scanning','cancel','merged'))]}</attribute>
             </xpath>
