@@ -1,0 +1,39 @@
+<?xml version='1.0' encoding='utf-8'?>
+<odoo>
+    <data>
+        <record id="kits_history_of_task_changes_form_view" model="ir.ui.view">
+            <field name="name">kits.history.of.task.changes.form.view</field>
+            <field name="model">kits.history.of.task.changes</field>
+            <field name="arch" type="xml">
+                <form>
+                    <sheet>
+                        <group>
+                            <group>
+                                <field name="date_from" />
+                                <field name="task_ids" widget="many2many_tags" options="{'no_create': True}" />
+                            </group>
+                            <group>
+                                <field name="date_to" />
+                            </group>
+                        </group>
+                    </sheet>
+                    <footer>
+                        <button string="Excel Report" name="action_excel_report" type="object" class="oe_highlight"/>
+                        <button special="cancel" string="Cancel" />
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+        <record id="kits_history_of_task_changes_action" model="ir.actions.act_window">
+            <field name="name">History of Changes in Task</field>
+            <field name="res_model">kits.history.of.task.changes</field>
+            <field name="target">new</field>
+            <field name="view_mode">form</field>
+        </record>
+
+        <menuitem id="menu_kits_history_of_task_changes" name="History of Changes in Task Report" action="kits_history_of_task_changes_action" parent="project.menu_project_report"/>
+
+
+    </data>
+</odoo>

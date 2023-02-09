@@ -7,7 +7,7 @@
     'author': 'Keypress',
     'sequence': 1,
     'version': '16.0.0',
-    'depends':['base','product','stock','sale_stock','sale','sale_management','crm','delivery','mail','portal','mass_mailing','snailmail_account_followup','marketing_automation','barcodes','sale_loyalty'],
+    'depends':['base','product','stock','sale_stock','sale','sale_management','crm','delivery','mail','portal','mass_mailing','snailmail_account_followup','marketing_automation','barcodes','sale_loyalty','project_enterprise','project'],
 
     'data': [
         
@@ -95,6 +95,8 @@
         'views/login_user_views.xml',
         # 'views/update_qty_log_view.xml',
         'views/sale_catalog.xml',
+        'views/project_task_view.xml',
+        'views/project_task_type_view.xml',
 
         # Wizard
         'wizards/kits_warning_wizard_view.xml',
@@ -155,6 +157,9 @@
         'wizards/kits_update_picking_wizard_view.xml',
         'wizards/delivery_recovery_selection_wizard_view.xml',
         'wizards/remove_done_quantity_view_spt.xml',
+        'wizards/kits_task_report_of_users_view.xml',
+        'wizards/kits_history_of_task_changes_view.xml',
+        'wizards/time_shift_wizard_view.xml',
 
         # Reports
         'reports/kits_commission_report.xml',
@@ -172,6 +177,10 @@
         # Templates
         'template/excel_data.xml',
 
+    ],
+    
+    'qweb': [
+        'static/src/xml/kits_task_gantt.xml',
     ],
 
     'assets': 

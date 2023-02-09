@@ -1,0 +1,44 @@
+<?xml version='1.0' encoding='utf-8'?>
+<odoo>
+    <data>
+        <record id="kits_task_report_of_users_form_view" model="ir.ui.view">
+            <field name="name">kits.task.report.of.users.form.view</field>
+            <field name="model">kits.task.report.of.users</field>
+            <field name="arch" type="xml">
+                <form>
+                    <sheet>
+                        <group>
+                            <group>
+                                <field name="date_from" />
+                                <field name="follow_up_user_ids" widget="many2many_tags" />
+                                <field name="task_type" />
+                                <field name="task_priority" widget="priority" />
+                            </group>
+                            <group>
+                                <field name="date_to" />
+                                <field name="task_follow_up" />
+                                <field name="is_bug" />
+                                <field name="project_task_type_ids" options="{'no_create': True}" widget="many2many_tags"/>
+                                <field name="file" invisible="1" />
+                            </group>
+                        </group>
+                    </sheet>
+                    <footer>
+                        <button string="Excel Report" name="action_excel_report" type="object" class="oe_highlight"/>
+                        <button special="cancel" string="Cancel" />
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+        <record id="task_report_of_users_action" model="ir.actions.act_window">
+            <field name="name">Task Report</field>
+            <field name="res_model">kits.task.report.of.users</field>
+            <field name="target">new</field>
+            <field name="view_mode">form</field>
+        </record>
+
+        <menuitem id="menu_task_report_of_users" name="Task Report" action="task_report_of_users_action" parent="project.menu_project_report"/>
+
+    </data>
+</odoo>

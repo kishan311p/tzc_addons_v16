@@ -102,3 +102,7 @@ access_remove_done_quantity_spt,access.remove.done.quantity.spt,model_remove_don
 access_remove_stock_done_qty_line_spt,access.remove.stock.done.qty.line.spt,model_remove_stock_done_qty_line_spt,,1,1,1,1
 access_kits_update_picking_wizard,access.kits.update.picking.wizard,model_kits_update_picking_wizard,,1,1,1,1
 access_delivery_recovery_selection_wizard,access.delivery.recovery.selection.wizard,model_delivery_recovery_selection_wizard,,1,1,1,1
+access_kits_history_of_task_changes,access.kits.history.of.task.changes,model_kits_history_of_task_changes,,1,1,1,1
+access_kits_task_report_of_users,access.kits.task.report.of.users,model_kits_task_report_of_users,,1,1,1,1
+access_time_shift_wizard,access.time.shift.wizard,model_time_shift_wizard,,1,1,1,1
+

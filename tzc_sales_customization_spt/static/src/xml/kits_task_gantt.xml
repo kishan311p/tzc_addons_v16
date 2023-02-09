@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<templates xml:space="preserve">
+    <div t-name="GanttView.Row" t-attf-class="row no-gutters o_gantt_row #{widget.isTotal ? 'o_gantt_row_total' : widget.isGroup ? 'o_gantt_row_group' : 'o_gantt_row_nogroup'} #{widget.isOpen ? 'open' : ''}" t-att-data-group-id="widget.groupId">
+        <div t-if="!widget.options.hideSidebar" t-attf-class="col-2 o_gantt_row_sidebar flex-grow-1 flex-shrink-0 position-relative #{!widget.name ? 'o_gantt_row_sidebar_empty' : '' }" t-attf-style="padding-left: #{widget.leftPadding}px;">
+            <div t-attf-class="o_gantt_row_title text-truncate pr-1 #{widget.isTotal ? 'text-right pr-3 h4 my-0 font-weight-bold' : ''}" t-att-title="widget.name or ''">
+                <i t-if="!widget.isTotal &amp; widget.isGroup"
+                    t-attf-class="fa small #{widget.isOpen ? 'fa-minus' : 'fa-plus'}"/>
+                <div t-if="widget.thumbnailUrl and widget.resId"
+                    t-attf-class="o_gantt_row_thumbnail_wrapper d-inline #{!widget.options.isGroup ? 'mr-1' : ''}">
+                    <img t-att-src="widget.thumbnailUrl" class="rounded-circle o_gantt_row_thumbnail"/>
+                </div>
+                <t t-esc="widget.name"/>
+            </div>
+        </div>
+        <div class="o_gantt_slots_container col">.
+
+            <div class="row no-gutters">
+
+                <div t-foreach="widget.slots" t-as="slot"
+                    t-attf-class="col o_gantt_cell #{slot.unavailability ? ('o_gantt_unavailability o_gantt_unavailable_' + slot.unavailability) : ''} #{slot.isToday ? 'o_gantt_today' : ''} #{slot.hasButtons ? 'o_gantt_hoverable' : ''}"
+                    t-att-data-date="slot.start.format('YYYY-MM-DD HH:mm:ss')"
+                    t-attf-style="height: #{widget.cellHeight}px;">
+
+                    <!-- plan and add buttons -->
+                    <div t-if="slot.hasButtons" class="o_gantt_cell_buttons justify-content-center">
+                        <div class="position-absolute d-flex">
+                            <i t-if="widget.options.canCreate" title="Create" t-attf-class="o_gantt_cell_add fa fa-plus d-flex flex-grow-0 flex-shrink-1 justify-content-center #{widget.options.canPlan ? 'pr-1' : ''}"/>
+                            <i t-if="widget.options.canPlan" title="Plan existing" class="o_gantt_cell_plan fa fa-search-plus d-flex flex-grow-0 flex-shrink-1 justify-content-center"/>
+                        </div>
+                    </div>
+
+                    <!-- pills -->
+                    <t t-foreach="slot.pills" t-as="pill">
+                        <div t-if="widget.isTotal"
+                             class="o_gantt_pill_wrapper position-absolute text-center d-flex justify-content-center"
+                             t-attf-style="width: #{pill.width}; #{widget.isRTL ? 'right' : 'left'}: #{pill.leftMargin}%;">
+                            <div t-att-data-id="pill.id"
+                                 t-attf-class="o_gantt_pill o_gantt_consolidated_pill"
+                                 t-att-title="pill.display_name"
+                                 t-att-style="'height:' + pill.totalHeight + '%;'"/>
+                            <span class="o_gantt_consolidated_pill_title position-absolute text-truncate px-1" t-esc="pill.display_name"/>
+                        </div>
+
+                        <div t-elif="pill.consolidated"
+                             t-attf-class="o_gantt_pill_wrapper position-absolute text-center o_gantt_consolidated_wrapper #{widget.options.isGroup ? 'o_gantt_pill_wrapper_group' : ''}"
+                             t-attf-style="width: #{pill.width}; #{widget.isRTL ? 'right' : 'left'}: #{pill.leftMargin}%;">
+                            <div t-att-data-id="pill.id"
+                                 t-attf-class="o_gantt_pill o_gantt_consolidated_pill #{pill.status? 'bg-' + pill.status + ' border-' + pill.status : ''}  #{!widget.options.isGroup ? pill.decorations.join(' ') : ''}  #{'_color' in pill ? 'o_gantt_color_' + pill._color : ''} #{widget.progressField? 'o_gantt_progress': ''}"
+                                 t-att-title="pill.display_name"
+                                 >
+                            </div>
+                            <span class="o_gantt_consolidated_pill_title position-relative text-truncate px-1" t-esc="pill.display_name"/>
+                        </div>
+
+                        <div t-else=""
+                             t-attf-class="o_gantt_pill_wrapper position-absolute text-center #{widget.options.isGroup ? 'o_gantt_pill_wrapper_group' : ''}"
+                             t-attf-style="width: #{pill.width}; margin-top: #{pill.topPadding}px; #{widget.isRTL ? 'right' : 'left'}: #{pill.leftMargin}%;">
+                            <div
+                                t-att-data-id="pill.id"
+                                t-attf-class="o_gantt_pill position-relative #{!widget.options.isGroup ? pill.decorations.join(' ') : ''}  #{'_color' in pill ? 'o_gantt_color_' + pill._color : ''} #{widget.progressField? 'o_gantt_progress': ''}"
+                                t-attf-style="#{widget.options.isGroup ? pill.style : ''} #{widget.progressField ? 'background-size:' + pill._progress + '% 100%;': ''}"
+                                t-att-title="pill.display_name"
+                                >
+                                <!-- README: be careful when modifying the DOM inside the pill ; @_onMouseMove is strongly dependant of it -->
+                                <p class="text-truncate position-relative mb-0">
+                                    <!-- for 'Task Name' -->
+                                    <t t-if="pill.display_name"><t t-esc="pill.display_name"/> | </t>
+                                    <!-- for 'Task Stage' -->
+                                    <t t-if="pill.stage_id">Stage : <t t-esc="pill.stage_id[1]" /> |</t>
+                                    <t t-else="">Stage : N/A |</t>
+                                    <!-- for 'Task Type' -->
+                                    <t t-if="pill.task_type == 'bug'">Type : Bug |</t>
+                                    <t t-elif="pill.task_type == 'improvement'">Type : Improvement |</t>
+                                    <t t-elif="pill.task_type == 'new_development'">Type : New Development |</t>
+                                    <t t-else="">Type : N/A | </t>
+                                    <!-- for 'Task Progress' -->
+                                    <t t-if="pill.task_progress">Progress : <t t-esc="pill.task_progress" /><span>%</span></t>
+                                    <t t-else="">Progress : Null</t>
+                                </p>
+                            </div>
+                        </div>
+                    </t>
+                </div>
+            </div>
+        </div>
+    </div>
+</templates>
