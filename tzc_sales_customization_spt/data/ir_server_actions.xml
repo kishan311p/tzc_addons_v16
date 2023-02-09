@@ -7,12 +7,6 @@
             <field name="state">code</field>
             <field name="code">action = env.get('product.product').refresh_product_image()</field>
         </record> -->
-        <record id="action_internal_contact" model="ir.actions.server">
-            <field name="name">Internal Contact</field>
-            <field name="model_id" ref="base.model_res_partner"/>
-            <field name="state">code</field>
-            <field name="code">action =  env.get('res.partner').action_internal_contact()</field>
-        </record>
         <record id="refresh_product_image" model="ir.actions.server">
             <field name="name">Refresh Images</field>
             <field name="model_id" ref="product.model_product_product"/>
@@ -207,16 +201,6 @@
             </field>
             <field name="sequence">20</field>
         </record> -->
-        <record id="model_res_user_action_sent_mail_spt" model="ir.actions.server">
-            <field name="groups_id" eval="[(4, ref('base.group_system'))]"/>
-            <field name="name">Send Bulk Mails </field>
-            <field name="model_id" ref="base.model_res_users"/>
-            <field name="binding_model_id" ref="base.model_res_users"/>
-            <field name="state">code</field>
-            <field name="code">
-            if records:
-                action = records.action_sent_mail_spt()</field>
-        </record>
         <record id="ir_actions_server_follow_up_salesperson" model="ir.actions.server">
             <field name="name">Send To Salesperson</field>
             <field name="model_id" ref="sale.model_sale_order"/>

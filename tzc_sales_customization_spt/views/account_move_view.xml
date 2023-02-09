@@ -11,6 +11,10 @@
                     <attribute name="readonly">1</attribute>
                 </xpath>
 
+                <xpath expr="//group[@id='header_right_group']/field[@name='payment_reference']" position="attributes">
+                    <attribute name="readonly">1</attribute>
+                </xpath>
+
                 <xpath expr="//field[@name='invoice_line_ids']/tree" position="replace">
                     <tree editable="bottom" string="Journal Items" decoration-muted="is_shipping_product==True or is_admin == True or is_global_discount == True" default_order="product_id">
                         <control>
@@ -58,13 +62,24 @@
                         <field name="product_uom_id" invisible="1"/>
                     </tree>
                 </xpath>
-                <xpath expr="//group[@id='header_right_group']" position="after">
-                    <group>
-                        <field name="updated_on" readonly="1"/>
-                        <field name="updated_by" readonly="1"/>
-                    </group>
+                <xpath expr="//div[hasclass('oe_title')]/h1/field[@name='name']" position="attributes">
+                    <attribute name="readonly">1</attribute>
+                </xpath>
+                <xpath expr="//div[@name='journal_div']/field[@name='journal_id']" position="attributes">
+                    <attribute name="readonly">1</attribute>
+                </xpath>
+                <xpath expr="//div[@name='journal_div']/field[@name='currency_id']" position="attributes">
+                    <attribute name="readonly">1</attribute>
+                </xpath>
+                <xpath expr="//div[@name='journal_div']" position="after">
+                    <field name="updated_on" readonly="1"/>
+                    <field name="updated_by" readonly="1"/>
                 </xpath>
                 <xpath expr="//button[@name='action_invoice_sent'][2]" position="attributes">
+                    <attribute name="class">oe_highlight</attribute>
+                    <attribute name="string">Send</attribute>
+                </xpath>
+                <xpath expr="//button[@name='action_invoice_sent'][1]" position="attributes">
                     <attribute name="class">oe_highlight</attribute>
                     <attribute name="string">Send</attribute>
                 </xpath>
@@ -116,6 +131,8 @@
                 </xpath>
                 <xpath expr="//field[@name='invoice_user_id']" position="attributes">
                     <attribute name="readonly">1</attribute>
+		     <attribute name="invisible">0</attribute>
+     	             <attribute name="attrs">{'invisible': [('invoice_origin', '=', False)]}</attribute>
                 </xpath>
                 <xpath expr="//field[@name='invoice_origin']" position="attributes">
                     <attribute name="readonly">1</attribute>
@@ -194,15 +211,32 @@
                 <xpath expr="//field[@name='invoice_date']" position="after">
                     <field name="applied_promo_code" readonly="1" force_save="1" />
                 </xpath>
+                <xpath expr="//notebook/page[@id='other_tab']/group[@id='other_tab_group']/group[@name='accounting_info_group']/field[@name='to_check']" position="attributes">
+                    <attribute name="attrs">{'invisible':[('move_type','!=','entry')]}</attribute>
+                </xpath>
+                <xpath expr="//notebook/page[@id='other_tab']/group[@id='other_tab_group']/group[@name='accounting_info_group']/field[@name='auto_post']" position="attributes">
+                    <attribute name="attrs">{'invisible':[('move_type','!=','entry')]}</attribute>
+                </xpath>
 
                 <!-- <button name="button_cancel" position="after">
                     <button name="excel_order_report" type="object" string="Invoice report" />
                 </button> -->
-
-
+                <!-- notebook/page[@id='other_tab']/group[@id='other_tab_group']/ -->
+                <xpath expr="//notebook/page[@id='other_tab']/group[@id='other_tab_group']/group[@name='extraction_info_group']" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </xpath>
+                <xpath expr="//notebook/page[@id='other_tab']/group[@id='other_tab_group']/group[@name='accounting_info_group']" position="after">
+                    <group string="Payments" name="payments_info_group" attrs="{'invisible': [('move_type', 'not in', ('out_invoice', 'out_refund', 'in_invoice', 'in_refund'))]}">
+                        <field name="payment_reference" readonly="1" />
+                        <field name="partner_bank_id" domain="[('partner_id', '=', bank_partner_id)]" readonly="1" />
+                    </group>
+                </xpath>
 
                 <xpath expr="//button[@name='action_post']" position="attributes">
                     <attribute name="string">Confirm Invoice</attribute>
+                </xpath>
+                <xpath expr="//button[@name='action_view_source_sale_orders']" position="attributes">
+                    <attribute name="invisible">1</attribute>
                 </xpath>
                 <xpath expr="//button[@id='account_invoice_payment_btn']" position="attributes">
                     <attribute name="attrs">{'invisible': ['|', '|', ('state', '!=', 'posted'), ('payment_state', '!=', 'not_paid'), ('move_type', 'not in', ('out_invoice', 'out_refund','in_refund', 'out_receipt', 'in_receipt'))]}</attribute>
@@ -210,7 +244,7 @@
                     <attribute name="groups">account.group_account_user</attribute>
                 </xpath>
 
-                <xpath expr="//div[hasclass('oe_title')][1]" position="before">
+                <xpath expr="//div[hasclass('oe_title')][1]" position="after">
                     <div class="row">
                         <div class="col-10"/>
                         <div class="col-2 text-right">
@@ -252,7 +286,7 @@
                     <attribute name="options">{'no_create': True}</attribute>
 
                 </xpath>
-                
+
                 <xpath expr="//kanban" position="attributes">
                     <attribute name="default_order">product_id</attribute>
                 </xpath>
@@ -286,6 +320,9 @@
                 <!-- <xpath expr="//sheet/widget[@name='web_ribbon']" position="replace">
                     <widget name="web_ribbon" title="Paid" attrs="{'invisible': [('is_commission_paid','=',False)]}"/>
                 </xpath> -->
+                <xpath expr="//notebook/page[@id='aml_tab']/field[@name='line_ids']/tree/button[@name='action_automatic_entry']" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </xpath>
                 <xpath expr="//notebook/page[@id='aml_tab']" position="after">
                     <page name="commission_lines" string="Commissions" id="commission_lines" attrs="{'invisible':[('state','!=','posted')]}" groups="base.group_system">
                         <field name="commission_line_ids" readonly="1" context="{'default_create_type':'manual'}">
@@ -413,6 +450,9 @@
                 <xpath expr="//group/filter[@name='salesperson']" position="after">
                     <filter name="groupby_sales_manager" string="Sales Manager" context="{'group_by':'sale_manager_id'}"/>
                 </xpath>
+                <xpath expr="//search/filter[@name='to_check']" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </xpath>
 
                 <xpath expr="//search" position="inside">
                     <field name="filtere_state" string="Payment Status"/>
@@ -420,15 +460,14 @@
                 <xpath expr="//group" position="inside">
                     <filter string="Payment Status" name="payment_status" context="{'group_by':'filtere_state'}"/>
                 </xpath>
-                <filter name="closed" position="replace">
-                    <filter name="fully_paid" string="Fully Paid" domain="[('filtere_state', '=','full')]"/>
-                </filter>
 
-                <filter name="open" position="replace">
+                <xpath expr="//filter[@name='closed']" position="replace">
+                    <filter name="fully_paid" string="Fully Paid" domain="[('filtere_state', '=','full')]"/>
+                </xpath>
+                <xpath expr="//filter[@name='open']" position="replace">
                     <filter name="partial_paid" string="Partial Paid" domain="[('filtere_state', '=', 'partial')]"/>
                     <filter name="over_paid" string="Over Paid" domain="[('filtere_state', '=', 'over')]"/>
-                </filter>
-                <separator/>
+                </xpath>
             </field>
         </record>
 

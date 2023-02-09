@@ -389,6 +389,7 @@ The ${object.company_id.name} Team -->
     <record id="account.email_template_edi_invoice" model="mail.template">
         <field name="name">Invoice: Send by email</field>
         <field name="model_id" ref="account.model_account_move"/>
+        <field name="report_template"></field>
         <field name="email_from">{{(object.invoice_user_id.email_formatted or user.email_formatted)}}</field>
         <field name="reply_to">{{(object.user_id.company_id.catchall_email)}},{{(object.invoice_user_id.email)}}</field>
         <field name="partner_to">{{object.partner_id.id}}</field>
@@ -437,7 +438,7 @@ The ${object.company_id.name} Team -->
         </t>
             </p>
         </p>
-            <a t-attf-href="{{object.get_base_url()}}/report/pdf/account.report_invoice_with_payments/{{object.id}}">
+            <a t-attf-href="{{object.get_base_url()}}/report/pdf/account.report_invoice/{{object.id}}">
                 <img src="/tzc_sales_customization_spt/static/src/img/pdf.png" style="height:60px;width:100px;"/>
             </a>
         </div>

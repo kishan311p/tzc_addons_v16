@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <template id="report_report_footer_inherit_spt" inherit_id="web.external_layout_standard">
+        <xpath expr="//div[hasclass('text-center')]" position="replace">
+            <div class="text-center o_background_footer">
+                <ul class="list-inline">
+                    <li class="list-inline-item" style="font-size: 12px">
+                        <span>Please make all payments to Tanzacan Tradelink Inc.<br/>
+                        Thank you for your business. How can we do better? support@teameto.com</span>
+                    </li>
+                </ul>
+
+                <div t-field="company.report_footer"/>
+
+                <div t-if="report_type == 'pdf'" class="text-muted">
+                    Page:
+                    <span class="page"/>
+                    of
+                    <span class="topage"/>
+                </div>
+            </div>
+        </xpath>
+    </template>
+</odoo>

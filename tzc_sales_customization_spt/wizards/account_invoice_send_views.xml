@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="account_invoice_send_wizard_form_inherit_tzc_sales_customization_spt" model="ir.ui.view">
+        <field name="name">account.invoice.send.wizard.form.inherit.tzc.sales.customization.spt</field>
+        <field name="model">account.invoice.send</field>
+        <field name="inherit_id" ref="account.account_invoice_send_wizard_form"/>
+        <field name="arch" type="xml">
+            <!-- <xpath expr="//div[@name='option_print']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath> -->
+            <xpath expr="//div[@name='option_letter']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>

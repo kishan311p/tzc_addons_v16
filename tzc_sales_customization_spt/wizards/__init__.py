@@ -58,6 +58,7 @@ from . import stock_picking_barcode_spt
 from . import barcode_error_message_wizard_spt
 from . import remove_done_quantity_spt
 from . import kits_update_picking_wizard
+from . import sale_make_invoice_advance
 from . import delivery_recovery_selection_wizard
 from . import kits_task_report_of_users
 from . import kits_history_of_task_changes

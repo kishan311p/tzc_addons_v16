@@ -93,6 +93,7 @@
         <xpath expr="//tree/field[@name='price_unit']" position="after">
             <field name="unit_discount_price" force_save="1" attrs="{'readonly':['|','|',('is_admin','=',True),('is_global_discount','=',True),('state','not in',['draft','sent','received','in_scanning','sale','scanned'])]}" />
         </xpath>
+
         <xpath expr="//tree/field[@name='discount']" position="after">
             <field name="fix_discount_price" readonly="1" attrs="{'readonly':['|','|',('is_admin','=',True),('is_shipping_product','=',True),('state','not in',['draft','sent','received','in_scanning','sale','scanned'])]}" groups="product.group_discount_per_so_line"/>
             <field name="picked_qty_subtotal" readonly="1" />
@@ -334,6 +335,7 @@
                                         attrs="{'invisible':[('state','in',['paid','cancel','merged','draft','sent','received'])]}" />
                                 </div>
                             </div>
+                            
                         </group>
                         <div class='col-3'>
                             <field name="payment_ids" nolabel="1" readonly="1">
@@ -899,5 +901,6 @@
     <record id="sale_loyalty.menu_gift_ewallet_type_config" model="ir.ui.menu">
         <field name="active" eval="False" />
     </record>
+    
 
 </odoo>
