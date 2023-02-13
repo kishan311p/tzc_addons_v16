@@ -31,6 +31,7 @@ class account_move(models.Model):
     quickbooks_invoice_id = fields.Char("Quickbooks Invoice Id")
 
     commission_line_ids = fields.One2many('kits.commission.lines','invoice_id','Commissions')
+    is_commission_paid = fields.Boolean('Paid ?')
     sale_manager_id = fields.Many2one('res.users','Sales Manager',domain=_get_sales_manager_domain,default=_get_default_sale_manager_id)
 
     sequence_name = fields.Char('Name Sequence')
@@ -359,7 +360,6 @@ class account_move(models.Model):
             move.amount_total_signed = abs(total) if move.move_type == 'entry' else -total
             move.amount_residual_signed = total_residual
             move.amount_total_in_currency_signed = abs(move.amount_total) if move.move_type == 'entry' else -(sign * move.amount_total)
-            # currency = len(currencies) == 1 and currencies.pop() or move.company_id.currency_id
             is_paid = self.env['account.payment'].search([('move_id','=',move.id)])
             in_payment_set = move.amount_residual -sum(is_paid.mapped('amount'))
             # Compute 'invoice_payment_state'.
@@ -396,12 +396,6 @@ class account_move(models.Model):
         return res
   
     def random_string(self):
-        # catalog_obj = self.env['sale.catalog']
-        # catalog_obj.connect_server()
-        # method = catalog_obj.get_method('random_string')
-        # if method['method']:
-        #     localdict = {'random':random,'self': self,'datetime':datetime,'timedelta':timedelta}
-        #     exec(method['method'], localdict)
         config_parameter_obj = self.env['ir.config_parameter']
         string = ''
         letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'

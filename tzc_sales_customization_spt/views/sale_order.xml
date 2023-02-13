@@ -702,11 +702,6 @@
                         readonly="1" />
                 </button>
             </xpath>
-            <xpath expr="//button[@name='action_cancel']" position="before">
-                <button name="action_create_credit_note_kits" type="object" string="Credit Note"
-                    class="oe_highlight"
-                    attrs="{'invisible':[('state','not in',['open_inv','paid'])]}" />
-            </xpath>
         </field>
 
     </record>

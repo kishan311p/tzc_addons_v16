@@ -179,11 +179,11 @@ class stock_picking_barcode_spt(models.TransientModel):
             else:
                 product_list.append(data_line.product_id.id)
                 line_list.append(data_line)
-
+                
         for line in line_list:
             move_id = self.picking_id.move_ids_without_package.filtered(lambda move: move.product_id == line.product_id)
             if move_id:
-                move_id = self.picking_id.check_duplicate_move(move_id)                    
+                move_id = self.picking_id.check_duplicate_move(move_id)
                 move_id.quantity_done  =  move_id.quantity_done + line.product_qty 
             else:
                 stock_move_id = stock_move_obj.create({
@@ -210,10 +210,10 @@ class stock_picking_barcode_spt(models.TransientModel):
                 'type': 'ir.actions.act_window',
                 'res_id': self.picking_id.id,
             }
-        self.picking_id.write({'state': 'in_scanning'})
         self.picking_id.sale_id.write({'state': 'in_scanning','updated_by':self.env.user.id,'updated_on':datetime.now()})
         self.picking_id.sale_id._amount_all()
         self.picking_id.update_sale_order_spt()
+        self.picking_id.write({'state': 'in_scanning'})
 
     def action_edit_product(self):
         self.ensure_one()

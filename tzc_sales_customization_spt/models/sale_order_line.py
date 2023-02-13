@@ -70,7 +70,6 @@ class SaleOrderLine(models.Model):
     #         	unit_discount_price = price_unit - (price_unit * record.discount)* 0.01
     #             record.update({'price_unit':price_unit,'unit_discount_price': unit_discount_price})
 
-
     @api.depends('product_id','price_unit','unit_discount_price','picked_qty','product_uom_qty','discount','tax_id','move_ids','move_ids.quantity_done')
     def _compute_picked_qty(self):
         move_obj = self.env['stock.move']
@@ -161,36 +160,37 @@ class SaleOrderLine(models.Model):
         for record in range(len(self)):
             record = self[record]
             if record.product_id:
-                product_price = record.product_id.lst_price
-                price_unit = record.product_id.lst_price
-                if record.order_id.pricelist_id and record.order_id.partner_id:
-                    price_unit = record.order_id.pricelist_id._get_product_price(record.product_id, record.product_uom_qty)
+                # product_price = record.product_id.lst_price
+                # price_unit = record.product_id.lst_price
+                # if record.order_id.pricelist_id and record.order_id.partner_id:
+                #     price_unit = record.order_id.pricelist_id._get_product_price(record.product_id, record.product_uom_qty)
 
-                    product_price = record.product_id.lst_price if record.order_id.pricelist_id.currency_id.name == 'USD' else product_price
-                unit_discount_price = 0
-                if record.order_id and record.order_id:
-                    if record.product_id.sale_type == 'on_sale' and record.order_id.partner_id and record.order_id.partner_id.property_product_pricelist :
-                        if record.order_id.partner_id.property_product_pricelist.currency_id.name == 'CAD':
-                            price_unit = record.product_id.on_sale_cad
-                            product_price = record.product_id.lst_price
-                        else:
-                            price_unit = record.product_id.on_sale_usd
-                            product_price = record.product_id.lst_price
+                #     product_price = record.product_id.lst_price if record.order_id.pricelist_id.currency_id.name == 'USD' else product_price
+                # unit_discount_price = 0
+                # if record.order_id and record.order_id:
+                #     if record.product_id.sale_type == 'on_sale' and record.order_id.partner_id and record.order_id.partner_id.property_product_pricelist :
+                #         if record.order_id.partner_id.property_product_pricelist.currency_id.name == 'CAD':
+                #             price_unit = record.product_id.on_sale_cad
+                #             product_price = record.product_id.lst_price
+                #         else:
+                #             price_unit = record.product_id.on_sale_usd
+                #             product_price = record.product_id.lst_price
 
-                    if record.product_id.sale_type == 'clearance' and record.order_id.partner_id and record.order_id.partner_id.property_product_pricelist :
-                        if record.order_id.partner_id.property_product_pricelist.currency_id.name == 'CAD':
-                            price_unit = record.product_id.clearance_cad
-                            product_price = record.product_id.lst_price
-                        else:
-                            price_unit = record.product_id.clearance_usd
-                            product_price = record.product_id.lst_price
+                #     if record.product_id.sale_type == 'clearance' and record.order_id.partner_id and record.order_id.partner_id.property_product_pricelist :
+                #         if record.order_id.partner_id.property_product_pricelist.currency_id.name == 'CAD':
+                #             price_unit = record.product_id.clearance_cad
+                #             product_price = record.product_id.lst_price
+                #         else:
+                #             price_unit = record.product_id.clearance_usd
+                #             product_price = record.product_id.lst_price
 
-                unit_discount_price = price_unit
-                if record.discount:
-                    unit_discount_price = round( product_price - (product_price * record.discount)* 0.01,2)
+                # unit_discount_price = price_unit
+                # if record.discount:
+                #     unit_discount_price = round( product_price - (product_price * record.discount)* 0.01,2)
 
-                update_dict = {'price_unit':round(product_price,2),
-                               'unit_discount_price': round(unit_discount_price,2), 
+                update_dict = {'price_unit':round(record.price_unit,2),
+                               'unit_discount_price': round(record.unit_discount_price,2), 
+                               'fix_discount_price':round(record.fix_discount_price,2),
                                'sale_type':record.product_id.sale_type if record.product_id.sale_type else ''}
 
                 active_inflation = self.env['kits.inflation'].search([('is_active','=',True)])
@@ -243,8 +243,10 @@ class SaleOrderLine(models.Model):
                         fix_discount_price_spt = round(product_price - special_discount_price,2)
                         update_dict.update({'fix_discount_price':fix_discount_price_spt,'unit_discount_price': special_discount_price}) #,'is_special_discount':applicable
 
-                record.update(update_dict)
+                record.write(update_dict)
+                # record._onchange_fix_discount_price_spt()
                 record._onchange_unit_discounted_price_spt()
+                # record._onchange_discount_spt()
 
             if record.order_id.partner_id and not record.order_id.partner_id.country_id:
                 record.tax_id = False

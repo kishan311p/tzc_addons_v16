@@ -529,43 +529,40 @@ class stock_picking(models.Model):
             for record in self:
                 for line in range(len(record.move_ids_without_package)):
                     line = record.move_ids_without_package[line]
+                    product_prices = self.env['kits.b2b.multi.currency.mapping'].get_product_price(line.picking_id.partner_id.id,line.product_id.ids)
+                    product_data = product_prices.get(line.product_id.id)
                     if line.sale_line_id:
                         #update the quontity in related sale order line
                         if line.quantity_done > line.product_uom_qty:
-                            line.sale_line_id.product_uom_qty = line.quantity_done
                             line.product_uom_qty = line.quantity_done
+                            line.sale_line_id.product_uom_qty = line.quantity_done
+                            line.sale_line_id.price_unit = round(product_data.get('price'),2)
+                            line.sale_line_id.unit_discount_price = round(product_data.get('sale_type_price'),2)
+                            line.sale_line_id.product_id_change()
+                            line.sale_line_id._onchange_discount_spt()
+                            line.sale_line_id._onchange_unit_discounted_price_spt()
                     else:
                         if not record.sale_id:
                             record.sale_id = record.sale_id.search([('name','=',self.origin)]).id
-                        price_unit = record.sale_id.pricelist_id._get_product_price(line.product_id, line.quantity_done, line.product_id.uom_id)
-                        if line.product_id.sale_type == 'on_sale' and record.sale_id and record.sale_id.pricelist_id and record.sale_id.pricelist_id.currency_id:
-                            if record.sale_id.pricelist_id.currency_id.name == 'CAD':
-                                price_unit = line.product_id.on_sale_cad
-                            if record.sale_id.pricelist_id.currency_id.name == 'USD':
-                                price_unit = line.product_id.on_sale_usd
-                        
-                        if line.product_id.sale_type == 'clearance' and record.sale_id and record.sale_id.pricelist_id and record.sale_id.pricelist_id.currency_id:
-                            if record.sale_id.pricelist_id.currency_id.name == 'CAD':
-                                price_unit = line.product_id.clearance_cad
-                            if record.sale_id.pricelist_id.currency_id.name == 'USD':
-                                price_unit = line.product_id.clearance_usd
 
-                        if line.quantity_done:
-                            # create new sale order line
-                            order_line_id = order_line_obj.sudo().create({
-                                'order_id': record.sale_id.id,
-                                'product_id': line.product_id.id,
-                                'product_uom_qty': line.quantity_done,
-                                'product_uom': line.product_id.uom_id.id,
-                                'name': line.product_id.display_name,
-                                'price_unit': price_unit,
-                                'sale_type':  line.product_id.sale_type,
-                            })
-                            if order_line_id:
-                                order_line_id.product_id_change()
-                                order_line_id._onchange_discount_spt()
-                                order_line_id._onchange_unit_discounted_price_spt()
-                                line.write({'sale_line_id':order_line_id.id,'product_uom_qty':line.quantity_done})
+                        for product in product_prices:
+                            if line.quantity_done:
+                                # create new sale order line
+                                order_line_id = order_line_obj.sudo().create({
+                                    'order_id': record.sale_id.id,
+                                    'product_id': line.product_id.id,
+                                    'product_uom_qty': line.quantity_done,
+                                    'product_uom': line.product_id.uom_id.id,
+                                    'name': line.product_id.display_name,
+                                    'price_unit': product_prices.get(product).get('price'),
+                                    'sale_type':  product_prices.get(product).get('sale_type'),
+                                    'unit_discount_price':product_prices.get(product).get('sale_type_price')
+                                })
+                                if order_line_id:
+                                    order_line_id.product_id_change()
+                                    order_line_id._onchange_discount_spt()
+                                    order_line_id._onchange_unit_discounted_price_spt()
+                                    line.write({'sale_line_id':order_line_id.id,'product_uom_qty':line.quantity_done})
                 record.sale_id._amount_all()
         else:
             return {

@@ -71,7 +71,7 @@ class delivery_recovery_selection_wizard(models.TransientModel):
                     if line_id:
                         line_id.quantity_done = cancel_picking_data.get(delivery_data).get('done')
                     else:
-                        price_unit = self.sale_id.pricelist_id.get_product_price(product_id, cancel_picking_data.get(delivery_data).get('demand'), self.sale_id.partner_id)
+                        price_unit = self.sale_id.pricelist_id._get_product_price(product_id, cancel_picking_data.get(delivery_data).get('demand'), product_id.uom_id)
                         
                         if product_id.sale_type == 'on_sale' and self.sale_id and self.sale_id.pricelist_id and self.sale_id.pricelist_id.currency_id:
                             if self.sale_id.pricelist_id.currency_id.name == 'CAD':

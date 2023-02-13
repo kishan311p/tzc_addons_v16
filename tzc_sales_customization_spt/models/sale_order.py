@@ -190,6 +190,19 @@ class sale_order(models.Model):
                     scanned_msg.attrib['invisible'] = '1'
                 for revert_msg in doc.xpath('//div[@id="revert_msg"]'):
                     revert_msg.attrib['invisible'] = '1'
+            invoice_action = self.env.ref('sale.action_view_sale_advance_payment_inv').id
+            if invoice_action:
+                for  invoice_node in doc.xpath('//button[@name='+str(invoice_action)+']'):
+                    if invoice_node.attrib and 'attrs' in invoice_node.attrib.keys():
+                        if 'groups' in invoice_node.attrib.keys():
+                            invoice_node.attrib['groups'] = invoice_node.attrib['groups']+',account.group_account_invoice'
+                        else:
+                            invoice_node.attrib['groups'] = 'account.group_account_invoice'
+                for tax_id in doc.xpath("//field[@name='order_line']/tree/field[@name='tax_id']"):
+                    tax_id.attrib['readonly'] = '0' if self.env.user.has_group('base.group_system') else "1"
+                for manager_id in doc.xpath("//field[@name='sale_manager_id']"):
+                    manager_id.attrib['readonly'] = '0' if self.env.user.has_group('base.group_system') else '1'
+                res['arch'] = etree.tostring(doc, encoding='unicode')
         return res
 
 
@@ -566,11 +579,16 @@ class sale_order(models.Model):
         product_id_dict = {}
         for record in self:
             #Merge same product lines
-            for line in record.order_line:
+            for line in record.order_line.filtered(lambda x: not x.is_pack_order_line):
                 is_line = True
                 if line.product_id in product_id_dict.keys():
                     order_line = product_id_dict[line.product_id]
-                    order_line.update({'product_uom_qty':order_line.product_uom_qty + line.product_uom_qty})
+                    order_line.update({'product_uom_qty':order_line.product_uom_qty + line.product_uom_qty,
+                                       'price_unit':round(line.price_unit,2),
+                                       'unit_discount_price':line.unit_discount_price,
+                                       'discount':line.discount,
+                                       'fix_discount_price':line.fix_discount_price,
+                                       'picked_qty_subtotal':line.picked_qty_subtotal})
                     line.unlink()
                     is_line = False
                 else:
@@ -595,7 +613,10 @@ class sale_order(models.Model):
         update = self.env['ir.model']._updated_data_validation(field_list,vals,self._name)
         if update:
             vals.update({'updated_by':self.env.user.id,'updated_on':datetime.today()})
-        return  super(sale_order,self).write(vals)
+        res = super(sale_order,self).write(vals)
+        if vals.get('sale_manager_id'):
+            self.invoice_ids.filtered(lambda inv: inv.state != 'cancel')._onchange_user_id()
+        return res
     # def action_confirm(self):
         # if self.state in ['draft','sent','received']:
         #     self = self.sudo()
@@ -2791,21 +2812,21 @@ class sale_order(models.Model):
         else:
             raise UserError("You have to select more than one quotation.")
     
-    def merge_order_lines(self):
-        product_id_dict = {}
-        for record in self:
-            #Merge same product lines
-            for line in record.order_line.filtered(lambda x: not x.is_pack_order_line):
-                is_line = True
-                if line.product_id in product_id_dict.keys():
-                    order_line = product_id_dict[line.product_id]
-                    order_line.update({'product_uom_qty':order_line.product_uom_qty + line.product_uom_qty})
-                    line.unlink()
-                    is_line = False
-                else:
-                    product_id_dict[line.product_id] = line
-                if is_line and line.product_uom_qty == 0.0:
-                    line.unlink()
+    # def merge_order_lines(self):
+    #     product_id_dict = {}
+    #     for record in self:
+    #         #Merge same product lines
+    #         for line in record.order_line.filtered(lambda x: not x.is_pack_order_line):
+    #             is_line = True
+    #             if line.product_id in product_id_dict.keys():
+    #                 order_line = product_id_dict[line.product_id]
+    #                 order_line.update({'product_uom_qty':order_line.product_uom_qty + line.product_uom_qty})
+    #                 line.unlink()
+    #                 is_line = False
+    #             else:
+    #                 product_id_dict[line.product_id] = line
+    #             if is_line and line.product_uom_qty == 0.0:
+    #                 line.unlink()
     
     # def _get_unavailable_package_ids(self):
     #     self.ensure_one()
@@ -3202,3 +3223,32 @@ class sale_order(models.Model):
                 'url': 'web/content/?model=ir.attachment&download=true&field=datas&id=%s&filename=%s' % (attachment.id,'Product Images.xlsx'),
                 'target': 'self',
             }
+
+    def action_view_invoice(self):
+        invoices = self.invoice_ids.filtered(lambda x:x.state != 'cancel') if self._context.get('show_invoice') else self.mapped('invoice_ids')
+        action = self.env.ref('account.action_move_out_invoice_type').read()[0]
+        if len(invoices) > 1:
+            action['domain'] = [('id', 'in', invoices.ids)]
+        elif len(invoices) == 1:
+            form_view = [(self.env.ref('account.view_move_form').id, 'form')]
+            if 'views' in action:
+                action['views'] = form_view + [(state,view) for state,view in action['views'] if view != 'form']
+            else:
+                action['views'] = form_view
+            action['res_id'] = invoices.id
+        else:
+            action = {'type': 'ir.actions.act_window_close'}
+
+        context = {
+            'default_type': 'out_invoice',
+        }
+        if len(self) == 1:
+            context.update({
+                'default_partner_id': self.partner_id.id,
+                'default_partner_shipping_id': self.partner_shipping_id.id,
+                'default_invoice_payment_term_id': self.payment_term_id.id or self.partner_id.property_payment_term_id.id or self.env['account.move'].default_get(['invoice_payment_term_id']).get('invoice_payment_term_id'),
+                'default_invoice_origin': self.name,
+                'default_user_id': self.user_id.id,
+            })
+        action['context'] = context
+        return action

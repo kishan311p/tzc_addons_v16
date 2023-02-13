@@ -131,11 +131,13 @@
                 </xpath>
                 <xpath expr="//field[@name='invoice_user_id']" position="attributes">
                     <attribute name="readonly">1</attribute>
-		     <attribute name="invisible">0</attribute>
-     	             <attribute name="attrs">{'invisible': [('invoice_origin', '=', False)]}</attribute>
                 </xpath>
                 <xpath expr="//field[@name='invoice_origin']" position="attributes">
                     <attribute name="readonly">1</attribute>
+                </xpath>
+                <xpath expr="//field[@name='invoice_origin']" position="attributes">
+                    <attribute name="invisible">0</attribute>
+                    <attribute name="attrs">{'invisible': [('invoice_origin', '=', False)]}</attribute>
                 </xpath>
                 <xpath expr="//field[@name='narration']" position="attributes">
                     <attribute name="readonly">1</attribute>
@@ -467,6 +469,7 @@
                 <xpath expr="//filter[@name='open']" position="replace">
                     <filter name="partial_paid" string="Partial Paid" domain="[('filtere_state', '=', 'partial')]"/>
                     <filter name="over_paid" string="Over Paid" domain="[('filtere_state', '=', 'over')]"/>
+                    <separator/>
                 </xpath>
             </field>
         </record>

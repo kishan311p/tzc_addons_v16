@@ -153,11 +153,11 @@
                         <div class="col-2 text-left"/>
                         <div class="col-2 text-left"/>
                         <div class="col-2 text-left"/>
-                        <div class="col-2 text-left">
-                            <label for="ordered_qty"/>
+                        <div class="col-2 text-end">
+                            <label for="ordered_qty" style="margin-right: 5%;"/>
                             <field name="ordered_qty" />
                             <br/>
-                            <label for="delivered_qty"/>
+                            <label for="delivered_qty" style="margin-right: 5%;"/>
                             <field name="delivered_qty" />
                             <field name="order_qty_count_spt" invisible="1" />
                             <field name="source_spt" invisible="1" />

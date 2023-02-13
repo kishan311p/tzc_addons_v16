@@ -34,7 +34,7 @@ class SaleCatalog(models.Model):
             ('draft', 'Draft'),
             ('validate', 'Validate'),
             ('manage_qtys', 'Stock Validated'),
-            ('pending', 'Schedule To Send'),
+            ('pending', 'Pending'),
             ('done', 'Done'),
             ('cancel', 'Cancel'),
         ], string='Status', required=True, readonly=True, copy=False, tracking=True,
@@ -111,42 +111,19 @@ class SaleCatalog(models.Model):
            for line in record.line_ids:
                 product_price = line .product_pro_id.lst_price
                 pricelist_item_id = pricelist_obj.search([('product_id','=',line.product_pro_id.id),('pricelist_id','=',record.pricelist_id.id)],limit=1)
-                if record.pricelist_id and record.pricelist_id.currency_id.name == 'USD':
-                    product_price = line.product_pro_id.lst_price_usd
                 line.product_price = pricelist_item_id.fixed_price or product_price
-                if record.pricelist_id.currency_id.name == 'CAD':
-                    line.product_price_msrp = line.product_pro_id.price_msrp
-                    line.product_price_wholesale = line.product_pro_id.price_wholesale
-                    line.unit_discount_price = line.product_pro_id.lst_price
-                    if line.sale_type:
-                        if line.sale_type == 'on_sale':
-                            line.unit_discount_price = line.product_pro_id.on_sale_cad
-                            line.product_price = line.product_pro_id.lst_price
-                        else:
-                            line.product_price = line.product_pro_id.lst_price
-                            line.unit_discount_price = line.product_pro_id.clearance_cad
-                        
+                line.product_price_msrp = line.product_pro_id.price_msrp
+                line.product_price_wholesale = line.product_pro_id.price_wholesale
+                line.unit_discount_price = line.product_pro_id.lst_price
+                if line.sale_type:
+                    if line.sale_type == 'on_sale':
+                        line.unit_discount_price = line.product_pro_id.on_sale_usd
+                    else:
+                        line.unit_discount_price = line.product_pro_id.clearance_usd
 
-                else:
-                    line.product_price_msrp = line.product_pro_id.price_msrp_usd
-                    line.product_price_wholesale = line.product_pro_id.price_wholesale_usd
-                    line.unit_discount_price = line.product_pro_id.lst_price_usd
-                    if line.sale_type:
-                        if line.sale_type == 'on_sale':
-                            line.unit_discount_price = line.product_pro_id.on_sale_usd
-                            line.product_price = line.product_pro_id.lst_price_usd
-                        else:
-                            line.unit_discount_price = line.product_pro_id.clearance_usd
-                            line.product_price = line.product_pro_id.lst_price_usd
                 if line.discount:
                     line.unit_discount_price = line.product_price - (line.product_price * line.discount) * 0.01
                 
-                if ('eto dubai' in record.pricelist_id.name.lower() or 'other eto' in record.pricelist_id.name.lower()) and line.product_pro_id:
-                    line.product_price = line.product_pro_id.lst_price_usd if record.pricelist_id.currency_id.name == 'USD' else line.product_pro_id.lst_price
-                    line.unit_discount_price = pricelist_item_id.fixed_price
-                    line.discount = round((line.product_price - line.unit_discount_price)/line.product_price * 100,2)
-                    line.price_subtotal = round(line.unit_discount_price * line.product_qty,2)
-
                 active_inflation = self.env['kits.inflation'].search([('is_active','=',True)])
                 inflation_rule_ids = self.env['kits.inflation.rule'].search([('country_id','in',self.env.user.country_id.ids),('brand_ids','in',line.product_pro_id.brand.ids),('inflation_id','=',active_inflation.id)])
                 inflation_rule = inflation_rule_ids[-1] if inflation_rule_ids else False

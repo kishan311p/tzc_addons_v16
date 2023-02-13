@@ -28,6 +28,7 @@ class sale_barcode_order_spt(models.TransientModel):
         sale_order_line_obj = self.env['sale.order.line']
         line_list = []
         product_list = []
+
         for data_line in self.line_ids:
             if data_line.product_id.id in product_list:
                 line_id = list(filter(lambda line: line.product_id.id == data_line.product_id.id,line_list))[0]
@@ -36,30 +37,19 @@ class sale_barcode_order_spt(models.TransientModel):
                 product_list.append(data_line.product_id.id)
                 line_list.append(data_line)
                 
-        for line in line_list:
-            price_unit = self.sale_id.pricelist_id._get_product_price(line.product_id, line.product_qty)
-            product_price = price_unit
-            if line.product_id.sale_type == 'on_sale' and self.sale_id and self.sale_id.pricelist_id and self.sale_id.pricelist_id.currency_id:
-                if self.sale_id.pricelist_id.currency_id.name == 'CAD':
-                    price_unit = line.product_id.on_sale_cad
-                if self.sale_id.pricelist_id.currency_id.name == 'USD':
-                    price_unit = line.product_id.on_sale_usd
-            if line.product_id.sale_type == 'clearance' and self.sale_id and self.sale_id.pricelist_id and self.sale_id.pricelist_id.currency_id:
-                if self.sale_id.pricelist_id.currency_id.name == 'CAD':
-                    price_unit = line.product_id.clearance_cad
-                if self.sale_id.pricelist_id.currency_id.name == 'USD':
-                    price_unit = line.product_id.clearance_usd
-            product_price = round(product_price,2)
-            price_unit = round(price_unit,2)
-            sale_order_line = sale_order_line_obj.create({
-                'product_id' : line.product_id.id,
-                'product_uom_qty' : line.product_qty,
+        product_prices = self.env['kits.b2b.multi.currency.mapping'].get_product_price(self.partner_id.id,[i.product_id.id for i in line_list])
+        for product in product_prices:
+            line_id = self.line_ids.search([('product_id','=',product),('barcode_order_id','=',self.id)])
+            vals = {
+                'product_id' : product,
+                'product_uom_qty' : line_id.product_qty,
                 'order_id' : self.sale_id.id,
-                'price_unit': product_price,
-                'unit_discount_price': price_unit,
-                'sale_type': line.product_id.sale_type,
-                'fix_discount_price' : round(product_price - price_unit,2)
-            })
+                'price_unit': round(product_prices.get(product).get('price'),2),
+                'sale_type': product_prices.get(product).get('sale_type'),
+                'unit_discount_price':round(product_prices.get(product).get('sale_type_price'),2)
+            }
+
+            sale_order_line = sale_order_line_obj.create(vals)
             sale_order_line.product_id_change()
             sale_order_line._onchange_fix_discount_price_spt()
         self.sale_id.merge_order_lines()
