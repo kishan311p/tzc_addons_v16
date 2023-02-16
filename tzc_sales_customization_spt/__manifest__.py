@@ -27,6 +27,7 @@
         'data/mail_templates_stock_picking.xml',
         'data/mail_template_warehouse_abandone_cart.xml',
         'data/mail_send_download_image_email.xml',
+        'data/mail_template_sale_cart_recovery.xml',
         'data/report_paperformat.xml',
         'data/mail_template_sales_person_order_confirm.xml',
         'data/mail_template_purchase_start.xml',
@@ -45,9 +46,10 @@
         'data/mail_template_customer_approve_notify.xml',
         'data/mail_template_new_user_spt.xml',
         'data/stock_picking_mail_templates.xml',
-	'data/mail_template_catalog_pending.xml',
+        'data/mail_template_catalog_pending.xml',
         'data/payment_mail_template.xml',
         'data/send_payment_link_mail_template.xml',
+        'data/mail_template_warehouse_abandone_cart.xml',
 
         # Views
         'views/product_product_view.xml',

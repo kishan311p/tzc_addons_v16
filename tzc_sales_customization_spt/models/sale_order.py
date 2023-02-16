@@ -28,21 +28,9 @@ from odoo.modules import get_module_resource
 import os
 from os.path import isfile, join
 import pandas as pd
+from odoo.osv import expression
 
 _logger = logging.getLogger(__name__)
-
-
-class shipping_provider_spt(models.Model):
-    _name = 'shipping.provider.spt'
-    _description = 'Shipping Provider' 
-
-    name = fields.Char('Shipping Provider',required="1")
-
-    provider = fields.Selection(selection="_get_provider",string="Provider",required=True)
-
-    @api.model
-    def _get_provider(self):
-        return list(self.env['delivery.carrier']._fields['delivery_type'].selection)
 
 field_list = ['partner_id','validity_date','date_order','payment_term_id','include_cases','no_of_cases','case_weight_gm','order_line',
               'note','sale_order_option_ids','user_id','sale_manager_id','team_id','client_order_ref','picking_policy','commitment_date',
@@ -91,6 +79,8 @@ class sale_order(models.Model):
     weight_total_kg = fields.Float('Total Weight (kg)',compute='_compute_weight_kits',compute_sudo=True,store=True)
     case_weight_kg = fields.Float('Weight for cases (kg)',compute="_calculate_case_weight_kg",compute_sudo=True,store=True)
     order_approved_by = fields.Many2one('res.partner','Order Approved By')
+    is_abandoned_cart = fields.Boolean('Abandoned Cart', compute='_compute_abandoned_cart', search='_search_abandoned_cart')
+    cart_recovery_email_sent = fields.Boolean('Cart recovery email already sent')
 
     @api.depends('case_weight_gm','no_of_cases','include_cases')
     def _calculate_case_weight_kg(self):
@@ -227,6 +217,7 @@ class sale_order(models.Model):
     def action_quotation_send(self):
         ''' Opens a wizard to compose an email, with relevant mail template loaded by default '''
         self.ensure_one()
+
         template_id = self.env.ref('tzc_sales_customization_spt.mail_template_notify_customer_order_completion') if self.state in ['draft_inv','open_inv','scan','shipped'] else self._find_mail_template()
         lang = self.env.context.get('lang')
         template = self.env['mail.template'].browse(template_id)
@@ -897,10 +888,10 @@ class sale_order(models.Model):
         for order in self.sudo():
             # a quotation can be considered as an abandonned cart if it is linked to a website,
             # is in the 'draft' state and has an expiration date
-            if order.website_id and order.state == 'draft' and order.date_order:
-                public_partner_id = order.website_id.user_id.partner_id
+            if order.state == 'draft' and order.date_order:
+                public_partner_id = order.partner_id
                 # by default the expiration date is 1 hour if not specified on the website configuration
-                abandoned_delay = order.website_id.cart_abandoned_delay or 1.0
+                abandoned_delay = eval(self.env['ir.config_parameter'].sudo().get_param('tzc_sales_customization_spt.cart_abandoned_delay', default='1.0')) or 1.0
                 abandoned_datetime = datetime.utcnow() - relativedelta(hours=abandoned_delay)
                 order.is_abandoned_cart = bool(order.date_order <= abandoned_datetime and order.partner_id != public_partner_id and order.order_line)
             else:
@@ -2031,7 +2022,7 @@ class sale_order(models.Model):
 
     #kits_abadon_card_order
     def _get_reson_message(self):
-        abandon_time = self.env['website'].search([('company_id', '=', self.env.company.id)], limit=1).cart_abandoned_delay
+        abandon_time = eval(self.env['ir.config_parameter'].sudo().get_param('tzc_sales_customization_spt.cart_abandoned_delay', default='1.0'))
         for rec in self:
             rec.abandoned_reason = False
             if rec.state != 'draft':
@@ -2048,7 +2039,7 @@ class sale_order(models.Model):
     def cron_send_abondand_order(self):
         
         now = fields.Datetime.now()
-        abandon_time = self.env['website'].search([('company_id', '=', self.env.company.id)], limit=1).cart_abandoned_delay
+        abandon_time = eval(self.env['ir.config_parameter'].sudo().get_param('tzc_sales_customization_spt.cart_abandoned_delay', default='1.0'))
         updated_time = now - timedelta(hours=abandon_time)
 
         order_ids = self.env['sale.order'].search([('state','in',['draft']),('create_date','<=',updated_time)])
@@ -2073,7 +2064,7 @@ class sale_order(models.Model):
     def recovery_mail_customer(self):
         customer_tmp_id = self.env.ref('tzc_sales_customization_spt.tzc_email_template_cart_recovery_spt')
         mail_delay_date = fields.Datetime.now() + timedelta(days=int(self.env['ir.config_parameter'].sudo().get_param('kits_abandon_cart_order.kits_abandone_mail_delay','0')))
-        abandon_time = self.env['website'].search([('company_id', '=', self.env.company.id)], limit=1).cart_abandoned_delay
+        abandon_time = eval(self.env['ir.config_parameter'].sudo().get_param('tzc_sales_customization_spt.cart_abandoned_delay', default='1.0'))
 
         order_ids = self.filtered(lambda x: not x.next_execution_date or (x.next_execution_date and x.next_execution_date <= fields.Datetime.now()))
 
@@ -2144,7 +2135,7 @@ class sale_order(models.Model):
 
     def order_filter(self):
         now = fields.Datetime.now()
-        abandon_time = self.env['website'].search([('company_id', '=', self.env.company.id)], limit=1).cart_abandoned_delay
+        abandon_time = eval(self.env['ir.config_parameter'].sudo().get_param('tzc_sales_customization_spt.cart_abandoned_delay', default='1.0'))
         updated_time = now - timedelta(hours=abandon_time)
 
         order_ids = self.filtered(lambda x: x.state in ('draft') and x.create_date <= updated_time)
@@ -3252,3 +3243,64 @@ class sale_order(models.Model):
             })
         action['context'] = context
         return action
+    def _search_abandoned_cart(self, operator, value):
+        abandoned_delay = eval(self.env['ir.config_parameter'].sudo().get_param('tzc_sales_customization_spt.cart_abandoned_delay', default='1.0'))
+        abandoned_datetime = fields.Datetime.to_string(datetime.utcnow() - relativedelta(hours=abandoned_delay))
+        abandoned_domain = expression.normalize_domain([
+            ('date_order', '<=', abandoned_datetime),
+            ('state', '=', 'draft'),
+            ('partner_id', '!=', self.env.ref('base.public_partner').id),
+            ('order_line', '!=', False)
+        ])
+        abandoned_domain = expression.normalize_domain(abandoned_domain)
+        # is_abandoned domain possibilities
+        if (operator not in expression.NEGATIVE_TERM_OPERATORS and value) or (operator in expression.NEGATIVE_TERM_OPERATORS and not value):
+            return abandoned_domain
+        return expression.distribute_not(['!'] + abandoned_domain)  # negative domain
+
+    def action_recovery_email_send(self):
+        for order in self:
+            order._portal_ensure_token()
+        composer_form_view_id = self.env.ref('mail.email_compose_message_wizard_form').id
+
+        template_id = self._get_cart_recovery_template()
+
+        return {
+            'type': 'ir.actions.act_window',
+            'view_mode': 'form',
+            'res_model': 'mail.compose.message',
+            'view_id': composer_form_view_id,
+            'target': 'new',
+            'context': {
+                'default_composition_mode': 'mass_mail' if len(self.ids) > 1 else 'comment',
+                'default_email_layout_xmlid': 'mail.mail_notification_layout_with_responsible_signature',
+                'default_res_id': self.ids[0],
+                'default_model': 'sale.order',
+                'default_use_template': bool(template_id),
+                'default_template_id': template_id,
+                'website_sale_send_recovery_email': True,
+                'active_ids': self.ids,
+            },
+        }
+
+
+    def get_sorted_lines(self,lines):
+        return lines.sorted(lambda x: x.product_id.variant_name)
+        
+    def _get_cart_recovery_template(self):
+        """
+        Return the cart recovery template record for a set of orders.
+        If they all belong to the same website, we return the website-specific template;
+        otherwise we return the default template.
+        If the default is not found, the empty ['mail.template'] is returned.
+        """
+        # to changes
+        template = eval(self.env['ir.config_parameter'].sudo().get_param('tzc_sales_customization_spt.cart_recovery_mail_template', default='None'))
+        if not template:
+            template = self.env.ref('tzc_sales_customization_spt.mail_template_sale_cart_recovery', raise_if_not_found=False)
+            if template:
+                return template.id
+            else:
+                return self.env['mail.template']
+        else:
+            return template 

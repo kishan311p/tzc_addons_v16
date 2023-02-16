@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <record id="sale.action_orders" model="ir.actions.act_window">
+        <field name="view_id" ref="sale.view_quotation_tree_with_onboarding"/>
         <field name="name">Sales Orders</field>
         <field name="type">ir.actions.act_window</field>
         <field name="res_model">sale.order</field>
@@ -233,7 +234,7 @@
             <!-- abadon_card -->
             <xpath expr="//group[@name='sales_person']" position="inside">
                     <field name="next_execution_date" attrs="{'readonly': [('state','in',['scan','shipped','draft_inv','open_inv','paid','cancel','merged'])]}"/>
-                    <!-- <field name="abandoned_reason" force_save="1" invisible="1"/> -->
+                    <field name="abandoned_reason" force_save="1" invisible="1"/>
                 </xpath>
             <xpath expr="//field[@name='tag_ids']" position="attributes">
                 <attribute name="invisible">1</attribute>
@@ -702,6 +703,11 @@
                         readonly="1" />
                 </button>
             </xpath>
+            <xpath expr="//button[@name='action_cancel']" position="before">
+                <button name="action_create_credit_note_kits" type="object" string="Credit Note"
+                    class="oe_highlight"
+                    attrs="{'invisible':[('state','not in',['open_inv','paid'])]}" />
+            </xpath>
         </field>
 
     </record>
@@ -709,18 +715,21 @@
     <record id="action_show_merged_orders" model="ir.actions.act_window">
         <field name="name">Merged Orders</field>
         <field name="res_model">sale.order</field>
+        <field name="view_id" ref="sale.view_quotation_tree_with_onboarding"/>
         <field name="view_mode">tree,kanban,form,calendar,pivot,graph,activity</field>
         <field name="search_view_id" ref="sale.sale_order_view_search_inherit_sale" />
         <field name="context">{}</field>
         <field name="domain">[('state','=','merged')]</field>
     </record>
     <record id="action_abandoned_cart_order" model="ir.actions.act_window">
+        <field name="view_id" ref="sale.view_quotation_tree_with_onboarding"/>
         <field name="name">Abandoned Cart Order</field>
         <field name="res_model">sale.order</field>
         <field name="view_mode">tree,form</field>
         <field name="domain">[('is_abandoned_cart','=',True)]</field>
     </record>
     <record id="action_unfulfilled_order" model="ir.actions.act_window">
+        <field name="view_id" ref="sale.view_quotation_tree_with_onboarding"/>
         <field name="name">Unfulfilled Orders</field>
         <field name="res_model">sale.order</field>
         <field name="view_mode">tree,form</field>

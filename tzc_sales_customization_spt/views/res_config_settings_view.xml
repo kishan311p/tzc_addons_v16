@@ -27,7 +27,7 @@
             <field name="arch" type="xml">
                 <!-- div[@data-key='website']/div[hasclass('o_settings_container')] -->
                 <!-- <xpath expr="//div[@data-key='data-key']" position="before">
-                    <div class="col-12 col-lg-6 o_setting_box" id="reset_pass_expire_hours" >
+                    <div class="col-12 col-lg-6 o_setting_box" id="reset_pass_expire_hours">
                         <div class="o_setting_right_pane">
                             <label for="reset_pass_expire_hours"/>
                             <span class="fa fa-clock-o"/>
@@ -68,55 +68,6 @@
                                 <field name="default_sales_person_id" domain="[('is_salesperson','=',True),('share','=',False)]" options="{'no_create': True}"/>
                             </div>
                         </div>
-                        <div class="col-12 col-lg-6 o_setting_box">
-                            <div class="o_setting_right_pane">
-                                <label for="kits_global_tax" string="Sunglasses Tax"/>
-                                <div class="text-muted">
-                                    this field use for the applying tax on sunglasses products.
-                                </div>
-                                <field name="kits_global_tax" domain="[('type_tax_use', '=', 'sale')]" options="{'no_create': true}"/>
-                                <br/>
-                            </div>                            
-                            <div class="o_setting_right_pane">
-                                <label for="catalog_delay"/>
-                                <br/>
-                                <field name="catalog_delay"/>
-                                <br/>
-                                <label for="order_delay"/>
-                                <br/>
-                                <field name="order_delay"/>
-                               
-                            </div>
-                            <div class="o_setting_right_pane">
-                                <!-- <label for="on_sale_cad_spt"/>
-                                <div class="text-muted">
-                                    Set on sale price in CAD Rate for calculate on sale USD price
-                                </div>
-                                <field name="on_sale_cad_spt"/>
-                                <br/> -->
-                                <label for="kits_global_tax" string="Sunglasses Tax"/>
-                                <div class="text-muted">
-                                    this field use for the applying tax on sunglasses products.
-                                </div>
-                                <field name="kits_global_tax" domain="[('type_tax_use', '=', 'sale')]" options="{'no_create': true}"/>
-                                <br/>
-                                
-                            </div>
-    
-                        </div>
-                        <div class="col-lg-6 o_setting_box">
-                            <div class="o_setting_right_pane" id = 'remove-product-new-arrivals'>
-                                <b>Remove Products From New Arrivals After (Days)</b>
-                                <div class='text-muted'>Products to be removed from New Arrivals after given days.</div>
-                                <div class="content-group">
-                                    <div class="m16">
-                                        <label for="new_arraival_remove_after" string="" />
-                                        <field name="new_arraival_remove_after" />
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-    
                         <div class="col-lg-6 o_setting_box">
                             <div class="o_setting_right_pane" id = 'case-weight-gm'>
                                 <b>Weight for cases</b>
@@ -129,7 +80,89 @@
                                 </div>
                             </div>
                         </div>
-                    </div>                    
+                        <div class="col-12 col-lg-6 o_setting_box">
+                            <div class="o_setting_right_pane">
+                                <label for="kits_global_tax" string="Sunglasses Tax"/>
+                                <div class="text-muted">
+                                    this field use for the applying tax on sunglasses products.
+                                </div>
+                                <field name="kits_global_tax" domain="[('type_tax_use', '=', 'sale')]" options="{'no_create': true}"/>
+                                <br/>
+                            </div>
+                            <div class="o_setting_right_pane">
+                                <label for="catalog_delay"/>
+                                <br/>
+                                <field name="catalog_delay"/>
+                                <br/>
+                                <label for="order_delay"/>
+                                <br/>
+                                <field name="order_delay"/>
+
+                            </div>
+
+                        </div>
+                        <div class="col-xs-12 col-lg-6 o_setting_box" id="abandoned_carts_setting" title="Abandoned carts are all carts left unconfirmed by website visitors.">
+                            <div class="o_setting_left_pane"/>
+                            <div class="o_setting_right_pane">
+                                <span class="o_form_label">Abandoned Carts</span>
+                                <span class="fa fa-lg fa-globe" title="Values set here are website-specific."/>
+                                <div class="text-muted">
+                                Send a recovery email when a cart is abandoned
+                                </div>
+                                <div class="content-group" title="This email template is suggested by default when you send a recovery email.">
+                                    <div class="row mt16">
+                                        <label for="cart_recovery_mail_template" string="Email Template" class="col-lg-4 o_light_label"/>
+                                        <field name="cart_recovery_mail_template" class="oe_inline"/>
+                                    </div>
+                                </div>
+                                <div class="content-group" title="Carts are flagged as abandoned after this delay.">
+                                    <div class="row mt16">
+                                        <div class="col-12">
+                                            <label for="cart_abandoned_delay" string="Cart is abandoned after " class="o_light_label"/>
+                                            <field class="col-2" name="cart_abandoned_delay"/>
+ hours.
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="content-group" title="Abandoned mail delay after this delay.">
+                                    <div class="row mt16">
+                                        <div class="col-12">
+                                            <label for="kits_abandone_mail_delay" string="Abandoned mail delay after " class="o_light_label"/>
+                                            <field class="col-2" name="kits_abandone_mail_delay"/>
+ Days.
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-6 o_setting_box">
+                            <div class="o_setting_right_pane" id = 'remove-product-new-arrivals'>
+                                <b>Remove Products From New Arrivals After (Days)</b>
+                                <div class='text-muted'>Products to be removed from New Arrivals after given days.</div>
+                                <div class="content-group">
+                                    <div class="m16">
+                                        <label for="new_arraival_remove_after" string="" />
+                                        <field name="new_arraival_remove_after" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-12 col-lg-6 show_shipping_method o_setting_box">
+                        <div class="o_setting_left_pane">
+                            <field name="kits_shipping_method" widget="upgrade_boolean"/>
+                        </div>
+                        <div class="o_setting_right_pane">
+                            <label for="kits_shipping_method"/>
+                            <div class="text-muted">
+                                Display Shipping Methods
+                            </div>
+                            <div class="content-group">
+                                <div id="sale_delivery_easypost"/>
+                            </div>
+                        </div>
+                    </div> 
+                    </div>
                 </xpath>
             </field>
         </record>
