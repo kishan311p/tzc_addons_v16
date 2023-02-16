@@ -15,7 +15,7 @@
     <record id="kits_homepage_banner_image_1" model="kits.b2b.image.model">
         <field name="header_description">How to Shop</field>
         <field name="url">https://cdn.teameto.com/data/B2C1/new_tzc_b2b_images/roadmap/roadmap-bg.png</field>
-        <field name="redirect_url">https://beta.teameto.com/shop</field>
+        <field name="redirect_url">https://b2b.teameto.com/shop</field>
         <field name="redirect_text">Shop Now</field>
     </record>
 
@@ -26,7 +26,7 @@
         <field name="text_1">Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.
 
 It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout.</field>
-        <field name="text_1_redirect_url">https://beta.teameto.com/aboutus</field>
+        <field name="text_1_redirect_url">https://b2b.teameto.com/aboutus</field>
         <field name="text_1_redirect_url_text">View Our Story</field>
         <field name="banner_1_id" eval="kits_homepage_banner_image_1" />
         <field name="website_id" eval="kits_team_eto_website" />
@@ -37,7 +37,7 @@ It is a long established fact that a reader will be distracted by the readable c
 Wholesale! </field>
         <field name="description">It is a long established fact that a reader will be distracted by the readable content.</field>
         <field name="url">https://cdn.teameto.com/data/B2C1/new_tzc_b2b_images/hero/hero-slide-1.png</field>
-        <field name="redirect_url">https://beta.teameto.com/web/signup</field>
+        <field name="redirect_url">https://b2b.teameto.com/signup</field>
         <field name="redirect_text">Register Now</field>
         <field name="website_id" eval="kits_team_eto_website" />
         <field name="main_banner_id" eval="kits_home_page" />
@@ -48,7 +48,7 @@ Wholesale! </field>
 Same Day Shipping </field>
         <field name="description">It is a long established fact that a reader will be distracted by the readable content.</field>
         <field name="url">https://cdn.teameto.com/data/B2C1/new_tzc_b2b_images/hero/hero-slide-2.png</field>
-        <field name="redirect_url">https://beta.teameto.com/shop</field>
+        <field name="redirect_url">https://b2b.teameto.com/shop</field>
         <field name="redirect_text">Shop Now</field>
         <field name="website_id" eval="kits_team_eto_website" />
         <field name="main_banner_id" eval="kits_home_page" />
@@ -59,7 +59,7 @@ Same Day Shipping </field>
 Original Design Eyewear </field>
         <field name="description">It is a long established fact that a reader will be distracted by the readable content.</field>
         <field name="url">https://cdn.teameto.com/data/B2C1/new_tzc_b2b_images/hero/hero-slide-3.png</field>
-        <field name="redirect_url">https://beta.teameto.com/shop</field>
+        <field name="redirect_url">https://b2b.teameto.com/shop</field>
         <field name="redirect_text">Shop Now</field>
         <field name="website_id" eval="kits_team_eto_website" />
         <field name="main_banner_id" eval="kits_home_page" />
@@ -260,7 +260,7 @@ Sunglasses</field>
         <field name="is_our_core_values">True</field>
         <field name="header_text_1">Join Our Team</field>
         <field name="text_1">It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. he point of using Lorem Ipsum is that.</field>
-        <field name="text_1_redirect_url">https://beta.teameto.com/aboutus</field>
+        <field name="text_1_redirect_url">https://b2b.teameto.com/aboutus</field>
         <field name="text_1_redirect_url_text">View Open Positions</field>
         <field name="website_id" eval="kits_team_eto_website" />
         <field name="text_2">It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. he point of using Lorem Ipsum is that.</field>
@@ -271,7 +271,7 @@ Sunglasses</field>
         <field name="header_description">Lorem ipsum is standard dummy text, me, and all humans in the pursuit to live supernatural.</field>
         <field name="description">It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. he point of using Lorem Ipsum is that.</field>
         <field name="url">https://cdn.teameto.com/data/B2C1/new_tzc_b2b_images/aboout-gellery/01.png</field>
-        <field name="redirect_url">https://beta.teameto.com/aboutus</field>
+        <field name="redirect_url">https://b2b.teameto.com/aboutus</field>
         <field name="redirect_text">Join Our Team</field>
         <field name="website_id" eval="kits_team_eto_website" />
         <field name="main_banner_id" eval="kits_aboutus_page" />
@@ -281,7 +281,7 @@ Sunglasses</field>
         <field name="header_description">Lorem ipsum is standard dummy text, me, and all humans in the pursuit to live supernatural.</field>
         <field name="description">It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. he point of using Lorem Ipsum is that.</field>
         <field name="url">https://cdn.teameto.com/data/B2C1/new_tzc_b2b_images/aboout-gellery/01.png</field>
-        <field name="redirect_url">https://beta.teameto.com/aboutus</field>
+        <field name="redirect_url">https://b2b.teameto.com/aboutus</field>
         <field name="redirect_text">Join Our Team</field>
         <field name="website_id" eval="kits_team_eto_website" />
         <field name="main_banner_id" eval="kits_aboutus_page" />
@@ -292,7 +292,7 @@ Sunglasses</field>
         <field name="header_description">Lorem ipsum is standard dummy text, me, and all humans in the pursuit to live supernatural.</field>
         <field name="description">It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. he point of using Lorem Ipsum is that.</field>
         <field name="url">https://cdn.teameto.com/data/B2C1/new_tzc_b2b_images/aboout-gellery/02.png</field>
-        <field name="redirect_url">https://beta.teameto.com/aboutus</field>
+        <field name="redirect_url">https://b2b.teameto.com/aboutus</field>
         <field name="redirect_text">Join Our Team</field>
         <field name="website_id" eval="kits_team_eto_website" />
         <field name="main_banner_id" eval="kits_aboutus_page" />
@@ -303,7 +303,7 @@ Sunglasses</field>
         <field name="header_description">Lorem ipsum is standard dummy text, me, and all humans in the pursuit to live supernatural.</field>
         <field name="description">It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. he point of using Lorem Ipsum is that.</field>
         <field name="url">https://cdn.teameto.com/data/B2C1/new_tzc_b2b_images/aboout-gellery/03.png</field>
-        <field name="redirect_url">https://beta.teameto.com/aboutus</field>
+        <field name="redirect_url">https://b2b.teameto.com/aboutus</field>
         <field name="redirect_text">Join Our Team</field>
         <field name="website_id" eval="kits_team_eto_website" />
         <field name="main_banner_id" eval="kits_aboutus_page" />
@@ -313,7 +313,7 @@ Sunglasses</field>
         <field name="header_description">Lorem ipsum is standard dummy text, me, and all humans in the pursuit to live supernatural.</field>
         <field name="description">It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. he point of using Lorem Ipsum is that.</field>
         <field name="url">https://cdn.teameto.com/data/B2C1/new_tzc_b2b_images/aboout-gellery/04.png</field>
-        <field name="redirect_url">https://beta.teameto.com/aboutus</field>
+        <field name="redirect_url">https://b2b.teameto.com/aboutus</field>
         <field name="redirect_text">Join Our Team</field>
         <field name="website_id" eval="kits_team_eto_website" />
         <field name="main_banner_id" eval="kits_aboutus_page" />
