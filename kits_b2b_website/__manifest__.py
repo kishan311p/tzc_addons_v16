@@ -6,7 +6,7 @@
     'author': 'Keypress IT Services',
     'version': '13.0.0.1',
     'sequence' : 1,
-    'website' : 'https://www.keypress.co.in',
+    'website' : 'https://keypress.co.in',
     'depends':['tzc_sales_customization_spt'],
     'data': [
         # data
