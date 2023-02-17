@@ -1,30 +1,6 @@
 <?xml version='1.0' encoding='utf-8'?>
 <odoo>
     <data>
-        <record id="res_users_view_search_inherit_tzc_sales_customization_spt" model="ir.ui.view">
-            <field name="name">res.users.view.search.inherit.tzc.sales.customization.spt</field>
-            <field name="model">res.users</field>
-            <field name="inherit_id" ref="base.view_users_search"/>
-            <field name="arch" type="xml">
-                <xpath expr="//search/filter[@name='totp_enabled']" position="attributes">
-                    <attribute name="invisible">1</attribute>
-                </xpath>
-                <xpath expr="//search/filter[@name='totp_disabled']" position="attributes">
-                    <attribute name="invisible">1</attribute>
-                </xpath>
-                <xpath expr="//search/filter[@name='filter_share']" position="attributes">
-                    <attribute name="invisible">1</attribute>
-                </xpath>
-                <xpath expr="//field[@name='share']" position="after">
-                    <filter name="accepted_invitation" string="Logged Users" domain="[('share','=',True),('state','=','active')]"/>
-                    <filter name="not_accepted_invitation" string="Not Confirmed" domain="[('share','=',True),('state','=','New')]"/>
-                    <group expand="0" string="Group By">
-                        <filter name="salespeson" context="{'group_by':'user_id'}" string="Salespeson" />
-
-                    </group>
-                </xpath>
-            </field>
-        </record>
         <record id="res_users_salesmanager_inherit_form_view_spt" model="ir.ui.view">
             <field name="name">res.users.salesmanager.inherit_form.view.spt</field>
             <field name="model">res.users</field>

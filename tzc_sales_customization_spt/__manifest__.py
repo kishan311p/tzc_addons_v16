@@ -177,11 +177,10 @@
         'reports/shipping_details_b13a_report.xml',
         'reports/report_action.xml',
         'reports/report_invoice_documnet.xml',
-        # 'reports/report_footer_spt.xml',
+        'reports/report_footer_spt.xml',
 
         # Templates
         'template/excel_data.xml',
-        
 
     ],
     

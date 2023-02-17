@@ -46,4 +46,4 @@ class kits_change_contact_country(models.TransientModel):
         # Notify admin for country change
         if notify:
             for recipient in recipients:
-                self.with_context(recipient=recipient.name).env.ref('tzc_sales_customization_spt.partner_country_change_notify_admin_mail_template').sudo().send_mail(self.partner_id.id,force_send=True,email_values={'recipient_ids':[(6,0,recipient.ids)]})
+                self.with_context(recipient=recipient.name).env.ref('tzc_sales_customization_spt.partner_country_change_notify_admin_mail_template').sudo().send_mail(self.partner_id.id,force_send=True,email_values={'recipient_ids':[(6,0,recipient.ids)]},email_layout_xmlid="mail.mail_notification_light")

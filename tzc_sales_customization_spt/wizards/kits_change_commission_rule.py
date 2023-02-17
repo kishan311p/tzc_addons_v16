@@ -66,4 +66,4 @@ class kits_change_commission_rule(models.TransientModel):
             ctx = dict()
             ctx.update(rule_name=self.new_rule_id.name,updated_orders=', '.join(old_commissions.mapped('invoice_id').sorted(lambda x: x.name).mapped('name')))
             if notify:
-                self.env.ref('tzc_sales_customization_spt.kits_sales_commission_notify_salesperson_commission_change').sudo().with_context(ctx).send_mail(self.user_id.id,force_send=True)
+                self.env.ref('tzc_sales_customization_spt.kits_sales_commission_notify_salesperson_commission_change').sudo().with_context(ctx).send_mail(self.user_id.id,force_send=True,email_layout_xmlid="mail.mail_notification_light")

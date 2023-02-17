@@ -125,28 +125,60 @@ class sales_commission_report_wizard(models.TransientModel):
         return report_table_lines
 
     def action_xls_report(self):
+        selected_state = {'is_paid':" = 'paid'",'is_unpaid': " = 'draft'",'all':"in ('draft','paid')"}
+        commission_type = selected_state[self.commission_is]
+        commi_for = {'sales_person':'saleperson','sales_manager':'manager'}
+        commission_for = commi_for[self.commission_for]
         self.validate_dates()
         workbook = Workbook()
         users = self.get_users(return_users=True)
         right_alignment = Alignment(
             vertical='center', horizontal='right', text_rotation=0, wrap_text=True)
         for sale_person in users:
+            query = f'''SELECT SO.DATE_ORDER,
+                        SO.NAME,
+                        COALESCE(AM.NAME,'') AS INVOICE_NAME,
+                        COALESCE(RP.NAME,'') AS PARTNER_NAME,
+                        COALESCE(RC.NAME->>'en_US','') AS COUNTRY,
+                        COALESCE(RCG.NAME->>'en_US','') AS TERRITORY,
+                        COALESCE(SO.ORDERED_QTY,0) AS ORDER_QTY,
+                        COALESCE(R_CUR.NAME,'') AS CURRENCY,
+                        COALESCE(ROUND(AM.AMOUNT_WITHOUT_DISCOUNT,2),0.0) AS GROSS_SALE,
+                        COALESCE(ROUND(AM.AMOUNT_DISCOUNT,2),0.0) AS DISCOUNT,
+                        COALESCE(ROUND(AM.AMOUNT_TAX,2),0.0) AS TAX,
+                        COALESCE(ROUND(AM.AMOUNT_TOTAL,2),0.0) AS NET_SALE,
+                        COALESCE(SUM(KCL.AMOUNT),00) AS COMMISION,
+                        CASE 
+                            WHEN '{self.commission_is}' = 'all' AND AM.PAYMENT_STATE = 'not_paid' THEN 'Unpaid'
+                            WHEN '{self.commission_is}' = 'all' AND AM.PAYMENT_STATE = 'paid' THEN 'Paid'
+                            WHEN '{self.commission_is}' = 'is_paid' THEN 'Paid'
+                            WHEN '{self.commission_is}' = 'is_unpaid' THEN 'Unpaid'
+                        END AS COMMISSION_TYPE,
+                        CASE 
+                            WHEN KCL.STATE = 'paid' THEN KCL.AMOUNT
+                        END AS PAID_AMOUND,
+                        CASE 
+                            WHEN KCL.STATE = 'draft' THEN KCL.AMOUNT
+                        END AS UNPAID_AMOUNT
+                        FROM KITS_COMMISSION_LINES AS KCL
+                        INNER JOIN ACCOUNT_MOVE AS AM ON AM.ID = KCL.INVOICE_ID
+                        INNER JOIN SALE_ORDER AS SO ON SO.NAME = AM.INVOICE_ORIGIN
+                        INNER JOIN RES_PARTNER AS RP ON RP.ID = SO.PARTNER_ID
+                        INNER JOIN RES_COUNTRY AS RC ON RC.ID = RP.COUNTRY_ID
+                        LEFT JOIN RES_COUNTRY_GROUP AS RCG ON RCG.ID = RP.TERRITORY
+                        INNER JOIN RES_CURRENCY AS R_CUR ON R_CUR.ID = AM.CURRENCY_ID
+                        WHERE AM.INVOICE_DATE >= '{self.start_date}'
+                            AND AM.INVOICE_DATE <= '{self.end_date}'
+                            AND KCL.STATE {commission_type}
+                            AND KCL.USER_ID = {sale_person.id}
+                            AND KCL.COMMISSION_FOR = '{commission_for}'
+                        GROUP BY SO.DATE_ORDER,SO.NAME,RP.NAME,RC.NAME,RCG.NAME,SO.ORDERED_QTY,R_CUR.NAME,AM.AMOUNT_WITHOUT_DISCOUNT,AM.AMOUNT_DISCOUNT,AM.AMOUNT_TAX,AM.AMOUNT_TOTAL,AM.NAME,AM.PAYMENT_STATE,KCL.STATE,KCL.AMOUNT '''
+            self.env.cr.execute(query)
+            record_data = self.env.cr.fetchall()
             total_lines = {}
-            paid_unpaid_total = {}
             sheet_index = 0
             sheet = workbook.create_sheet(title=sale_person.name.replace('/','_'),index=sheet_index)
             report_table_lines = []
-            domain = [('user_id','=',sale_person.id)]
-            if self.start_date:
-                domain.append(('invoice_id.invoice_date', '>=', self.start_date))
-            if self.end_date:
-                domain.append(('invoice_id.invoice_date', '<=', self.end_date))
-            if self.commission_is == 'is_paid':
-                domain.append(('state','=','paid'))
-            if self.commission_is == 'is_unpaid':
-                domain.append(('state','=','draft'))
-            if self.commission_is == 'all':
-                domain.append(('state','in',['draft','paid']))
             
             header_font = Font(name='Calibri',size='11',bold=True)
             bd = Side(style='thin', color="000000")
@@ -164,8 +196,6 @@ class sales_commission_report_wizard(models.TransientModel):
             sheet.cell(row=7, column=1).value = 'End Date : %s'%(str(self.end_date) if self.end_date else '')
             sheet.merge_cells('A9:E9')
             sheet.cell(row=9, column=1).value = 'Commission Structure : %s'%(sale_person.commission_rule_id.name if self.commission_for == 'sales_person' else sale_person.manager_commission_rule_id.name if self.commission_for == 'sales_manager' else '')
-
-            invoice_ids = self.env['kits.commission.lines'].sudo().search(domain).mapped('invoice_id')
 
             table_header = 11
             sheet.cell(row=table_header, column=1).value = 'Date'
@@ -221,87 +251,61 @@ class sales_commission_report_wizard(models.TransientModel):
 
             # total_qty = 0
             # if (invoice_ids and sale_person.commission_rule_id and self.commission_for =='sales_person') or (sale_person.manager_commission_rule_id and self.commission_for =='sales_manager'):
-            for invoice in invoice_ids:
-                order = self.env['sale.order'].search([('invoice_ids','in',invoice.ids)],limit=1)
-                commission = 0.0
-
-                state = []
-                if self.commission_is == 'is_paid':
-                    state.append('paid')
-                elif self.commission_is == 'is_unpaid':
-                    state.append('draft')
-                elif self.commission_is == 'all':
-                    state.append('draft')
-                    state.append('paid')
-
-                if self.commission_for == 'sales_person':
-                    commission = sum(invoice.commission_line_ids.filtered(lambda x: x.commission_for == 'saleperson' and x.user_id == sale_person and x.state in state).mapped('amount'))
-                elif self.commission_for == 'sales_manager':
-                    commission = sum(invoice.mapped('commission_line_ids').filtered(lambda x: x.commission_for == 'manager' and x.user_id == sale_person and x.state in state).mapped('amount'))
-                else:
-                    pass
-
-                if commission:
-                    sheet.cell(row=row_index, column=1).value = (order.date_order).strftime("%d-%m-%Y")
-                    sheet.cell(row=row_index, column=2).value = order.name
-                    sheet.cell(row=row_index, column=3).value = invoice.name or ''
-                    sheet.cell(row=row_index, column=4).value = order.partner_id.name or ''
-                    sheet.cell(row=row_index, column=5).value = order.partner_id.country_id.name or ''
-                    sheet.cell(row=row_index, column=6).value = order.partner_id.territory.name or ''
-                    sheet.cell(row=row_index, column=7).value = order.ordered_qty or 0
+            paid_unpaid_total = {}
+            for data in record_data:
+                if data[12]:
+                    sheet.cell(row=row_index, column=1).value = data[0].strftime("%d-%m-%Y")
+                    sheet.cell(row=row_index, column=2).value = data[1]
+                    sheet.cell(row=row_index, column=3).value = data[2]
+                    sheet.cell(row=row_index, column=4).value = data[3]
+                    sheet.cell(row=row_index, column=5).value = data[4]
+                    sheet.cell(row=row_index, column=6).value = data[5]
+                    sheet.cell(row=row_index, column=7).value = data[6]
                     # total_qty += order.ordered_qty
-                    sheet.cell(row=row_index, column=8).value = order.currency_id.name or ''
+                    sheet.cell(row=row_index, column=8).value = data[7]
                     sheet.cell(row=row_index, column=8).alignment = right_alignment
-                    sheet.cell(row=row_index, column=9).value = '$ {:,.2f}'.format(round(invoice.amount_without_discount,2) or 0.0)
+                    sheet.cell(row=row_index, column=9).value = '$ {:,.2f}'.format(data[8])
                     sheet.cell(row=row_index, column=9).alignment = right_alignment
-                    sheet.cell(row=row_index, column=10).value = '$ {:,.2f}'.format(round(invoice.amount_discount,2) or 0.0)
+                    sheet.cell(row=row_index, column=10).value = '$ {:,.2f}'.format(data[9])
                     sheet.cell(row=row_index, column=10).alignment = right_alignment
-                    sheet.cell(row=row_index, column=11).value = '$ {:,.2f}'.format(round(invoice.amount_tax,2) or 0.0)
+                    sheet.cell(row=row_index, column=11).value = '$ {:,.2f}'.format(data[10])
                     sheet.cell(row=row_index, column=11).alignment = right_alignment
-                    sheet.cell(row=row_index, column=12).value = '$ {:,.2f}'.format(round(invoice.amount_total,2) or 0.0)
+                    sheet.cell(row=row_index, column=12).value = '$ {:,.2f}'.format(data[11])
                     sheet.cell(row=row_index, column=12).alignment = right_alignment
-                    sheet.cell(row=row_index, column=13).value = '$ {:,.2f}'.format(round(commission, 2) or 0.0)
+                    sheet.cell(row=row_index, column=13).value = '$ {:,.2f}'.format(data[12])
                     sheet.cell(row=row_index, column=13).alignment = right_alignment
-                    if self.commission_is == 'all':
-                        if invoice.inv_payment_status in ['full','over']:
-                            sheet.cell(row=row_index, column=14).value = 'Paid' 
-                        else:
-                            sheet.cell(row=row_index, column=14).value = 'Unpaid' 
-                    elif self.commission_is == 'is_paid':
-                        sheet.cell(row=row_index, column=14).value = 'Paid'
-                    elif self.commission_is == 'is_unpaid':
-                        sheet.cell(row=row_index, column=14).value = 'Unpaid'
+                    sheet.cell(row=row_index, column=14).value = data[13]
                     row_index+=1
 
-                    if order.currency_id.name in total_lines:
-                        total_lines[order.currency_id.name]['qty'] = total_lines[order.currency_id.name]['qty'] + order.ordered_qty
-                        total_lines[order.currency_id.name]['gross_sale'] = round(total_lines[order.currency_id.name]['gross_sale']+invoice.amount_without_discount,2)
-                        total_lines[order.currency_id.name]['discount'] = round(total_lines[order.currency_id.name]['discount']+invoice.amount_discount,2)
-                        total_lines[order.currency_id.name]['tax'] = round(total_lines[order.currency_id.name]['tax']+invoice.amount_tax,2)
-                        total_lines[order.currency_id.name]['net_sale'] = round(total_lines[order.currency_id.name]['net_sale']+invoice.amount_total,2)
-                        total_lines[order.currency_id.name]['commission'] = round(total_lines[order.currency_id.name]['commission']+commission,2)
+                    if data[7] in total_lines:
+                        total_lines[data[7]]['qty'] = total_lines[data[7]]['qty'] + data[6]
+                        total_lines[data[7]]['gross_sale'] = round(total_lines[data[7]]['gross_sale']+data[8],2)
+                        total_lines[data[7]]['discount'] = round(total_lines[data[7]]['discount']+data[9],2)
+                        total_lines[data[7]]['tax'] = round(total_lines[data[7]]['tax']+data[10],2)
+                        total_lines[data[7]]['net_sale'] = round(total_lines[data[7]]['net_sale']+data[11],2)
+                        total_lines[data[7]]['commission'] = round(total_lines[data[7]]['commission']+data[12],2)
                     else:
-                        total_lines[order.currency_id.name] = {
-                            'qty':round(order.ordered_qty,2),
-                            'gross_sale':round(invoice.amount_without_discount,2),
-                            'discount':round(invoice.amount_discount,2),
-                            'tax':round(invoice.amount_tax,2),
-                            'net_sale':round(invoice.amount_total,2),
-                            'commission':commission,
+                        total_lines[data[7]] = {
+                            'qty':data[6],
+                            'gross_sale':data[8],
+                            'discount':data[9],
+                            'tax':data[10],
+                            'net_sale':data[11],
+                            'commission':data[12],
                         }
                     
-                    if order.currency_id.name in paid_unpaid_total:
+                    if data[7] in paid_unpaid_total:
                         if self.commission_for == 'sales_person':
-                            paid_unpaid_total[order.currency_id.name]['paid'] = paid_unpaid_total[order.currency_id.name]['paid'] + round(sum(invoice.commission_line_ids.filtered(lambda x: x.commission_for == 'saleperson' and x.user_id == sale_person and x.state == 'paid').mapped('amount')),2)
-                            paid_unpaid_total[order.currency_id.name]['unpaid'] = paid_unpaid_total[order.currency_id.name]['unpaid'] + round(sum(invoice.commission_line_ids.filtered(lambda x: x.commission_for == 'saleperson' and x.user_id == sale_person and x.state == 'draft').mapped('amount')),2)
+                            paid_unpaid_total[data[7]]['paid'] = paid_unpaid_total[data[7]]['paid'] + (data[14] or 00)
+                            paid_unpaid_total[data[7]]['unpaid'] = paid_unpaid_total[data[7]]['unpaid'] + (data[15] or 00)
                         elif self.commission_for == 'sales_manager':
-                            paid_unpaid_total[order.currency_id.name]['paid'] = paid_unpaid_total[order.currency_id.name]['paid'] + round(sum(invoice.mapped('commission_line_ids').filtered(lambda x: x.commission_for == 'manager' and x.user_id == sale_person and x.state == 'paid').mapped('amount')),2)
-                            paid_unpaid_total[order.currency_id.name]['unpaid'] = paid_unpaid_total[order.currency_id.name]['unpaid'] + round(sum(invoice.mapped('commission_line_ids').filtered(lambda x: x.commission_for == 'manager' and x.user_id == sale_person and x.state == 'draft').mapped('amount')),2)
+                            paid_unpaid_total[data[7]]['paid'] = paid_unpaid_total[data[7]]['paid'] + (data[14] or 00)
+                            paid_unpaid_total[data[7]]['unpaid'] = paid_unpaid_total[data[7]]['unpaid'] + (data[15] or 00)
                     else:
                         if self.commission_for == 'sales_person':
-                            paid_unpaid_total[order.currency_id.name] = {'paid':round(sum(invoice.commission_line_ids.filtered(lambda x: x.commission_for == 'saleperson' and x.user_id == sale_person and x.state == 'paid').mapped('amount')),2),'unpaid':round(sum(invoice.commission_line_ids.filtered(lambda x: x.commission_for == 'saleperson' and x.user_id == sale_person and x.state == 'draft').mapped('amount')),2)}
+                            paid_unpaid_total[data[7]] = {'paid':data[14] or 00,'unpaid':data[15] or 00}
                         elif self.commission_for == 'sales_manager':
-                            paid_unpaid_total[order.currency_id.name] = {'paid':round(sum(invoice.mapped('commission_line_ids').filtered(lambda x: x.commission_for == 'manager' and x.user_id == sale_person and x.state == 'paid').mapped('amount')),2),'unpaid':round(sum(invoice.mapped('commission_line_ids').filtered(lambda x: x.commission_for == 'manager' and x.user_id == sale_person and x.state == 'draft').mapped('amount')),2)}
+                            paid_unpaid_total[data[7]] = {'paid':data[14] or 00,'unpaid':data[15] or 00}
 
             sheet.merge_cells('A'+str(row_index)+':N'+str(row_index))
             total_row = row_index + 1

@@ -15,24 +15,22 @@
                             <table border="0" cellpadding="0" cellspacing="0" width="590" style="padding: 0px 8px 0px 8px;background-color: white; color: #454748; border-collapse:separate;">
                                 <tbody>
                                     <!-- HEADER -->
-                                    <tr>
+                                    <!-- <tr>
                                         <td align="center" style="min-width: 590px;">
                                             <t>
-                                                <t t-if="object.env.cr.dbname != 'eto_production'">
+                                                % if object.env.cr.dbname != 'eto_production':
                                                 <div class="corner-ribbon" style="top: 5%;position:absolute;width: 165px;font-weight: bold;color: #dc0e0e;font-size: 36px;text-align: center;">TEST</div>
-                                                </t>
+                                                % endif
                                             </t>
                                             <table border="0" cellpadding="0" cellspacing="0" width="590" style="min-width: 590px; background-color: white; padding: 0px 8px 0px 8px; border-collapse:separate;">
                                                 <tr>
                                                     <td valign="middle" style="width: 245px;">
-                                                        <!-- <span style="font-size: 10px;">Your Account</span>
-                                                        <br/> -->
                                                         <span style="font-size: 20px; font-weight: bold;">
-                                                            <t t-out="object.name"/>
+                                                            ${object.name}
                                                         </span>
                                                     </td>
                                                     <td valign="middle" style="width: 145px;" align="right">
-                                                        <img src="/web/image?model=res.company&amp;id=1&amp;field=logo" style="padding: 0px; margin: 0px; height: auto; width: 280px;" alt="{{object.user_id.company_id.name}}"/>
+                                                        <img src="/web/image?model=res.company&amp;id=1&amp;field=logo" style="padding: 0px; margin: 0px; height: auto; width: 280px;" alt="${object.user_id.company_id.name}"/>
                                                     </td>
                                                 </tr>
                                                 <tr>
@@ -42,7 +40,7 @@
                                                 </tr>
                                             </table>
                                         </td>
-                                    </tr>
+                                    </tr> -->
                                     <!-- CONTENT -->
                                     <tr>
                                         <td align="center" style="min-width:590px;">
@@ -89,47 +87,46 @@
                         </td>
                     </tr>
                     <!-- FOOTER -->
-                    <tr>
+                    <!-- <tr>
                         <td align="center" style="min-width: 605px;">
                             <table border="0" cellpadding="0" cellspacing="0" width="590" style="min-width: 605px; background-color: white; font-size: 11px; padding: 0px 8px 16px 8px; border-collapse:separate;">
                                 <tr>
                                     <td valign="middle" align="left">
-                                        <t t-out="object.user_id.company_id.name"/>
+                                                        ${object.user_id.company_id.name}
                                     </td>
                                 </tr>
                                 <tr>
                                     <td valign="middle" align="left" style="opacity: 0.7;">
-                                                        <t t-out="object.user_id.company_id.phone"/>
-                                                        <t t-if="object.user_id.company_id.email">    
-                                                        |                                        <a t-attf-href="'mailto:%s' % {{object.user_id.company_id.email}}" style="text-decoration:none; color: #454748;"><t t-out="object.user_id.company_id.email"/></a>
-                                                        </t>
-                                                        <t t-if="object.user_id.company_id.website"> 
-                                                            |                                        <a t-attf-href="'%s' % {{object.user_id.company_id.website}}" style="text-decoration:none; color: #454748;">
+                                                        ${object.user_id.company_id.phone}
+                                                        % if object.user_id.company_id.email
+                                                        |                                        <a href="'mailto:%s' % ${object.user_id.company_id.email}" style="text-decoration:none; color: #454748;">${object.user_id.company_id.email}</a>
+                                                        % endif
+                                                        % if object.user_id.company_id.website
+                                                            |                                        <a href="'%s' % ${object.user_id.company_id.website}" style="text-decoration:none; color: #454748;">
                                                             ${object.user_id.company_id.website}
                                         </a>
-                                                        </t>
-                                                        
+                                                        % endif
                                     </td>
                                 </tr>
                             </table>
                         </td>
-                    </tr>
+                    </tr> -->
                     <tr>
                     </tr>
                     <!-- POWERED BY -->
-                    <tr>
+                    <!-- <tr>
                         <td align="center" style="min-width:605px;">
                             <table border="0" cellpadding="0" cellspacing="0" width="605" style="min-width:605px;background-color: #F1F1F1; color: #454748; padding: 8px; border-collapse:separate;">
                                 <tbody>
                                     <tr>
                                         <td style="text-align:center;font-size: 13px;">
-                                                Powered by <a target="_blank" href="teameto.com" style="color: #7693f8;">ETO</a>
+                                                Powered by <a target="_blank" href="www.teameto.com" style="color: #7693f8;">ETO</a>
                                         </td>
                                     </tr>
                                 </tbody>
                             </table>
                         </td>
-                    </tr>
+                    </tr> -->
                 </table>
 
             </field>

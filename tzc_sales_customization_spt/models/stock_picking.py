@@ -789,7 +789,7 @@ class stock_picking(models.Model):
                 rec.sale_id.write({'state':'scanned'})
                 rec.get_picking_order_values()
                 if user_id and user_id.email:
-                    template_id.send_mail(rec.id,force_send=True,notif_layout="mail.mail_notification_light")
+                    template_id.send_mail(rec.id,force_send=True,email_layout_xmlid="mail.mail_notification_light")
                 rec.sale_id._amount_all()
         else:
             return {
@@ -1401,7 +1401,7 @@ class stock_picking(models.Model):
             res =  super(stock_picking, self).button_validate()
 
             template_id = self.env.ref('tzc_sales_customization_spt.tzc_order_shipped_notification_to_salesperson_spt')
-            template_id.with_context({'salesperson_notify':True}).send_mail(self.id,force_send=True)
+            template_id.with_context({'salesperson_notify':True}).send_mail(self.id,force_send=True,email_layout_xmlid="mail.mail_notification_light")
             # template_id.with_context({'default_attachment_ids':[(6,0,[attchment_id.id])]}).send_mail(self.id,force_send=True)
             # Check backorder should check for other barcodes
             immediate_transfer_view_id = self.env.ref('stock.view_immediate_transfer').id

@@ -818,14 +818,24 @@ class product_import_spt(models.Model):
 
         row_index=table_header+1
 
-        for product_import_id in product_import_ids:
-            sheet.cell(row=row_index, column=1).value = product_import_id.name or ''
-            sheet.cell(row=row_index, column=2).value = product_import_id.attach_file_name or ''
-            sheet.cell(row=row_index, column=3).value = product_import_id.create_date.strftime("%d-%m-%Y %H:%M:%S") or ''
-            sheet.cell(row=row_index, column=4).value = dict(product_import_id._fields['state'].selection).get(product_import_id.state) or ''
-            sheet.cell(row=row_index, column=5).value = dict(product_import_id._fields['based_on_categories'].selection).get(product_import_id.based_on_categories) or ''
+        query = '''SELECT COALESCE(NAME,'') AS NAME,
+                    COALESCE(ATTACH_FILE_NAME,'') AS ATTACH_FILE_NAME,
+                    CREATE_DATE,
+                    COALESCE(STATE,'') AS STATE,
+                    COALESCE(BASED_ON_CATEGORIES,'') AS BASED_ON_CATEGORY,
+                    COALESCE(DATA_ON,'') AS DATA_ON
+                FROM PRODUCT_IMPORT_SPT '''
+        self.env.cr.execute(query)
+        report_data = self.env.cr.fetchall()
+
+        for data in report_data:
+            sheet.cell(row=row_index, column=1).value = data[0] or ''
+            sheet.cell(row=row_index, column=2).value = data[1] or ''
+            sheet.cell(row=row_index, column=3).value = data[2].strftime("%d-%m-%Y %H:%M:%S") or ''
+            sheet.cell(row=row_index, column=4).value = dict(self._fields['state'].selection).get(data[3]) or ''
+            sheet.cell(row=row_index, column=5).value = dict(self._fields['based_on_categories'].selection).get(data[4]) or ''
             # sheet.cell(row=row_index, column=6).value = "All In One" if product_import_id.all_in_one else "Product Import"
-            sheet.cell(row=row_index, column=6).value = dict(product_import_id._fields['data_on'].selection).get(product_import_id.data_on) or ''
+            sheet.cell(row=row_index, column=6).value = dict(self._fields['data_on'].selection).get(data[5]) or ''
             row_index += 1
 
         sheet.column_dimensions['A'].width = 20

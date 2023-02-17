@@ -96,25 +96,30 @@ class shipped_orders_report_wizard_spt(models.TransientModel):
                        column=col).border = top_bottom_border
             sheet.cell(row=table_header_row, column=col).font = heading_font
 
-        report_data = self.get_report_data()
+        report_data = self.get_report_data_by_query()
         row_index = table_header_row+1
         for data in report_data:
-            height = (3*len(report_data[data].get('tracking_number')))/2
-            sheet.row_dimensions[row_index].height = height if len(report_data[data].get('tracking_number')) > 30 else 35
-            sheet.cell(row=row_index, column=1).value = report_data[data].get('order_date')
-            sheet.cell(row=row_index, column=2).value = report_data[data].get('so_name')
-            sheet.cell(row=row_index, column=3).value = report_data[data].get('shipping_date')
-            sheet.cell(row=row_index, column=4).value = report_data[data].get('customer')
-            sheet.cell(row=row_index, column=5).value = report_data[data].get('total_ordered_qty')
-            sheet.cell(row=row_index, column=6).value = report_data[data].get('total_picked_qty')
-            sheet.cell(row=row_index, column=7).value = report_data[data].get('admin_fee')
-            sheet.cell(row=row_index, column=8).value = report_data[data].get('shipping_cost')
-            sheet.cell(row=row_index, column=9).value = report_data[data].get('shipping_provider')
-            sheet.cell(row=row_index, column=10).value = report_data[data].get('tracking_number')
-            sheet.cell(row=row_index, column=11).value = report_data[data].get('country')
-            sheet.cell(row=row_index, column=12).value = report_data[data].get('address')
-            sheet.cell(row=row_index, column=13).value = report_data[data].get('currency')
-            sheet.cell(row=row_index, column=14).value = report_data[data].get('subtotal')
+            if data[9] == '':
+                sheet.row_dimensions[row_index].height = 35
+            else:
+                height = 3*len(data[9])/2
+                sheet.row_dimensions[row_index].height = height if 3*len(data[9]) > 30 else 35
+            sheet.cell(row=row_index, column=1).value = str(data[0])
+            sheet.cell(row=row_index, column=2).value = data[1]
+            sheet.cell(row=row_index, column=3).value = str(data[2])
+            sheet.cell(row=row_index, column=4).value = data[3] if data[3] != None else ''
+            sheet.cell(row=row_index, column=5).value = data[4]
+            sheet.cell(row=row_index, column=6).value = data[5]
+            sheet.cell(row=row_index, column=7).value = data[6]
+            sheet.cell(row=row_index, column=8).value = data[7]
+            sheet.cell(row=row_index, column=9).value = data[8]
+            sheet.cell(row=row_index, column=10).value = data[9]
+            sale_order = self.env['sale.order'].search([('name','=',data[1])])
+            sheet.cell(row=row_index, column=11).value = sale_order.country_id.name if sale_order.country_id else ''
+            address = self.env['res.partner'].search([('id','=',data[10])])
+            sheet.cell(row=row_index, column=12).value = self.show_address(address)
+            sheet.cell(row=row_index, column=13).value = data[11]
+            sheet.cell(row=row_index, column=14).value = data[12]
 
             sheet.cell(row=row_index, column=1).font = table_font
             sheet.cell(row=row_index, column=2).font = table_font
@@ -147,19 +152,19 @@ class shipped_orders_report_wizard_spt(models.TransientModel):
             sheet.cell(row=row_index, column=14).border = bottom_border
 
             sheet.cell(row=row_index, column=1).alignment = align_left
-            sheet.cell(row=row_index, column=2 ).alignment = align_left
+            sheet.cell(row=row_index, column=2).alignment = align_left
             sheet.cell(row=row_index, column=3).alignment = align_left
-            sheet.cell(row=row_index, column=4 ).alignment = align_left
-            sheet.cell(row=row_index, column=5 ).alignment = align_left
-            sheet.cell(row=row_index, column=6 ).alignment = align_left
-            sheet.cell(row=row_index, column=7 ).alignment = align_right
-            sheet.cell(row=row_index, column=8 ).alignment = align_right
-            sheet.cell(row=row_index, column=9 ).alignment = align_left
-            sheet.cell(row=row_index, column=10 ).alignment = align_left
-            sheet.cell(row=row_index, column=11 ).alignment = align_left
-            sheet.cell(row=row_index, column=12 ).alignment = align_left
-            sheet.cell(row=row_index, column=13 ).alignment = align_right
-            sheet.cell(row=row_index, column=14 ).alignment = align_right
+            sheet.cell(row=row_index, column=4).alignment = align_left
+            sheet.cell(row=row_index, column=5).alignment = align_left
+            sheet.cell(row=row_index, column=6).alignment = align_left
+            sheet.cell(row=row_index, column=7).alignment = align_right
+            sheet.cell(row=row_index, column=8).alignment = align_right
+            sheet.cell(row=row_index, column=9).alignment = align_left
+            sheet.cell(row=row_index, column=10).alignment = align_left
+            sheet.cell(row=row_index, column=11).alignment = align_left
+            sheet.cell(row=row_index, column=12).alignment = align_left
+            sheet.cell(row=row_index, column=13).alignment = align_right
+            sheet.cell(row=row_index, column=14).alignment = align_right
             row_index += 1
 
         if not report_data:
@@ -195,47 +200,39 @@ class shipped_orders_report_wizard_spt(models.TransientModel):
             'target': 'self',
         }
 
-    def get_report_data(self):
-        so_ids = self.get_sale_orders()
-        data = {}
-        for so_id in so_ids:
-            picking_id = so_id.picking_ids.filtered(lambda picking: picking.state == 'done' and picking.picking_type_code == 'outgoing')[
-                0] if so_id.picking_ids else False
-            order_date = so_id.date_order if so_id.date_order else ""
-            shipping_date = so_id.shipped_date if so_id.shipped_date else ""
-            customer = so_id.partner_id.name if so_id.partner_id else ""
-            total_ordered_qty = so_id.ordered_qty if so_id.ordered_qty else 0.0
-            total_picked_qty = so_id.picked_qty if so_id.picked_qty else 0.0
-            admin_fee = '{:,.2f}'.format(so_id.amount_is_admin) if so_id.amount_is_admin else 0.00
-            shipping_cost = '{:,.2f}'.format(so_id.amount_is_shipping_total) if so_id.amount_is_shipping_total else 0.0
-            shipping_provider = picking_id.shipping_id.name if (
-                picking_id and picking_id.shipping_id) else ''
-            tracking_number = picking_id.tracking_number_spt if (
-                picking_id and picking_id.tracking_number_spt) else ""
-            address = so_id.partner_shipping_id if so_id.partner_shipping_id else so_id.partner_invoice_id
-            country = address.country_id.name if (
-                address and address.country_id) else ""
-            shipping_address = self.show_address(address) if address else ""
-            currency = so_id.currency_id.name if so_id.currency_id else ""
-            subtotal = '{:,.2f}'.format(so_id.picked_qty_order_subtotal) if so_id.picked_qty_order_subtotal else 0.0
-            data[so_id] = {
-                'order_date': order_date,
-                'shipping_date': shipping_date,
-                'customer': customer,
-                'total_ordered_qty': total_ordered_qty,
-                'total_picked_qty': total_picked_qty,
-                'admin_fee': admin_fee,
-                'shipping_cost': shipping_cost,
-                'shipping_provider': shipping_provider,
-                'tracking_number': tracking_number,
-                'country': country,
-                'address': shipping_address,
-                'currency': currency,
-                'subtotal': subtotal,
-                'so_id': so_id.id,
-                'so_name': so_id.name
-            }
-        return data
+    def get_report_data_by_query(self):
+        query = '''SELECT SO.DATE_ORDER,
+                    COALESCE(SO.NAME,'') AS ORDER,
+                    SO.SHIPPED_DATE,
+                    COALESCE(RP.NAME,'') AS NAME,
+                    COALESCE(SO.ORDERED_QTY,0) AS ORDERED_QTY,
+                    COALESCE(SO.PICKED_QTY,0) AS PICKED_QTY,
+                    COALESCE(SO.AMOUNT_IS_ADMIN,0.00) AS AMOUNT_IS_ADMIN,
+                    COALESCE(SO.AMOUNT_IS_SHIPPING_TOTAL,0.00) AS AMOUNT_IS_SHIPPING_COST,
+                    COALESCE(SPS.NAME,'')AS SHIPPING_PROVIDER,
+                    COALESCE(SP.TRACKING_NUMBER_SPT,'')AS TRACKING_NUMBER,
+                    RP.ID,
+                    COALESCE(RCU.NAME,'')AS CURRENCY,
+                    COALESCE(SO.PICKED_QTY_ORDER_SUBTOTAL,'0.00')AS PICKED_QTY_ORDER_SUBTOTAL,
+					SPT.CODE
+                FROM SALE_ORDER AS SO
+                INNER JOIN STOCK_PICKING AS SP ON SO.NAME = SP.ORIGIN
+                INNER JOIN RES_PARTNER AS RP ON SO.PARTNER_ID = RP.ID
+                INNER JOIN SHIPPING_PROVIDER_SPT AS SPS ON SP.SHIPPING_ID = SPS.ID
+                INNER JOIN RES_CURRENCY AS RCU ON RCU.ID = SO.CURRENCY_ID
+				INNER JOIN STOCK_PICKING_TYPE AS SPT ON SPT.ID = SP.PICKING_TYPE_ID
+                WHERE SP.STATE = 'done' AND SPT.CODE = 'outgoing' '''
+        
+                    # RC.NAME AS COUNTY,
+                # INNER JOIN RES_COUNTRY AS RC ON RC.ID = SO.COUNTRY_ID
+        if self.start_date:
+            query = query + " AND SO.DATE_ORDER >= '%s'" % (str(self.start_date))
+        if self.end_date:
+            query = query + " AND SO.DATE_ORDER <= '%s'" % (str(self.end_date))
+        self.env.cr.execute(query)
+        report_data=self.env.cr.fetchall()
+        return report_data
+
 
     def get_sale_orders(self):
         tz_from, tz_to = tz.gettz(datetime.now().tzinfo), (tz.gettz(

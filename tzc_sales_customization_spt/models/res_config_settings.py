@@ -62,17 +62,18 @@ class res_config_settings(models.TransientModel):
         self.env['ir.config_parameter'].sudo().set_param('user_ids_spt', self.user_ids_spt.ids if self.user_ids_spt else [])
         self.env['ir.config_parameter'].sudo().set_param('default_sales_person_id', self.default_sales_person_id.id if self.default_sales_person_id else False)
         # self.env['ir.config_parameter'].sudo().set_param('tzc_sales_customization_spt.reset_pass_expire_hours', self.reset_pass_expire_hours)
-        product_ids = product_obj.search([('sale_type','!=',False),'|',('active','=',True),('active','=',False)])
-        for product_id in product_ids:
-            on_sale_cad = 0.00
-            on_sale_cad_in_percentage = 0.00
-            if product_id.on_sale_cad:
-                on_sale_cad = round(product_id.on_sale_usd * self.on_sale_cad_spt,2)
-                if on_sale_cad and product_id.lst_price:
-                    on_sale_cad_in_percentage = round((1 -(on_sale_cad/product_id.lst_price))*100,2)
+        # product_ids = product_obj.search([('sale_type','!=',False),'|',('active','=',True),('active','=',False)])
+        # for product_id in product_ids:
+        #     on_sale_cad = 0.00
+        #     on_sale_cad_in_percentage = 0.00
+        #     if product_id.on_sale_cad:
+        #         on_sale_cad = round(product_id.on_sale_usd * self.on_sale_cad_spt,2)
+        #         if on_sale_cad and product_id.lst_price:
+        #             on_sale_cad_in_percentage = round((1 -(on_sale_cad/product_id.lst_price))*100,2)
 
-            product_id.on_sale_cad = on_sale_cad
-            product_id.on_sale_cad_in_percentage = on_sale_cad_in_percentage
+        #     product_id.on_sale_cad = on_sale_cad
+        #     product_id.on_sale_cad_in_percentage = on_sale_cad_in_percentage
+        
         # order_delay = 5
         # catalog_delay = 5
         # if not self.catalog_delay <= 0:

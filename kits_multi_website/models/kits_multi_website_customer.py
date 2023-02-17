@@ -111,7 +111,7 @@ class kits_multi_website_customer(models.Model):
         customer_id = self.env['kits.multi.website.customer'].search([('email','=',customer_email)])
         if customer_email:
             mail_template = self.env.ref('kits_multi_website.multi_website_email_template')
-            mail_template.sudo().send_mail(customer_id.id,force_send=True)
+            mail_template.sudo().send_mail(customer_id.id,force_send=True,email_layout_xmlid="mail.mail_notification_light")
             return {"email_sent":True,"error": False}
         else:
             return {"email_sent":False,"error": "Customer Not Found"}

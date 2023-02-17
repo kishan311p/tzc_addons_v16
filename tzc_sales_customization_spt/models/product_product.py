@@ -1272,7 +1272,7 @@ class ProductProduct(models.Model):
             product_list.append(product)
         
         template_id = self.env.ref('tzc_sales_customization_spt.mail_template_notify_admin_of_on_consigment_product_qty')
-        template_id.with_context(product_name = product_list).send_mail(product.id,force_send=True,notif_layout="mail.mail_notification_light")
+        template_id.with_context(product_name = product_list).send_mail(product.id,force_send=True,email_layout_xmlid="mail.mail_notification_light")
 
     def cron_remove_new_arrival_product(self):
         days = int(self.env['ir.config_parameter'].sudo().get_param('tzc_sales_customization_spt.new_arraival_remove_after'))

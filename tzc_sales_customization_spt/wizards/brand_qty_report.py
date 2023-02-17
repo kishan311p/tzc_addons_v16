@@ -43,7 +43,7 @@ class brand_qty_report_wizard(models.TransientModel):
             alignment_right = Alignment(vertical='center', horizontal='center', text_rotation=0, wrap_text=True)
             end_date = datetime.now().replace(tzinfo=tz_from).astimezone(tz=tz_to)
             workbook = Workbook()
-            summary = {}
+            summary_data = []
             if self.brand_selection == 'multiple':
                 if self.brand_ids:
                     for brand in self.brand_ids.sorted(lambda x:x.name,reverse=True):
@@ -101,30 +101,33 @@ class brand_qty_report_wizard(models.TransientModel):
                                 m = 0
                             end_date = datetime(int(year),m  + 1, 1) + timedelta(days=-1)
                             end_date = end_date.replace(tzinfo=tz_from).astimezone(tz=tz_to)
-                            domain = [('create_date','>=',start_date),('create_date','<=',end_date),('parent_state','=','posted'),('product_id.brand.id','=',brand.id)]
-                            invoice_line_ids = self.env['account.move.line'].search(domain)
-                            product_ids = invoice_line_ids.mapped('product_id')
-                            avg_price = 0.0
-                            qty = 0
-                            for product in product_ids:
-                                avg_price = float(round(sum(invoice_line_ids.filtered(lambda x:x.product_id.id == product.id).mapped('discount_unit_price')) / len(invoice_line_ids.filtered(lambda x:x.product_id.id == product.id).mapped('discount_unit_price')),2))
-                                qty = sum(invoice_line_ids.filtered(lambda x:x.product_id.id == product.id).mapped('quantity'))
-                                sheet.cell(row=total_row, column=1).value = product.default_code or ''
-                                sheet.cell(row=total_row, column=2).value = qty or 0
-                                sheet.cell(row=total_row, column=3).value = "$ {:,.2f}".format(avg_price) or 0.0
+                            query =f'''
+                            SELECT COALESCE(PP.DEFAULT_CODE,''),
+                                    COALESCE(SUM(AML.QUANTITY),0) AS QUANTITY,
+                                    COALESCE(ROUND((AML.PRICE_SUBTOTAL / AML.QUANTITY),2),00.00) AS AVERAGE_SALES,
+                                    COALESCE(SUM(AML.PRICE_SUBTOTAL),00) AS SALES
+                                FROM PRODUCT_PRODUCT AS PP
+                                INNER JOIN ACCOUNT_MOVE_LINE AS AML ON AML.PRODUCT_ID = PP.ID
+                                INNER JOIN PRODUCT_BRAND_SPT AS PBS ON PP.BRAND = PBS.ID
+                                WHERE PBS.ID = {brand.id} AND AML.PARENT_STATE = 'post' '''
+                            if start_date:
+                                query = query + " AND AML.CREATE_DATE >= '%s'" % (start_date)
+                            if end_date:
+                                query = query + " AND AML.CREATE_DATE <= '%s'" % (end_date)
+                            query = query + " GROUP BY PP.DEFAULT_CODE,AML.PRICE_SUBTOTAL,AML.QUANTITY"
+                            self.env.cr.execute(query)
+                            report_data = self.env.cr.fetchall()
+                            for data in report_data:
+                                sheet.cell(row=total_row, column=1).value = data[0]
+                                sheet.cell(row=total_row, column=2).value = data[1]
+                                sheet.cell(row=total_row, column=3).value = data[2]
                                 sheet.cell(row=total_row, column=3).alignment = Alignment(horizontal='right', vertical='center', text_rotation=0)
-                                sheet.cell(row=total_row, column=4).value = "$ {:,.2f}".format(round(avg_price * qty,2)) or 0.0
+                                sheet.cell(row=total_row, column=4).value = data[3]
                                 sheet.cell(row=total_row, column=4).alignment = Alignment(vertical='center', horizontal='right', text_rotation=0, wrap_text=True)
                                 sheet.cell(row=total_row, column=5).value = month or ''
                                 sheet.cell(row=total_row, column=5).alignment = Alignment(vertical='center', horizontal='center', text_rotation=0, wrap_text=True)
-                                if product.default_code in summary.keys():
-                                    summary[product.default_code]['qty'] = summary[product.default_code]['qty'] + sum(invoice_line_ids.filtered(lambda x:x.product_id.id == product.id).mapped('quantity'))
-                                    summary[product.default_code]['sales'] = summary[product.default_code]['sales'] + round(avg_price * qty,2)
-                                else:
-                                    summary[product.default_code] = {
-                                        'qty':sum(invoice_line_ids.filtered(lambda x:x.product_id.id == product.id).mapped('quantity')),
-                                        'sales':round(avg_price * qty,2)}
-                                total_qty += int(sum(invoice_line_ids.filtered(lambda x:x.product_id.id == product.id).mapped('quantity'))) or 0
+                                summary_data.append(data)                            
+                                total_qty += data[1]
                                 total_row += 1
                             sheet.cell(row=table_header, column=7).value = total_qty or 0
                         sheet.column_dimensions['A'].width = 30
@@ -161,11 +164,10 @@ class brand_qty_report_wizard(models.TransientModel):
                     sheet.cell(row=table_header, column=3).font = header_font
                     sheet.cell(row=table_header, column=3).border = top_bottom_border
                     sheet.cell(row=table_header, column=3).alignment = alignment_right
-                    
-                    for sku in summary.keys():
-                        sheet.cell(row=total_row, column=1).value = sku or ''
-                        sheet.cell(row=total_row, column=2).value = summary[sku]['qty'] or ''
-                        sheet.cell(row=total_row, column=3).value = "$ {:,.2f}".format(summary[sku]['sales']) or ''
+                    for data in summary_data:
+                        sheet.cell(row=total_row, column=1).value = data[0]
+                        sheet.cell(row=total_row, column=2).value = data[1]
+                        sheet.cell(row=total_row, column=3).value = data[3]
                         sheet.cell(row=total_row, column=3).alignment = Alignment(horizontal='right', vertical='center', text_rotation=0)
                         total_row += 1
                     sheet.column_dimensions['A'].width = 30
@@ -187,10 +189,22 @@ class brand_qty_report_wizard(models.TransientModel):
                                 m = 0
                             end_date = datetime(int(year),m  + 1, 1) + timedelta(days=-1)
                             end_date = end_date.replace(tzinfo=tz_from).astimezone(tz=tz_to)
+                            query = f'''SELECT COALESCE(PP.DEFAULT_CODE,''),
+                                            COALESCE(SUM(AML.QUANTITY),0) AS QUANTITY,
+                                            COALESCE(ROUND((AML.PRICE_SUBTOTAL / AML.QUANTITY),2)00.00) AS AVERAGE_SALES,
+                                            COALESCE(SUM(AML.PRICE_SUBTOTAL),00) AS SALES
+                                        FROM PRODUCT_PRODUCT AS PP
+                                        INNER JOIN ACCOUNT_MOVE_LINE AS AML ON AML.PRODUCT_ID = PP.ID
+                                        INNER JOIN PRODUCT_BRAND_SPT AS PBS ON PP.BRAND = PBS.ID
+                                        WHERE PBS.ID = {brand.id}'''
+                            if start_date:
+                                query = query + " AND AML.CREATE_DATE >= '%s'" % (start_date)
+                            if end_date:
+                                query = query + " AND AML.CREATE_DATE <= '%s'" % (end_date)
+                            query = query + " GROUP BY PP.DEFAULT_CODE,AML.PRICE_SUBTOTAL,AML.QUANTITY"
+                            self.env.cr.execute(query)
+                            report_data = self.env.cr.fetchall()
 
-                            domain = [('create_date','>=',start_date),('create_date','<=',end_date),('parent_state','=','posted'),('product_id.brand.id','=',brand.id)]
-                            invoice_line_ids = self.env['account.move.line'].search(domain)
-                            product_ids = invoice_line_ids.mapped('product_id')
                             
                             header_font = Font(name='Calibri',size='11',bold=True)
                             bd = Side(style='thin', color="000000")
@@ -234,21 +248,17 @@ class brand_qty_report_wizard(models.TransientModel):
                             avg_sale_price = 0.0
                             prod_qty = 0
                             total_quantity = 0
-                            for product in product_ids:
-                                avg_sale_price = float(round(sum(invoice_line_ids.filtered(lambda x:x.product_id.id == product.id).mapped('discount_unit_price')) / len(invoice_line_ids.filtered(lambda x:x.product_id.id == product.id).mapped('discount_unit_price')),2))
-                                prod_qty = sum(invoice_line_ids.filtered(lambda x:x.product_id.id == product.id).mapped('quantity'))
-                                sheet.cell(row=total_row, column=1).value = product.default_code or ''
-                                sheet.cell(row=total_row, column=2).value = prod_qty or 0.0
-                                sheet.cell(row=total_row, column=3).value = "$ {:,.2f}".format(avg_sale_price) or 0.0
+                            for data in report_data:
+                                sheet.cell(row=total_row, column=1).value = data[0]
+                                sheet.cell(row=total_row, column=2).value = data[1]
+                                sheet.cell(row=total_row, column=3).value = data[2]
                                 sheet.cell(row=total_row, column=3).alignment = Alignment(horizontal='right', vertical='center', text_rotation=0)
-                                sheet.cell(row=total_row, column=4).value = "$ {:,.2f}".format(round(avg_sale_price * prod_qty,2)) or 0.0
-                                sheet.cell(row=total_row, column=4).alignment = Alignment(horizontal='right', vertical='center', text_rotation=0)
-                                if product.default_code in summary.keys():
-                                    summary[product.default_code]['qty'] = summary[product.default_code]['qty'] + prod_qty
-                                    summary[product.default_code]['sales'] = summary[product.default_code]['sales'] + round(avg_sale_price * prod_qty,2)
-                                else:
-                                    summary[product.default_code] = {'qty':prod_qty,'sales':round(avg_sale_price * prod_qty,2)}
-                                total_quantity += prod_qty
+                                sheet.cell(row=total_row, column=4).value = data[3]
+                                sheet.cell(row=total_row, column=4).alignment = Alignment(vertical='center', horizontal='right', text_rotation=0, wrap_text=True)
+                                sheet.cell(row=total_row, column=5).value = month or ''
+                                sheet.cell(row=total_row, column=5).alignment = Alignment(vertical='center', horizontal='center', text_rotation=0, wrap_text=True)
+                                summary_data.append(data)
+                            
                                 total_row += 1
                             sheet.cell(row=table_header, column=6).value = int(total_quantity) or 0.0
                             sheet.column_dimensions['A'].width = 30
@@ -283,10 +293,10 @@ class brand_qty_report_wizard(models.TransientModel):
                         sheet.cell(row=table_header, column=3).border = top_bottom_border
                         sheet.cell(row=table_header, column=3).alignment = alignment_right
 
-                        for sku in summary.keys():
-                            sheet.cell(row=total_row, column=1).value = sku or ''
-                            sheet.cell(row=total_row, column=2).value = summary[sku]['qty'] or ''
-                            sheet.cell(row=total_row, column=3).value = "$ {:,.2f}".format(summary[sku]['sales']) or ''
+                        for data in summary_data:
+                            sheet.cell(row=total_row, column=1).value = data[0]
+                            sheet.cell(row=total_row, column=2).value = data[1]
+                            sheet.cell(row=total_row, column=3).value = data[3]
                             sheet.cell(row=total_row, column=3).alignment = Alignment(horizontal='right', vertical='center', text_rotation=0)
                             total_row += 1
                         sheet.column_dimensions['A'].width = 30

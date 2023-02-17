@@ -64,7 +64,7 @@ class res_partner(models.Model):
     is_granted_portal_access = fields.Boolean('Is Granted Portal Access',compute="_compute_info_fields",store=True)
     is_salesperson = fields.Boolean(compute="_get_partner_data",default=False,compute_sudo=True)
     mail_notification = fields.Boolean('Email Notification',default=True)
-    territory = fields.Many2one('res.country.group','Territory',compute="_get_partner_data")
+    territory = fields.Many2one('res.country.group','Territory',store = True,compute="_get_partner_data")
     access_field_flag = fields.Boolean("Access Field Flag",compute="_get_partner_data",default=True,compute_sudo=True)
     updated_on = fields.Datetime('Updated On')
     updated_by = fields.Many2one('res.users','Updated By')
@@ -142,9 +142,9 @@ class res_partner(models.Model):
                 config_parameter = config_parameter_obj.sudo().get_param('user_ids_spt', False)
                 user_ids =user_obj.search([('id','in',eval(config_parameter or '[]')+partner.user_id.ids)])
                 # approve email for customer
-                self.env.ref('tzc_sales_customization_spt.tzc_mail_template_customer_approve_notify_spt').sudo().send_mail(partner.id,force_send=True,email_values={'partner_ids':[(6,0,partner.ids)]})
+                self.env.ref('tzc_sales_customization_spt.tzc_mail_template_customer_approve_notify_spt').sudo().send_mail(partner.id,force_send=True,email_values={'partner_ids':[(6,0,partner.ids)]},email_layout_xmlid="mail.mail_notification_light")
                 # approve email for salesperson and admin
-                self.env.ref('tzc_sales_customization_spt.tzc_mail_template_customer_approve_notify_salesperson_spt').sudo().send_mail(partner.id,force_send=True,email_values={'partner_ids':[(6,0,user_ids.mapped('partner_id').ids)]})
+                self.env.ref('tzc_sales_customization_spt.tzc_mail_template_customer_approve_notify_salesperson_spt').sudo().send_mail(partner.id,force_send=True,email_values={'partner_ids':[(6,0,user_ids.mapped('partner_id').ids)]},email_layout_xmlid="mail.mail_notification_light")
             if self._context.get('set_user_spt'):
                 vals['user_id'] = partner.user_id.id
             if partner.customer_rank or partner.is_customer:
@@ -643,8 +643,8 @@ class res_partner(models.Model):
         if 'customer_type' in vals.keys() and vals['customer_type'] in ['b2b_regular','b2b_regular']:
                 config_parameter = config_parameter_obj.sudo().get_param('user_ids_spt', False)
                 user_ids =user_obj.search([('id','=',eval(config_parameter)+res.user_id.ids)])
-                self.env.ref('tzc_sales_customization_spt.tzc_mail_template_customer_approve_notify_spt').sudo().send_mail(res.id,force_send=True,email_values={'partner_ids':[(6,0,res.ids)]})
-                self.env.ref('tzc_sales_customization_spt.tzc_mail_template_customer_approve_notify_salesperson_spt').sudo().send_mail(res.id,force_send=True,email_values={'partner_ids':[(6,0,user_ids.mapped('partner_id').ids)]})
+                self.env.ref('tzc_sales_customization_spt.tzc_mail_template_customer_approve_notify_spt').sudo().send_mail(res.id,force_send=True,email_values={'partner_ids':[(6,0,res.ids)]},email_layout_xmlid="mail.mail_notification_light")
+                self.env.ref('tzc_sales_customization_spt.tzc_mail_template_customer_approve_notify_salesperson_spt').sudo().send_mail(res.id,force_send=True,email_values={'partner_ids':[(6,0,user_ids.mapped('partner_id').ids)]},email_layout_xmlid="mail.mail_notification_light")
         if res.customer_rank or res.is_customer:
                 res._onchange_is_customer()
                 res._onchange_customer_rank()

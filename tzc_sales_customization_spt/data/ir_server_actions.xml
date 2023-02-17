@@ -314,7 +314,7 @@
             </field>
         </record>
 
-        <record id='mail.action_partner_mass_mail' model='ir.actions.act_window'>
+	<record id='mail.action_partner_mass_mail' model='ir.actions.act_window'>
             <field name="binding_model_id" eval="False" />
         </record>
         <record id='web_enterprise.download_contact' model='ir.actions.server'>

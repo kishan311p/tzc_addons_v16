@@ -60,7 +60,7 @@ class kits_b2b_multi_currency_mapping(models.Model):
     # Data passing formate
     # PartnerId --> Integer & ProductIds --> List of Integer
 
-    def get_product_price(self,partner_id,product_ids):
+    def get_product_price(self,partner_id,product_ids,order_id=None):
         if partner_id and type(partner_id) == int:
             partner_id = self.env['res.partner'].browse(partner_id)
             multi_currency_obj = self.env['kits.b2b.multi.currency.mapping']
@@ -72,7 +72,9 @@ class kits_b2b_multi_currency_mapping(models.Model):
                 product = self.env['product.product'].browse(product)
                 pricelist_price = self.env['product.pricelist.item'].search([('product_id','in',product.ids),('pricelist_id','=',partner_id.property_product_pricelist.id)],limit=1).fixed_price
                 
-                if partner_id.preferred_currency:
+                if self._context.get('from_order_line') and order_id:
+                    partner_currency_rate = multi_currency_obj.search([('currency_id','=',order_id.b2b_currency_id.id)],limit=1).currency_rate
+                elif partner_id.preferred_currency:
                     partner_currency_rate = multi_currency_obj.search([('currency_id','=',partner_id.preferred_currency.id)],limit=1).currency_rate
                 else:
                     partner_currency_rate = multi_currency_obj.search([('partner_country_ids','in',partner_id.country_id.id)],limit=1).currency_rate

@@ -160,34 +160,6 @@ class SaleOrderLine(models.Model):
         for record in range(len(self)):
             record = self[record]
             if record.product_id:
-                # product_price = record.product_id.lst_price
-                # price_unit = record.product_id.lst_price
-                # if record.order_id.pricelist_id and record.order_id.partner_id:
-                #     price_unit = record.order_id.pricelist_id._get_product_price(record.product_id, record.product_uom_qty)
-
-                #     product_price = record.product_id.lst_price if record.order_id.pricelist_id.currency_id.name == 'USD' else product_price
-                # unit_discount_price = 0
-                # if record.order_id and record.order_id:
-                #     if record.product_id.sale_type == 'on_sale' and record.order_id.partner_id and record.order_id.partner_id.property_product_pricelist :
-                #         if record.order_id.partner_id.property_product_pricelist.currency_id.name == 'CAD':
-                #             price_unit = record.product_id.on_sale_cad
-                #             product_price = record.product_id.lst_price
-                #         else:
-                #             price_unit = record.product_id.on_sale_usd
-                #             product_price = record.product_id.lst_price
-
-                #     if record.product_id.sale_type == 'clearance' and record.order_id.partner_id and record.order_id.partner_id.property_product_pricelist :
-                #         if record.order_id.partner_id.property_product_pricelist.currency_id.name == 'CAD':
-                #             price_unit = record.product_id.clearance_cad
-                #             product_price = record.product_id.lst_price
-                #         else:
-                #             price_unit = record.product_id.clearance_usd
-                #             product_price = record.product_id.lst_price
-
-                # unit_discount_price = price_unit
-                # if record.discount:
-                #     unit_discount_price = round( product_price - (product_price * record.discount)* 0.01,2)
-
                 update_dict = {'price_unit':round(record.price_unit,2),
                                'unit_discount_price': round(record.unit_discount_price,2), 
                                'fix_discount_price':round(record.fix_discount_price,2),
@@ -218,27 +190,27 @@ class SaleOrderLine(models.Model):
                         unit_discount_price = round(unit_discount_price+(unit_discount_price*inflation_rule.inflation_rate /100),2)
                         update_dict.update({'price_unit':product_price,'unit_discount_price':unit_discount_price})
 
-                # active_fest_id = self.env['tzc.fest.discount'].search([('is_active','=',True)])
+                active_fest_id = self.env['tzc.fest.discount'].search([('is_active','=',True)])
                 special_disocunt_id = self.env['kits.special.discount'].search([('country_id','in',self.env.user.partner_id.country_id.ids),('brand_ids','in',record.product_id.brand.ids)]) #,('tzc_fest_id','=',active_fest_id.id)
                 price_rule_id = special_disocunt_id[-1] if special_disocunt_id else False
                 if price_rule_id:
-                    # applicable = False 
-                    # if active_fest_id.from_date and active_fest_id.to_date :
-                    #     if active_fest_id.from_date <= datetime.now().date() and active_fest_id.to_date >= datetime.now().date():
-                    #         applicable = True
-                    # elif active_fest_id.from_date:
-                    #     if active_fest_id.from_date <= datetime.now().date():
-                    #         applicable = True
-                    # elif active_fest_id.to_date:
-                    #     if active_fest_id.to_date >= datetime.now().date():
-                    #         applicable = True
-                    # else:
-                    #     if not active_fest_id.from_date:
-                    #         applicable = True
-                    #     if not active_fest_id.to_date:
-                    #         applicable = True
+                    applicable = False 
+                    if active_fest_id.from_date and active_fest_id.to_date :
+                        if active_fest_id.from_date <= datetime.now().date() and active_fest_id.to_date >= datetime.now().date():
+                            applicable = True
+                    elif active_fest_id.from_date:
+                        if active_fest_id.from_date <= datetime.now().date():
+                            applicable = True
+                    elif active_fest_id.to_date:
+                        if active_fest_id.to_date >= datetime.now().date():
+                            applicable = True
+                    else:
+                        if not active_fest_id.from_date:
+                            applicable = True
+                        if not active_fest_id.to_date:
+                            applicable = True
                         
-                    # if applicable: 
+                    if applicable: 
                         special_discount_price = round((update_dict.get('unit_discount_price') - update_dict.get('unit_discount_price') * price_rule_id.discount / 100),2)
                         fix_discount_price_spt = round(product_price - special_discount_price,2)
                         update_dict.update({'fix_discount_price':fix_discount_price_spt,'unit_discount_price': special_discount_price}) #,'is_special_discount':applicable

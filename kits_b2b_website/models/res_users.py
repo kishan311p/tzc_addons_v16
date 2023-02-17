@@ -7,7 +7,7 @@ class res_users(models.Model):
 
     def kits_b2b_user_verification_sent_email(self):
         mail_template = self.env.ref('kits_b2b_website.mail_template_user_signup_confirmation')
-        mail_template.sudo().send_mail(res_id= self.id,force_send=True)
+        mail_template.sudo().send_mail(res_id= self.id,force_send=True,email_layout_xmlid="mail.mail_notification_light")
         return{}
 
     

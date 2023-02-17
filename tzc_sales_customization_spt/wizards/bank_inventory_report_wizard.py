@@ -72,11 +72,11 @@ class bank_inventory_report_wizard(models.TransientModel):
                     date_str = str(year)+long_month_name+str(calendar.monthrange(int(year), m)[1])+"23:59:00"
                     on_date = datetime.strptime(''.join(date_str), time_format)
                     start_date = on_date.replace(tzinfo=tz_from).astimezone(tz=tz_to)
-                    query = f"""select sum(sol.qty_delivered)
-                        from sale_order_line sol
-                        left join product_product pp on sol.product_id = pp.id
-                        where sol.create_date BETWEEN '{start_date}' and '{end_date}'
-                        and sol.product_id = {product.id}"""
+                    query = f"""SELECT COALESCE(SUM(SOL.QTY_DELIVERED),0)
+                                FROM SALE_ORDER_LINE SOL
+                                LEFT JOIN PRODUCT_PRODUCT PP ON SOL.PRODUCT_ID = PP.ID
+                                WHERE SOL.CREATE_DATE BETWEEN '{start_date}' AND '{end_date}'
+                                    AND SOL.PRODUCT_ID = {product.id}"""
                     self._cr.execute(query)
                     try:
                         result = self._cr.fetchall()[0]

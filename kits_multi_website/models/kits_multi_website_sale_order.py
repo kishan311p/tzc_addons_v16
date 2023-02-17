@@ -636,7 +636,7 @@ class kits_multi_website_sale_order(models.Model):
         self.ensure_one()
         if self:
             mail_template = self.env.ref('kits_multi_website.kits_b2c1_sale_order_placed_email')
-            mail_template.sudo().send_mail(self.id,force_send=True)
+            mail_template.sudo().send_mail(self.id,force_send=True,email_layout_xmlid="mail.mail_notification_light")
             return {"email_sent":True,"error": False}
         else:
             return {"email_sent":False,"error": "Order Not Found."}
@@ -645,7 +645,7 @@ class kits_multi_website_sale_order(models.Model):
         sale_order_ids =  self.env['kits.multi.website.sale.order'].search([('sale_order_line_ids.prescription_id','=',False),('sale_order_line_ids.is_select_for_lenses','=',True)])
         for sale_order in sale_order_ids:
             mail_template = self.env.ref('kits_multi_website.kits_b2c1_sale_order_prescription_email')
-            mail_template.sudo().send_mail(sale_order.id,force_send=True)
+            mail_template.sudo().send_mail(sale_order.id,force_send=True,email_layout_xmlid="mail.mail_notification_light")
 
     def action_return_request(self):
         self.ensure_one()

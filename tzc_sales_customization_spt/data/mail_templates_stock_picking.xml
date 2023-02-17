@@ -21,7 +21,7 @@
                             <table border="0" cellpadding="0" cellspacing="0" width="590" style="padding: 16px; background-color: white; color: #454748; border-collapse:separate;">
                                 <tbody>
                                     <!-- HEADER -->
-                                    <tr>
+                                    <!-- <tr>
                                         <td align="center" style="min-width: 590px;">
                                             <t>
                                                 <t t-if="object.env.cr.dbname != 'eto_production'">
@@ -31,8 +31,6 @@
                                             <table border="0" cellpadding="0" cellspacing="0" width="590" style="min-width: 590px; background-color: white; padding: 0px 8px 0px 8px; border-collapse:separate;">
                                                 <tr>
                                                     <td valign="middle" style="width: 245px;">
-                                                        <!-- <span style="font-size: 10px;">Your Order</span>
-                                                        <br/> -->
                                                         <span style="font-size: 20px; font-weight: bold;">
                                                             <t t-out="object.sale_id.name"/> 
                                                         </span>
@@ -48,7 +46,7 @@
                                                 </tr>
                                             </table>
                                         </td>
-                                    </tr>
+                                    </tr> -->
                                     <!-- CONTENT -->
                                     <td align="center" style="min-width: 590px;">
                                         <table border="0" cellpadding="0" cellspacing="0" width="590" style="min-width: 590px; background-color: white; padding: 0px 8px 0px 8px; border-collapse:separate;">
@@ -80,7 +78,7 @@
                                         </table>
                                     </td>
                                     <!-- FOOTER -->
-                                    <tr>
+                                    <!-- <tr>
                                         <td align="center" style="min-width: 590px;">
                                             <table border="0" cellpadding="0" cellspacing="0" width="590" style="min-width: 590px; background-color: white; font-size: 11px; padding: 0px 8px 0px 8px; border-collapse:separate;">
                                                 <tr>
@@ -104,13 +102,13 @@
                                                 </tr>
                                             </table>
                                         </td>
-                                    </tr>
+                                    </tr> -->
                                 </tbody>
                             </table>
                         </td>
                     </tr>
                     <!-- POWERED BY -->
-                    <tr>
+                    <!-- <tr>
                         <td align="center" style="min-width: 590px;">
                             <table border="0" cellpadding="0" cellspacing="0" width="590" style="min-width: 590px; background-color: #F1F1F1; color: #454748; padding: 8px; border-collapse:separate;">
                                 <tr>
@@ -120,7 +118,7 @@
                                 </tr>
                             </table>
                         </td>
-                    </tr>
+                    </tr> -->
                 </table>
             </field>
         </record>
