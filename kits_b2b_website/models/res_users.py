@@ -6,7 +6,7 @@ class res_users(models.Model):
     token_ids = fields.One2many('kits.b2b.user.token', 'user_id', string='Token')
 
     def kits_b2b_user_verification_sent_email(self):
-        mail_template = self.env.ref('user_access.mail_template_user_signup_confirmation')
+        mail_template = self.env.ref('kits_b2b_website.mail_template_user_signup_confirmation')
         mail_template.sudo().send_mail(res_id= self.id,force_send=True)
         return{}
 
