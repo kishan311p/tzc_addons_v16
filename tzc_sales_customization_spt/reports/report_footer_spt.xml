@@ -3,7 +3,7 @@
 
     <template id="report_report_footer_inherit_spt" inherit_id="web.external_layout_standard">
         <xpath expr="//div[hasclass('text-center')]" position="replace">
-            <div class="text-center o_background_footer">
+            <div class="text-center o_background_footer" style="position:absolute;bottom:-100px;width:100%">
                 <ul class="list-inline">
                     <li class="list-inline-item" style="font-size: 12px">
                         <span>Please make all payments to Tanzacan Tradelink Inc.<br/>
@@ -11,7 +11,7 @@
                     </li>
                 </ul>
 
-                <div t-field="company.report_footer"/>
+                <!-- <div t-field="company.report_footer"/> -->
 
                 <div t-if="report_type == 'pdf'" class="text-muted">
                     Page:

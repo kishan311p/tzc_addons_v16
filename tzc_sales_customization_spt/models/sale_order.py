@@ -3027,7 +3027,7 @@ class sale_order(models.Model):
                             'name':line.name,
                             'sale_type':line.sale_type,
                             'tax_id':[(6,0,line.tax_id.ids)],
-                        })) 
+                        }))
                         if line.product_id.type == 'product' and record.partner_id.country_id.id in line.product_id.geo_restriction.ids:
                             geo_restriction_list.append(line.id)
 
@@ -3048,7 +3048,7 @@ class sale_order(models.Model):
                 on_consign_product_ids = self.order_line.filtered(lambda x:x.product_id.on_consignment and x.product_uom_qty > x.product_id.actual_stock)
                 if on_consign_product_ids and not self._context.get('on_consign_wizard'):
                     for line in on_consign_product_ids:
-                        line.product_id.assign_qty = line.product_uom_qty or 0.0 
+                        line.product_id.assign_qty = line.product_uom_qty or 0.0
                     return {
                         'name': _('Product Minimum Stock Alert.'),
                         'type': 'ir.actions.act_window',

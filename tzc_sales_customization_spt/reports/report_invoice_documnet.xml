@@ -3,7 +3,7 @@
     <template id="report_kits_invoice_document">
         <t t-call="web.external_layout">
             <div class="page">
-                <div class="row">
+                <div class="row" style="margin-top:-50px;">
                     <div class="col-7">
                         <strong t-if="o.partner_id">Billing Address:</strong>
                         <div>
@@ -89,7 +89,7 @@
                     <t t-set="kits_picking_details" t-value="o.get_invoice_courier()"/>
                     <div class="col-auto mw-100 mb-2">
                         <strong>Payment Terms:</strong>
-                        <p class="m-0 text-left" t-esc="kits_picking_details[2]"/>
+                        <p class="m-0 text-start" t-esc="kits_picking_details[2]"/>
                     </div>
                     <div class="col-auto mw-100 mb-2 text-center">
                         <strong>Courier:</strong>
@@ -99,25 +99,25 @@
                         <strong>Tracking:</strong>
                         <p class="m-0 text-center" t-esc="kits_picking_details[1]"/>
                     </div>
-                    <div class="col-auto mw-100 mb-2">
+                    <div class="col-auto mw-100 mb-2 text-center">
                         <strong>Total Qty:</strong>
-                        <p class="m-0 text-center" t-esc="int(sum(request.env['account.move.line'].sudo().search([('move_id','=',o.id),('product_id.type','!=','service')]).mapped('quantity')))"/>
+                        <p class="m-0" t-esc="int(sum(request.env['account.move.line'].sudo().search([('move_id','=',o.id),('product_id.type','!=','service')]).mapped('quantity')))"/>
                     </div>
-                    <div class="col-auto mw-100 mb-2">
+                    <div class="col-auto mw-100 mb-2 text-center">
                         <strong>Total Cases:</strong>
-                        <p class="m-0 text-center" t-esc="int(request.env['sale.order'].sudo().search([('name','=',o.invoice_origin)]).no_of_cases)"/>
+                        <p class="m-0" t-esc="int(request.env['sale.order'].sudo().search([('name','=',o.invoice_origin)]).no_of_cases)"/>
                     </div>
-                    <div class="col-auto mw-100 mb-2">
+                    <div class="col-auto mw-100 mb-2 text-center">
                         <strong>Currency:</strong>
-                        <p class="m-0 text-center" t-esc="o.currency_id.name"/>
+                        <p class="m-0" t-esc="o.currency_id.name"/>
                     </div>
                 </div>
 
-                <table class="table table-sm o_main_table">
-                    <thead>
+                <table class="table table-sm table-borderless o_main_table mt-3">
+                    <thead style="border-top:1px solid lightgrey;border-bottom:1px solid lightgrey">
                         <tr class="text-center">
                             <th style="width: 6%;"></th>
-                            <th class="text-left">Product</th>
+                            <th class="text-start">Product</th>
                             <th>Cat</th>
                             <th>Material</th>
                             <th>HS Code</th>
@@ -132,7 +132,7 @@
                         <t t-foreach="o.invoice_line_ids" t-as="line">
                             <t t-if="not line.product_id.is_admin and not line.product_id.is_shipping_product and not line.product_id.is_global_discount">
                                 <t t-set="discount" t-value="discount + line.unit_discount_price"/>
-                                <tr class="text-center">
+                                <tr class="text-center" style="border-bottom:1px solid lightgrey;">
                                     <t t-if="line.sale_type">
                                         <td>
                                             <style>
@@ -170,13 +170,13 @@
                                                 </div>
                                             </div>
                                         </td>
-                                        <td name="td_name" class="text-left">
+                                        <td name="td_name" class="text-start">
                                             <span t-if="line.product_id.display_name" t-esc="line.product_id.display_name"/>
                                             <span t-else="">N/A</span>
                                         </td>
                                     </t>
                                     <t t-else="">
-                                        <td name="td_name" class="text-left" colspan="2">
+                                        <td name="td_name" class="text-start" colspan="2">
                                             <span t-if="line.product_id.display_name" t-esc="line.product_id.display_name"/>
                                             <span t-else="">N/A</span>
                                         </td>
@@ -197,11 +197,11 @@
                                         <span t-if="line.quantity" t-esc="int(line.quantity)"/>
                                         <span t-else="">N/A</span>
                                     </td>
-                                    <td name="td_name" class="text-right">
+                                    <td name="td_name" class="text-end">
                                         <span t-field="line.discount_unit_price" t-options="{&quot;widget&quot;: &quot;monetary&quot;, &quot;display_currency&quot;: o.currency_id}"/>
                                     </td>
-                                    <td name="td_name" class="text-right">
-                                      <t t-set="sub_total" t-value="sub_total + line.price_subtotal"/>
+                                    <td name="td_name" class="text-end">
+                                        <t t-set="sub_total" t-value="sub_total + line.price_subtotal"/>
                                         <span t-field="line.price_subtotal" t-options="{&quot;widget&quot;: &quot;monetary&quot;, &quot;display_currency&quot;: o.currency_id}"/>
                                     </td>
                                 </tr>
@@ -218,8 +218,106 @@
                                         <tr>
                                             <div>
                                                 <td>
-                                                    <!-- <div style="border-style: groove;border-width: 1px; max-width: 90%;" >
-                                                        <p name="comment" >
+                                                    <!-- <div style="border-style: groove;border-width: 1px; max-width: 90%;">
+                                                        <p name="comment">
+                                                            <span style="margin-left:10px;">
+                                                                <b>Bank Transfer Details:</b>
+                                                            </span>
+                                                            <br/>
+                                                            <span t-field="o.company_id.bank_details"/>
+                                                        </p>
+                                                    </div> -->
+                                                </td>
+                                            </div>
+                                            <td>
+                                                <div class="col-4" style="float:right;padding:0px;">
+                                                    <table class="table table-sm">
+                                                        <tr class="border-black">
+                                                            <td>
+                                                                <strong>Subtotal</strong>
+                                                            </td>
+                                                            <td name="td_admin" class="text-end">
+                                                                <span t-esc="round(sub_total,2)" t-options='{"widget": "monetary", "display_currency": o.currency_id}'/>
+                                                            </td>
+                                                        </tr>
+                                                        <tr class="border-black">
+                                                            <td name="td_shipping_product_total_amount_label">
+                                                                <strong>Shipping</strong>
+                                                            </td>
+                                                            <td name="td_amount_untaxed" class="text-end">
+                                                                <t t-if="o.order_id.shipping_cost != o.order_id.amount_is_shipping_total">
+                                                                    <span style="white-space: nowrap;color:red;text-decoration:line-through;">
+                                                                        <span style='color:black;' t-field="o.order_id.shipping_cost" t-options='{"widget": "monetary", "display_currency": o.currency_id}'/>
+                                                                    </span>
+                                                                    /
+                                                                    <span>
+                                                                        <span style="color:red;" t-field="o.order_id.amount_is_shipping_total" t-options='{"widget": "monetary", "display_currency": o.currency_id}'/>
+                                                                    </span>
+                                                                </t>
+                                                                <t t-else="">
+                                                                    <span t-field="o.amount_is_shipping_total" t-options='{"widget": "monetary", "display_currency": o.currency_id}'/>
+                                                                </t>
+                                                            </td>
+                                                        </tr>
+                                                        <tr class="border-black">
+                                                            <td name="td_admin_product_total_amount_label">
+                                                                <strong>Admin Fee</strong>
+                                                            </td>
+                                                            <td name="td_admin" class="text-end">
+                                                                <span t-field="o.amount_is_admin" t-options='{"widget": "monetary", "display_currency": o.currency_id}'/>
+                                                            </td>
+                                                        </tr>
+                                                        <t t-if="o.global_discount">
+                                                            <tr class="border-black">
+                                                                <td name="td_amount_discount_label">
+                                                                    <strong>Discount</strong>
+                                                                </td>
+                                                                <td name="td_amount_discount" class="text-end o_price_total">
+                                                                    <span t-esc="o.global_discount" t-options="{&quot;widget&quot;: &quot;monetary&quot;, &quot;display_currency&quot;: o.currency_id}"/>
+                                                                </td>
+                                                            </tr>
+                                                        </t>
+                                                        <tr class="border-black">
+                                                            <td name="td_amount_by_group_label">
+                                                                <strong>Tax</strong>
+                                                            </td>
+                                                            <td name="td_amount_by_group" class="text-end o_price_total">
+                                                                <span t-esc="o.amount_tax" t-options='{"widget": "monetary", "display_currency": o.currency_id}'/>
+                                                            </td>
+                                                        </tr>
+
+                                                        <tr class="border-black">
+                                                            <td name="td_amount_by_group_label">
+                                                                <strong>Total</strong>
+                                                            </td>
+                                                            <td style="white-space: nowrap;" name="td_amount_by_group" class="text-end o_price_total">
+                                                            (                                                                <span t-esc="o.currency_id.name"/>
+                                                                )
+                                                                <span t-options="{&quot;widget&quot;: &quot;monetary&quot;, &quot;display_currency&quot;: o.currency_id}" t-esc="round((sub_total + o.amount_is_shipping_total + o.amount_is_admin  + o.amount_tax) - abs(o.global_discount),2)"/>
+                                                            </td>
+                                                        </tr>
+                                                        <tr class="border-black">
+                                                            <td name="td_amount_by_group_label">
+                                                                <strong>Total Quantity</strong>
+                                                            </td>
+                                                            <td style="white-space: nowrap;" name="td_amount_by_group" class="text-end o_price_total">
+                                                                <span t-esc="int(sum(request.env['account.move.line'].sudo().search([('move_id','=',o.id),('product_id.type','!=','service')]).mapped('quantity')))"/>
+                                                            </td>
+                                                        </tr>
+                                                    </table>
+                                                </div>
+                                            </td>
+                                        </tr>
+
+                                    </table>
+                                </t>
+                                <t t-else="">
+                                    <table class="table table-sm table-borderless">
+                                        <tr>
+                                            <div>
+                                                <td>
+                                                    <!-- <div style="border-style: groove;border-width: 1px; max-width: 90%;">
+                                                        <p name="comment">
                                                             <span style="margin-left:10px;">
                                                                 <b>Bank Transfer Details:</b>
                                                             </span>
@@ -247,11 +345,11 @@
                                                             <td name="td_amount_untaxed" class="text-right">
                                                                 <t t-if="o.order_id.shipping_cost != o.order_id.amount_is_shipping_total">
                                                                     <span style="white-space: nowrap;color:red;text-decoration:line-through;">
-                                                                        <span style='color:black;' t-field="o.order_id.shipping_cost" t-options='{"widget": "monetary", "display_currency": o.currency_id}'/> 
+                                                                        <span style='color:black;' t-field="o.order_id.shipping_cost" t-options='{"widget": "monetary", "display_currency": o.pricelist_id.currency_id}'/>
                                                                     </span>
                                                                     /
                                                                     <span>
-                                                                        <span style="color:red;" t-field="o.order_id.amount_is_shipping_total" t-options='{"widget": "monetary", "display_currency": o.currency_id}'/>
+                                                                        <span style="color:red;" t-field="o.order_id.amount_is_shipping_total" t-options='{"widget": "monetary", "display_currency": o.pricelist_id.currency_id}'/>
                                                                     </span>
                                                                 </t>
                                                                 <t t-else="">
@@ -277,6 +375,7 @@
                                                                 </td>
                                                             </tr>
                                                         </t>
+
                                                         <tr class="border-black">
                                                             <td name="td_amount_by_group_label">
                                                                 <strong>Tax</strong>
@@ -285,13 +384,13 @@
                                                                 <span t-esc="o.amount_tax" t-options='{"widget": "monetary", "display_currency": o.currency_id}'/>
                                                             </td>
                                                         </tr>
-                            
+
                                                         <tr class="border-black">
                                                             <td name="td_amount_by_group_label">
                                                                 <strong>Total</strong>
                                                             </td>
                                                             <td style="white-space: nowrap;" name="td_amount_by_group" class="text-right o_price_total">
-                                                            (                                    <span t-esc="o.currency_id.name"/>
+                                                            (                                                                <span t-esc="o.currency_id.name"/>
                                                                 )
                                                                 <span t-options="{&quot;widget&quot;: &quot;monetary&quot;, &quot;display_currency&quot;: o.currency_id}" t-esc="round((sub_total + o.amount_is_shipping_total + o.amount_is_admin  + o.amount_tax) - abs(o.global_discount),2)"/>
                                                             </td>
@@ -308,106 +407,7 @@
                                                 </div>
                                             </td>
                                         </tr>
-                                        
-                                    </table>
-                                </t>
-                                <t t-else="">
-                                    <table class="table table-sm table-borderless">
-                                        <tr>
-                                            <div>
-                                                <td>
-                                                    <!-- <div style="border-style: groove;border-width: 1px; max-width: 90%;" >
-                                                        <p name="comment" >
-                                                            <span style="margin-left:10px;">
-                                                                <b>Bank Transfer Details:</b>
-                                                            </span>
-                                                            <br/>
-                                                            <span t-field="o.company_id.bank_details"/>
-                                                        </p>
-                                                    </div> -->
-                                                </td>
-                                            </div>
-                                            <td>
-                                                <div class="col-4" style="float:right;padding:0px;">
-                                                    <table class="table table-sm">
-                                                        <tr class="border-black">
-                                                            <td>
-                                                                <strong>Subtotal</strong>
-                                                            </td>
-                                                            <td name="td_admin" class="text-right">
-                                                                <span t-esc="round(sub_total,2)" t-options='{"widget": "monetary", "display_currency": o.currency_id}'/>
-                                                            </td>
-                                                        </tr>
-                                                        <tr class="border-black">
-                                                            <td name="td_shipping_product_total_amount_label">
-                                                                <strong>Shipping</strong>
-                                                            </td>
-                                                            <td name="td_amount_untaxed" class="text-right">
-                                                                <t t-if="o.order_id.shipping_cost != o.order_id.amount_is_shipping_total">
-                                                                    <span style="white-space: nowrap;color:red;text-decoration:line-through;">
-                                                                        <span style='color:black;' t-field="o.order_id.shipping_cost" t-options='{"widget": "monetary", "display_currency": o.pricelist_id.currency_id}'/> 
-                                                                    </span>
-                                                                    /
-                                                                    <span>
-                                                                        <span style="color:red;" t-field="o.order_id.amount_is_shipping_total" t-options='{"widget": "monetary", "display_currency": o.pricelist_id.currency_id}'/>
-                                                                    </span>
-                                                                </t>
-                                                                <t t-else="">
-                                                                    <span t-field="o.amount_is_shipping_total" t-options='{"widget": "monetary", "display_currency": o.currency_id}'/>
-                                                                </t>
-                                                            </td>
-                                                        </tr>
-                                                        <tr class="border-black">
-                                                            <td name="td_admin_product_total_amount_label">
-                                                                <strong>Admin Fee</strong>
-                                                            </td>
-                                                            <td name="td_admin" class="text-right">
-                                                                <span t-field="o.amount_is_admin" t-options='{"widget": "monetary", "display_currency": o.currency_id}'/>
-                                                            </td>
-                                                        </tr>
-                                                        <t t-if="o.global_discount">
-                                                            <tr class="border-black">
-                                                               <td name="td_amount_discount_label">
-                                                                   <strong>Discount</strong>
-                                                               </td>
-                                                               <td name="td_amount_discount" class="text-right o_price_total">
-                                                                   <span t-esc="o.global_discount" t-options="{&quot;widget&quot;: &quot;monetary&quot;, &quot;display_currency&quot;: o.currency_id}"/>
-                                                               </td>
-                                                            </tr>
-                                                        </t>
-                            
-                                                        <tr class="border-black">
-                                                            <td name="td_amount_by_group_label">
-                                                                <strong>Tax</strong>
-                                                            </td>
-                                                            <td name="td_amount_by_group" class="text-right o_price_total">
-                                                                <span t-esc="o.amount_tax" t-options='{"widget": "monetary", "display_currency": o.currency_id}'/>
-                                                            </td>
-                                                        </tr>
-                            
-                                                        <tr class="border-black">
-                                                            <td name="td_amount_by_group_label">
-                                                                <strong>Total</strong>
-                                                            </td>
-                                                            <td style="white-space: nowrap;" name="td_amount_by_group" class="text-right o_price_total">
-                                                            (                                    <span t-esc="o.currency_id.name"/>
-                                                                )
-                                                                <span t-options="{&quot;widget&quot;: &quot;monetary&quot;, &quot;display_currency&quot;: o.currency_id}" t-esc="round((sub_total + o.amount_is_shipping_total + o.amount_is_admin  + o.amount_tax) - abs(o.global_discount),2)"/>
-                                                            </td>
-                                                        </tr>
-                                                        <tr class="border-black">
-                                                            <td name="td_amount_by_group_label">
-                                                                <strong>Total Quantity</strong>
-                                                            </td>
-                                                            <td style="white-space: nowrap;" name="td_amount_by_group" class="text-right o_price_total">
-                                                                <span t-esc="int(sum(request.env['account.move.line'].sudo().search([('move_id','=',o.id),('product_id.type','!=','service')]).mapped('quantity')))"/>
-                                                            </td>
-                                                        </tr>
-                                                    </table>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                        
+
                                     </table>
                                 </t>
                             </div>
@@ -416,36 +416,46 @@
                 </table>
                 <p style="page-break-before:always;"/>
                 <div class="col-12 d-flex p-0">
-                    <div class="col-9 row mt-5" style="font-family: 'Lato', sans-serif;">
-                        <table style="width: 70%;font-family: 'Lato', sans-serif;">
+                    <div class="col-9 row mt-5 table table-borderless text-start" style="font-family: 'Lato', sans-serif;">
+                        <table style="width: 50%;font-family: 'Lato', sans-serif;">
                             <t t-if="o.invoice_origin">
                                 <tr>
                                     <th>Invoice Number:</th>
-                                    <td><span t-field="o.invoice_origin"/></td>
+                                    <td>
+                                        <span t-field="o.invoice_origin"/>
+                                    </td>
                                 </tr>
                             </t>
                             <t t-if="o.invoice_date">
                                 <tr>
                                     <th>Invoice Date:</th>
-                                    <td><span t-field="o.invoice_date"/></td>
+                                    <td>
+                                        <span t-field="o.invoice_date"/>
+                                    </td>
                                 </tr>
                             </t>
                             <t t-if="o.currency_id">
                                 <tr>
                                     <th>Currency:</th>
-                                    <td><span t-field="o.currency_id"/></td>
+                                    <td>
+                                        <span t-field="o.currency_id"/>
+                                    </td>
                                 </tr>
                             </t>
                             <t t-if="o.amount_total">
                                 <tr>
                                     <th>Amount:</th>
-                                    <td>(<span t-field="o.currency_id"/>) <span t-field="o.amount_total"/></td>
+                                    <td>(                                        <span t-field="o.currency_id"/>
+)                                        <span t-field="o.amount_total"/>
+                                    </td>
                                 </tr>
                             </t>
                             <t t-if="o.invoice_payment_term_id">
                                 <tr>
                                     <th>Payment Terms:</th>
-                                    <td><span t-esc="o.invoice_payment_term_id.name"/></td>
+                                    <td>
+                                        <span t-esc="o.invoice_payment_term_id.name"/>
+                                    </td>
                                 </tr>
                             </t>
                         </table>
@@ -458,53 +468,60 @@
                     </div>
                     <br/>
                     <div class="row col-12">
-                        <div class='col-4'>
-                            <strong style="color:red;">Credit Cards</strong><br/>
-                            <span style="font-family: 'Lato', sans-serif;">We accept all major credit cards in select currencies.<br/>Payments can be made via our secure payment link. Contact your account manager.</span>
+                        <div class='col-8'>
+                            <strong style="color:red;">Credit Cards</strong>
+                            <br/>
+                            <span style="font-family: 'Lato', sans-serif;">We accept all major credit cards in select currencies.<br/>
+Payments can be made via our secure payment link. Contact your account manager.</span>
                         </div>
                         <div class='col-4'>
-                            <strong style="color:red;">Company Information</strong><br/>
-                            <span style="font-family: 'Lato', sans-serif;">Tanzacan Tradelink Inc.<br/>Tax Number: 898737911 RM0001<br/>Since 1995</span>
-                        </div>
+                            <strong style="color:red;">Company Information</strong>
+                            <br/>
+                            <span style="font-family: 'Lato', sans-serif;">Tanzacan Tradelink Inc.<br/>
+Tax Number: 898737911 RM0001<br/>
+Since 1995</span>
                     </div>
-                    <br/>
-                    <br/>
-                    <div class='ml-1'>
-                        <strong style="color:red;">Paypal</strong><br/>
-                        <span style="font-family: 'Lato', sans-serif;">Send payments via Paypal on our email: pay@tanzacan.com.</span>
-                    </div>
-                    <br/>
-                    <br/>
-                    <div class='ml-1'>
-                        <strong style="color:red;">Bank Transfer</strong><br/>
-                        <span style="font-family: 'Lato', sans-serif;">
-                            Beneficiary Name &amp; Address: Tanzacan Tradelink Inc., 366 Denison Street, Suite 4, Markham, Ontario, Canada L3R 1B9
-                            <br/>
-                            Beneficiary Bank Name &amp; Address: TD Canada Trust, 7085 Woodbine Avenue, Markham, Ontario, Canada L3R 1A3
-                            <br/>
-                            Account Number: USD Account 7324227
-                            <br/>
-                            Branch Number: 12772
-                            <br/>
-                            Bank Number: 004
-                            <br/>
-                            SWIFT Code: TDOMCATTTOR
-                            <br/>
-                            Canadian Clearing Code (CC Code): 000412772
-                        </span>
-                    </div>
-                    <br/>
                 </div>
-
+                <br/>
+                <br/>
+                <div class='ml-1'>
+                    <strong style="color:red;">Paypal</strong>
+                    <br/>
+                    <span style="font-family: 'Lato', sans-serif;">Send payments via Paypal on our email: pay@tanzacan.com.</span>
+                </div>
+                <br/>
+                <br/>
+                <div class='ml-1'>
+                    <strong style="color:red;">Bank Transfer</strong>
+                    <br/>
+                    <span style="font-family: 'Lato', sans-serif;">
+                            Beneficiary Name &amp; Address: Tanzacan Tradelink Inc., 366 Denison Street, Suite 4, Markham, Ontario, Canada L3R 1B9
+                        <br/>
+                            Beneficiary Bank Name &amp; Address: TD Canada Trust, 7085 Woodbine Avenue, Markham, Ontario, Canada L3R 1A3
+                        <br/>
+                            Account Number: USD Account 7324227
+                        <br/>
+                            Branch Number: 12772
+                        <br/>
+                            Bank Number: 004
+                        <br/>
+                            SWIFT Code: TDOMCATTTOR
+                        <br/>
+                            Canadian Clearing Code (CC Code): 000412772
+                    </span>
+                </div>
+                <br/>
             </div>
+
+        </div>
+    </t>
+
+</template>
+<template id="kits_invoice_report">
+    <t t-call="web.html_container">
+        <t t-foreach="docs" t-as="o">
+            <t t-call="tzc_sales_customization_spt.report_kits_invoice_document" t-lang="o.partner_id.lang"/>
         </t>
-        
-    </template>
-    <template id="kits_invoice_report">
-        <t t-call="web.html_container">
-            <t t-foreach="docs" t-as="o">
-                <t t-call="tzc_sales_customization_spt.report_kits_invoice_document" t-lang="o.partner_id.lang"/>
-            </t>
-        </t>
-    </template>
+    </t>
+</template>
 </odoo>

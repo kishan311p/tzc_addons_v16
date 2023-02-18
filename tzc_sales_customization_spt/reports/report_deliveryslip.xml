@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+
+    <!-- <template id="report_delivery_document2_inherit_spt" inherit_id="delivery.report_delivery_document2">
+    </template> -->
+
+
+    <template id="report_delivery_document_inherit_spt" inherit_id="stock.report_delivery_document">
+        <xpath expr="//h2" position="replace">
+            <h4>
+                <span t-field="o.delivery_name"/>
+            </h4>
+        </xpath>
+        <xpath expr="//div[hasclass('page')]/div[1]/div[@name='div_origin']" position="after">
+            <div class="col-auto" name="div_qty">
+                <strong>Total Qty:</strong>
+                <t t-if="o.delivered_qty">
+                    <p t-field="o.delivered_qty"/>
+                </t>
+            </div>
+            <div class="col-auto" name="div_origin">
+                <strong>Total Cases:</strong>
+                <t t-if="o.no_of_cases">
+                    <p t-field="o.no_of_cases"/>
+                </t>
+            </div>
+        </xpath>
+        <!-- <xpath expr="//div[@t-if='o.shipping_weight']" position="replace"></xpath> -->
+        <xpath expr="//t[@t-set='address']" position="replace">
+            <div class="row" style="margin-top:-50px">
+                <div style="" class="col-6">
+                    <t>
+                        <strong t-if="o.partner_id">Billing Address:</strong>
+                        <div>
+                            <span t-field="o.partner_id.name"/>
+                        </div>
+                        <div>
+                            <span t-field="o.partner_id.street"/>
+                        </div>
+                        <div>
+                            <span t-field="o.partner_id.street2"/>
+                        </div>
+                        <div>
+                            <span t-field="o.partner_id.city"/>
+                            <span t-if="o.partner_id.city and o.partner_id.zip">,</span>
+                            <span t-field="o.partner_id.zip"/>
+                        </div>
+                        <div>
+                            <span t-field="o.partner_id.state_id.name"/>
+                            <span t-if="o.partner_id.state_id.name and o.partner_id.country_id.name">,</span>
+                            <span t-field="o.partner_id.country_id.name"/>
+                        </div>
+                        <div>Tel:
+                                    
+                            <span t-field="o.partner_id.phone" />
+                        </div>
+                        <div>Email:
+                                    
+                            <span t-field="o.partner_id.email" />
+                        </div>
+                        <br/>
+                    </t>
+                </div>
+                <div class="col-6 d-flex justify-content-end">
+                    <div class="">
+                        <t style="padding-top:5px;">
+                            <strong t-if="o.sale_id.partner_shipping_id">Shipping Address:</strong>
+                            <div>
+                                <span t-field="o.sale_id.partner_shipping_id.name"/>
+                            </div>
+                            <div>
+                                <span t-field="o.sale_id.partner_shipping_id.street"/>
+                            </div>
+                            <div>
+                                <span t-field="o.sale_id.partner_shipping_id.street2"/>
+                            </div>
+                            <div>
+                                <span t-field="o.sale_id.partner_shipping_id.city"/>
+                                <span t-if="o.sale_id.partner_shipping_id.city and o.sale_id.partner_shipping_id.zip">,</span>
+                                <span t-field="o.sale_id.partner_shipping_id.zip"/>
+                            </div>
+                            <div>
+                                <span t-field="o.sale_id.partner_shipping_id.state_id.name"/>
+                                <span t-if="o.sale_id.partner_shipping_id.state_id.name and o.sale_id.partner_shipping_id.country_id.name">,</span>
+                                <span t-field="o.sale_id.partner_shipping_id.country_id.name"/>
+                            </div>
+                            <div>Tel:
+                                    
+                                <span t-field="o.sale_id.partner_shipping_id.phone" />
+                            </div>
+                            <div>Email:
+                                    
+                                <span t-field="o.sale_id.partner_shipping_id.email" />
+                            </div>
+                            <br/>
+                        </t>
+                    </div>
+                </div>
+            </div>
+        </xpath>
+        <xpath expr="//table[@name='stock_move_table']" position="replace">
+            <table class="table table-sm mt-5" t-if="o.state!='done'" name="stock_move_table">
+                <thead>
+                    <tr>
+                        <th name="th_sm_product" class='text-start'>
+                            <strong >Product</strong>
+                        </th>
+                        <th name="th_sm_quantity" style="text-align:center;">
+                            <strong>Picked Qty / Order Qty</strong>
+                            <br/>
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <t t-set="sorted_line" t-value="o.move_ids_without_package.sorted(key=lambda x:x.product_id.variant_name)"/>
+                    <tr t-foreach="sorted_line" t-as="move">
+                        <t>
+                            <td>
+                                <span t-field="move.product_id"/>
+                            </td>
+                        </t>
+                        <t>
+                            <td style="text-align:center;">
+                                <span t-field="move.quantity_done"/>
+/                                <span t-field="move.sale_line_id.product_uom_qty"/>
+                            </td>
+                        </t>
+                    </tr>
+                </tbody>
+            </table>
+        </xpath>
+        <!-- <xpath expr="//table[@name='stock_move_line_table']/tbody/tr/td[1]" position="replace">
+        </xpath>
+
+        <xpath expr="//table[@name='stock_move_line_table']/tbody/tr/td[1]" position="before">
+            <td>
+                <span t-field="move_line.product_id"/>
+            </td>
+        </xpath> -->
+
+        <xpath expr="//table[@name='stock_move_line_table']" position="replace">
+            <table class="table table-sm table-borderless mt-5" t-if="o.move_line_ids and o.state=='done'" name="stock_move_line_table">
+                <t t-set="has_serial_number" t-value="o.move_line_ids.mapped('lot_id')" />
+                <thead>
+                    <tr>
+                        <th name="th_sml_product" class='text-start' >
+                            <strong>Product</strong>
+                        </th>
+
+                        <th style="text-align:center;">
+                            <strong>Picked Qty / Order Qty</strong>
+                            <br/>
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr t-foreach="o.move_ids_without_package.sorted(key=lambda m: m.product_id.variant_name)" t-as="move_line" style="border-bottom:1px solid lightgrey;" >
+
+                        <td>
+                            <span t-field="move_line.product_id"/>
+                        </td>
+
+                        <td style="text-align:center;">
+                            <span t-field="move_line.quantity_done"/>
+                /
+                            <span t-field="move_line.sale_line_id.product_uom_qty"/>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </xpath>
+
+    </template>
+
+</odoo>

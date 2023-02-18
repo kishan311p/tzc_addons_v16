@@ -178,6 +178,8 @@
         'reports/report_action.xml',
         'reports/report_invoice_documnet.xml',
         'reports/report_footer_spt.xml',
+        'reports/report_header_spt.xml',
+        'reports/report_deliveryslip.xml',
         'reports/product_product_templates.xml',
         'reports/product_label_pdf_report.xml',
 

@@ -31,7 +31,6 @@ class account_move(models.Model):
     quickbooks_invoice_id = fields.Char("Quickbooks Invoice Id")
 
     commission_line_ids = fields.One2many('kits.commission.lines','invoice_id','Commissions')
-    is_commission_paid = fields.Boolean('Paid ?')
     sale_manager_id = fields.Many2one('res.users','Sales Manager',domain=_get_sales_manager_domain,default=_get_default_sale_manager_id)
 
     sequence_name = fields.Char('Name Sequence')
