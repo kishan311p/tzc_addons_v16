@@ -66,8 +66,8 @@ from . import mail_thread
 from . import mail_tracking_value
 from . import account_move_line
 from . import stock_quant
-# from . import kits_quickbooks_backend
 from . import account_journal
+# from . import kits_quickbooks_backend
 from . import account_payment
 from . import project_project
 from . import project_task_type

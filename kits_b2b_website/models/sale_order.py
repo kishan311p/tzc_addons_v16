@@ -7,6 +7,7 @@ class sale_order(models.Model):
 
     def compute_all(self):
         for record in self:
+            record.order_line._compute_amount()
             record._amount_all()
         return True
     
