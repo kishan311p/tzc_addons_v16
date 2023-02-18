@@ -26,3 +26,4 @@ class add_admin_fee_wizard(models.TransientModel):
                 admin_fee_line.write({'price_unit':self.admin_fee_price,'unit_discount_price':self.admin_fee_price,'is_admin':True})
         else:
             raise UserError(_('Please add admin product'))
+        self.kits_so_id._amount_all()

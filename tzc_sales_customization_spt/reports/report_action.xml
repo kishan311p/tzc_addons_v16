@@ -12,5 +12,28 @@
         <field name="binding_type">report</field>
     </record>
 
+    <record id="report_product_label" model="ir.actions.report">
+        <field name="name">Product Label (PDF)</field>
+        <field name="model">product.product</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">tzc_sales_customization_spt.product_label_pdf_report</field>
+        <field name="report_file">tzc_sales_customization_spt.product_label_pdf_report</field>
+        <field name="print_report_name">'Products Labels - %s' % (object.name)</field>
+        <field name="binding_model_id" eval="False"/>
+        <field name="binding_type">report</field>
+        
+    </record>
 
+    <record id="report_product_product_barcode" model="ir.actions.report">
+        <field name="name">Product Barcode (PDF)</field>
+        <field name="model">product.product</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">tzc_sales_customization_spt.report_productbarcode</field>
+        <field name="report_file">tzc_sales_customization_spt.report_productbarcode</field>
+        <field name="print_report_name">'Products barcode - %s' % (object.name)</field>
+        <field name="binding_model_id" eval="False"/>
+        <field name="binding_type">report</field>
+    </record>
+
+    
 </odoo>

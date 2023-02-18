@@ -1,9 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <template id="report_sales_preson_document">
-        <t t-call="web.external_layout">
-            <div class="oe_structure"/>
-            <br/>
+        <!-- <t t-call = "tzc_sales_customization_spt.report_report_footer_inherit_spt"> -->    
+            <div t-attf-class="header o_company_#{user.company_id.id}_layout">
+                <div class="o_clean_header">
+                    Email. <span t-field="user.company_id.email"></span>
+                </div>   
+            </div>
+                
+
+            <div t-attf-class="footer o_standard_footer o_company_#{user.company_id.id}_layout">
+                <div class="text-left">
+                    <div name="financial_infos">
+                        <span t-field="user.company_id.report_footer"/>
+                    </div>
+                    <ul class="list-inline">
+                        <li class="list-inline-item" style="font-size: 12px">
+                            <span>Please make all payments to Tanzacan Tradelink Inc.<br/>
+                            Thank you for your business. How can we do better? support@teameto.com</span>
+                        </li>
+                    </ul>
+                    <div t-if="report_type == 'pdf'" class="text-muted">
+                        Page: <span class="page"/> of <span class="topage"/>
+                        &#160;
+                    </div>
+                </div>
+            </div>
             <h4>
                 <strong>
                     <span t-if="user.name" t-field="user.name" />
@@ -56,7 +78,7 @@
 
                             </td>
                             <td style="text-align: right; border: 1px solid #dbdde0; padding: 10px;">
-                                <span t-if="line.amount_total" t-field="line.amount_total" />
+                                <span t-if="line.amount_total" t-field="line.amount_total" t-options='{"widget": "monetary", "display_currency":  line.currency_id}'/>
                             </td>
                         </tr>
 
@@ -67,7 +89,7 @@
 
             <div class="oe_structure"/>
 
-        </t>
+        <!-- </t> -->
     </template>
 
 

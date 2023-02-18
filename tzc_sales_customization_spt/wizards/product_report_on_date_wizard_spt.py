@@ -121,13 +121,13 @@ class product_report_on_date_wizard_spt(models.TransientModel):
                     GROUP BY PP.VARIANT_NAME,PC.NAME,PMS.NAME,SL.USAGE,S.USAGE,PP.DEFAULT_CODE,PBS.NAME,PP.LST_PRICE_USD'''
             self.env.cr.execute(query)
             record_data = self.env.cr.fetchall()
-            print=[]
+            on_date_products=[]
             if self.exclude_zero_qty == True and sum(list(map(lambda rd: rd[5],record_data))) == 0.0:
                 pass
             else:
                 for record in record_data:
-                    printt = (record[0],record[1],record[2],record[3],record[4])
-                    if printt in print:
+                    product = (record[0],record[1],record[2],record[3],record[4])
+                    if product in on_date_products:
                         pass
                     else:
                         sheet.cell(row=row_index,
@@ -163,7 +163,7 @@ class product_report_on_date_wizard_spt(models.TransientModel):
                         sheet.cell(row=row_index, column=6).border = bottom_border
                         sheet.cell(row=row_index, column=7).border = bottom_border
                         row_index += 1
-                        print.append(printt)
+                        on_date_products.append(product)
             
 
         # -------------------------------- table end --------------------------------

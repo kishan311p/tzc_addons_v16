@@ -2995,6 +2995,20 @@ class sale_order(models.Model):
                     record.action_sync_backup_order(backup_order_id)
             if record.state in ['draft','sent','received']:
                 record = self.sudo()
+                order_backup_obj.create({
+                    'name' : record.name,
+                    'partner_id' : record.partner_id.id,
+                    'partner_invoice_id' : record.partner_invoice_id.id,
+                    'partner_shipping_id' : record.partner_shipping_id.id,
+                    'currency_id' : record.pricelist_id.currency_id.id,
+                    'payment_term_id' : record.payment_term_id.id,
+                    'date_order' : record.date_order,
+                    'applied_promo_code' : record.applied_promo_code,
+                    'line_ids' : backup_order_line_list,
+                    'order_id': record.id,
+                    'user_id': self.env.user.id,
+                    'pricelist_id' : record.pricelist_id.id
+                })
                 if record.website_id and record.state == 'draft' and record.env.user.has_group('base.group_user'):
                     record.write({'is_confirm_by_saleperson':True})
                     geo_restriction_list = []
@@ -3016,36 +3030,22 @@ class sale_order(models.Model):
                         })) 
                         if line.product_id.type == 'product' and record.partner_id.country_id.id in line.product_id.geo_restriction.ids:
                             geo_restriction_list.append(line.id)
-                    order_backup_obj.create({
-                        'name' : record.name,
-                        'partner_id' : record.partner_id.id,
-                        'partner_invoice_id' : record.partner_invoice_id.id,
-                        'partner_shipping_id' : record.partner_shipping_id.id,
-                        'currency_id' : record.pricelist_id.currency_id.id,
-                        'payment_term_id' : record.payment_term_id.id,
-                        'date_order' : record.date_order,
-                        'applied_promo_code' : record.applied_promo_code,
-                        'line_ids' : backup_order_line_list,
-                        'order_id': record.id,
-                        'user_id': self.env.user.id,
-                        'pricelist_id' : record.pricelist_id.id
-                    })
 
-                    if geo_restriction_list and not record._context.get('allow_restricted'):
-                        order_lines = self.env['sale.order.line'].browse(geo_restriction_list)
-                        products=[]
-                        if len(order_lines) > 0 and not self._context.get('on_consign_wizard'):
-                            products = order_lines.sorted(lambda x: x.product_id.variant_name).ids
-                            return {
-                            'name': record.name,
-                            'type': 'ir.actions.act_window',
-                            'view_type': 'form',
-                            'view_mode': 'form',
-                            'res_model': 'geo.restriction.message.wizard.spt',
-                            'target': 'new',
-                            'context': {'default_order_line_ids': [(6,0,products)] }
-                        }
-                on_consign_product_ids = record.order_line.filtered(lambda x:x.product_id.on_consignment and x.product_uom_qty > x.product_id.actual_stock)
+                if geo_restriction_list and not record._context.get('allow_restricted'):
+                    order_lines = self.env['sale.order.line'].browse(geo_restriction_list)
+                    products=[]
+                    if len(order_lines) > 0 and not self._context.get('on_consign_wizard'):
+                        products = order_lines.sorted(lambda x: x.product_id.variant_name).ids
+                        return {
+                        'name': record.name,
+                        'type': 'ir.actions.act_window',
+                        'view_type': 'form',
+                        'view_mode': 'form',
+                        'res_model': 'geo.restriction.message.wizard.spt',
+                        'target': 'new',
+                        'context': {'default_order_line_ids': [(6,0,products)] }
+                    }
+                on_consign_product_ids = self.order_line.filtered(lambda x:x.product_id.on_consignment and x.product_uom_qty > x.product_id.actual_stock)
                 if on_consign_product_ids and not self._context.get('on_consign_wizard'):
                     for line in on_consign_product_ids:
                         line.product_id.assign_qty = line.product_uom_qty or 0.0 
@@ -3072,16 +3072,16 @@ class sale_order(models.Model):
                         PickingObj.do_unreserve()
                         
                 return res
-        else:
-            return {
-                'type': 'ir.actions.client',
-                'tag': 'display_notification',
-                'params': {
-                        'title': 'Something is wrong.',
-                        'message': 'Please reload your screen.',
-                        'sticky': True,
+            else:
+                return {
+                    'type': 'ir.actions.client',
+                    'tag': 'display_notification',
+                    'params': {
+                            'title': 'Something is wrong.',
+                            'message': 'Please reload your screen.',
+                            'sticky': True,
+                        }
                     }
-            }
 
     def line_ordering_by_product(self):
         product_list = []

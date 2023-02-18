@@ -29,3 +29,4 @@ class add_shipping_cost_wizard(models.TransientModel):
                 'fix_discount_price':0,
                 'discount':0,
                 })
+        self.sale_order_id_kits._amount_all()

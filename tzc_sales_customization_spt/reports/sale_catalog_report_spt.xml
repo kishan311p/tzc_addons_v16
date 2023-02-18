@@ -19,7 +19,7 @@
             report_type="qweb-pdf"
             file="tzc_sales_customization_spt.report_template_sales_preson_spt" 
             name="tzc_sales_customization_spt.report_template_sales_preson_spt"
-            print_report_name="'Sales Preson Report'"
+            print_report_name="'Sales Person Report'"
             menu="False"
 
         />

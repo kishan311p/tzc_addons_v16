@@ -23,3 +23,4 @@ class add_aditional_discount_wizard(models.TransientModel):
             self.sale_order_id.write({'order_line':order_line})
         else:
             discount_line.write({'price_unit':self.discount_price,'unit_discount_price':self.discount_price,'is_global_discount':True})
+        self.sale_order_id._amount_all()

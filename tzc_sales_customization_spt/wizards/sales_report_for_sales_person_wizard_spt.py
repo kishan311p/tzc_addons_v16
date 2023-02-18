@@ -194,27 +194,3 @@ class sales_report_for_sales_person_wizard_spt(models.TransientModel):
             'url':   'web/content/?model=sales.report.for.sales.person.wizard.spt&download=true&field=file&id=%s&filename=%s.xlsx' % (active_id, f_name),
             'target': 'self',
              }
-
-    def action_create_excel_report(self):
-        with pandas.ExcelWriter('/tmp/salespersonreport.xlsx') as writer:
-            sale_report = {}
-            query = "select so.name,rp.name,so.date_order,so.amount_total from sale_order as so inner join res_partner as rp on so.partner_id = rp.id where"
-            for rec in self:
-                if self.user_ids:
-                    if len(self.user_ids) == 1:
-                        # query + 'so.user_id = %s' % (rec.user_ids.id)
-                        # "% s % s" % (var1, var2)
-                        add_users = ' so.user_id = %s' % (rec.user_ids.id)
-                        query+add_users
-                    elif len(self.user_ids) > 1:
-                        users = tuple(self.user_ids.ids)
-                        add_users = f' so.user_id in {users}'
-                        query+add_users
-                    elif str(self.start_date):
-                        start_date = ' and so.date_order >= %s' % str(self.start_date)
-                        query+start_date
-                    elif str(self.end_date):
-                        end_date = ' and so.date_order <= %s' % str(self.end_date)
-                        query+end_date
-                    query
-                # self.env.cr.execute(f'''query''')

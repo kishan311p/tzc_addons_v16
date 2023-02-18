@@ -1,7 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <template id="report_template_shipped_orders_spt_document" name="Shipped Orders Report Document">
-        <t t-call="web.external_layout">
+        <!-- <t t-call="web.external_layout"> -->
+            <div t-attf-class="header o_company_#{user.company_id.id}_layout">
+                <div class="o_clean_header">
+                    Email. <span t-field="user.company_id.email"></span>
+                </div>   
+            </div>
+                
+
+            <div t-attf-class="footer o_standard_footer o_company_#{user.company_id.id}_layout">
+                <div class="text-left">
+                    <div name="financial_infos">
+                        <span t-field="user.company_id.report_footer"/>
+                    </div>
+                    <ul class="list-inline">
+                        <li class="list-inline-item" style="font-size: 12px">
+                            <span>Please make all payments to Tanzacan Tradelink Inc.<br/>
+                            Thank you for your business. How can we do better? support@teameto.com</span>
+                        </li>
+                    </ul>
+                    <div t-if="report_type == 'pdf'" class="text-muted">
+                        Page: <span class="page"/> of <span class="topage"/>
+                        &#160;
+                    </div>
+                </div>
+            </div>
             <div class="page">
                 <div class="table table-sm o_main_table">
                     <table>
@@ -97,7 +121,7 @@
                 </div>
 
             </div>
-        </t>
+        <!-- </t> -->
     </template>
     <template id="report_template_shipped_orders_spt">
         <t t-call="web.html_container">

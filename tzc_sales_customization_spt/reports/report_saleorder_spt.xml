@@ -218,12 +218,7 @@
 
                             </td>
                             <t t-set="custom_current_subtotal" t-value="round(custom_current_subtotal + (line.price_unit * line.product_uom_qty),2)" groups="account.group_show_line_subtotals_tax_excluded"/>
-
-
-
                         </t>
-
-
                     </t>
                     <t t-else="not is_pro_forma or env.context.get('proforma', False)">
                         <!-- normal sale order line  -->
