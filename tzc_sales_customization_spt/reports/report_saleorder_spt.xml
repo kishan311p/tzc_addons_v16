@@ -626,6 +626,25 @@
                     <span t-esc="'{:,.2f}'.format(doc.weight_total_kg)"/>
                 </td>
             </tr>
+            <tr class="border-black o_total" style="font-size:10px" t-if="env.context.get('proforma', False) or is_pro_forma">
+                <td name="td_amount_total_qty">
+                    <strong>Original Order</strong>
+                </td>
+                <td name="td_amount_total" class="text-end">
+            (                    <span t-esc="doc.currency_id.name"/>
+    )
+                    <span t-esc="doc.amount_total" t-options='{"widget": "monetary", "display_currency": doc.pricelist_id.currency_id}' />
+
+                </td>
+            </tr>
+            <tr class="border-black o_total" style="font-size:10px" t-if="env.context.get('proforma', False) or is_pro_forma">
+                <td name="td_amount_total_qty">
+                    <strong>Original Order QTY</strong>
+                </td>
+                <td name="td_amount_total" class="text-end">
+                    <span t-esc="int(sum(request.env['sale.order.line'].sudo().search([('order_id','=',doc.id),('product_id.type','!=','service')]).mapped('product_uom_qty')))"/>
+                </td>
+            </tr>
         </table>
     </div>
 </xpath>

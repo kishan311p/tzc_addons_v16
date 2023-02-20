@@ -34,6 +34,13 @@
         <field name="binding_model_id" eval="False"/>
         <field name="binding_type">report</field>
     </record>
-
-    
+    <record id="action_label_transfer_template_pdf" model="ir.actions.report">
+        <field name="name">Barcodes (PDF)</field>
+        <field name="model">stock.picking</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">stock.label_transfer_template_view_pdf</field>
+        <field name="report_file">stock.label_transfer_template_view_pdf</field>
+        <field name="binding_model_ids" eval="False"/>
+        <field name="binding_type">report</field>
+    </record>
 </odoo>
