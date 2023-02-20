@@ -151,7 +151,7 @@ class SaleOrderLine(models.Model):
     def product_uom_change_spt(self):
         for record in range(len(self)):
             record = self[record]
-            record.product_uom_qty = record.product_uom_qty
+            # record.product_uom_qty = record.product_uom_qty
             if record.product_id and record.product_id.is_global_discount:
                 record.product_uom_qty = -record.product_uom_qty
     
@@ -231,37 +231,47 @@ class SaleOrderLine(models.Model):
         for record in range(len(self)):
             record = self[record]
             if record.product_id:
-                product_price = record.product_id.lst_price
-                price_unit = record.product_id.lst_price
-                if record.order_id.pricelist_id and record.order_id.partner_id:
-                    price_unit = record.order_id.pricelist_id._get_product_price(record.product_id, record.product_uom_qty)
-                    product_price = record.product_id.lst_price if record.order_id.pricelist_id.currency_id.name == 'USD' else product_price
-                unit_discount_price = 0
-                if record.order_id and record.order_id:
-                    if record.sale_type == 'on_sale' and record.order_id.partner_id and record.order_id.partner_id.property_product_pricelist :
-                        if record.order_id.partner_id.property_product_pricelist.currency_id.name == 'CAD':
-                            price_unit = record.product_id.on_sale_cad
-                            product_price = record.product_id.lst_price
-                        else:
-                            price_unit = record.product_id.on_sale_usd
-                            product_price = record.product_id.lst_price
+                unit_discount_price = 0.0
+                product_details = self.env['kits.b2b.multi.currency.mapping'].with_context(from_order_line=True).get_product_price(record.order_id.partner_id.id,record.product_id.ids,order_id=record.order_id)
+                product_pricing = product_details.get(record.product_id.id)
+                product_price = product_pricing.get('price')
+                
+                # price_unit = record.product_id.lst_price
+                # if record.order_id.pricelist_id and record.order_id.partner_id:
+                #     price_unit = record.order_id.pricelist_id._get_product_price(record.product_id, record.product_uom_qty)
+                #     product_price = record.product_id.lst_price if record.order_id.pricelist_id.currency_id.name == 'USD' else product_price
+                # unit_discount_price = 0
+                # if record.order_id and record.order_id:
+                    # if record.sale_type == 'on_sale' and record.order_id.partner_id and record.order_id.partner_id.property_product_pricelist :
+                    #     if record.order_id.partner_id.property_product_pricelist.currency_id.name == 'CAD':
+                    #         price_unit = record.product_id.on_sale_cad
+                    #         product_price = record.product_id.lst_price
+                    #     else:
+                    #         price_unit = record.product_id.on_sale_usd
+                    #         product_price = record.product_id.lst_price
 
                 
-                    if record.sale_type == 'clearance' and record.order_id.partner_id and record.order_id.partner_id.property_product_pricelist :
-                        if record.order_id.partner_id.property_product_pricelist.currency_id.name == 'CAD':
-                            price_unit = record.product_id.clearance_cad
-                            product_price = record.product_id.lst_price
+                    # if record.sale_type == 'clearance' and record.order_id.partner_id and record.order_id.partner_id.property_product_pricelist :
+                    #     if record.order_id.partner_id.property_product_pricelist.currency_id.name == 'CAD':
+                    #         price_unit = record.product_id.clearance_cad
+                    #         product_price = record.product_id.lst_price
 
-                        else:
-                            price_unit = record.product_id.clearance_usd
-                            product_price = record.product_id.lst_price
+                    #     else:
+                    #         price_unit = record.product_id.clearance_usd
+                    #         product_price = record.product_id.lst_price
+                if product_pricing.get('sale_type') and product_pricing.get('sale_type_price'):
+                    unit_discount_price = product_pricing.get('sale_type_price')
+                else:
+                    unit_discount_price = product_pricing.get('price')
 
-                unit_discount_price = price_unit
                 if (record.discount or record.discount == 0.0) and not record._context.get('partner_change'):
                     unit_discount_price = round(product_price - (product_price * record.discount)* 0.01,2)
+                
+                discount = round(100-(unit_discount_price*100/product_price),2)
+                fix_discount_price = round((product_price*discount/100),2)
 
-                record.update({'price_unit':round(product_price,2),'unit_discount_price': round(unit_discount_price,2), 'sale_type':record.product_id.sale_type if record.product_id.sale_type else ''})
-                record._onchange_unit_discounted_price_spt()
+                record.write({'price_unit':round(product_price,2),'unit_discount_price': round(unit_discount_price,2), 'sale_type':product_pricing.get('sale_type') or '','fix_discount_price':round(fix_discount_price,2)})
+                # record._onchange_unit_discounted_price_spt()
         # return res
 
     def _compute_qty_at_date(self):

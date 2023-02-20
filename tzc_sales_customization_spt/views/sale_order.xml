@@ -585,7 +585,7 @@
                 <xpath expr="//field[@name='date_order']" position="after">
                     <field name="updated_on" readonly="1"/>
                     <field name="updated_by" readonly="1"/>
-                    <field name ='currency_id'/>
+                    <!-- <field name ='currency_id'/> -->
                     <field name="is_picking_set" invisible="1"/>    
                     
             </xpath>
