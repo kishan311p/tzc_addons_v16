@@ -22,6 +22,7 @@ class kits_b2b_website(models.Model):
     shipping = fields.Html('Shipping')
     privacy_policy = fields.Html('Privacy Policy')
     terms_and_conditions = fields.Html('Terms and Conditions')
+    show_product_image = fields.Selection([('front_face','Front Face'),('side_face','Side Face'),('random_face','Random Face')],string="Shop Product Image style",default='front_face')
 
 
     @api.depends('logo')

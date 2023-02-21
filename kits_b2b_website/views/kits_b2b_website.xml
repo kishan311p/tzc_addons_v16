@@ -14,6 +14,7 @@
                             <field name="website_name" />
                             <field name="url" widget="url" />
                             <field name="pricelist_id" />
+                            <field name="show_product_image" />
 
                         </group>
                         <group>

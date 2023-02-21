@@ -16,6 +16,6 @@ class sale_order(models.Model):
         for so in self:
             currency_rate = self.env['kits.b2b.multi.currency.mapping'].search([('currency_id','=',so.b2b_currency_id.id)],limit =1).currency_rate
             if currency_rate:
-                for sol in so.line_ids:
+                for sol in so.order_line:
                     sol.b2b_currency_rate = currency_rate
         return res
