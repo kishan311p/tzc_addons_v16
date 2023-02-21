@@ -666,7 +666,7 @@
             <!-- kits_b2b_website -->
             <xpath expr="//field[@name='currency_id']" position="replace">
                 <field name="currency_id" invisible="1" />
-                <field name="b2b_currency_id" options="{'no_open': True, 'no_create': True}" />
+                <!-- <field name="b2b_currency_id" options="{'no_open': True, 'no_create': True}" /> -->
             </xpath>
 
             <!-- kits_picking_return -->
