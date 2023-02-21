@@ -17,14 +17,14 @@ class res_partner(models.Model):
     def create(self, vals):
         res = super(res_partner, self).create(vals)
         for record in res:    
-            record.b2b_priclist_id = record.property_product_pricelist.id
+            record.b2b_pricelist_id = record.property_product_pricelist.id
         return res
 
 
     def write(self, vals):
         res = super().write(vals)
         for record in self:
-            vals['b2b_priclist_id'] = record.property_product_pricelist.id
+            vals['b2b_pricelist_id'] = record.property_product_pricelist.id
         return res
     
     def get_image(self):
