@@ -1395,3 +1395,37 @@ class ProductProduct(models.Model):
             data['icon'] = str(self.env['tzc.fest.discount'].browse(data.get('dynamic_label_icon')).dynamic_label_icon)[2:-1]
         
         return data
+
+       
+    def add_to_catolog(self):
+        catalog_obj = self.env['sale.catalog']
+        catalog_line_obj = self.env['sale.catalog.line']
+        catalog_name = self.env['ir.sequence'].next_by_code('sale.catalog') or 'New'
+        catalog_id = catalog_obj.create({'name':catalog_name,'state':'draft'})
+        for record in self:
+            product_price = record.lst_price_usd
+            if record.sale_type:
+                if record.sale_type == 'on_sale':
+                    product_price = record.on_sale_usd
+                if record.sale_type == 'clearance':
+                    product_price = record.clearance_usd
+                    
+            catalog_line_id = catalog_line_obj.create({
+                'catalog_id':catalog_id.id,
+                'product_pro_id': record.id,
+                'product_price_msrp': record.price_msrp_usd,
+                'product_price': record.lst_price_usd,
+                'product_price_wholesale': record.price_wholesale_usd,
+                'product_qty': 1,
+                'sale_type' : record.sale_type,
+                'unit_discount_price' : product_price,
+                })
+            catalog_line_id._onchange_fix_discount_price()
+        
+        return {
+            'name': _('Sale Catalog'),
+            'view_mode': 'form',
+            'res_id': catalog_id.id,
+            'res_model': 'sale.catalog',
+            'type': 'ir.actions.act_window',
+        }

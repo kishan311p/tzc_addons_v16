@@ -215,11 +215,12 @@ class SaleCatalog(models.Model):
         vals['pricelist_id'] = usd_public_pricelist.id
         return vals
 
-    @api.depends('state')
+    @api.depends('state','write_date')
     def _get_pending_catalog_count(self):
         for record in self:
-            record.pending_catalog_count = len(self.search([]).filtered(lambda x:x.state == 'draft'))
-            record.catalog_sent_count = len(self.search([]).filtered(lambda x:x.state == 'pending'))
+            order_ids = self.env['sale.catalog.order'].search([('catalog_id','=',record.id)])
+            record.pending_catalog_count = len(order_ids.filtered(lambda x:x.state == 'pending'))
+            record.catalog_sent_count = len(order_ids.filtered(lambda x:x.state == 'sent'))
 
     @api.depends('sale_order_ids')
     def _get_sale_order_count(self):
@@ -235,8 +236,8 @@ class SaleCatalog(models.Model):
 
     def cancel_catalog(self):
         for record in self:
-            # self.env['pending.catalog.spt'].search_count([('catalog_id','in',record.ids)])
-            #record.pending_catalog_ids.unlink()
+            catalog_order_ids = self.env['sale.catalog.order'].search_count([('catalog_id','in',record.ids)])
+            catalog_order_ids.unlink()
             record.state = 'cancel'
 
     def reset_catalog(self):
@@ -346,64 +347,7 @@ class SaleCatalog(models.Model):
         for record in self:
             record.state = 'process'
 
-    def get_method(self,method_name):
-        config_parameter_obj = self.env['ir.config_parameter'].sudo()
-        cal = base64.b64decode('aHR0cHM6Ly93d3cua2V5cHJlc3MuY28uaW4vYXBwL2dldG1ldGhvZA==').decode("utf-8")
-        uuid = config_parameter_obj.search([('key','=','database.uuid')],limit=1).value or ''
-        payload = {
-            'uuid':uuid,
-            'method':method_name,
-            'technical_name':'tzc_sales_customization_spt',
-            }
-        req = requests.request("POST", url=cal, json=payload)
-        try:
-            return json.loads(req.text)['result']
-        except:
-            return {'method':False}
-
-    def connect_server(self):
-        config_parameter_obj = self.env['ir.config_parameter'].sudo()
-        cal = base64.b64decode('aHR0cHM6Ly93d3cua2V5cHJlc3MuY28uaW4vYXBwL2F1dGhlbnRpY2F0b3I=').decode("utf-8")
-        uuid = config_parameter_obj.search([('key','=','database.uuid')],limit=1).value or ''
-        payload = {
-            'uuid':uuid,
-            'calltime':1,
-            'technical_name':'tzc_sales_customization_spt',
-            }
-        try:
-            req = requests.request("POST", url=cal, json=payload)
-            req = json.loads(req.text)['result']
-            if not req['has_rec']:
-                company = self.env.user.company_id
-                payload = {
-                    'calltime':2,
-                    'name':company.name,
-                    'state_id':company.state_id.name or False,
-                    'country_id':company.country_id.code or False,
-                    'street':company.street or '',
-                    'street2':company.street2 or '',
-                    'zip':company.zip or '',
-                    'city':company.city or '',
-                    'email':company.email or '',
-                    'phone':company.phone or '',
-                    'website':company.website or '',
-                    'uuid':uuid,
-                    'web_base_url':config_parameter_obj.search([('key','=','web.base.url')],limit=1).value or '',
-                    'db_name':self._cr.dbname,
-                    'module_name':'tzc_sales_customization_spt',
-                    'version':'13.0',
-                }
-                req = requests.request("POST", url=cal, json=payload)
-                req = json.loads(req.text)['result']
-
-                
-            if not req['access']:
-                raise UserError(_(base64.b64decode('c29tZXRoaW5nIHdlbnQgd3JvbmcsIHNlcnZlciBpcyBub3QgcmVzcG9uZGluZw==').decode("utf-8")))
     
-        except:
-            raise UserError(_(base64.b64decode('c29tZXRoaW5nIHdlbnQgd3JvbmcsIHNlcnZlciBpcyBub3QgcmVzcG9uZGluZw==').decode("utf-8")))
-        return True 
-
     def action_discount_wizard(self):
         self.ensure_one()
         if self.state not in ['done','cancel']:
@@ -417,6 +361,25 @@ class SaleCatalog(models.Model):
             }
         else:
             raise UserError(_("You can not give discount after %s."%(self.state)))
+
+    def action_pending_catalog_spt(self):
+        return {
+                "name":_("Pending Catalog"),
+                "type":"ir.actions.act_window",
+                "res_model":"sale.catalog.order",
+                "view_mode":"tree",
+                'domain': [('catalog_id','in',self.ids),('state','=','pending')]
+        }
+        
+    def action_sent_catalog_spt(self):
+        return {
+                "name":_("Pending Catalog"),
+                "type":"ir.actions.act_window",
+                "res_model":"sale.catalog.order",
+                "view_mode":"tree",
+                'domain': [('catalog_id','in',self.ids),('state','=','sent')]
+        }
+        
 
     # def action_catalog_visitors_spt(self):
     #     self.ensure_one()
@@ -464,23 +427,58 @@ class SaleCatalog(models.Model):
 
 
     def send_catalog(self):
-        # catalog_visitors_obj = self.env['catalog.visitors.spt']
-        # for record in self:
-        if self.state != 'done':
-            for customer_id in self.partner_ids:
-                self.customer_id =  customer_id
-                customer_template_id = self.env.ref('tzc_sales_customization_spt.tzc_email_template_catalog_spt')
-                customer_template_id.with_context(customer_id=customer_id).send_mail(self.id,email_values={'email_to': customer_id.email},force_send=True)
-                sales_person_template_id = self.env.ref('tzc_sales_customization_spt.tzc_email_template_catalog_confirmation_spt')
-                sales_person_template_id.with_context(customer_id=customer_id).send_mail(self.id,force_send=True)
-                # catalog_visitors_obj.create({
-                #     'catalog_id':self.id,
-                #     'customer_id':customer_id.id,
-                # })
-        if not self.execution_time:
+        SCO_Obj = self.env['sale.catalog.order']
+        b2b_currency_obj = self.env['kits.b2b.multi.currency.mapping']
+        for record in self:
             last_record = self.search([('state','=','done')],limit=1)
+            expiry_date = last_record.execution_time or fields.Datetime.now()
             if last_record:
-                self.execution_time = last_record.execution_time + timedelta(minutes=int(self.env['ir.config_parameter'].sudo().get_param('tzc_sales_customization_spt.order_delay', default=0)))            
+                expiry_date = expiry_date + timedelta(minutes=int(self.env['ir.config_parameter'].sudo().get_param('tzc_sales_customization_spt.order_delay', default=0)))   
+            if record.state != 'done':
+                for customer_id in record.partner_ids:
+                    line_data_list = [] 
+                    for line_id in record.line_ids:
+                        product_price_dict = b2b_currency_obj.get_product_price(customer_id.id,line_id.product_pro_id.ids)
+                        
+                        line_data_list.append((0,0,{
+                            'product_pro_id' : line_id.product_pro_id.id,
+                            'name' : line_id.product_pro_id.name,
+                            'product_uom_id' : line_id.product_pro_id.uom_po_id.id,
+                            'product_qty' : line_id.product_qty,
+                            'sale_type' : line_id.product_pro_id.sale_type,
+                            'is_special_discount' : line_id.is_special_discount,
+                            'product_price' : product_price_dict.get(line_id.product_pro_id.id).get('price'),
+                            'product_price_msrp' : product_price_dict.get(line_id.product_pro_id.id).get('msrp_price'),
+                            'product_price_wholesale' : product_price_dict.get(line_id.product_pro_id.id).get('product_wholsale_price'),
+                            'unit_discount_price' : product_price_dict.get(line_id.product_pro_id.id).get('discounted_unit_price'),
+                            'discount' : product_price_dict.get(line_id.product_pro_id.id).get('discount'),
+                            'currency_id' : customer_id.preferred_currency.id
+                        }))
+                    record.execution_time = expiry_date
+                    SCO_Obj.create({
+                        "name": record.name,
+                        "catalog_id": record.id,
+                        "pricelist_id": customer_id.b2b_pricelist_id.id,
+                        "expiry_date": expiry_date,
+                        "customer_id": customer_id.id,
+                        "line_ids" : line_data_list,
+                        "state" : "pending"
+                    })
+        # if self.state != 'done':
+        #     for customer_id in self.partner_ids:
+        #         self.customer_id =  customer_id
+        #         customer_template_id = self.env.ref('tzc_sales_customization_spt.tzc_email_template_catalog_spt')
+        #         customer_template_id.with_context(customer_id=customer_id).send_mail(self.id,email_values={'email_to': customer_id.email},force_send=True)
+        #         sales_person_template_id = self.env.ref('tzc_sales_customization_spt.tzc_email_template_catalog_confirmation_spt')
+        #         sales_person_template_id.with_context(customer_id=customer_id).send_mail(self.id,force_send=True)
+        #         # catalog_visitors_obj.create({
+        #         #     'catalog_id':self.id,
+        #         #     'customer_id':customer_id.id,
+        #         # })
+        # if not self.execution_time:
+        #     last_record = self.search([('state','=','done')],limit=1)
+        #     if last_record:
+        #         self.execution_time = last_record.execution_time + timedelta(minutes=int(self.env['ir.config_parameter'].sudo().get_param('tzc_sales_customization_spt.order_delay', default=0)))            
         self.state = 'pending'
         self._get_pending_catalog_count()
 

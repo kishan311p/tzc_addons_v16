@@ -421,6 +421,26 @@
                 action = records.action_shift_timeline()
             </field>
         </record>
+        <record model="ir.actions.server" id="action_quotation_merge_spt">
+            <field name="name">Merge Quotation</field>
+            <field name="model_id" ref="sale.model_sale_order"/>
+            <field name="binding_model_id" ref="sale.model_sale_order" />
+            <field name="binding_view_types">list</field>
+            <field name="state">code</field>
+            <field name="code">
+            if records:
+                action = records.action_merge_quotation_spt()
+            </field>
+        </record>
+        <record model="ir.actions.server" id="action_add_to_catolog_product_product_spt">
+            <field name="name">Add to Catalog</field>
+            <field name="model_id" ref="product.model_product_product"/>
+            <field name="binding_model_id" ref="product.model_product_product" />
+            <field name="state">code</field>
+            <field name="code">
+                action = records.add_to_catolog()
+            </field>
+        </record>
 
     </data>
 </odoo>

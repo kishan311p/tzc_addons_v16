@@ -47,18 +47,18 @@
                                     <span class="o_stat_text">#Visits</span>
                                 </div>
                             </button> -->
-                            <!-- <button class="oe_stat_button" icon="fa-send" readonly="1">
+                            <button class="oe_stat_button" name="action_sent_catalog_spt" icon="fa-send">
                                 <div class="o_stat_info">
                                     <field name="catalog_sent_count" class="o_stat_value"/>
                                     <span class="o_stat_text">Sent Catalog</span>
                                 </div>
-                            </button> -->
-                            <!-- <button class="oe_stat_button" type="object" name="action_pending_catalog_spt" icon="fa-clock-o">
+                            </button>
+                            <button class="oe_stat_button" type="object" name="action_pending_catalog_spt" icon="fa-clock-o">
                                 <div class="o_stat_info">
                                     <field name="pending_catalog_count" class="o_stat_value"/>
                                     <span class="o_stat_text">Pending Catalog</span>
                                 </div>
-                            </button>-->
+                            </button>
                             <button class="oe_stat_button" type="action" name="%(action_view_quotations)d" icon="fa-pencil-square-o">
                                 <div class="o_stat_info">
                                     <field name="sale_order_count" class="o_stat_value"/>
@@ -209,7 +209,20 @@
                 </search>
             </field>
         </record>
-
+        <record id="sale_catalog_order_view_tree" model="ir.ui.view">
+            <field name="name">sale.catalog.order.view.tree</field>
+            <field name="model">sale.catalog.order</field>
+            <field name="arch" type="xml">
+                <tree string="">
+                    <field name="customer_id" />
+                    <field name="name" />
+                    <field name="expiry_date" />
+                    <field name="decline_description" />
+                    <field name="catalog_total" />
+                    <field name="state" />
+                </tree>
+            </field>
+        </record>
         <!-- Catalog Action -->
         <record id="sale_catalog_action" model="ir.actions.act_window">
             <field name="name">Catalogs</field>

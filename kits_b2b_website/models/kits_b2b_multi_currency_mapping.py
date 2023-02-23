@@ -61,7 +61,7 @@ class kits_b2b_multi_currency_mapping(models.Model):
     # PartnerId --> Integer & ProductIds --> List of Integer
 
     def get_product_price(self,partner_id,product_ids,order_id=None):
-        if partner_id and type(partner_id) == int:
+        if isinstance(partner_id, int) and isinstance(product_ids,list)  :
             partner_id = self.env['res.partner'].browse(partner_id)
             multi_currency_obj = self.env['kits.b2b.multi.currency.mapping']
             partner_currency_rate = 0.0
@@ -101,17 +101,37 @@ class kits_b2b_multi_currency_mapping(models.Model):
                         sale_type_price = product.clearance_usd
                     else:
                         sale_type_price = product_price
-
-
+                
+                
+                if  product.sale_type == 'on_sale':
+                    discount = (1-(sale_type_price/product_price))*100
+                    discounted_unit_price = product_price - sale_type_price
+                elif product.sale_type == 'clearance':
+                    discount = (1-(sale_type_price/product_price))*100
+                    discounted_unit_price = product_price - sale_type_price
+                else:
+                    discount = 0
+                    discounted_unit_price = 0
                 products_prices[product.id] = {
                                                 'price':product_price,
                                                 'msrp_price':product_msrp_price,
                                                 'product_wholsale_price':product_wholsale_price,
                                                 'sale_type':product.sale_type,
                                                 'sale_type_price':sale_type_price,
+                                                'discount' : discount,
+                                                'discounted_unit_price' : discounted_unit_price
                                             }
 
             return  products_prices
 
         else:
-            raise UserError('Make sure your passed data is correct.')
+            error = 'Make sure your'
+            flag = False
+            if not isinstance(partner_id, int):
+                error += ' partner data in integer partner id'
+                flag= True
+            if not isinstance(product_ids, list):
+                if flag:
+                    error += ' AND '
+                error += ' product data in list of product ids '
+            raise UserError(error)

@@ -31,6 +31,7 @@ class account_move(models.Model):
     quickbooks_invoice_id = fields.Char("Quickbooks Invoice Id")
 
     commission_line_ids = fields.One2many('kits.commission.lines','invoice_id','Commissions')
+    is_commission_paid = fields.Boolean('Paid ?')
     sale_manager_id = fields.Many2one('res.users','Sales Manager',domain=_get_sales_manager_domain,default=_get_default_sale_manager_id)
 
     sequence_name = fields.Char('Name Sequence')
@@ -65,25 +66,6 @@ class account_move(models.Model):
         for record in self:
             record.is_admin = True if self.env.user.has_group('base.group_system') else False
     
-    @api.depends('inv_payment_status')
-    def _compute_payment_status(self):
-        for rec in self:
-            rec.filtere_state = False
-            if rec.inv_payment_status:
-                rec.filtere_state = rec.inv_payment_status
-
-    def _compute_inv_payment_status(self):
-        for rec in self:
-            order_id = self.env['sale.order'].search([('invoice_ids','in',rec.ids)],limit=1)
-            rec.inv_payment_status = False
-            if order_id and order_id.payment_status:
-                rec.inv_payment_status = order_id.payment_status
-
-    def _count_return_credit_notes(self):
-        for record in self:
-            order = self.env['sale.order'].search([('invoice_ids','in',record.ids)],limit=1)
-            record.count_return_credit_notes = len(order.kits_credit_payment_ids)
-
     @api.depends('invoice_line_ids','invoice_line_ids.quantity','order_id','order_id.ordered_qty','order_id.picked_qty','order_id.delivered_qty')
     def _compute_qty(self):
         for record in self:
@@ -101,23 +83,23 @@ class account_move(models.Model):
             if record.line_ids and record.line_ids[0].sale_line_ids:
                 record.order_id = record.line_ids[0].sale_line_ids[0].order_id.id
 
+    @api.onchange('invoice_user_id','order_id.sale_manager_id')
+    def _onchange_user_id(self):
+        for record in self:
+            order = self.env['sale.order'].search([('invoice_ids','in',record.ids)],limit=1)
+            record.sale_manager_id = order.sale_manager_id.id
 
-    def action_get_return_credit_notes(self):
-        notes = self.env['sale.order'].search([('invoice_ids','in',self.ids)],limit=1).kits_credit_payment_ids
-        action =  {
-            'name':_('Credit Payments'),
-            'type':'ir.actions.act_window',
-            'res_model':'account.payment',
-            'view_mode':'form',
-            'context':{'default_is_return_credit':True},
-            'target':'self',
-        }
-        if len(notes) == 1:
-            action['res_id'] = notes.id
-        else:
-            action['view_mode'] = 'tree,form'
-            action['domain'] = [('id','in',notes.ids)]
-        return action
+    def update_name(self):
+        for record in self:
+            name = ''
+            if record.sequence_name:
+                name = record.name[0:4]+record.sequence_name+record.name[-2:]
+                update_name = self.search([('name','=',name),('id','!=',record.id)])
+                if update_name:
+                    message = "This Sequence is already assigned to "+ update_name[0].display_name
+                    raise UserError(_(message))
+                else:
+                    record.name = name
 
     def button_cancel(self):
         if self.state in ['draft']:
@@ -257,26 +239,53 @@ class account_move(models.Model):
                 self.commission_line_ids.write({'state':'draft'})
         return res
 
-    @api.onchange('invoice_user_id','order_id.sale_manager_id')
-    def _onchange_user_id(self):
+    @api.depends('inv_payment_status')
+    def _compute_payment_status(self):
+        for rec in self:
+            rec.filtere_state = False
+            if rec.inv_payment_status:
+                rec.filtere_state = rec.inv_payment_status
+
+    def _compute_inv_payment_status(self):
+        for rec in self:
+            order_id = self.env['sale.order'].search([('invoice_ids','in',rec.ids)],limit=1)
+            rec.inv_payment_status = False
+            if order_id and order_id.payment_status:
+                rec.inv_payment_status = order_id.payment_status
+    
+    def action_cancel(self):
+        for record in self:
+            payment_ids = self.env['account.payment'].search([]).filtered(lambda pay: record.id in pay.reconciled_invoice_ids.ids)
+            # payment_ids = self.env['account.payment'].search([('invoice_ids','in',record.id)])
+
+            for inv in record:
+                if inv.invoice_line_ids:
+                    if payment_ids:
+                        for payment in payment_ids:
+                            payment.state='cancel'
+                    inv.button_cancel()
+    
+    def _count_return_credit_notes(self):
         for record in self:
             order = self.env['sale.order'].search([('invoice_ids','in',record.ids)],limit=1)
-            record.sale_manager_id = order.sale_manager_id.id
+            record.count_return_credit_notes = len(order.kits_credit_payment_ids)
 
-    def update_name(self):
-        for record in self:
-            name = ''
-            if record.sequence_name:
-                name = record.name[0:4]+record.sequence_name+record.name[-2:]
-                update_name = self.search([('name','=',name),('id','!=',record.id)])
-                if update_name:
-                    message = "This Sequence is already assigned to "+ update_name[0].display_name
-                    raise UserError(_(message))
-                else:
-                    record.name = name
-                
-
-    
+    def action_get_return_credit_notes(self):
+        notes = self.env['sale.order'].search([('invoice_ids','in',self.ids)],limit=1).kits_credit_payment_ids
+        action =  {
+            'name':_('Credit Payments'),
+            'type':'ir.actions.act_window',
+            'res_model':'account.payment',
+            'view_mode':'form',
+            'context':{'default_is_return_credit':True},
+            'target':'self',
+        }
+        if len(notes) == 1:
+            action['res_id'] = notes.id
+        else:
+            action['view_mode'] = 'tree,form'
+            action['domain'] = [('id','in',notes.ids)]
+        return action
 
     @api.depends(
         'invoice_line_ids',
@@ -306,7 +315,6 @@ class account_move(models.Model):
             global_discount = 0.0
             amount_without_discount = 0.0
             amount_discount = 0.0
-            
             for line in move.line_ids:
                 if move.is_invoice(True):
                     # === Invoices ===
@@ -740,17 +748,6 @@ class account_move(models.Model):
         
         return val
 
-    def action_cancel(self):
-        for record in self:
-            payment_ids = self.env['account.payment'].search([]).filtered(lambda pay: record.id in pay.reconciled_invoice_ids.ids)
-            # payment_ids = self.env['account.payment'].search([('invoice_ids','in',record.id)])
-
-            for inv in record:
-                if inv.invoice_line_ids:
-                    if payment_ids:
-                        for payment in payment_ids:
-                            payment.state='cancel'
-                    inv.button_cancel()
 
     def format_name(self,name):
         if '%' in name:
@@ -1135,7 +1132,7 @@ class account_move(models.Model):
     #     except Exception as e:
     #         error_msg = json.loads(del_inv_response.text).get('Fault').get("Error")[0].get("Detail") if (del_inv_response != {} and "Fault" in json.loads(del_inv_response.text).keys() and json.loads(del_inv_response.text).get('Fault')) else e
     #         raise UserError(_(str(error_msg)))
-    
+
     # def find_invoice(self,res_company_id,inv_query):
     #     if self.quickbooks_invoice_id:
     #         inv_query = "Select * from Invoice where Id = '%s'"%(self.quickbooks_invoice_id)
