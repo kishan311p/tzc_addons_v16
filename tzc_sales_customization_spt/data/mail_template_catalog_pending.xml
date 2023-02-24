@@ -91,223 +91,193 @@
                                                         </thead>
                                                         <tbody>
                                                             <t t-if="object.line_ids">
+                                                                <t t-set="pricing_data" t-value="object.get_catalog_line_pro_price()"/>
                                                                 <t t-foreach="object.get_sorted_products(object.line_ids)" t-as="line">
-                                                                    <t t-set="total_discount" t-value="total_discount + (line.unit_discount_price * line.product_qty) - line.price_subtotal"/>
-                                                                    <t t-set="sub_total" t-value="line.price_subtotal + sub_total"/>
-                                                                    <t t-set="total" t-value="sub_total - total_discount"/>
-                                                                </t>
-                                                            </t>
-                                                            <tr>
-                                                                <td style="border: 1px solid #dbdde0; padding: 10px;">
-                                                                    <t t-set="special_discount" t-value="line.product_pro_id.get_black_special_friday_sale()"/>
-                                                                    <t t-if="line.sale_type">
-                                                                        <style>
-                                                                            .te_ribbon-wrapper kits_ribbon #style_3.label_div {
-                                                                                display: inline-block;
-                                                                                width: auto;
-                                                                                font-size: 0.8125rem;
-                                                                                background-color: #353e47;
-                                                                                position: absolute;
-                                                                                top: 10px;
-                                                                                right: unset;
-                                                                                bottom: unset;
-                                                                                left: 0px;
-                                                                                z-index: 1;
-                                                                                overflow: hidden;
-                                                                                @media (max-width:767px){
-                                                                                    font-size: 0.0125rem;
-                                                                                }
-                                                                            }
-                                                                            .te_ribbon-wrapper kits_ribbon #style_3.label_div .te_label_name.te_label_name_wish {
-                                                                                padding: 2px 4px !important;
-                                                                            }
-                                                                            .te_ribbon-wrapper kits_ribbon #style_3.label_div .te_label_name.te_label_name_wish:before {
-                                                                                //content: "\f02b";
-                                                                                font-family: FontAwesome;
-                                                                                margin-right: 5px;
-                                                                                font-size: 8px;
-                                                                            }
-                                                                        </style>
-                                                                    </t>
-                                                                    <t t-if="line.is_special_discount">
-                                                                        <img height="25px" t-attf-src="data:image/*;base64,{{special_discount.get('icon')}}"/>
-                                                                    </t>
-                                                                    <t t-else="">
-                                                                        <t t-if="line.sale_type  == 'clearance'">
-                                                                            <div class="te_ribb on-wrapper" style="color:white">
-                                                                                <span class="style_3 label_div kits_label_name" id="style_3" style="background-color:#990000;font-weight: bold;top: auto !important;left: 24px !important;font-size: 12px;">
-                                                                                    <span class="p-1 te_label_name te_label_name_wish">Clearance</span>
-                                                                                </span>
-                                                                            </div> 
-                                                                        </t>
-                                                                        <t t-if="line.sale_type  == 'on_sale'">
-                                                                            <div class="te_ribb on-wrapper kits_ribbon" style="color:white">
-                                                                                <span class="style_3 label_div" id="style_3" style="background-color:#e50000;font-weight: bold;top: auto !important;left: 24px !important;font-size: 12px;">
-                                                                                    <span class="p-1 te_label_name te_label_name_wish">Sale</span>
-                                                                                </span>
-                                                                            </div>
-                                                                        </t>
-                                                                    </t>
-                                                                    <img width="250px" t-attf-src="{{line.product_pro_id.image_url}}"/>
-                                                                </td>
-                                                                <td style="border: 1px solid #dbdde0; padding: 10px;">
-                                                                    <img width="250px" t-attf-src="{{line.product_pro_id.image_secondary_url}}"/>
-                                                                </td>
-                                                                <!--name-->
-                                                                <td style="text-align: center; border: 1px solid #dbdde0; padding: 10px;text-transform: capitalize;">
-                                                                    <p>
-                                                                        <t t-if="line.product_pro_id.brand">
-                                                                            <t t-out="line.product_pro_id.brand.name"/>
-                                                                        </t>
-                                                                        <t t-else="">
-                                                                            N/A
-                                                                        </t>
-                                                                        <br/>
-                                                                        <t t-if="line.product_pro_id.model">
-                                                                            <t t-out="line.product_pro_id.model.name"/>
-                                                                        </t>
-                                                                        <t t-else="">
-                                                                            N/A
-                                                                        </t>
-                                                                        <t t-if="line.product_pro_id.color_code">
-                                                                            <t t-out="line.product_pro_id.color_code.name"/>
-                                                                        </t>
-                                                                        <t t-else="">
-                                                                            00
-                                                                        </t>
-                                                                        <t t-if="line.product_pro_id.eye_size">
-                                                                            <t t-out="line.product_pro_id.eye_size.name"/>
-                                                                        </t>
-                                                                        <t t-else="">
-                                                                            00
-                                                                        </t>
-                                                                        <t t-if="line.product_pro_id.bridge_size">
-                                                                            <t t-out="line.product_pro_id.bridge_size.name"/>
-                                                                        </t>
-                                                                        <t t-else="">
-                                                                            00
-                                                                        </t>
-                                                                        <t t-if="line.product_pro_id.temple_size">
-                                                                            <t t-out="line.product_pro_id.temple_size.name"/>
-                                                                        </t>
-                                                                        <t t-else="">
-                                                                            00
-                                                                        </t>
-                                                                        <t t-if="line.product_pro_id.categ_id">
-                                                                            <t t-out="line.product_pro_id.categ_id.name"/>
-                                                                        </t>
-                                                                    </p>
-                                                                    <br/>
-                                                                    <div>
-                                                                        <div>
-                                                                    <p style="font-size: 10px;">
-                                                                        <span>
-                                                                            Retail Price: <t t-out="'%.2f' %line.product_pro_id.price_msrp"/><br/>
-                                                                            Wholesale Price: <t t-out="'%.2f' %line.product_pro_id.price_wholesale"/>
-                                                                        </span>
-                                                                    </p>
-                                                                        </div>
-                                                                    </div>
-                                                                </td>
-                                    
-                                                                <td style="text-align: center; border: 1px solid #dbdde0; padding: 10px;">
-                                                                    <p >
-                                                                        <t t-if="line.product_qty">
-                                                                            <t t-out="'%.0f' %line.product_qty"/>
-                                                                        </t>
-                                                                        <t t-if="not line.product_qty">
-                                                                            -
-                                                                        </t>
-                                                                    </p>
-                                                                </td>
-                                    
-                                    
-                                                                <td style="text-align: center; border: 1px solid #dbdde0; padding: 2px;">
-                                                                    <t t-set="pricelist_price" t-value="customer_id.property_product_pricelist._get_product_price(line.product_pro_id,line.product_qty,line.product_pro_id.uom_id)"/>
-                                                                    <t t-set="unit_discount_price" t-value=" pricelist_price - (pricelist_price * line.discount)*0.01"/>
-                                                                    <t t-if="line.sale_type == 'on_sale'">
-                                                                    <t t-if="customer_id.property_product_pricelist.currency_id.name == 'USD'">
-                                                                        <t t-set="onsale_price" t-value="line.product_pro_id.on_sale_usd"/>
-                                                                    </t>
-                                                                    <t t-else="">
-                                                                        <t t-set="onsale_price" t-value="line.product_pro_id.on_sale_cad"/>
-                                                                    </t>
-                                                                    </t>
-                                                                    <t t-if="line.sale_type == 'clearance'">
-                                                                    <t t-if="customer_id.property_product_pricelist.currency_id.name == 'USD'">
-                                                                        <t t-set="onsale_price" t-value="line.product_pro_id.clearance_usd"/>
-                                                                    </t>
-                                                                    <t t-else="">
-                                                                        <t t-set="onsale_price" t-value="line.product_pro_id.clearance_usd"/>
-                                                                    </t>
-                                                                    </t>
-                                                                    <t t-if="pricelist_price != unit_discount_price">
-                                                                        <p style="color: #ff0000;text-decoration:line-through;">
-                                                                            <b style="color:#454748;">
-                                                                                <t t-out="customer_id.property_product_pricelist.currency_id.symbol"/>
-                                                                                <t t-if="pricelist_price">
-                                                                                    <t t-out="'%.2f' % pricelist_price"/>
-                                                                                </t>
-                                                                                <t t-if="not pricelist_price">
-                                                                                    0.00
-                                                                                </t>
-                                                                            </b>
-                                                                        </p>
-                                                                        <t t-set="onsale_price" t-value="onsale_price - ((line.discount*0.01) * onsale_price)"/>
-                                                                        <p style="white-space: nowrap;color:#ff0000;">
-                                                                            <t t-if="unit_discount_price">
-                                                                                <t t-out="customer_id.property_product_pricelist.currency_id.symbol"/>
-                                                                                <t t-if="not line.sale_type">
-                                                                                    <t t-out="'%.2f' % unit_discount_price"/>
-                                                                                </t>
-                                                                                <t t-else="">
-                                                                                    <t t-out="'%.2f' % onsale_price"/>
-                                                                                </t>
+                                                                    <t t-set="product_price" t-value="pricing_data.get(line.product_pro_id.id)"/>
+                                                                    <tr>
+                                                                        <td style="border: 1px solid #dbdde0; padding: 10px;">
+                                                                            <t t-set="special_discount" t-value="line.product_pro_id.get_black_special_friday_sale()"/>
+                                                                            <t t-if="line.sale_type">
+                                                                                <style>
+                                                                                    .te_ribbon-wrapper kits_ribbon #style_3.label_div {
+                                                                                        display: inline-block;
+                                                                                        width: auto;
+                                                                                        font-size: 0.8125rem;
+                                                                                        background-color: #353e47;
+                                                                                        position: absolute;
+                                                                                        top: 10px;
+                                                                                        right: unset;
+                                                                                        bottom: unset;
+                                                                                        left: 0px;
+                                                                                        z-index: 1;
+                                                                                        overflow: hidden;
+                                                                                        @media (max-width:767px){
+                                                                                            font-size: 0.0125rem;
+                                                                                        }
+                                                                                    }
+                                                                                    .te_ribbon-wrapper kits_ribbon #style_3.label_div .te_label_name.te_label_name_wish {
+                                                                                        padding: 2px 4px !important;
+                                                                                    }
+                                                                                    .te_ribbon-wrapper kits_ribbon #style_3.label_div .te_label_name.te_label_name_wish:before {
+                                                                                        //content: "\f02b";
+                                                                                        font-family: FontAwesome;
+                                                                                        margin-right: 5px;
+                                                                                        font-size: 8px;
+                                                                                    }
+                                                                                </style>
                                                                             </t>
-                                                                            <t t-if="not unit_discount_price">
-                                                                                0.00
-                                                                            </t>
-                                                                        </p>
-                                                                    </t>
-                                                                    <t t-else="">
-                                                                        <p style="color: #454748;">
-                                                                            <b>
-                                                                                <t t-out="customer_id.property_product_pricelist.currency_id.symbol"/>
-                                                                                <t t-if="pricelist_price">
-                                                                                    <t t-if="not line.sale_type">
-                                                                                        <t t-out="'%.2f' % pricelist_price"/>
-                                                                                    </t>
-                                                                                    <t t-else="">
-                                                                                        <t t-out="'%.2f' %onsale_price"/>
-                                                                                    </t>
-                                                                                </t>
-                                                                                <t t-if="not pricelist_price">
-                                                                                    0.00
-                                                                                </t>
-                                                                            </b>
-                                                                        </p>
-                                                                    </t>
-                                                                </td>
-                                                                <t t-set="onsale_price" t-value="onsale_price * line.product_qty"/>
-                                                                <td style="text-align: center; border: 1px solid #dbdde0; padding: 10px;">
-                                                                    <p >
-                                                                        <t t-set="line_total" t-value="unit_discount_price * line.product_qty"/>
-                                                                        <t t-if="line_total">
-                                                                            <t t-out="customer_id.property_product_pricelist.currency_id.symbol"/>
-                                                                            <t t-if="not line.sale_type">
-                                                                                <t t-out="'%.2f' % line_total"/>
+                                                                            <t t-if="line.is_special_discount">
+                                                                                <img height="25px" t-attf-src="data:image/*;base64,{{special_discount.get('icon')}}"/>
                                                                             </t>
                                                                             <t t-else="">
-                                                                                <t t-out="'%.2f' %onsale_price"/>
+                                                                                <t t-if="line.sale_type  == 'clearance'">
+                                                                                    <div class="te_ribb on-wrapper" style="color:white">
+                                                                                        <span class="style_3 label_div kits_label_name" id="style_3" style="background-color:#990000;font-weight: bold;top: auto !important;left: 24px !important;font-size: 12px;">
+                                                                                            <span class="p-1 te_label_name te_label_name_wish">Clearance</span>
+                                                                                        </span>
+                                                                                    </div> 
+                                                                                </t>
+                                                                                <t t-if="line.sale_type  == 'on_sale'">
+                                                                                    <div class="te_ribb on-wrapper kits_ribbon" style="color:white">
+                                                                                        <span class="style_3 label_div" id="style_3" style="background-color:#e50000;font-weight: bold;top: auto !important;left: 24px !important;font-size: 12px;">
+                                                                                            <span class="p-1 te_label_name te_label_name_wish">Sale</span>
+                                                                                        </span>
+                                                                                    </div>
+                                                                                </t>
                                                                             </t>
-                                                                        </t>
-                                                                        <t t-if="not line_total">
-                                                                            <t t-out="customer_id.property_product_pricelist.currency_id.symbol"/>
-                                                                            0.00
-                                                                        </t>
-                                                                    </p>
-                                                                </td>
-                                                            </tr>
+                                                                            <img width="250px" t-attf-src="{{line.product_pro_id.image_url}}"/>
+                                                                        </td>
+                                                                        <td style="border: 1px solid #dbdde0; padding: 10px;">
+                                                                            <img width="250px" t-attf-src="{{line.product_pro_id.image_secondary_url}}"/>
+                                                                        </td>
+                                                                        <!--name-->
+                                                                        <td style="text-align: center; border: 1px solid #dbdde0; padding: 10px;text-transform: capitalize;">
+                                                                            <p>
+                                                                                <t t-if="line.product_pro_id.brand">
+                                                                                    <t t-out="line.product_pro_id.brand.name"/>
+                                                                                </t>
+                                                                                <t t-else="">
+                                                                                    N/A
+                                                                                </t>
+                                                                                <br/>
+                                                                                <t t-if="line.product_pro_id.model">
+                                                                                    <t t-out="line.product_pro_id.model.name"/>
+                                                                                </t>
+                                                                                <t t-else="">
+                                                                                    N/A
+                                                                                </t>
+                                                                                <t t-if="line.product_pro_id.color_code">
+                                                                                    <t t-out="line.product_pro_id.color_code.name"/>
+                                                                                </t>
+                                                                                <t t-else="">
+                                                                                    00
+                                                                                </t>
+                                                                                <t t-if="line.product_pro_id.eye_size">
+                                                                                    <t t-out="line.product_pro_id.eye_size.name"/>
+                                                                                </t>
+                                                                                <t t-else="">
+                                                                                    00
+                                                                                </t>
+                                                                                <t t-if="line.product_pro_id.bridge_size">
+                                                                                    <t t-out="line.product_pro_id.bridge_size.name"/>
+                                                                                </t>
+                                                                                <t t-else="">
+                                                                                    00
+                                                                                </t>
+                                                                                <t t-if="line.product_pro_id.temple_size">
+                                                                                    <t t-out="line.product_pro_id.temple_size.name"/>
+                                                                                </t>
+                                                                                <t t-else="">
+                                                                                    00
+                                                                                </t>
+                                                                                <t t-if="line.product_pro_id.categ_id">
+                                                                                    <t t-out="line.product_pro_id.categ_id.name"/>
+                                                                                </t>
+                                                                            </p>
+                                                                            <br/>
+                                                                            <div>
+                                                                                <div>
+                                                                                    <p style="font-size: 10px;">
+                                                                                        <span>
+                                                                                            Retail Price: <t t-out="'%.2f' %product_price.get('msrp_price')"/><br/>
+                                                                                            Wholesale Price: <t t-out="'%.2f' %product_price.get('product_wholsale_price')"/>
+                                                                                        </span>
+                                                                                    </p>
+                                                                                </div>
+                                                                            </div>
+                                                                        </td>
+                                            
+                                                                        <td style="text-align: center; border: 1px solid #dbdde0; padding: 10px;">
+                                                                            <p >
+                                                                                <t t-if="line.product_qty">
+                                                                                    <t t-out="'%.0f' %line.product_qty"/>
+                                                                                </t>
+                                                                                <t t-if="not line.product_qty">
+                                                                                    -
+                                                                                </t>
+                                                                            </p>
+                                                                        </td>
+                                            
+                                            
+                                                                        <td style="text-align: center; border: 1px solid #dbdde0; padding: 2px;">
+                                                                            <t t-set="unit_discount_price" t-value=" product_price.get('price') - (product_price.get('price') * line.discount)*0.01"/>
+                                                                            <t t-if="product_price.get('price') != unit_discount_price">
+                                                                                <p style="color: #ff0000;text-decoration:line-through;">
+                                                                                    <b style="color:#454748;">
+                                                                                        <t t-out="customer_id.property_product_pricelist.currency_id.symbol"/>
+                                                                                        <t t-if="product_price.get('price')">
+                                                                                            <t t-out="'%.2f' % product_price.get('price')"/>
+                                                                                        </t>
+                                                                                        <t t-if="not product_price.get('price')">
+                                                                                            0.00
+                                                                                        </t>
+                                                                                    </b>
+                                                                                </p>
+                                                                                <p style="white-space: nowrap;color:#ff0000;">
+                                                                                    <t t-if="unit_discount_price">
+                                                                                        <t t-out="customer_id.property_product_pricelist.currency_id.symbol"/>
+                                                                                        <t t-out="'%.2f' % unit_discount_price"/>
+                                                                                    </t>
+                                                                                    <t t-if="not unit_discount_price">
+                                                                                        0.00
+                                                                                    </t>
+                                                                                </p>
+                                                                            </t>
+                                                                            <t t-else="">
+                                                                                <p style="color: #454748;">
+                                                                                    <b>
+                                                                                        <t t-out="customer_id.property_product_pricelist.currency_id.symbol"/>
+                                                                                        <t t-if="product_price.get('price')">
+                                                                                            <t t-out="'%.2f' % product_price.get('price')"/>
+                                                                                        </t>
+                                                                                        <t t-if="not product_price.get('price')">
+                                                                                            0.00
+                                                                                        </t>
+                                                                                    </b>
+                                                                                </p>
+                                                                            </t>
+                                                                        </td>
+                                                                        <td style="text-align: center; border: 1px solid #dbdde0; padding: 10px;">
+                                                                            <p >
+                                                                                <t t-set="line_total" t-value="unit_discount_price * line.product_qty"/>
+                                                                                <t t-if="line_total">
+                                                                                    <t t-out="customer_id.property_product_pricelist.currency_id.symbol"/>
+                                                                                    <t t-if="not line.sale_type">
+                                                                                        <t t-out="'%.2f' % line_total"/>
+                                                                                    </t>
+                                                                                    <t t-else="">
+                                                                                        <t t-out="'%.2f' %unit_discount_price"/>
+                                                                                    </t>
+                                                                                </t>
+                                                                                <t t-if="not line_total">
+                                                                                    <t t-out="customer_id.property_product_pricelist.currency_id.symbol"/>
+                                                                                    0.00
+                                                                                </t>
+                                                                            </p> 
+                                                                        </td>
+                                                                    </tr>
+                                                                </t>
+                                                            </t>
                                                         </tbody>
                                                     </table>
                                                     <br/>

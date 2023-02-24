@@ -99,6 +99,8 @@
         'views/sale_catalog.xml',
         'views/project_task_view.xml',
         'views/project_task_type_view.xml',
+        'views/marketing_campaign_view.xml',
+        'views/campaign_report_contacts.xml',
 
         # Wizard
         'wizards/kits_warning_wizard_view.xml',
@@ -149,7 +151,7 @@
         'wizards/kits_replace_sales_manager_wizard_view.xml',
         'wizards/kits_change_commission_rule_view.xml',
         'wizards/paid_amount_wizard_view.xml',
-	 'wizards/discount_on_catalog_line_wizard_spt.xml',
+        'wizards/discount_on_catalog_line_wizard_spt.xml',
         'wizards/kits_wizard_download_catalog_excel_view.xml',
         'wizards/create_catalog_quotation_wizard_spt.xml',
         'wizards/catalog_process_error_wizard_view_spt.xml',

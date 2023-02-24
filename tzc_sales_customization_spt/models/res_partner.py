@@ -1528,11 +1528,19 @@ class res_partner(models.Model):
         return action
 
     def b2b_website_report_download(self,model,file_type,res_id):
+        base_url = self.env['ir.config_parameter'].sudo().get_param('web.base.url','')
         res_model = self.env[model].browse(res_id)
         url = ''
         if model in ['sale.order','sale.catalog.order'] and res_id: 
+            if file_type == 'excel' and model == 'sale.order':
+                report_id = self.env['order.report.with.image.wizard'].create({
+                    'with_img': True,
+                    'order_id': res_id,
+                })
+                url = report_id.action_process_report().get('url','')
+                return {'url' : base_url+url}
             sale_order = self.env['sale.order'].browse(17)
             res_id =17
-            url = self.env['ir.config_parameter'].sudo().get_param('web.base.url','') +'/my/orders/%s?access_token=%s&report_type=pdf&downlod=True'%(res_id,sale_order.access_token)
+            url = base_url +'/my/orders/%s?access_token=%s&report_type=pdf&downlod=True'%(res_id,sale_order.access_token)
         
         return {'url' : url}

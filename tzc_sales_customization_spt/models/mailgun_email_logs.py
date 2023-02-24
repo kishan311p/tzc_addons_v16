@@ -52,7 +52,7 @@ class mailgun_email_logs(models.Model):
     #             new_log.append(log_id)
         
     #     if new_log and self.search([],limit=1).id:
-    #         template_id = self.env.ref('tzc_mail_marketing_customization_spt.mail_template_notify_failed_email_logs')
+    #         template_id = self.env.ref('tzc_sales_customization_spt.mail_template_notify_failed_email_logs')
     #         template_id.send_mail(self.search([],limit=1).id,force_send=True,notif_layout="mail.mail_notification_light")
 
     def action_manage_email_logs(self):

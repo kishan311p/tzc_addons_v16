@@ -93,4 +93,3 @@ class sale_catalog_line(models.Model):
                 })
             if record.catalog_id and record.catalog_id.pricelist_id and record.catalog_id.pricelist_id.currency_id:
                record.catalog_id._onchange_pricelist_id()
-            

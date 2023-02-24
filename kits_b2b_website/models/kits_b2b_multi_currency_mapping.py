@@ -68,15 +68,16 @@ class kits_b2b_multi_currency_mapping(models.Model):
             products_prices = {}
             for product in product_ids:
                 sale_type_price = 0.0
+                is_currency_match = True if partner_id.property_product_pricelist.currency_id.id == partner_id.preferred_currency.id else False
 
                 product = self.env['product.product'].browse(product)
                 pricelist_price = self.env['product.pricelist.item'].search([('product_id','in',product.ids),('pricelist_id','=',partner_id.property_product_pricelist.id)],limit=1).fixed_price
                 
-                if self._context.get('from_order_line') and order_id:
+                if self._context.get('from_order_line') and order_id and not is_currency_match:
                     partner_currency_rate = multi_currency_obj.search([('currency_id','=',order_id.b2b_currency_id.id)],limit=1).currency_rate
-                elif partner_id.preferred_currency:
+                elif partner_id.preferred_currency and not is_currency_match:
                     partner_currency_rate = multi_currency_obj.search([('currency_id','=',partner_id.preferred_currency.id)],limit=1).currency_rate
-                else:
+                elif not is_currency_match:
                     partner_currency_rate = multi_currency_obj.search([('partner_country_ids','in',partner_id.country_id.id)],limit=1).currency_rate
 
                 if partner_currency_rate:
@@ -91,7 +92,7 @@ class kits_b2b_multi_currency_mapping(models.Model):
                     else:
                         sale_type_price = product_price
                 else:
-                    product_price = product.lst_price
+                    product_price = pricelist_price
                     product_msrp_price = product.price_msrp
                     product_wholsale_price = product.price_wholesale
 
@@ -102,16 +103,13 @@ class kits_b2b_multi_currency_mapping(models.Model):
                     else:
                         sale_type_price = product_price
                 
-                
-                if  product.sale_type == 'on_sale':
-                    discount = (1-(sale_type_price/product_price))*100
+                if product_price != sale_type_price:
                     discounted_unit_price = product_price - sale_type_price
-                elif product.sale_type == 'clearance':
                     discount = (1-(sale_type_price/product_price))*100
-                    discounted_unit_price = product_price - sale_type_price
                 else:
-                    discount = 0
                     discounted_unit_price = product_price
+                    discount = 0.0
+
                 products_prices[product.id] = {
                                                 'price':product_price,
                                                 'msrp_price':product_msrp_price,
