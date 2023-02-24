@@ -362,18 +362,9 @@ class SaleCatalog(models.Model):
         else:
             raise UserError(_("You can not give discount after %s."%(self.state)))
 
-    def action_pending_catalog_spt(self):
-        return {
-                "name":_("Pending Catalog"),
-                "type":"ir.actions.act_window",
-                "res_model":"sale.catalog.order",
-                "view_mode":"tree",
-                'domain': [('catalog_id','in',self.ids),('state','=','pending')]
-        }
-        
     def action_sent_catalog_spt(self):
         return {
-                "name":_("Pending Catalog"),
+                "name":_("Sent Catalog"),
                 "type":"ir.actions.act_window",
                 "res_model":"sale.catalog.order",
                 "view_mode":"tree",
@@ -428,59 +419,26 @@ class SaleCatalog(models.Model):
 
     def send_catalog(self):
         SCO_Obj = self.env['sale.catalog.order']
-        b2b_currency_obj = self.env['kits.b2b.multi.currency.mapping']
         for record in self:
-            last_record = self.search([('state','=','done')],limit=1)
-            expiry_date = last_record.execution_time or fields.Datetime.now()
-            if last_record:
-                expiry_date = expiry_date + timedelta(minutes=int(self.env['ir.config_parameter'].sudo().get_param('tzc_sales_customization_spt.order_delay', default=0)))   
             if record.state != 'done':
                 for customer_id in record.partner_ids:
-                    line_data_list = [] 
-                    for line_id in record.line_ids:
-                        product_price_dict = b2b_currency_obj.get_product_price(customer_id.id,line_id.product_pro_id.ids)
-                        
-                        line_data_list.append((0,0,{
-                            'product_pro_id' : line_id.product_pro_id.id,
-                            'name' : line_id.product_pro_id.name,
-                            'product_uom_id' : line_id.product_pro_id.uom_po_id.id,
-                            'product_qty' : line_id.product_qty,
-                            'sale_type' : line_id.product_pro_id.sale_type,
-                            'is_special_discount' : line_id.is_special_discount,
-                            'product_price' : product_price_dict.get(line_id.product_pro_id.id).get('price'),
-                            'product_price_msrp' : product_price_dict.get(line_id.product_pro_id.id).get('msrp_price'),
-                            'product_price_wholesale' : product_price_dict.get(line_id.product_pro_id.id).get('product_wholsale_price'),
-                            'unit_discount_price' : product_price_dict.get(line_id.product_pro_id.id).get('discounted_unit_price'),
-                            'discount' : product_price_dict.get(line_id.product_pro_id.id).get('discount'),
-                            'currency_id' : customer_id.preferred_currency.id
-                        }))
-                    record.execution_time = expiry_date
-                    SCO_Obj.create({
-                        "name": record.name,
-                        "catalog_id": record.id,
-                        "pricelist_id": customer_id.b2b_pricelist_id.id,
-                        "expiry_date": expiry_date,
-                        "customer_id": customer_id.id,
-                        "line_ids" : line_data_list,
-                        "state" : "pending"
+                    sco_id =  SCO_Obj.create({
+                        'catalog_id': record.id,
+                        'customer_id': customer_id.id,
+                        'state' : 'sent'
                     })
-        # if self.state != 'done':
-        #     for customer_id in self.partner_ids:
-        #         self.customer_id =  customer_id
-        #         customer_template_id = self.env.ref('tzc_sales_customization_spt.tzc_email_template_catalog_spt')
-        #         customer_template_id.with_context(customer_id=customer_id).send_mail(self.id,email_values={'email_to': customer_id.email},force_send=True)
-        #         sales_person_template_id = self.env.ref('tzc_sales_customization_spt.tzc_email_template_catalog_confirmation_spt')
-        #         sales_person_template_id.with_context(customer_id=customer_id).send_mail(self.id,force_send=True)
-        #         # catalog_visitors_obj.create({
-        #         #     'catalog_id':self.id,
-        #         #     'customer_id':customer_id.id,
-        #         # })
-        # if not self.execution_time:
-        #     last_record = self.search([('state','=','done')],limit=1)
-        #     if last_record:
-        #         self.execution_time = last_record.execution_time + timedelta(minutes=int(self.env['ir.config_parameter'].sudo().get_param('tzc_sales_customization_spt.order_delay', default=0)))            
-        self.state = 'pending'
-        self._get_pending_catalog_count()
+                    customer_template_id = self.env.ref('tzc_sales_customization_spt.tzc_email_template_catalog_spt')
+                    customer_template_id.with_context(customer_id=customer_id).send_mail(record.id,email_values={'email_to': customer_id.email},force_send=True)
+                    sales_person_template_id = self.env.ref('tzc_sales_customization_spt.tzc_email_template_catalog_confirmation_spt')
+                    sales_person_template_id.with_context(customer_id=customer_id).send_mail(record.id,force_send=True)
+                
+            if not record.execution_time:
+                last_record = self.search([('state','=','done')],limit=1)
+                if last_record:
+                    record.execution_time = last_record.execution_time + timedelta(minutes=int(self.env['ir.config_parameter'].sudo().get_param('tzc_sales_customization_spt.order_delay', default=0)))            
+            record.state = 'pending'
+        
+            record._get_pending_catalog_count()
 
 
         

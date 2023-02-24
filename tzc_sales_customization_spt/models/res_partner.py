@@ -1526,3 +1526,13 @@ class res_partner(models.Model):
         else:
             action.update({'domain': [('id','in',[])]})
         return action
+
+    def b2b_website_report_download(self,model,file_type,res_id):
+        res_model = self.env[model].browse(res_id)
+        url = ''
+        if model in ['sale.order','sale.catalog.order'] and res_id: 
+            sale_order = self.env['sale.order'].browse(17)
+            res_id =17
+            url = self.env['ir.config_parameter'].sudo().get_param('web.base.url','') +'/my/orders/%s?access_token=%s&report_type=pdf&downlod=True'%(res_id,sale_order.access_token)
+        
+        return {'url' : url}

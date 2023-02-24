@@ -111,7 +111,7 @@ class kits_b2b_multi_currency_mapping(models.Model):
                     discounted_unit_price = product_price - sale_type_price
                 else:
                     discount = 0
-                    discounted_unit_price = 0
+                    discounted_unit_price = product_price
                 products_prices[product.id] = {
                                                 'price':product_price,
                                                 'msrp_price':product_msrp_price,
