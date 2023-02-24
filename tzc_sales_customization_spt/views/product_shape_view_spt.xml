@@ -68,7 +68,7 @@
             </field>
         </record>
 
-    <menuitem name="Shapes" action="action_product_shape_spt" id="menu_action_product_shape_spt" parent="menu_action_product_custom_spt" sequence="1"/>
+    <menuitem name="Shapes" action="action_product_shape_spt" id="menu_action_product_shape_spt" parent="menu_action_product_custom_spt" sequence="5"/>
 
     </data>
 </odoo>

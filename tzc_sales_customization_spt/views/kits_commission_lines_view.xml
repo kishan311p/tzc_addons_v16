@@ -52,7 +52,7 @@
             <field name="domain">[('state','!=','cancel')]</field>
         </record>
 
-        <menuitem id="menu_kits_commission_lines" name="Commission Lines" parent="sale.menu_sale_config" action="action_kits_commission_lines" sequence="11"/>
+        <menuitem id="menu_kits_commission_lines" name="Commission Lines" parent="sale.menu_sale_config" action="action_kits_commission_lines" sequence="12"/>
     </data>
 
 </odoo>

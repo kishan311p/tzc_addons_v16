@@ -42,7 +42,7 @@
             </field>
         </record>
 
-    <menuitem name="Eye Size" action="action_product_size_spt" id="menu_action_product_size_spt" parent="menu_action_product_custom_spt" sequence="1"/>
+    <menuitem name="Eye Size" action="action_product_size_spt" id="menu_action_product_size_spt" parent="menu_action_product_custom_spt" sequence="3"/>
 
     </data>
 </odoo>

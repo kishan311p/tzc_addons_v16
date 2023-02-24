@@ -69,7 +69,7 @@
             </field>
         </record>
 
-    <menuitem name="Material" action="action_product_material_spt" id="menu_action_product_material_spt" parent="menu_action_product_custom_spt" sequence="4"/>
+    <menuitem name="Material" action="action_product_material_spt" id="menu_action_product_material_spt" parent="menu_action_product_custom_spt" sequence="11"/>
 
     </data>
 </odoo>

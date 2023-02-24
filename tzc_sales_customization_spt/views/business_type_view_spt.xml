@@ -37,7 +37,7 @@
             </field>
         </record>
 
-    <menuitem name="Business Type" action="action_business_type_spt" id="menu_action_business_type_spt" parent="tzc_sales_customization_spt.menu_action_product_custom_spt" sequence="400"/>
+    <menuitem name="Business Type" action="action_business_type_spt" id="menu_action_business_type_spt" parent="tzc_sales_customization_spt.menu_action_product_custom_spt" sequence="12"/>
 
     </data>
 </odoo>
