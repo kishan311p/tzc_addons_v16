@@ -50,7 +50,7 @@
                             
                             <button class="oe_stat_button" type="object" name="action_sent_catalog_spt" icon="fa-clock-o">
                                 <div class="o_stat_info">
-                                    <field name="pending_catalog_count" class="o_stat_value"/>
+                                    <field name="catalog_sent_count" class="o_stat_value"/>
                                     <span class="o_stat_text">Sent Catalog</span>
                                 </div>
                             </button>
