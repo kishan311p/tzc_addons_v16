@@ -103,7 +103,7 @@ class kits_b2b_multi_currency_mapping(models.Model):
                     else:
                         sale_type_price = product_price
                 
-                if product_price != sale_type_price:
+                if product_price and product_price != sale_type_price:
                     discounted_unit_price = product_price - sale_type_price
                     discount = (1-(sale_type_price/product_price))*100
                 else:

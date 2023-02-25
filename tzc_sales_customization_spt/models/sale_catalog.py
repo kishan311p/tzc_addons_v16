@@ -435,13 +435,15 @@ class SaleCatalog(models.Model):
             if not record.execution_time:
                 last_record = self.search([('state','=','done')],limit=1)
                 if last_record:
-                    record.execution_time = last_record.execution_time + timedelta(minutes=int(self.env['ir.config_parameter'].sudo().get_param('tzc_sales_customization_spt.order_delay', default=0)))            
+                    if record.execution_time:
+                        record.execution_time = last_record.execution_time + timedelta(minutes=int(self.env['ir.config_parameter'].sudo().get_param('tzc_sales_customization_spt.order_delay', default=0)))            
+                    else:
+                        record.execution_time = datetime.now()
+
+
             record.state = 'pending'
         
             record._get_pending_catalog_count()
-
-
-        
 
     def action_mapping_qty(self):
         for record in self:

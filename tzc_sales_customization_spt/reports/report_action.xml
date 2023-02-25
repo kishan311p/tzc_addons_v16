@@ -12,6 +12,16 @@
         <field name="binding_type">report</field>
     </record>
 
+    <record id="action_catalog_report_spt" model="ir.actions.report">
+        <field name="name">Catalog</field>
+        <field name="model">sale.catalog.order</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">tzc_sales_customization_spt.catalog_report_template_spt</field>
+        <field name="report_file">tzc_sales_customization_spt.catalog_report_template_spt</field>
+        <field name="print_report_name">'Catalog - %s' % (object.catalog_id.name)</field>
+        <field name="binding_type">report</field>
+    </record>
+
     <record id="report_product_label" model="ir.actions.report">
         <field name="name">Product Label (PDF)</field>
         <field name="model">product.product</field>
