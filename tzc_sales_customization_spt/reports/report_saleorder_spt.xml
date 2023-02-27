@@ -26,9 +26,9 @@
     </div>
 </template>
 <template id="report_saleorder_report_inherit_spt" inherit_id="sale.report_saleorder_document">
-    <xpath expr="//t[@t-call='web.external_layout']" position="attributes">
+    <!-- <xpath expr="//t[@t-call='web.external_layout']" position="attributes">
         <attribute name="t-call">tzc_sales_customization_spt.kits_sale_order_quotation_header</attribute>
-    </xpath>
+    </xpath> -->
 
     <xpath expr="//div[hasclass('page')]/h2[1]" position="replace">
         <h4 class="mt-2" style="color:#808080;">
@@ -52,7 +52,7 @@
             <t t-set="company" t-value="doc.company_id.sudo()"/>
             <t t-set="model" t-value="doc._name"/>
         </t>
-        <div class="row">
+        <!-- <div class="row">
             <div class="col-6 mb4">
                 <img t-if="company.logo" t-att-src="image_data_uri(company.logo)" style="margin:40px 5px 5px 10px;height:51px;max-width:425px;" alt="Logo"/>
             </div>
@@ -69,11 +69,11 @@
                 <span t-field="company.zip"/>
                 <br/>
                 Tel. <span t-field="company.phone"/>
-            <br/>
-                Email. <span t-field="company.email"/>
-        </div>
-    </div>
-    <hr style="margin-top:0 !important"/>
+                <br/>
+                    Email. <span t-field="company.email"/>
+            </div>
+        </div> -->
+    <!-- <hr style="margin-top:0 !important"/> -->
     <div class="row">
         <div class="col-6">
             <strong t-if="doc.partner_invoice_id">Billing Address:</strong>

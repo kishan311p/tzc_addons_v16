@@ -3,9 +3,9 @@
     <template id="catalog_report_document_spt">
         <t t-call="web.external_layout">
             <!-- <t t-set="doc.customer_id" t-value="doc._context.get('doc.customer_id')"/> -->
-            <div class="page">
+            <div class="page" style="margin-top:-55px">
                 <div class="oe_structure"/>
-                <br/>
+                <!-- <br/> -->
                 <strong t-if="doc.customer_id">Address:</strong>
                 <div>
                     <span t-field="doc.customer_id.name"/>
