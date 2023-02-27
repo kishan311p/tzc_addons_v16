@@ -159,7 +159,7 @@ class shipping_cost_analysis_wizard(models.TransientModel):
                             END AS TRACKING_NO
                     FROM SALE_ORDER AS SO
                     INNER JOIN SHIPPING_PROVIDER_SPT AS SPS ON SPS.ID = SO.SHIPPING_ID
-                    INNER JOIN RES_CURRENCY AS RC ON RC.ID = SO.CURRENCY_ID
+                    INNER JOIN RES_CURRENCY AS RC ON RC.ID = SO.B2B_CURRENCY_ID
                     INNER JOIN SALE_ORDER_LINE AS SOL ON SOL.ORDER_ID = SO.ID
                     INNER JOIN PRODUCT_PRODUCT AS PP ON PP.ID = SOL.PRODUCT_ID
                     INNER JOIN RES_PARTNER AS RP ON RP.ID = SO.PARTNER_ID

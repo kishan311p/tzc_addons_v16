@@ -411,7 +411,7 @@ class sales_commission_report_wizard(models.TransientModel):
         data_dict['territory'] = order.partner_id.territory.name
         data_dict['qty'] = sale_order.ordered_qty
         data_dict['tax'] = order.amount_tax
-        data_dict['currency'] = order.currency_id.name
+        data_dict['currency'] = order.b2b_currency_id.name
         data_dict['commission'] = round(commission, 2)
         data_dict['commission_is'] = commission_is
 

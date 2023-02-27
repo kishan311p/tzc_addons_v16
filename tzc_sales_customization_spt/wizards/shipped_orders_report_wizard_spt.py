@@ -219,7 +219,7 @@ class shipped_orders_report_wizard_spt(models.TransientModel):
                 INNER JOIN STOCK_PICKING AS SP ON SO.NAME = SP.ORIGIN
                 INNER JOIN RES_PARTNER AS RP ON SO.PARTNER_ID = RP.ID
                 INNER JOIN SHIPPING_PROVIDER_SPT AS SPS ON SP.SHIPPING_ID = SPS.ID
-                INNER JOIN RES_CURRENCY AS RCU ON RCU.ID = SO.CURRENCY_ID
+                INNER JOIN RES_CURRENCY AS RCU ON RCU.ID = SO.B2B_CURRENCY_ID
 				INNER JOIN STOCK_PICKING_TYPE AS SPT ON SPT.ID = SP.PICKING_TYPE_ID
                 WHERE SP.STATE = 'done' AND SPT.CODE = 'outgoing' '''
         

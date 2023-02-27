@@ -78,7 +78,7 @@
 
                             </td>
                             <td style="text-align: right; border: 1px solid #dbdde0; padding: 10px;">
-                                <span t-if="line.amount_total" t-field="line.amount_total" t-options='{"widget": "monetary", "display_currency":  line.currency_id}'/>
+                                <span t-if="line.amount_total" t-field="line.amount_total" t-options='{"widget": "monetary", "display_currency":  line.b2b_currency_id}'/>
                             </td>
                         </tr>
 

@@ -43,7 +43,7 @@ class sales_report_for_sales_person_wizard_spt(models.TransientModel):
             domain.append(('date_order','<=',self.end_date))
         
         
-        return sale_order_obj.search(domain)
+        return sale_order_obj.search(domain).sorted(key=lambda x:x.partner_id.name)
 
     def get_excel_report_data(self):
         query = '''SELECT COALESCE(SO.NAME,'') AS NAME,

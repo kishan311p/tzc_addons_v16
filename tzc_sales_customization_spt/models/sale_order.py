@@ -318,7 +318,7 @@ class sale_order(models.Model):
     merged_order= fields.Boolean()
     merge_reference = fields.Many2many("sale.order","merged_order_sale_order_rel","merge_order_id","order_id","Merge Order of")
     
-    b2b_currency_id = fields.Many2one('res.currency', string=' Currency')
+    b2b_currency_id = fields.Many2one('res.currency',related='pricelist_id.currency_id' ,string=' Currency')
 
     def compute_all(self):
         for record in self:
@@ -1221,7 +1221,7 @@ class sale_order(models.Model):
         # wrksht.cell(row=date_person_row, column=5).font = name_header_font
         # wrksht.cell(row=date_person_row, column=5).alignment = Alignment(horizontal='left', vertical='center', text_rotation=0, wrap_text=True)
 
-        wrksht.cell(row=date_person_row, column=10).value = self.currency_id.name or ''
+        wrksht.cell(row=date_person_row, column=10).value = self.b2b_currency_id.name or ''
         # wrksht.cell(row=date_person_row, column=8).font = name_header_font
         # wrksht.cell(row=date_person_row, column=8).alignment = Alignment(horizontal='left', vertical='center', text_rotation=0, wrap_text=True)
 
@@ -1457,7 +1457,7 @@ class sale_order(models.Model):
         wrksht.cell(row=footer_row, column=7).border = top_border
         wrksht.cell(row=footer_row, column=7).font = Font(name='Lato', size=9, bold=True)
         wrksht.cell(row=footer_row, column=8).border = top_border
-        wrksht.cell(row=footer_row, column=9).value = "({}) $ {:,.2f}".format(self.currency_id.name,taxes + sub_total+shipping_cost+admin_fee-abs(additional_discount)) # total
+        wrksht.cell(row=footer_row, column=9).value = "({}) $ {:,.2f}".format(self.b2b_currency_id.name,taxes + sub_total+shipping_cost+admin_fee-abs(additional_discount)) # total
         wrksht.cell(row=footer_row, column=9).alignment = alignment_right
         wrksht.cell(row=footer_row, column=9).font = table_font
         wrksht.cell(row=footer_row, column=9).border = top_border
@@ -1488,8 +1488,8 @@ class sale_order(models.Model):
         bank_details_wb.cell(row=bank_sheet_row,column=3).value = invoice.name if invoice  else self.name
         bank_details_wb.cell(row=bank_sheet_row+1,column=1).value = str("Invoice Date:" if invoice.invoice_date else '') if invoice else "Order Date:"
         bank_details_wb.cell(row=bank_sheet_row+1,column=3).value = str(str(invoice.invoice_date.strftime('%d/%m/%Y') if invoice.invoice_date else '') if invoice else self.date_order.strftime('%d/%m/%Y'))
-        bank_details_wb.cell(row=bank_sheet_row+2,column=3).value = self.currency_id.name or ''
-        bank_details_wb.cell(row=bank_sheet_row+3,column=3).value = "({}) $ {:,.2f}".format(self.currency_id.name,taxes + sub_total+shipping_cost+admin_fee-abs(additional_discount))
+        bank_details_wb.cell(row=bank_sheet_row+2,column=3).value = self.b2b_currency_id.name or ''
+        bank_details_wb.cell(row=bank_sheet_row+3,column=3).value = "({}) $ {:,.2f}".format(self.b2b_currency_id.name,taxes + sub_total+shipping_cost+admin_fee-abs(additional_discount))
         bank_details_wb.cell(row=bank_sheet_row+4,column=3).value = self.payment_term_id.name or 'Immediate Payment' or ''
         # total width 70 perfect for excel->pdf
 
@@ -1603,7 +1603,7 @@ class sale_order(models.Model):
 
 
         # wrksht.merge_cells("G"+str(date_person_row)+":G"+str(date_person_row+1))
-        wrksht.cell(row=date_person_row, column=10).value = self.currency_id.name or ''
+        wrksht.cell(row=date_person_row, column=10).value = self.b2b_currency_id.name or ''
         # wrksht.cell(row=date_person_row, column=8).font = Font(name="Lato", size=10, bold=True)
         # wrksht.cell(row=date_person_row, column=8).alignment = Alignment(horizontal='left', vertical='center', text_rotation=0, wrap_text=True)
 
@@ -1844,8 +1844,8 @@ class sale_order(models.Model):
         bank_details_wb.cell(row=bank_sheet_row,column=3).value = invoice.name if invoice else self.name
         bank_details_wb.cell(row=bank_sheet_row+1,column=1).value = str("Invoice Date:" if invoice.invoice_date else '') if invoice else "Order Date:"
         bank_details_wb.cell(row=bank_sheet_row+1,column=3).value = str(str(invoice.invoice_date.strftime('%d/%m/%Y') if invoice.invoice_date else '') if invoice else self.date_order.strftime('%d/%m/%Y'))
-        bank_details_wb.cell(row=bank_sheet_row+2,column=3).value = self.currency_id.name or ''
-        bank_details_wb.cell(row=bank_sheet_row+3,column=3).value = '(' + self.currency_id.name + ') ' +"$ {:,.2f}".format(self.picked_qty_order_total)
+        bank_details_wb.cell(row=bank_sheet_row+2,column=3).value = self.b2b_currency_id.name or ''
+        bank_details_wb.cell(row=bank_sheet_row+3,column=3).value = '(' + self.b2b_currency_id.name + ') ' +"$ {:,.2f}".format(self.picked_qty_order_total)
         bank_details_wb.cell(row=bank_sheet_row+4,column=3).value = self.payment_term_id.name or 'Immediate Payment' or ''
         
         fp = BytesIO()
@@ -1950,7 +1950,7 @@ class sale_order(models.Model):
             # wrksht.cell(row=date_person_row, column=5).alignment = Alignment(horizontal='left', vertical='center', text_rotation=0, wrap_text=True)
 
 
-            wrksht.cell(row=date_person_row, column=10).value = str(self.currency_id.name or '')
+            wrksht.cell(row=date_person_row, column=10).value = str(self.b2b_currency_id.name or '')
             # wrksht.cell(row=date_person_row, column=8).font = Font(name="Lato", size=10, bold=True)
             # wrksht.cell(row=date_person_row, column=8).alignment = Alignment(horizontal='left', vertical='center', text_rotation=0, wrap_text=True)
 
@@ -2221,7 +2221,7 @@ class sale_order(models.Model):
             wrksht.cell(row=footer_row, column=7).border = top_border
             wrksht.cell(row=footer_row, column=7).font = Font(name="Lato", size=9, bold=True)
             wrksht.cell(row=footer_row, column=8).border = top_border
-            wrksht.cell(row=footer_row, column=9).value = "({}) $ {:,.2f}".format(self.currency_id.name,sub_total+shipping_cost+admin_fee - abs(additional_discount)+taxes)  # total
+            wrksht.cell(row=footer_row, column=9).value = "({}) $ {:,.2f}".format(self.b2b_currency_id.name,sub_total+shipping_cost+admin_fee - abs(additional_discount)+taxes)  # total
             wrksht.cell(row=footer_row, column=9).alignment = alignment_right
             wrksht.cell(row=footer_row, column=9).font = Font(name="Lato", size=9, bold=False)
             wrksht.cell(row=footer_row, column=9).border = top_border
@@ -2251,8 +2251,8 @@ class sale_order(models.Model):
             bank_details_wb.cell(row=bank_sheet_row,column=3).value = invoice.name if invoice  else self.name
             bank_details_wb.cell(row=bank_sheet_row+1,column=1).value = str("Invoice Date:" if invoice.invoice_date else '') if invoice else "Order Date:"
             bank_details_wb.cell(row=bank_sheet_row+1,column=3).value = str(str(invoice.invoice_date.strftime('%d/%m/%Y') if invoice.invoice_date else '') if invoice else self.date_order.strftime('%d/%m/%Y'))
-            bank_details_wb.cell(row=bank_sheet_row+2,column=3).value = self.currency_id.name or ''
-            bank_details_wb.cell(row=bank_sheet_row+3,column=3).value = "({}) $ {:,.2f}".format(self.currency_id.name,taxes + sub_total+shipping_cost+admin_fee-abs(additional_discount))
+            bank_details_wb.cell(row=bank_sheet_row+2,column=3).value = self.b2b_currency_id.name or ''
+            bank_details_wb.cell(row=bank_sheet_row+3,column=3).value = "({}) $ {:,.2f}".format(self.b2b_currency_id.name,taxes + sub_total+shipping_cost+admin_fee-abs(additional_discount))
             bank_details_wb.cell(row=bank_sheet_row+4,column=3).value = self.payment_term_id.name or 'Immediate Payment' or ''
 
             fp = BytesIO()
@@ -2625,11 +2625,11 @@ class sale_order(models.Model):
         merchand_id,hash_value = '',''
 
         if company_id and company_id.account_type == 'sand_box':
-            merchand_id = company_id.sand_box_merchant_id_usd if order.currency_id.name == 'USD' else company_id.sand_box_merchant_id_cad
-            hash_value = company_id.sand_box_hash_value_usd if order.currency_id.name == 'USD' else company_id.sand_box_hash_value_cad
+            merchand_id = company_id.sand_box_merchant_id_usd if order.b2b_currency_id.name == 'USD' else company_id.sand_box_merchant_id_cad
+            hash_value = company_id.sand_box_hash_value_usd if order.b2b_currency_id.name == 'USD' else company_id.sand_box_hash_value_cad
         elif company_id and company_id.account_type == 'production':
-            merchand_id = company_id.production_merchant_id_usd if order.currency_id.name == 'USD' else company_id.production_merchant_id_cad
-            hash_value = company_id.production_hash_value_usd if order.currency_id.name == 'USD' else company_id.production_hash_value_cad
+            merchand_id = company_id.production_merchant_id_usd if order.b2b_currency_id.name == 'USD' else company_id.production_merchant_id_cad
+            hash_value = company_id.production_hash_value_usd if order.b2b_currency_id.name == 'USD' else company_id.production_hash_value_cad
 
         if not merchand_id or not hash_value:
             raise UserError('Please add missing payment provider detail in company.\n\n- Merchant ID & Hash-Value.')
@@ -2778,7 +2778,7 @@ class sale_order(models.Model):
         if payment_ids:
             for payment in payment_ids.sorted(lambda x:x.create_date if x.create_date else datetime.now() - relativedelta(years=1000)):
                 payment_dict={}
-                payment_dict.update({'payments':{'create_date':payment.create_date if payment.create_date else False,'amount':payment.amount,'state':payment.state,'currency_icon':payment.order_id.currency_id.symbol,'is_manual_paid':payment.is_manual_paid}})
+                payment_dict.update({'payments':{'create_date':payment.create_date if payment.create_date else False,'amount':payment.amount,'state':payment.state,'currency_icon':payment.order_id.b2b_currency_id.symbol,'is_manual_paid':payment.is_manual_paid}})
                 payment_list.append(payment_dict)
         return payment_list
 
@@ -3127,7 +3127,7 @@ class sale_order(models.Model):
         if not len(self) <= 1:
             partner_id = self.mapped('partner_id')
             if len(partner_id) == 1:
-                if not len(self.mapped('currency_id')) > 1:
+                if not len(self.mapped('b2b_currency_id')) > 1:
                     if all(i in ('draft','sent','received') for i in self.mapped('state')):
                         so_id = self[0] if len(self) > 1 else self if self else so_obj
                         self = self-so_id
@@ -3439,7 +3439,7 @@ class sale_order(models.Model):
             values['price_unit'] = partner_price_list.get_product_price(
                 product, quantity, self.env.user.partner_id)
             pricelist_price = partner_price_list.get_product_price(product,values.get('product_uom_qty'),self.env.user.partner_id)
-            order_currency = order.currency_id if order else self.env.user.currency_id
+            order_currency = order.b2b_currency_id if order else self.env.user.currency_id
             sale_price = 0.00
             if product.sale_type:
                 if product.sale_type == 'on_sale':
