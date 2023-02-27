@@ -42,7 +42,7 @@
         'data/base_mail_template_spt.xml',
         'data/mail_template_bulk_mail_sent.xml',
         'data/activate_account_data.xml',
-        # 'data/signup_confirmation_data.xml',
+        'data/signup_confirmation_data.xml',
         'data/mail_template_customer_approve_notify.xml',
         'data/mail_template_new_user_spt.xml',
         'data/stock_picking_mail_templates.xml',

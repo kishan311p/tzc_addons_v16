@@ -191,7 +191,6 @@ class stock_picking_barcode_spt(models.TransientModel):
                     'location_dest_id' : self.picking_id.location_dest_id.id,
                     'product_id' : line.product_id.id,
                     'product_uom' : line.product_id.uom_id.id,
-                    # 'product_uom_qty' : line.product_qty,
                     'date' : fields.Datetime.now(),
                     'company_id': self.picking_id.company_id.id,
                     'quantity_done' : line.product_qty,

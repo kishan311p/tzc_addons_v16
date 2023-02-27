@@ -27,7 +27,8 @@
                     </header>
                     <div class="alert alert-danger text-center o_form_header" role="status">
                         <div>
-                            <strong>some customers are not mailgun approved,</strong><br/>
+                            <strong>some customers are not mailgun approved,</strong>
+                            <br/>
                             <strong>so a pending catalog record will not be created of that customer.</strong>
                         </div>
                     </div>
@@ -100,7 +101,8 @@
                                 <field name="line_ids" mode="tree" attrs="{'readonly':[('state','not in',['draft','validate'])]}">
                                     <tree editable="bottom" create="1" delete="1" string="Catalog Lines" default_order="product_pro_id">
                                         <field name="image_catalog_product_url" class="oe_avatar" string="Primary Image" widget="image" options="{'zoom': true,'thumb_image':'image_catalog_product_url','preview_image':'image_catalog_product_url','size': [300, 90]}"/>
-                                        <field name="image_catalog_product_secondary_url" class="oe_avatar" string="Secondary Image" widget="image" style="margin-left:10px;" options="{'zoom': true,'thumb_image':'image_catalog_product_secondary_url','preview_image':'image_catalog_product_secondary_url','size': [300, 90]}"/>                                       <field name="product_pro_id" options="{'no_create': True}" style="font-weight: bold;"/>
+                                        <field name="image_catalog_product_secondary_url" class="oe_avatar" string="Secondary Image" widget="image" style="margin-left:10px;" options="{'zoom': true,'thumb_image':'image_catalog_product_secondary_url','preview_image':'image_catalog_product_secondary_url','size': [300, 90]}"/>
+                                        <field name="product_pro_id" options="{'no_create': True}" style="font-weight: bold;"/>
                                         <field name="sale_type"/>
                                         <field name="product_categ_id" string="Category"/>
                                         <field name="name" invisible="1"/>

@@ -140,7 +140,7 @@ Original Design Eyewear </field>
         <field name="website_id" eval="kits_team_eto_website" />
         <field name="parent_id" eval="kits_homepage_banner_image_1" />
     </record>
-    <record id="kits_homepage_banner_image_shipping" model="kits.b2b.image.model">
+    <record id="kits_homepage_banner_image_paynow" model="kits.b2b.image.model">
         <field name="description">4. Pay After Order is ready</field>
         <field name="url">https://cdn.teameto.com/data/B2C1/new_tzc_b2b_images/roadmap/r-4.svg</field>
         <field name="website_id" eval="kits_team_eto_website" />
