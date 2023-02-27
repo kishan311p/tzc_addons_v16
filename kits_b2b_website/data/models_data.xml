@@ -123,20 +123,26 @@ Original Design Eyewear </field>
         <field name="our_core_values_id" eval="kits_home_page" />
     </record>
     <record id="kits_homepage_banner_image_account" model="kits.b2b.image.model">
-        <field name="description">1. Create an account</field>
+        <field name="description">1. Sign In/Create an account</field>
         <field name="url">https://cdn.teameto.com/data/B2C1/new_tzc_b2b_images/roadmap/r-1.svg</field>
         <field name="website_id" eval="kits_team_eto_website" />
         <field name="parent_id" eval="kits_homepage_banner_image_1" />
     </record>
     <record id="kits_homepage_banner_image_shop" model="kits.b2b.image.model">
-        <field name="description">2. Purchase Products</field>
+        <field name="description">2. Add to cart</field>
         <field name="url">https://cdn.teameto.com/data/B2C1/new_tzc_b2b_images/roadmap/r-2.svg</field>
         <field name="website_id" eval="kits_team_eto_website" />
         <field name="parent_id" eval="kits_homepage_banner_image_1" />
     </record>
     <record id="kits_homepage_banner_image_shipping" model="kits.b2b.image.model">
-        <field name="description">3. Same Day Delivery</field>
+        <field name="description">3. Checkout</field>
         <field name="url">https://cdn.teameto.com/data/B2C1/new_tzc_b2b_images/roadmap/r-3.svg</field>
+        <field name="website_id" eval="kits_team_eto_website" />
+        <field name="parent_id" eval="kits_homepage_banner_image_1" />
+    </record>
+    <record id="kits_homepage_banner_image_shipping" model="kits.b2b.image.model">
+        <field name="description">4. Pay After Order is ready</field>
+        <field name="url">https://cdn.teameto.com/data/B2C1/new_tzc_b2b_images/roadmap/r-4.svg</field>
         <field name="website_id" eval="kits_team_eto_website" />
         <field name="parent_id" eval="kits_homepage_banner_image_1" />
     </record>

@@ -28,7 +28,7 @@
         <field name="name">kits.b2b.website.slider.view.tree</field>
         <field name="model">kits.b2b.website.slider</field>
         <field name="arch" type="xml">
-            <tree string="">
+            <tree>
                 <field name="image"  widget="image" options="{'zoom': true,'preview_image':'image_logo','size': [128, 128]}" />
                 <field name="name" />
                 <field name="slider_type" />

@@ -17,38 +17,38 @@
             id="kits_b2b_multi_currency_mapping_menu"
             name="B2B Currency Mapping"
             action="kits_b2b_website.kits_b2b_multi_currency_mapping_action"
-            parent="kits_b2b_website.kits_b2b_main_configuration_menu"
+            parent="kits_b2b_website.kits_b2b_main_menu"
             sequence="100"/>
             
         <menuitem
             id="kits_b2b_website_menu"
             name="Website"
             action="kits_b2b_website.kits_b2b_website_action"
-            parent="kits_b2b_website.kits_b2b_main_configuration_menu"
+            parent="kits_b2b_website.kits_b2b_main_menu"
             sequence="1"/>
         <menuitem
             id="kits_b2b_menus_menu"
             name="Menus"
             action="kits_b2b_website.kits_b2b_menus_action"
-            parent="kits_b2b_website.kits_b2b_main_configuration_menu"
+            parent="kits_b2b_website.kits_b2b_main_menu"
             sequence="3"/>
         <menuitem
             id="kits_b2b_pages_menu"
             name="Pages"
             action="kits_b2b_website.kits_b2b_pages_action"
-            parent="kits_b2b_website.kits_b2b_main_configuration_menu"
+            parent="kits_b2b_website.kits_b2b_main_menu"
             sequence="2"/>
         <menuitem
             id="kits_b2b_wishlist_menu"
             name="Wishlist"
             action="kits_b2b_website.kits_b2b_wishlist_action"
-            parent="kits_b2b_website.kits_b2b_main_configuration_menu"
+            parent="kits_b2b_website.kits_b2b_main_menu"
             sequence="5"/>
         <menuitem
             id="kits_b2b_recent_view_menu"
             name="Recent View"
             action="kits_b2b_website.kits_b2b_recent_view_action"
-            parent="kits_b2b_website.kits_b2b_main_configuration_menu"
+            parent="kits_b2b_website.kits_b2b_main_menu"
             sequence="6"/>
 
     </data>

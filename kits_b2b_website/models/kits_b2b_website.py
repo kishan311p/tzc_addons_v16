@@ -6,7 +6,7 @@ class kits_b2b_website(models.Model):
 
     name = fields.Char('Name')
     website_name = fields.Selection([('b2b1', 'B2B1')], string='Type')
-    url = fields.Char('URL')
+    url = fields.Char('Website URL')
     is_allow_for_geo_restriction = fields.Boolean('Is Allowed For Restriction')
     company_id = fields.Many2one('res.company', string='Company')
     login_validity_in_days = fields.Integer('Login Validity In Days')

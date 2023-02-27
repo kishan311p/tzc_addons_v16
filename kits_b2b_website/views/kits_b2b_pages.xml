@@ -41,21 +41,10 @@
                                     <field name="banner_2_image" widget="image" class="oe_avatar" options="{'zoom': true,'preview_image': 'banner_2_image'}" attrs="{'invisible': [('page_type','not in',['contact_us'])]}"/>
                                 </group>
                             </group>
-                            <group>
-                                <group attrs="{'invisible': [('page_type','not in',['home'])]}">
-                                    <group>
-                                        <group>
-                                            <group>
-                                                <group>
-                                                    <field name="banner_1_id" options="{'no_create': True}"/>
-
-
-                                                    <field name="banner_1_image" widget="image" class="oe_avatar" options="{'zoom': true,'preview_image': 'banner_1_image'}" size="[150,150]" />
-
-                                                </group>
-                                            </group>
-                                        </group>
-                                    </group>
+                            <group attrs="{'invisible': [('page_type','not in',['home'])]}">
+                                <group>
+                                    <field name="banner_1_id" options="{'no_create': True}"/>
+                                    <field name="banner_1_image" widget="image" class="oe_avatar" options="{'zoom': true,'preview_image': 'banner_1_image'}" size="[150,150]" />
                                 </group>
                             </group>
 
@@ -95,30 +84,20 @@
                             </field>
                         </page>
                         <page name="sliders" string="Our Team" attrs="{'invisible': [('page_type','not in',['our_story'])]}">
-                            <field name="slider_ids" context="{'website':'b2b1'}" domain="[('slider_type','=','our_story')]">
-                                <tree>
-                                    <field name="image" widget="image" class="oe_avatar" options="{'zoom': true,'preview_image': 'image'}" size="[150,150]"/>
-                                    <field name="name" />
-                                    <field name="slider_type" />
-                                </tree>
-                            </field>
+                            <field name="slider_ids" context="{'website':'b2b1'}" domain="[('slider_type','=','our_story')]"/>
+
                         </page>
                         <page name="sliders" string="Sliders" attrs="{'invisible': [('page_type','not in',['home'])]}">
-                            <field name="slider_ids" context="{'website':'b2b1'}" domain="[('slider_type','=','home')]">
-                                <tree>
-                                    <field name="image" widget="image" class="oe_avatar" options="{'zoom': true,'preview_image': 'image'}" size="[150,150]"/>
-                                    <field name="name" />
-                                    <field name="slider_type" />
-                                </tree>
-                            </field>
+                            <field name="slider_ids" context="{'website':'b2b1'}" domain="[('slider_type','=','home')]"/>
                         </page>
                         <page name="sliders" string="Sliders" attrs="{'invisible': [('page_type','not in',['contact_us'])]}">
                             <field name="slider_ids" context="{'website':'b2b1'}" domain="[('slider_type','=','contact_us')]">
                                 <tree editable="bottom">
                                     <field name="image" widget="image" class="oe_avatar" options="{'zoom': true,'preview_image': 'image'}" size="[150,150]"/>
+                                    <field name="image_id" string="Image URL"/>
                                     <field name="name" />
                                     <field name="slider_type" />
-                                    <field name="parent_id" domain="[('slider_type','=','contact_us')]"/>
+                                    <field name="parent_id"  attrs="{'readony': [('slider_type','not in',['home','our_story',''])]}" domain="[('slider_type','=','contact_us')]"/>
                                 </tree>
                             </field>
                         </page>
@@ -146,19 +125,8 @@
                                 </tree>
                             </field>
                             <group>
-                                <group>
-
-                                    <group>
-                                        <group>
-                                            <group>
-                                                <field name="banner_1_id" options="{'no_create': True}"/>
-
-                                                <field name="banner_1_image" widget="image" class="oe_avatar" options="{'zoom': true,'preview_image': 'banner_1_image'}" size="[150,150]" />
-
-                                            </group>
-                                        </group>
-                                    </group>
-                                </group>
+                                <field name="banner_1_id" options="{'no_create': True}"/>
+                                <field name="banner_1_image" widget="image" class="oe_avatar" options="{'zoom': true,'preview_image': 'banner_1_image'}" size="[150,150]" />
                             </group>
                         </page>
                     </notebook>

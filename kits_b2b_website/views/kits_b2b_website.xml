@@ -6,25 +6,21 @@
         <field name="arch" type="xml">
             <form string="">
                 <sheet>
-                    <field name="logo" widget="image" options="{'zoom': true,'preview_image':'image_logo','size': [128, 128]}" string="Logo"/>
+                    <div style="margin-bottom: 10px;">
+                        <field name="logo" widget="image" options="{'zoom': true,'preview_image':'image_logo','size': [512, 512]}" string="Logo"/>
+                    </div>
                     <group>
                         <group>
                             <field name="image_logo" widget="url"/>
                             <field name="name" />
-                            <field name="website_name" />
                             <field name="url" widget="url" />
-                            <field name="pricelist_id" />
                             <field name="show_product_image" />
 
                         </group>
                         <group>
                             <field name="is_allow_for_geo_restriction"/>
-                            <field name="company_id" options="{'no_create': True}"/>
                             <field name="login_validity_in_days" />
                             <field name="reset_password_validity_in_hours" />
-                            <field name="stock_location_id" />
-                            <field name="virtual_location_id" />
-
                         </group>
                     </group>
                     <notebook>
@@ -136,6 +132,18 @@
                                 </group>
                             </group>
                         </page>
+                        <page name="sales_config" string="Sales">
+                            <group>
+                                <group>
+                                    <field name="company_id" widget="selection" options="{'no_create':True}" />
+                                    <field name="pricelist_id" widget="selection" options="{'no_create':True}" />
+                                </group>
+                                <group>
+                                    <field name="stock_location_id" widget="selection" options="{'no_create':True}" />
+                                    <field name="virtual_location_id" widget="selection" options="{'no_create':True}" />
+                                </group>
+                            </group>
+                        </page>
                     </notebook>
                 </sheet>
             </form>
@@ -153,13 +161,5 @@
             </tree>
         </field>
     </record>
-
-
-    <record id="kits_b2b_website_action" model="ir.actions.act_window">
-        <field name="name">Action Name</field>
-        <field name="res_model">kits.b2b.website</field>
-        <field name="view_mode">tree,form</field>
-    </record>
-
 
 </odoo>

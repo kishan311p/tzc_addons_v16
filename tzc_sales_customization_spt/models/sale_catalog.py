@@ -555,3 +555,13 @@ class SaleCatalog(models.Model):
     def get_catalog_line_pro_price(self):
         product_prices = self.env['kits.b2b.multi.currency.mapping'].get_product_price(self._context.get('customer_id').id,self.line_ids.mapped('product_pro_id').ids)
         return product_prices
+
+    def action_customer_catalog_spt(self):
+        return {
+                "name":_("Catalog"),
+                "type":"ir.actions.act_window",
+                "res_model":"sale.catalog.order",
+                "view_mode":"tree",
+                'domain': [('catalog_id','in',self.ids)]
+        }
+        

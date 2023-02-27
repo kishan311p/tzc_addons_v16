@@ -1,5 +1,5 @@
 id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
-access_kits_b2b_website,access.kits.b2b.website,model_kits_b2b_website,,1,1,1,1
+access_kits_b2b_website,access.kits.b2b.website,model_kits_b2b_website,,1,1,0,0
 access_kits_b2b_menus,access.kits.b2b.menus,model_kits_b2b_menus,,1,1,1,1
 access_kits_b2b_pages,access.kits.b2b.pages,model_kits_b2b_pages,,1,1,1,1
 access_kits_b2b_image_model,access.kits.b2b.image.model,model_kits_b2b_image_model,,1,1,1,1
