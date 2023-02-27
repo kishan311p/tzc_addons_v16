@@ -132,7 +132,9 @@
                                 </group>
                             </group>
                         </page>
-                        <page name="sales_config" string="Sales">
+                        <page name="how_to_shop" string="How to Shop">
+                        </page>
+                        <page name="sales_config" string="Other Settings" groups="base.group_no_one">
                             <group>
                                 <group>
                                     <field name="company_id" widget="selection" options="{'no_create':True}" />

@@ -13,3 +13,4 @@ class kits_b2b_website_slider(models.Model):
     image = fields.Char('Image',related='image_id.url',store=True)
     limit = fields.Integer('Limit')
     parent_id = fields.Many2one('kits.b2b.website.slider','Parent')
+    cu_page_id = fields.Many2one('kits.b2b.pages', 'Contact US')

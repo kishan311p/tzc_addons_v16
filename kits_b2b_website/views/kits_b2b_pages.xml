@@ -13,42 +13,9 @@
                         </group>
                         <group>
                             <field name="page_type" />
-                            <field name="website_id" />
                         </group>
                     </group>
                     <notebook>
-                        <page name="general_info" attrs="{'invisible': [('page_type','not in',['home','our_story','contact_us'])]}" string="General Info">
-                            <group name="eto_b2b" attrs="{'invisible': [('page_type','not in',['home'])]}" string="Everything Optical B2B">
-                                <field name="header_text_1" />
-                                <field name="text_1" />
-                                <field name="text_1_redirect_url" widget="url"/>
-                                <field name="text_1_redirect_url_text"/>
-                            </group>
-                            <group name="eto_b2b" string="Join Our Team" attrs="{'invisible': [('page_type','not in',['our_story'])]}">
-                                <field name="header_text_1" />
-                                <field name="text_1" />
-                                <field name="text_1_redirect_url" widget="url"/>
-                                <field name="text_1_redirect_url_text"/>
-                            </group>
-                            <group name="eto_b2b" string="Our Team" attrs="{'invisible': [('page_type','not in',['our_story','contact_us'])]}">
-                                <group>
-                                    <field name="header_text_2" />
-                                    <field name="text_2" />
-                                    <field name="banner_1_id" attrs="{'invisible': [('page_type','not in',['contact_us'])]}" />
-
-                                    <field name="banner_1_image" widget="image" class="oe_avatar" options="{'zoom': true,'preview_image': 'banner_1_image'}" size="[150,150]" attrs="{'invisible': [('page_type','not in',['contact_us'])]}"/>
-                                    <field name="banner_2_id" attrs="{'invisible': [('page_type','not in',['contact_us'])]}"/>
-                                    <field name="banner_2_image" widget="image" class="oe_avatar" options="{'zoom': true,'preview_image': 'banner_2_image'}" attrs="{'invisible': [('page_type','not in',['contact_us'])]}"/>
-                                </group>
-                            </group>
-                            <group attrs="{'invisible': [('page_type','not in',['home'])]}">
-                                <group>
-                                    <field name="banner_1_id" options="{'no_create': True}"/>
-                                    <field name="banner_1_image" widget="image" class="oe_avatar" options="{'zoom': true,'preview_image': 'banner_1_image'}" size="[150,150]" />
-                                </group>
-                            </group>
-
-                        </page>
                         <page name="main_banner" string="Main Banner" attrs="{'invisible': [('page_type','not in',['home'])]}">
                             <field name="main_banner_ids">
                                 <tree editable="bottom">
@@ -61,21 +28,42 @@
                                 </tree>
                             </field>
                         </page>
-                        <page name="main_banner" string="Main Banner" attrs="{'invisible': [('page_type','not in',['our_story'])]}">
-                            <field name="main_banner_ids">
-                                <tree editable="bottom" create="0">
-                                    <field name="image_icon" widget="image" class="oe_avatar" options="{'zoom': true,'preview_image': 'image_icon'}" size="[150,150]"/>
-                                    <field name="url" widget="url"/>
-                                    <field name="redirect_url" widget="url"/>
-                                    <field name="redirect_text"/>
-                                    <field name="header_description" />
-                                    <field name="description" />
-                                </tree>
-                            </field>
+                        <page name="general_info" attrs="{'invisible': [('page_type','not in',['home','our_story','contact_us'])]}" string="General Info">
+                            <group name="eto_b2b" attrs="{'invisible': [('page_type','not in',['home','our_story'])]}" string="Everything Optical B2B">
+                                <field name="header_text_1" string="Button Title" />
+                                <field name="text_1" string="Description" />
+                                <field name="text_1_redirect_url" widget="url"/>
+                                <field name="text_1_redirect_url_text" string="Button Text" />
+                            </group>
+                            <field name="main_banner_ids" attrs="{'invisible':[('page_type','!=','our_story')]}" />
+                            <group name="eto_b2b" string="Our Team" attrs="{'invisible': [('page_type','not in',['contact_us'])]}">
+                                <group>
+                                    <field name="header_text_2" />
+                                    <field name="text_2" />
+                                    <field name="banner_1_id" attrs="{'invisible': [('page_type','not in',['contact_us'])]}" />
+
+                                    <field name="banner_1_image" widget="image" class="oe_avatar" options="{'zoom': true,'preview_image': 'banner_1_image'}" size="[150,150]" attrs="{'invisible': [('page_type','not in',['contact_us'])]}"/>
+                                    <field name="banner_2_id" attrs="{'invisible': [('page_type','not in',['contact_us'])]}"/>
+                                    <field name="banner_2_image" widget="image" class="oe_avatar" options="{'zoom': true,'preview_image': 'banner_2_image'}" attrs="{'invisible': [('page_type','not in',['contact_us'])]}"/>
+                                </group>
+
+                            </group>
+                            <group string="Why Choose US?">
+                                <field name="text_field" string="Why Choose US?" />
+                            </group>
+                            <group attrs="{'invisible': [('page_type','not in',['home'])]}">
+                                <group>
+                                    <field name="banner_1_id" options="{'no_create': True}"/>
+                                    <field name="banner_1_image" widget="image" class="oe_avatar" options="{'zoom': true,'preview_image': 'banner_1_image'}" size="[150,150]" />
+                                </group>
+                            </group>
+
                         </page>
+
                         <page name="our_core_values" attrs="{'invisible': [('page_type','not in',['home','our_story'])]}" string="Our Core Values">
                             <field name="our_core_values_ids">
                                 <tree editable="bottom">
+                                    <field name="sequence" widget='handle' />
                                     <field name="image_icon" widget="image" class="oe_avatar" options="{'zoom': true,'preview_image': 'image_icon'}" size="[50,50]"/>
                                     <field name="url" widget="url"/>
                                     <field name="header_description" />
@@ -84,20 +72,33 @@
                             </field>
                         </page>
                         <page name="sliders" string="Our Team" attrs="{'invisible': [('page_type','not in',['our_story'])]}">
-                            <field name="slider_ids" context="{'website':'b2b1'}" domain="[('slider_type','=','our_story')]"/>
+                            <group>
+                                <field name="header_text_2" />
+                                <field name="text_2" />
+                                <field name="banner_1_id" attrs="{'invisible': [('page_type','not in',['contact_us'])]}" />
+                            </group>
 
+                            <group>
+                                <field name="slider_ids" string="Team Members" context="{'website':'b2b1'}" domain="[('slider_type','=','our_story')]"/>
+                            </group>
                         </page>
                         <page name="sliders" string="Sliders" attrs="{'invisible': [('page_type','not in',['home'])]}">
-                            <field name="slider_ids" context="{'website':'b2b1'}" domain="[('slider_type','=','home')]"/>
+                            <field name="slider_ids" context="{'website':'b2b1'}" domain="[('slider_type','=','home')]">
+                                <tree editable="bottom">
+                                    <field name="image" widget="image" class="oe_avatar" options="{'zoom': true,'preview_image': 'image'}" size="[150,150]"/>
+                                    <field name="image_id" string="Image URL"/>
+                                    <field name="name" />
+                                </tree>
+                            </field>
                         </page>
                         <page name="sliders" string="Sliders" attrs="{'invisible': [('page_type','not in',['contact_us'])]}">
-                            <field name="slider_ids" context="{'website':'b2b1'}" domain="[('slider_type','=','contact_us')]">
+                            <field name="contact_us_slider_ids" context="{'website':'b2b1','slider_type':'contact_us'}" domain="[('slider_type','=','contact_us')]">
                                 <tree editable="bottom">
                                     <field name="image" widget="image" class="oe_avatar" options="{'zoom': true,'preview_image': 'image'}" size="[150,150]"/>
                                     <field name="image_id" string="Image URL"/>
                                     <field name="name" />
                                     <field name="slider_type" />
-                                    <field name="parent_id"  attrs="{'readony': [('slider_type','not in',['home','our_story',''])]}" domain="[('slider_type','=','contact_us')]"/>
+                                    <field name="parent_id" attrs="{'readony': [('slider_type','not in',['home','our_story',''])]}" domain="[('slider_type','=','contact_us')]"/>
                                 </tree>
                             </field>
                         </page>

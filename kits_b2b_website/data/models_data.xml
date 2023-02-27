@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-
+<data noupdate="0">
     <record id="kits_team_eto_website" model="kits.b2b.website">
         <field name="name">Teameto</field>
         <field name="website_name">b2b1</field>
@@ -551,6 +551,9 @@ Sunglasses</field>
         <field name="banner_2_id" eval="kits_contact_us_image_2" />
         <field name="banner_1_id" eval="kits_contact_us_image_1" />
         <field name="is_our_core_values">True</field>
+        <field name="text_field">Everything Optical is focused on our customers. We understand that that our customer success is our success. We offer our clients only the best in quality eyewear frames direct from designers. Dedicated managers are assigned to our clients to provide unmatched customer service. All our customers are given access to our exclusive wholesale portal with visibility into our ready to ship inventory that is only a matter of clicks away from being shipped. Over the last two decades we have been suppling to clients internationally from our portfolio of 100+ designer brands. Our team works towards building trust and long-term partnerships with our clients by being transparent throughout our process and holding true to our value system.
+            When you partner with us, your dedicated sales manager will work closely with you to provide customized offerings that meet your need and ensure your successes.
+            </field>
     </record>
 
     <record id="kits_contact_us_image_1_slider" model="kits.b2b.image.model">
@@ -583,6 +586,7 @@ Sunglasses</field>
         <field name="slider_type">contact_us</field>
         <field name="website_id" eval="kits_team_eto_website" />
         <field name="page_id" eval="kits_contact_us" />
+        <field name="cu_page_id" eval="kits_contact_us" />
         <field name="image_id" eval="kits_contact_us_image_1_slider" />
     </record>
     <record id="kits_contact_2_slider" model="kits.b2b.website.slider">
@@ -590,6 +594,7 @@ Sunglasses</field>
         <field name="slider_type">contact_us</field>
         <field name="website_id" eval="kits_team_eto_website" />
         <field name="page_id" eval="kits_contact_us" />
+        <field name="cu_page_id" eval="kits_contact_us" />
         <field name="image_id" eval="kits_contact_us_image_2_slider" />
     </record>
 
@@ -598,6 +603,7 @@ Sunglasses</field>
         <field name="slider_type">contact_us</field>
         <field name="website_id" eval="kits_team_eto_website" />
         <field name="page_id" eval="kits_contact_us" />
+        <field name="cu_page_id" eval="kits_contact_us" />
         <field name="image_id" eval="kits_contact_us_image_3_slider" />
         <field name="parent_id" eval="kits_contact_2_slider" />
     </record>
@@ -606,6 +612,7 @@ Sunglasses</field>
         <field name="slider_type">contact_us</field>
         <field name="website_id" eval="kits_team_eto_website" />
         <field name="page_id" eval="kits_contact_us" />
+        <field name="cu_page_id" eval="kits_contact_us" />
         <field name="image_id" eval="kits_contact_us_image_4_slider" />
     </record>
 
@@ -614,6 +621,7 @@ Sunglasses</field>
         <field name="slider_type">contact_us</field>
         <field name="website_id" eval="kits_team_eto_website" />
         <field name="page_id" eval="kits_contact_us" />
+        <field name="cu_page_id" eval="kits_contact_us" />
         <field name="image_id" eval="kits_contact_us_image_5_slider" />
     </record>
     <record id="kits_contact_6_slider" model="kits.b2b.website.slider">
@@ -621,6 +629,7 @@ Sunglasses</field>
         <field name="slider_type">contact_us</field>
         <field name="website_id" eval="kits_team_eto_website" />
         <field name="page_id" eval="kits_contact_us" />
+        <field name="cu_page_id" eval="kits_contact_us" />
         <field name="image_id" eval="kits_contact_us_image_1_slider" />
     </record>
     <record id="kits_contact_7_slider" model="kits.b2b.website.slider">
@@ -628,6 +637,7 @@ Sunglasses</field>
         <field name="slider_type">contact_us</field>
         <field name="website_id" eval="kits_team_eto_website" />
         <field name="page_id" eval="kits_contact_us" />
+        <field name="cu_page_id" eval="kits_contact_us" />
         <field name="image_id" eval="kits_contact_us_image_2_slider" />
     </record>
 
@@ -636,6 +646,7 @@ Sunglasses</field>
         <field name="slider_type">contact_us</field>
         <field name="website_id" eval="kits_team_eto_website" />
         <field name="page_id" eval="kits_contact_us" />
+        <field name="cu_page_id" eval="kits_contact_us" />
         <field name="image_id" eval="kits_contact_us_image_3_slider" />
         <field name="parent_id" eval="kits_contact_7_slider" />
     </record>
@@ -644,6 +655,7 @@ Sunglasses</field>
         <field name="slider_type">contact_us</field>
         <field name="website_id" eval="kits_team_eto_website" />
         <field name="page_id" eval="kits_contact_us" />
+        <field name="cu_page_id" eval="kits_contact_us" />
         <field name="image_id" eval="kits_contact_us_image_4_slider" />
     </record>
 
@@ -652,6 +664,7 @@ Sunglasses</field>
         <field name="slider_type">contact_us</field>
         <field name="website_id" eval="kits_team_eto_website" />
         <field name="page_id" eval="kits_contact_us" />
+        <field name="cu_page_id" eval="kits_contact_us" />
         <field name="image_id" eval="kits_contact_us_image_5_slider" />
     </record>
     <record id="kits_contact_11_slider" model="kits.b2b.website.slider">
@@ -659,6 +672,7 @@ Sunglasses</field>
         <field name="slider_type">contact_us</field>
         <field name="website_id" eval="kits_team_eto_website" />
         <field name="page_id" eval="kits_contact_us" />
+        <field name="cu_page_id" eval="kits_contact_us" />
         <field name="image_id" eval="kits_contact_us_image_1_slider" />
     </record>
     <record id="kits_contact_12_slider" model="kits.b2b.website.slider">
@@ -666,6 +680,7 @@ Sunglasses</field>
         <field name="slider_type">contact_us</field>
         <field name="website_id" eval="kits_team_eto_website" />
         <field name="page_id" eval="kits_contact_us" />
+        <field name="cu_page_id" eval="kits_contact_us" />
         <field name="image_id" eval="kits_contact_us_image_2_slider" />
     </record>
 
@@ -674,6 +689,7 @@ Sunglasses</field>
         <field name="slider_type">contact_us</field>
         <field name="website_id" eval="kits_team_eto_website" />
         <field name="page_id" eval="kits_contact_us" />
+        <field name="cu_page_id" eval="kits_contact_us" />
         <field name="image_id" eval="kits_contact_us_image_3_slider" />
         <field name="parent_id" eval="kits_contact_12_slider" />
     </record>
@@ -682,6 +698,7 @@ Sunglasses</field>
         <field name="slider_type">contact_us</field>
         <field name="website_id" eval="kits_team_eto_website" />
         <field name="page_id" eval="kits_contact_us" />
+        <field name="cu_page_id" eval="kits_contact_us" />
         <field name="image_id" eval="kits_contact_us_image_4_slider" />
     </record>
 
@@ -690,6 +707,7 @@ Sunglasses</field>
         <field name="slider_type">contact_us</field>
         <field name="website_id" eval="kits_team_eto_website" />
         <field name="page_id" eval="kits_contact_us" />
+        <field name="cu_page_id" eval="kits_contact_us" />
         <field name="image_id" eval="kits_contact_us_image_5_slider" />
     </record>
     <record id="kits_b2b_eyeglasses_menus" model="kits.b2b.menus">
@@ -772,5 +790,5 @@ Sunglasses</field>
         <field name="sequence">10003</field>
         <field name="redirect_url">/order</field>
     </record>
+</data>
 </odoo>
-

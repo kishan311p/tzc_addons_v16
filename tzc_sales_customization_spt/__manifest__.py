@@ -7,7 +7,7 @@
     'author': 'Keypress',
     'sequence': 1,
     'version': '16.0.0',
-    'depends':['base','product','stock','sale_stock','sale','sale_management','crm','delivery','mail','portal','mass_mailing','snailmail_account_followup','marketing_automation','barcodes','sale_loyalty','project_enterprise','project'],
+    'depends':['base','product','stock','sale_stock','sale','sale_management','crm','delivery','mail','portal','mass_mailing','snailmail_account_followup','marketing_automation','barcodes','sale_loyalty','project_enterprise','project','account_check_printing'],
 
     'data': [
         
