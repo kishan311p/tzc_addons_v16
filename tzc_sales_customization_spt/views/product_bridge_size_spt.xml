@@ -42,7 +42,7 @@
             </field>
         </record>
 
-    <menuitem name="Bridge Size" action="action_product_bridge_size_spt" id="menu_action_product_bridge_size_spt" parent="menu_action_product_custom_spt" sequence="4"/>
+    <menuitem name="Bridge Size" action="action_product_bridge_size_spt" id="menu_action_product_bridge_size_spt" parent="menu_action_product_custom_spt" sequence="8"/>
 
     </data>
 </odoo>

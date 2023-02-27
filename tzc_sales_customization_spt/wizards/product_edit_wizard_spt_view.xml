@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <record id="product_edit_wizard_form_view_spt" model="ir.ui.view">
+            <field name="name">product.edit.wizard.form.view.spt</field>
+            <field name="model">product.edit.wizard.spt</field>
+            <field name="arch" type="xml">
+                <form>
+
+                    <field name="line_ids">
+                        <tree editable='bottom' limit="1000000" create="0" import="0">
+                            <field name="product_id" options="{'no_create': True}"/>
+                            <field name="product_color_name" options="{'no_create': True}"/>
+                            <field name="secondary_color_name" options="{'no_create': True}"/>
+                            <field name="lense_color_name" options="{'no_create': True}"/>
+                            <field name="rim_type" options="{'no_create': True}"/>
+                            <field name="shape" options="{'no_create': True}" widget="many2many_tags" />
+                            <field name="material" options="{'no_create': True}" widget="many2many_tags" />
+                            <field name="flex_hinges"/>
+                            <field name="onhand_qty" />
+                            <field name="gender" options="{'no_create': True}"/>
+                            <field name="is_edit" invisible="1"/>
+                            <!-- <field name="image_1_zoom" invisible="1" />
+                            <field name="image_2_zoom" invisible="1" />
+                            <field name="image_1" options="{'zoom': true,'preview_image':'image_1_zoom','size': [128, 128]}" widget="image" readonly="1" string="Primary" />
+                            <field name="image_2" options="{'zoom': true,'preview_image':'image_2_zoom','size': [128, 128]}" widget="image" readonly="1" string="Secondary" /> -->
+                            <field name="image_1" widget="image" options="{'zoom': true,'preview_image':'image_1','size': [128, 128]}" string="Primary" optional="show" readonly="1"/>
+                    <field name="image_2" widget="image" options="{'zoom': true,'preview_image':'image_2','size': [128, 128]}" string="Secondary" optional="show" readonly="1"/>
+                        </tree>
+                    </field>
+
+                    <footer>
+                        <button string="Generate Excel File" class="btn btn-primary" type="object" name="action_generate_excel_report" />
+                        <button string="Cancel" class="btn-secondary" special="cancel" />
+                    </footer>
+                </form>
+            </field>
+        </record>
+    </data>
+</odoo>

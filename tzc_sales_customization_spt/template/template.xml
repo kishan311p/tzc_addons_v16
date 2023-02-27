@@ -2,7 +2,7 @@
 <odoo>
     <data>
 
-        <template id="mail.message_notification_email">
+        <!-- <template id="mail.message_notification_email">
             <table border="0" cellpadding="0" cellspacing="0" style="padding-top: 16px; background-color: #F1F1F1; font-family:Verdana, Arial,sans-serif; color: #454748; width: 100%; border-collapse:separate;">
                 <div>
                     <div t-if="has_button_access" itemscope="itemscope" itemtype="http://schema.org/EmailMessage">
@@ -55,7 +55,7 @@
                         </t>
                     </ul>
                     <div t-if="signature" t-raw="signature" style="font-size: 13px;"/>
-                    <!-- <p style="color: #555555; margin-top:32px;">
+                    <p style="color: #555555; margin-top:32px;">
     Sent
                         <span t-if="company.name">
     by
@@ -66,16 +66,15 @@
                         </span>
     using
                         <a target="_blank" href="https://www.teameto.com" style="text-decoration:none; color: #7693f8;">ETO</a>.
-                    </p> -->
+                    </p>
                 </div>
             </table>
-        </template>
+        </template> -->
 
-        <template id="mail.mail_notification_borders">
+        <!-- <template id="mail.mail_notification_borders">
             <div>
                 <table border="0" width="100%" cellpadding="0" bgcolor="#ededed" style="padding: 20px; background-color: #ededed; border-collapse:separate;" summary="o_mail_notification">
                     <tbody>
-                        <!-- HEADER -->
                         <tr>
                             <td align="center" style="min-width: 590px;">
                                 <table width="590" border="0" cellpadding="0" bgcolor="#7693f8" style="min-width: 590px; background-color: rgb(118, 147, 248); padding: 20px; border-collapse:separate;">
@@ -92,7 +91,6 @@
                                 </table>
                             </td>
                         </tr>
-                        <!-- CONTENT -->
                         <tr>
                             <td align="center" style="min-width: 590px;">
                                 <table width="590" border="0" cellpadding="0" bgcolor="#ffffff" style="min-width: 590px; background-color: rgb(255, 255, 255); padding: 20px; border-collapse:separate;">
@@ -104,7 +102,6 @@
                                 </table>
                             </td>
                         </tr>
-                        <!-- FOOTER -->
                         <tr>
                             <td align="left" style="min-width: 590px;">
                                 <table width="590" border="0" cellpadding="0" bgcolor="#7693f8" style="min-width: 590px; background-color: rgb(118, 147, 248); padding: 20px; border-collapse:separate;">
@@ -139,7 +136,7 @@
                     </tbody>
                 </table>
             </div>
-        </template>
+        </template> -->
 
         <template id="mail.mail_notification_light">
             <table border="0" cellpadding="0" cellspacing="0" style="padding-top: 16px; background-color: #F1F1F1; font-family:Verdana, Arial,sans-serif; color: #454748; width: 100%; border-collapse:separate;">
@@ -164,7 +161,8 @@
                                                     </span>
                                                 </td>
                                                 <td valign="middle" align="right" style="width: 145px;">
-                                                    <img src="/web/image?model=res.company&amp;id=1&amp;field=logo" style="padding:0px;margin: 0px; height: auto;width: 280px;" alt="${object.company_id.name}" class="padding-small"/>
+                                                    <img src="/logo.png?company=1" style="padding:0px;margin: 0px; height: auto;width: 280px;" t-att-alt="'%s' % company.name" class="padding-small"/>
+                                                    
                                                 </td>
                                             </tr>
                                             <tr>
@@ -228,13 +226,12 @@
           * this template works best with portal-enable models although it is not
             a complete requirement currently;
         -->
-        <template id="mail.mail_notification_paynow" name="Mail: Pay Now mail notification template">
+        <!-- <template id="mail.mail_notification_paynow" name="Mail: Pay Now mail notification template">
             <table border="0" cellpadding="0" cellspacing="0" style="padding-top: 16px; background-color: #F1F1F1; font-family:Verdana, Arial,sans-serif; color: #454748; width: 100%; border-collapse:separate;">
                 <tr>
                     <td align="center">
                         <table border="0" cellpadding="0" cellspacing="0" width="590" style="padding: 24px; background-color: white; color: #454748; border-collapse:separate;">
                             <tbody>
-                                <!-- HEADER -->
                                 <tr>
                                     <td align="center" style="min-width: 590px;">
                                         <t t-set="access_action" t-value="record.with_context(force_website=True).get_access_action()"/>
@@ -267,7 +264,6 @@
                                         </table>
                                     </td>
                                 </tr>
-                                <!-- CONTENT -->
                                 <tr>
                                     <td style="padding: 0">
                                         <t t-raw="message.body"/>
@@ -276,19 +272,8 @@
                                                 <t t-esc="access_name"/>
                                             </a>
                                         </div>
-                                        <!-- <t t-if="record.user_id and not record.env.user._is_superuser()">
-                                            <div style="margin: 0px; padding: 0px; font-size:13px;">
-                    Thank you,<br/>
-                    ETO Support
-                                            </div>
-                                            <div>&amp;nbsp;</div>
-                                            <div t-if="record.user_id.sudo().signature" style="font-size: 13px;">
-                                                <div t-raw="record.user_id.sudo().signature"/>
-                                            </div>
-                                        </t> -->
                                     </td>
                                 </tr>
-                                <!-- FOOTER -->
                                 <tr align="left">
                                     <td style="padding: 0; font-size:11px;">
                                         <hr width="100%" style="background-color:rgb(204,204,204);border:medium none;clear:both;display:block;font-size:0px;min-height:1px;line-height:0; margin: 32px 0px 4px 0px;"/>
@@ -313,14 +298,13 @@
                         </table>
                     </td>
                 </tr>
-                <!-- POWERED BY -->
                 <tr>
                     <td align="center" style="min-width: 590px; padding: 8px; font-size:11px;">
     Powered by <a target="_blank" href="https://www.teameto.com" style="color: #7693f8;">ETO</a>
                     </td>
                 </tr>
             </table>
-        </template>
+        </template> -->
 
         <!-- Discuss utility templates for notifications -->
         <template id="mail.message_user_assigned">
@@ -425,7 +409,7 @@
 </template>
 
 <!-- Channel and moderation related data -->
-<template id="mail.mail_channel_notify_moderation">
+<!-- <template id="mail.mail_channel_notify_moderation">
 <div>
 <p>Hello <t t-esc='record.name'/>
 </p>
@@ -440,9 +424,9 @@
 </div>
 <p>Thank you!</p>
 </div>
-</template>
+</template> -->
 
-<template id="mail.mail_channel_send_guidelines">
+<!-- <template id="mail.mail_channel_send_guidelines">
 <div>
 <p>Hello <t t-esc="partner.name"/>
 ,</p>
@@ -453,7 +437,7 @@
 </p>
 <p></p>
 </div>
-</template>
+</template> -->
 
 </data>
 </odoo>

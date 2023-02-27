@@ -1531,7 +1531,7 @@ class res_partner(models.Model):
         base_url = self.env['ir.config_parameter'].sudo().get_param('web.base.url','')
         res_model = self.env[model].browse(res_id)
         url = ''
-        if model in ['sale.order','sale.catalog.order'] and res_id: 
+        if model in ['sale.order'] and res_id: 
             if file_type == 'excel' and model == 'sale.order':
                 report_id = self.env['order.report.with.image.wizard'].create({
                     'with_img': True,
@@ -1539,8 +1539,14 @@ class res_partner(models.Model):
                 })
                 url = report_id.action_process_report().get('url','')
                 return {'url' : base_url+url}
-            sale_order = self.env['sale.order'].browse(17)
-            res_id =17
-            url = base_url +'/my/orders/%s?access_token=%s&report_type=pdf&downlod=True'%(res_id,sale_order.access_token)
+            else:
+                url = base_url +'/my/orders/%s?access_token=%s&report_type=pdf&downlod=True'%(res_id,res_model.access_token)
+        elif model in ['sale.catalog'] and res_id: 
+            if file_type == 'excel' and model == 'sale.catalog':
+                report_id = self.env['kits.wizard.download.catalog.excel'].create({
+                        'partner_id': self.id,
+                        'catalog_id' : res_model.id
+                    })
+                url = report_id.action_download_report().get('url','')
         
         return {'url' : url}

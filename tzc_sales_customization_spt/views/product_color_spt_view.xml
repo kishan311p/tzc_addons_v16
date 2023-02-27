@@ -70,7 +70,7 @@
             </field>
         </record>
 
-        <menuitem name="Color" action="action_product_color_spt" id="menu_action_product_color_spt" parent="menu_action_product_custom_spt" sequence="1"/>
+        <menuitem name="Color" action="action_product_color_spt" id="menu_action_product_color_spt" parent="menu_action_product_custom_spt" sequence="4"/>
 
     </data>
 </odoo>

@@ -36,7 +36,13 @@
                         </group>
                         <notebook>
                             <page string="Inflation Rules">
-                                <field name="inflation_rule_ids" />
+                                <field name="inflation_rule_ids">
+                                    <tree editable="bottom">
+                                        <field name="country_id" widget="many2many_tags" />
+                                        <field name="brand_ids" widget="many2many_tags" />
+                                        <field name="inflation_rate" />
+                                    </tree>
+                                </field>
                             </page>
                         </notebook>
                     </sheet>
@@ -74,5 +80,5 @@
         </record>
         <menuitem id="menu_kits_inflation" name="Price Inflation" action="action_kits_inflation" parent="sale.sale_menu_root" groups="base.group_system,tzc_sales_customization_spt.group_marketing_user" sequence="52"/>
     </data>
-    
+
 </odoo>
