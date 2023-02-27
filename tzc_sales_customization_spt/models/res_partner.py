@@ -1538,9 +1538,8 @@ class res_partner(models.Model):
                     'order_id': res_id,
                 })
                 url = report_id.action_process_report().get('url','')
-                return {'url' : base_url+'/'+url}
             else:
-                url = base_url +'/my/orders/%s?access_token=%s&report_type=pdf&downlod=True'%(res_id,res_model.access_token)
+                url ='/my/orders/%s?access_token=%s&report_type=pdf&downlod=True'%(res_id,res_model.access_token)
         elif model in ['sale.catalog'] and res_id: 
             if file_type == 'excel' and model == 'sale.catalog':
                 report_id = self.env['kits.wizard.download.catalog.excel'].create({

@@ -535,7 +535,6 @@
                                             </t>
                                             <t t-set="unit_discount_price" t-value="product_price - (product_price * line.discount / 100)"/>
                                             
-                                            <!-- Print Product Prices -->
                                             
                                             <td style="text-align: right; border: 1px solid #dbdde0; padding: 60px 10px 10px 10px;" t-if="product_price != unit_discount_price">
                                                 <t t-if="'eto dubai' in doc.partner_id.property_product_pricelist.name.lower() or 'other eto' in doc.partner_id.property_product_pricelist.name.lower()">
