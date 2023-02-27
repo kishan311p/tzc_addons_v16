@@ -660,8 +660,6 @@
         <p class="m-0" t-field="doc.sudo().user_id"/>
     </div>
 </xpath>
-
-
 </template>
 
 <template id="validation_template">

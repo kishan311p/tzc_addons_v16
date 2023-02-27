@@ -1538,6 +1538,7 @@ class res_partner(models.Model):
                     'order_id': res_id,
                 })
                 url = report_id.action_process_report().get('url','')
+                
             else:
                 url ='/my/orders/%s?access_token=%s&report_type=pdf&downlod=True'%(res_id,res_model.access_token)
         elif model in ['sale.catalog'] and res_id: 
