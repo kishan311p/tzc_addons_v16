@@ -10,16 +10,16 @@
                     </div>
                     <div class="col-6 float-right company_address" style="padding-left:20%;">
                         <div>
-                            <strong t-field="company.partner_id.name"/>
+                            <strong t-esc="company.partner_id.name"/>
                         </div>
                         (A division of Tanzacan Tradelink Inc.)
-                        <span t-field="company.street"/>
+                        <span t-esc="company.street"/>
                         <br/>
-                        <span t-field="company.city"/> <span t-field="company.state_id.name"/>
-                        <span t-field="company.country_id.name"/> <span t-field="company.zip"/>
+                        <span t-esc="company.city"/> <span t-esc="company.state_id.name"/>
+                        <span t-esc="company.country_id.name"/> <span t-esc="company.zip"/>
                         <br/>
-                        Tel. <span t-field="company.phone"/><br/>
-                        Email. <span t-field="company.email"/>
+                        Tel. <span t-esc="company.phone"/><br/>
+                        Email. <span t-esc="company.email"/>
                     </div>
                     <div class="clearfix mb8"/>
                 </div>
