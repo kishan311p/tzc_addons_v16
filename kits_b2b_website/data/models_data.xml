@@ -11,6 +11,11 @@
         <field name="portal_user_id" ref="base.group_portal"/>
         <field name="logo">https://teameto.com/web/image/website/2/logo/My%20Website?unique=5dca547</field>
         <field name="image_logo">https://teameto.com/web/image/website/2/logo/My%20Website?unique=5dca547</field>
+        <field name="location_icon_url">https://cdn.teameto.com/data/B2C1/new_tzc_b2b_images/cart-flow/location.png</field>
+        <field name="shipping_icon_url">https://cdn.teameto.com/data/B2C1/new_tzc_b2b_images/cart-flow/car.png</field>
+        <field name="location_text">Free Delivery Over $120</field>
+        <field name="shipping_text">Dubai: Next business bay, Shaikh zayed road.</field>
+
     </record>
     <record id="kits_homepage_banner_image_1" model="kits.b2b.image.model">
         <field name="header_description">How to Shop</field>

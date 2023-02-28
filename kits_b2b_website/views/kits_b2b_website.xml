@@ -131,6 +131,15 @@
                                 <group>
                                     <field name="shipping" />
                                 </group>
+                                <group>
+
+                                    <field name="location_icon" widget="image" options="{'zoom': true,'preview_image':'location_icon_url','size': [128, 128]}"/>
+                                    <field name="location_text" />
+                                    <field name="location_icon_url" />
+                                    <field name="shipping_icon" widget="image" options="{'zoom': true,'preview_image':'shipping_icon_url','size': [128, 128]}"/>
+                                    <field name="shipping_text" />
+                                    <field name="shipping_icon_url" />
+                                </group>
                             </group>
                         </page>
                         <page name="privacy_policy" string="Privacy Policy">
