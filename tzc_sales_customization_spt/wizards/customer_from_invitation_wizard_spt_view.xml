@@ -32,7 +32,7 @@
             <field name="target">new</field>
         </record>
 
-        <menuitem action="action_customer_invitation_status_spt" id="menu_customer_invitation_status_spt" name="Manual Invitation Status" parent="tzc_sales_customization_spt.reporting_menu" sequence='5'/>
+        <menuitem action="action_customer_invitation_status_spt" id="menu_customer_invitation_status_spt" name="Manual Invitation Status" parent="tzc_sales_customization_spt.reporting_menu" sequence='1'/>
 
     </data>
 </odoo>

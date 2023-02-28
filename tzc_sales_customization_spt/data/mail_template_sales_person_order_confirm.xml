@@ -14,13 +14,13 @@
             <field name="report_name">Order {{(object.name or '')}}</field> -->
             <field name="lang">{{object.partner_id.lang}}</field>
             <field name="body_html" type="html">
-                <!-- <table border="0" cellpadding="0" cellspacing="0" style="padding-top: 16px; background-color: #F1F1F1; font-family:Verdana, Arial,sans-serif; color: #454748; width: 100%; border-collapse:separate;"> -->
-                    <!-- <tr> -->
-                        <!-- <td align="center"> -->
-                            <!-- <table border="0" cellpadding="0" cellspacing="0" width="590" style="padding: 16px; background-color: white; color: #454748; border-collapse:separate;"> -->
-                                <!-- <tbody> -->
+                <table border="0" cellpadding="0" cellspacing="0" style="padding-top: 16px; background-color: #F1F1F1; font-family:Verdana, Arial,sans-serif; color: #454748; width: 100%; border-collapse:separate;">
+                    <tr>
+                        <td align="center">
+                            <table border="0" cellpadding="0" cellspacing="0" width="590" style="padding: 16px; background-color: white; color: #454748; border-collapse:separate;">
+                                <tbody>
                                     <!-- HEADER -->
-                                    <!-- <tr>
+                                    <tr>
                                         <td align="center" style="min-width: 590px;">
                                             <table border="0" cellpadding="0" cellspacing="0" width="590" style="min-width: 590px; background-color: white; padding: 0px 8px 0px 8px; border-collapse:separate;">
                                                 <tr>
@@ -28,7 +28,7 @@
                                                         <span style="font-size: 10px;">Your Account</span>
                                                         <br/>
                                                         <span style="font-size: 20px; font-weight: bold;">
-                                                             {{object.partner_id.name}}
+                                                             <t t-out="object.partner_id.name"/>
                                                         </span>
                                                     </td>
                                                     <td valign="middle" style="width: 145px;" align="right">
@@ -42,9 +42,9 @@
                                                 </tr>
                                             </table>
                                         </td>
-                                    </tr> -->
+                                    </tr>
                                     <!-- CONTENT -->
-                                    <!-- <td align="center" style="min-width: 590px;"> -->
+                                    <td align="center" style="min-width: 590px;">
                                         <table border="0" cellpadding="0" cellspacing="0" width="590" style="min-width: 590px; background-color: white; padding: 0px 8px 0px 8px; border-collapse:separate;">
                                             <tr>
                                                 <td valign="top" style="font-size: 13px;">
@@ -56,44 +56,43 @@
                                                     <!-- <br/> -->
                                                     <p style="margin-bottom:0px;">Thank you,<br/>
                                                         ETO Support</p>
-                                                    <a t-attf-href="object.get_base_url()/report/pdf/sale.report_saleorder/object.id">
+                                                    <a t-attf-href="{{object.get_base_url()}}/report/pdf/sale.report_saleorder/{{object.id}}">
                                                         <img t-attf-src="/tzc_sales_customization_spt/static/src/img/pdf.png" style="height:60px;width:100px;" />
                                                     </a>
                                                 </td>
                                             </tr>
                                         </table>
-                                    <!-- </td> -->
+                                    </td>
                                     <!-- FOOTER -->
-                                    <!-- <tr>
+                                    <tr>
                                         <td align="center" style="min-width: 590px;">
                                             <table border="0" cellpadding="0" cellspacing="0" width="590" style="min-width: 590px; background-color: white; font-size: 11px; padding: 0px 8px 0px 8px; border-collapse:separate;">
                                                 <tr>
                                                     <td valign="middle" align="left">
-                                                        {{object.partner_id.user_id.company_id.name}}
+                                                        <t t-out="object.partner_id.user_id.company_id.name"/>
                                                     </td>
                                                 </tr>
                                                 <tr>
                                                     <td valign="middle" align="left" style="opacity: 0.7;">
-                                                        {{object.partner_id.user_id.company_id.phone}}
-                                                        % if object.partner_id.user_id.company_id.email
-                                                        |                                                        <a href="'mailto:%s' % {{object.partner_id.user_id.company_id.email}}" style="text-decoration:none; color: #454748;">{{object.partner_id.user_id.company_id.email}}</a>
-                                                        % endif
-                                                        % if object.partner_id.user_id.company_id.website
-                                                            |                                                        <a href="'%s' % {{object.partner_id.user_id.company_id.website}}" style="text-decoration:none; color: #454748;">
-                                                            {{object.partner_id.user_id.company_id.website}}
-                                                        </a>
-                                                        % endif
+                                                        <t t-out="object.partner_id.user_id.company_id.phone"/>
+                                                        <t t-if="object.partner_id.user_id.company_id.email">
+                                                    | <a href="'mailto:%s' % {{object.partner_id.user_id.company_id.email}}" style="text-decoration:none; color: #454748;"><t t-out="object.partner_id.user_id.company_id.email"/></a>
+                                                            
+                                                        </t>
+                                                        <t t-if="object.partner_id.user_id.company_id.website">
+                                                        |<a href="'%s' % {{object.partner_id.user_id.company_id.website}}" style="text-decoration:none; color: #454748;"> <t t-out="object.partner_id.user_id.company_id.website"/></a>
+                                                        </t>
                                                     </td>
                                                 </tr>
                                             </table>
-                                        </td> -->
-                                    <!-- </tr> -->
-                                <!-- </tbody> -->
-                            <!-- </table> -->
-                        <!-- </td> -->
-                    <!-- </tr> -->
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </td>
+                    </tr>
                     <!-- POWERED BY -->
-                    <!-- <tr>
+                    <tr>
                         <td align="center" style="min-width: 590px;">
                             <table border="0" cellpadding="0" cellspacing="0" width="590" style="min-width: 590px; background-color: #F1F1F1; color: #454748; padding: 8px; border-collapse:separate;">
                                 <tr>
@@ -103,8 +102,8 @@
                                 </tr>
                             </table>
                         </td>
-                    </tr> -->
-                <!-- </table> -->
+                    </tr>
+                </table>
 
             </field>
         </record>
@@ -126,7 +125,7 @@
                             <table border="0" cellpadding="0" cellspacing="0" width="590" style="padding: 16px; background-color: white; color: #454748; border-collapse:separate;">
                                 <tbody>
                                     <!-- HEADER -->
-                                    <!-- <tr>
+                                    <tr>
                                         <td align="center" style="min-width: 590px;">
                                             <t>
                                             <t t-if="object.env.cr.dbname != 'eto_production'">
@@ -152,7 +151,7 @@
                                                 </tr>
                                             </table>
                                         </td>
-                                    </tr> -->
+                                    </tr>
                                     <!-- CONTENT -->
                                     <td align="center" style="min-width: 590px;">
                                         <table border="0" cellpadding="0" cellspacing="0" width="590" style="min-width: 590px; background-color: white; padding: 0px 8px 0px 8px; border-collapse:separate;">
@@ -161,15 +160,15 @@
                                                    <p style="margin-top:0px;"> Hello <t t-out="object.user_id.name"/>,</p>
                                                    <!-- <br/> -->
                                                     <p>Quotation <t t-out="object.name"/> for Customer <t t-out="object.partner_id.name"/> has been created.</p>
-                                                    <a t-attf-href="object.get_base_url()/web#id=object.id&amp;action=object.env.ref('website_sale.action_orders_ecommerce').id&amp;model=sale.order&amp;view_type=form" target="_blank" style="background-color:#7693f8 !important; padding:10px; text-decoration: none; color: #fff; border-radius: 5px; font-size: 16px;" class="o_default_snippet_text">
+                                                    <a t-attf-href="{{object.get_base_url()}}/web#id={{object.id}}&amp;action={{object.env.ref('website_sale.action_orders_ecommerce').id}}&amp;model=sale.order&amp;view_type=form" target="_blank" style="background-color:#7693f8 !important; padding:10px; text-decoration: none; color: #fff; border-radius: 5px; font-size: 16px;" class="o_default_snippet_text">
                                                         View Quotation
                                                     </a>
                                                    <!-- <br/> -->
                                                     <p style="margin-bottom:0px;"> Thank you,
                                                     <br/>ETO Support
                                                     </p>
-                                                    <a t-attf-href="object.get_base_url()/report/pdf/sale.report_saleorder/object.id">
-                                                        <img t-attf-src="/tzc_sales_customization_spt/static/src/img/pdf.png" style="height:60px;width:100px;"/>
+                                                    <a t-attf-href="{{object.get_base_url()}}/report/pdf/sale.report_saleorder/{{object.id}}">
+                                                        <img src="/tzc_sales_customization_spt/static/src/img/pdf.png" style="height:60px;width:100px;"/>
                                                     </a>
                                                 </td>
                                             </tr>
@@ -181,7 +180,7 @@
                                         </table>
                                     </td>
                                     <!-- FOOTER -->
-                                    <!-- <tr>
+                                    <tr>
                                         <td align="center" style="min-width: 590px;">
                                             <table border="0" cellpadding="0" cellspacing="0" width="590" style="min-width: 590px; background-color: white; font-size: 11px; padding: 0px 8px 0px 8px; border-collapse:separate;">
                                                 <tr>
@@ -205,13 +204,13 @@
                                                 </tr>
                                             </table>
                                         </td>
-                                    </tr> -->
+                                    </tr>
                                 </tbody>
                             </table>
                         </td>
                     </tr>
                     <!-- POWERED BY -->
-                    <!-- <tr>
+                    <tr>
                         <td align="center" style="min-width: 590px;">
                             <table border="0" cellpadding="0" cellspacing="0" width="590" style="min-width: 590px; background-color: #F1F1F1; color: #454748; padding: 8px; border-collapse:separate;">
                                 <tr>
@@ -221,7 +220,7 @@
                                 </tr>
                             </table>
                         </td>
-                    </tr>  -->
+                    </tr> 
                 </table>
 
             </field>

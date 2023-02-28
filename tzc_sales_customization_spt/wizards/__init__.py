@@ -63,3 +63,5 @@ from . import delivery_recovery_selection_wizard
 from . import kits_task_report_of_users
 from . import kits_history_of_task_changes
 from . import time_shift_wizard
+from . import product_edit_wizard_spt
+# from . import product_edit_wizard_line_spt
