@@ -49,7 +49,7 @@ class kits_b2b_website(models.Model):
     )
     home_ad_ids = fields.One2many(
         'kits.b2b.home.advertisement',
-        'page_id',
+        'website_id',
         string='Header Ads'
     )
     location_text = fields.Text('Location')

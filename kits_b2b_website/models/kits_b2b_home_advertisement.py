@@ -6,7 +6,7 @@ class KitsB2BHomeAdvertisement(models.Model):
     _description = 'B2B Home Advertisement'
     
     sequence = fields.Integer(index=True,)
-    name = fields.Html('Description')
+    name = fields.Text('Description')
     icon_url = fields.Char('Icon URL')
     icon = fields.Char(
         'Icon',
@@ -14,7 +14,7 @@ class KitsB2BHomeAdvertisement(models.Model):
         store=True,
         compute_sudo=True
     )
-    page_id = fields.Many2one('kits.b2b.website', 'website')
+    website_id = fields.Many2one('kits.b2b.website', 'website')
 
     @api.depends('icon_url')
     def _compute_icon(self):
