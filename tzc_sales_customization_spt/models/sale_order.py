@@ -2538,6 +2538,8 @@ class sale_order(models.Model):
 
         return order_ids
 
+
+
      # kits_bambora_payment
     @api.depends('payment_ids','due_amount','amount_paid','payment_status')
     def _get_amount_paid(self):

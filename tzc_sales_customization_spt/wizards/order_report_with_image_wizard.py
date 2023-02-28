@@ -376,70 +376,9 @@ class order_report_with_image_wizard(models.TransientModel):
                 row_index += 1
 
                 wrk_sheet.column_dimensions['A'].width = 10
-        # ----------------------------- Total/Discount/shipping Cost/etc. ----------------------------- 
-        footer_row = row_index+1
-        col_num = 7 if self.with_img else 6
-        if self.with_img:
-            wrk_sheet.merge_cells("G"+str(footer_row)+":H"+str(footer_row))
-            wrk_sheet.merge_cells("I"+str(footer_row)+":J"+str(footer_row))
-        else:
-            wrk_sheet.merge_cells("F"+str(footer_row)+":G"+str(footer_row))
-            wrk_sheet.merge_cells("H"+str(footer_row)+":I"+str(footer_row))
-
-
-        wrk_sheet.cell(row=footer_row, column=col_num).value = "Subtotal"
-        wrk_sheet.cell(row=footer_row, column=col_num).alignment = alignment_left
-        wrk_sheet.cell(row=footer_row, column=col_num).border = Border(top=Side(style='thin', color="000000"),bottom=Side(style='thin', color="000000"))
-        wrk_sheet.cell(row=footer_row, column=col_num).font = Font(size=9, bold=True, name="Lato")
-        wrk_sheet.cell(row=footer_row, column=col_num+1).border = Border(top=Side(style='thin', color="000000"),bottom=Side(style='thin', color="000000"))
-        wrk_sheet.cell(row=footer_row, column=col_num+2).font = Font(size=9, bold=False, name="Lato")
-        wrk_sheet.cell(row=footer_row, column=col_num+2).value = "$ {:,.2f}".format(data[13]) or 0.0
-        wrk_sheet.cell(row=footer_row, column=col_num+2).alignment = alignment_right
-        wrk_sheet.cell(row=footer_row, column=col_num+2).border = Border(top=Side(style='thin', color="000000"),bottom=Side(style='thin', color="000000"))
-        wrk_sheet.cell(row=footer_row, column=col_num+3).border = Border(top=Side(style='thin', color="000000"),bottom=Side(style='thin', color="000000"))
-        wrk_sheet.row_dimensions[footer_row].height = 21
-        footer_row += 1
-
-        if self.with_img:
-            wrk_sheet.merge_cells("G"+str(footer_row)+":H"+str(footer_row))
-            wrk_sheet.merge_cells("I"+str(footer_row)+":J"+str(footer_row))
-        else:
-            wrk_sheet.merge_cells("H"+str(footer_row)+":I"+str(footer_row))
-            wrk_sheet.merge_cells("J"+str(footer_row)+":K"+str(footer_row))
-
-        wrk_sheet.cell(row=footer_row, column=col_num).value = "Shipping Cost"
-        wrk_sheet.cell(row=footer_row, column=col_num).alignment = alignment_left
-        wrk_sheet.cell(row=footer_row, column=col_num).border = top_border
-        wrk_sheet.cell(row=footer_row, column=col_num).font = Font(size=11, bold=True, name="Calibri")
-        wrk_sheet.cell(row=footer_row, column=col_num+1).border = top_border 
-        wrk_sheet.cell(row=footer_row, column=col_num+2).value = "${:,.2f}".format(data[14])
-        wrk_sheet.cell(row=footer_row, column=col_num+2).alignment = alignment_right
-        wrk_sheet.cell(row=footer_row, column=col_num+2).font = table_font
-        wrk_sheet.cell(row=footer_row, column=col_num+2).border = top_border
-        wrk_sheet.cell(row=footer_row, column=col_num+3).border = top_border
-        footer_row += 1
-
-        if self.with_img:
-            wrk_sheet.merge_cells("G"+str(footer_row)+":H"+str(footer_row))
-            wrk_sheet.merge_cells("I"+str(footer_row)+":J"+str(footer_row))
-        else:
-            wrk_sheet.merge_cells("F"+str(footer_row)+":G"+str(footer_row))
-            wrk_sheet.merge_cells("H"+str(footer_row)+":I"+str(footer_row))
-
-        wrk_sheet.cell(row=footer_row, column=col_num).value = "Admin Fee"
-        wrk_sheet.cell(row=footer_row, column=col_num).alignment = alignment_left
-        wrk_sheet.cell(row=footer_row, column=col_num).border = top_border
-        wrk_sheet.cell(row=footer_row, column=col_num).font = Font(size=11, bold=True, name="Calibri")
-        wrk_sheet.cell(row=footer_row, column=col_num+1).border = top_border
-        wrk_sheet.cell(row=footer_row, column=col_num+2).value = "$ {:,.2f}".format(data[15]) or 0.0 # adminfee
-        wrk_sheet.cell(row=footer_row, column=col_num+2).alignment = alignment_right
-        wrk_sheet.cell(row=footer_row, column=col_num+2).font = table_font
-        wrk_sheet.cell(row=footer_row, column=col_num+2).border = top_border
-        wrk_sheet.cell(row=footer_row, column=col_num+3).border = top_border
-        wrk_sheet.row_dimensions[footer_row].height = 21
-        footer_row += 1
-
-        if abs(self.order_id.amount_discount):
+            # ----------------------------- Total/Discount/shipping Cost/etc. ----------------------------- 
+            footer_row = row_index+1
+            col_num = 7 if self.with_img else 6
             if self.with_img:
                 wrk_sheet.merge_cells("G"+str(footer_row)+":H"+str(footer_row))
                 wrk_sheet.merge_cells("I"+str(footer_row)+":J"+str(footer_row))
@@ -447,93 +386,154 @@ class order_report_with_image_wizard(models.TransientModel):
                 wrk_sheet.merge_cells("F"+str(footer_row)+":G"+str(footer_row))
                 wrk_sheet.merge_cells("H"+str(footer_row)+":I"+str(footer_row))
 
-            wrk_sheet.cell(row=footer_row, column=col_num).value = "Discount"
+
+            wrk_sheet.cell(row=footer_row, column=col_num).value = "Subtotal"
+            wrk_sheet.cell(row=footer_row, column=col_num).alignment = alignment_left
+            wrk_sheet.cell(row=footer_row, column=col_num).border = Border(top=Side(style='thin', color="000000"),bottom=Side(style='thin', color="000000"))
+            wrk_sheet.cell(row=footer_row, column=col_num).font = Font(size=9, bold=True, name="Lato")
+            wrk_sheet.cell(row=footer_row, column=col_num+1).border = Border(top=Side(style='thin', color="000000"),bottom=Side(style='thin', color="000000"))
+            wrk_sheet.cell(row=footer_row, column=col_num+2).font = Font(size=9, bold=False, name="Lato")
+            wrk_sheet.cell(row=footer_row, column=col_num+2).value = "$ {:,.2f}".format(data[13]) or 0.0
+            wrk_sheet.cell(row=footer_row, column=col_num+2).alignment = alignment_right
+            wrk_sheet.cell(row=footer_row, column=col_num+2).border = Border(top=Side(style='thin', color="000000"),bottom=Side(style='thin', color="000000"))
+            wrk_sheet.cell(row=footer_row, column=col_num+3).border = Border(top=Side(style='thin', color="000000"),bottom=Side(style='thin', color="000000"))
+            wrk_sheet.row_dimensions[footer_row].height = 21
+            footer_row += 1
+
+            if self.with_img:
+                wrk_sheet.merge_cells("G"+str(footer_row)+":H"+str(footer_row))
+                wrk_sheet.merge_cells("I"+str(footer_row)+":J"+str(footer_row))
+            else:
+                wrk_sheet.merge_cells("H"+str(footer_row)+":I"+str(footer_row))
+                wrk_sheet.merge_cells("J"+str(footer_row)+":K"+str(footer_row))
+
+            wrk_sheet.cell(row=footer_row, column=col_num).value = "Shipping Cost"
             wrk_sheet.cell(row=footer_row, column=col_num).alignment = alignment_left
             wrk_sheet.cell(row=footer_row, column=col_num).border = top_border
             wrk_sheet.cell(row=footer_row, column=col_num).font = Font(size=11, bold=True, name="Calibri")
-            wrk_sheet.cell(row=footer_row, column=col_num+1).border = top_border
-            wrk_sheet.cell(row=footer_row, column=col_num+2).value = "$ {:,.2f}".format(abs(data[16])) or 0.0 # discont
+            wrk_sheet.cell(row=footer_row, column=col_num+1).border = top_border 
+            wrk_sheet.cell(row=footer_row, column=col_num+2).value = "${:,.2f}".format(data[14])
             wrk_sheet.cell(row=footer_row, column=col_num+2).alignment = alignment_right
             wrk_sheet.cell(row=footer_row, column=col_num+2).font = table_font
             wrk_sheet.cell(row=footer_row, column=col_num+2).border = top_border
             wrk_sheet.cell(row=footer_row, column=col_num+3).border = top_border
             footer_row += 1
 
-        if self.with_img:
-            wrk_sheet.merge_cells("G"+str(footer_row)+":H"+str(footer_row))
-            wrk_sheet.merge_cells("I"+str(footer_row)+":J"+str(footer_row))
-        else:
-            wrk_sheet.merge_cells("F"+str(footer_row)+":G"+str(footer_row))
-            wrk_sheet.merge_cells("H"+str(footer_row)+":I"+str(footer_row))
+            if self.with_img:
+                wrk_sheet.merge_cells("G"+str(footer_row)+":H"+str(footer_row))
+                wrk_sheet.merge_cells("I"+str(footer_row)+":J"+str(footer_row))
+            else:
+                wrk_sheet.merge_cells("F"+str(footer_row)+":G"+str(footer_row))
+                wrk_sheet.merge_cells("H"+str(footer_row)+":I"+str(footer_row))
+
+            wrk_sheet.cell(row=footer_row, column=col_num).value = "Admin Fee"
+            wrk_sheet.cell(row=footer_row, column=col_num).alignment = alignment_left
+            wrk_sheet.cell(row=footer_row, column=col_num).border = top_border
+            wrk_sheet.cell(row=footer_row, column=col_num).font = Font(size=11, bold=True, name="Calibri")
+            wrk_sheet.cell(row=footer_row, column=col_num+1).border = top_border
+            wrk_sheet.cell(row=footer_row, column=col_num+2).value = "$ {:,.2f}".format(data[15]) or 0.0 # adminfee
+            wrk_sheet.cell(row=footer_row, column=col_num+2).alignment = alignment_right
+            wrk_sheet.cell(row=footer_row, column=col_num+2).font = table_font
+            wrk_sheet.cell(row=footer_row, column=col_num+2).border = top_border
+            wrk_sheet.cell(row=footer_row, column=col_num+3).border = top_border
+            wrk_sheet.row_dimensions[footer_row].height = 21
+            footer_row += 1
+
+            if abs(self.order_id.amount_discount):
+                if self.with_img:
+                    wrk_sheet.merge_cells("G"+str(footer_row)+":H"+str(footer_row))
+                    wrk_sheet.merge_cells("I"+str(footer_row)+":J"+str(footer_row))
+                else:
+                    wrk_sheet.merge_cells("F"+str(footer_row)+":G"+str(footer_row))
+                    wrk_sheet.merge_cells("H"+str(footer_row)+":I"+str(footer_row))
+
+                wrk_sheet.cell(row=footer_row, column=col_num).value = "Discount"
+                wrk_sheet.cell(row=footer_row, column=col_num).alignment = alignment_left
+                wrk_sheet.cell(row=footer_row, column=col_num).border = top_border
+                wrk_sheet.cell(row=footer_row, column=col_num).font = Font(size=11, bold=True, name="Calibri")
+                wrk_sheet.cell(row=footer_row, column=col_num+1).border = top_border
+                wrk_sheet.cell(row=footer_row, column=col_num+2).value = "$ {:,.2f}".format(abs(data[16])) or 0.0 # discont
+                wrk_sheet.cell(row=footer_row, column=col_num+2).alignment = alignment_right
+                wrk_sheet.cell(row=footer_row, column=col_num+2).font = table_font
+                wrk_sheet.cell(row=footer_row, column=col_num+2).border = top_border
+                wrk_sheet.cell(row=footer_row, column=col_num+3).border = top_border
+                footer_row += 1
+
+            if self.with_img:
+                wrk_sheet.merge_cells("G"+str(footer_row)+":H"+str(footer_row))
+                wrk_sheet.merge_cells("I"+str(footer_row)+":J"+str(footer_row))
+            else:
+                wrk_sheet.merge_cells("F"+str(footer_row)+":G"+str(footer_row))
+                wrk_sheet.merge_cells("H"+str(footer_row)+":I"+str(footer_row))
+                
+            wrk_sheet.cell(row=footer_row, column=col_num).value = "Tax"
+            wrk_sheet.cell(row=footer_row, column=col_num).alignment = alignment_left
+            wrk_sheet.cell(row=footer_row, column=col_num).border = top_border
+            wrk_sheet.cell(row=footer_row, column=col_num).font = Font(size=11, bold=True, name="Calibri")
+            wrk_sheet.cell(row=footer_row, column=col_num+1).border = top_border
+            wrk_sheet.cell(row=footer_row, column=col_num+2).value = "$ {:,.2f}".format(data[17]) or 0.0 # taxes
+            wrk_sheet.cell(row=footer_row, column=col_num+2).alignment = alignment_right
+            wrk_sheet.cell(row=footer_row, column=col_num+2).font = table_font
+            wrk_sheet.cell(row=footer_row, column=col_num+2).border = top_border
+            wrk_sheet.cell(row=footer_row, column=col_num+3).border = top_border
+            footer_row += 1
+
+            if self.with_img:
+                wrk_sheet.merge_cells("G"+str(footer_row)+":H"+str(footer_row))
+                wrk_sheet.merge_cells("I"+str(footer_row)+":J"+str(footer_row))
+            else:
+                wrk_sheet.merge_cells("F"+str(footer_row)+":G"+str(footer_row))
+                wrk_sheet.merge_cells("H"+str(footer_row)+":I"+str(footer_row))
+
+            wrk_sheet.cell(row=footer_row, column=col_num).value = "Total"
+            wrk_sheet.cell(row=footer_row, column=col_num).alignment = alignment_left
+            wrk_sheet.cell(row=footer_row, column=col_num).border = top_border
+            wrk_sheet.cell(row=footer_row, column=col_num).font = Font(size=11, bold=True, name="Calibri")
+            wrk_sheet.cell(row=footer_row, column=col_num+1).border = top_border
+            wrk_sheet.cell(row=footer_row, column=col_num+2).value = "({}) $ {:,.2f}".format(data[18],data[19]) # total
+            wrk_sheet.cell(row=footer_row, column=col_num+2).alignment = alignment_right
+            wrk_sheet.cell(row=footer_row, column=col_num+2).font = table_font
+            wrk_sheet.cell(row=footer_row, column=col_num+2).border = top_border
+            wrk_sheet.cell(row=footer_row, column=col_num+3).border = top_border
+            footer_row += 1
+
+            if self.with_img:
+                wrk_sheet.merge_cells("G"+str(footer_row)+":H"+str(footer_row))
+                wrk_sheet.merge_cells("I"+str(footer_row)+":J"+str(footer_row))
+            else:
+                wrk_sheet.merge_cells("F"+str(footer_row)+":G"+str(footer_row))
+                wrk_sheet.merge_cells("H"+str(footer_row)+":I"+str(footer_row))
+
+            wrk_sheet.cell(row=footer_row, column=col_num).value = "Total Quantity"
+            wrk_sheet.cell(row=footer_row, column=col_num).font = Font(size=11, bold=True, name="Calibri")
+            wrk_sheet.cell(row=footer_row, column=col_num).alignment = alignment_left
+            wrk_sheet.cell(row=footer_row, column=col_num).border = top_border
+            wrk_sheet.cell(row=footer_row, column=col_num+1).border = top_border
+            wrk_sheet.cell(row=footer_row, column=col_num+2).value = int(data[20]) or 0.0 # TotalQuantity
+            wrk_sheet.cell(row=footer_row, column=col_num+2).alignment = alignment_right
+            wrk_sheet.cell(row=footer_row, column=col_num+2).font = table_font
+            wrk_sheet.cell(row=footer_row, column=col_num+2).border = top_border
+            wrk_sheet.cell(row=footer_row, column=col_num+3).border = top_border
+            footer_row += 1
+
+            if self.with_img:
+                wrk_sheet.merge_cells("G"+str(footer_row)+":H"+str(footer_row))
+                wrk_sheet.merge_cells("I"+str(footer_row)+":J"+str(footer_row))
+            else:
+                wrk_sheet.merge_cells("F"+str(footer_row)+":G"+str(footer_row))
+                wrk_sheet.merge_cells("H"+str(footer_row)+":I"+str(footer_row))
             
-        wrk_sheet.cell(row=footer_row, column=col_num).value = "Tax"
-        wrk_sheet.cell(row=footer_row, column=col_num).alignment = alignment_left
-        wrk_sheet.cell(row=footer_row, column=col_num).border = top_border
-        wrk_sheet.cell(row=footer_row, column=col_num).font = Font(size=11, bold=True, name="Calibri")
-        wrk_sheet.cell(row=footer_row, column=col_num+1).border = top_border
-        wrk_sheet.cell(row=footer_row, column=col_num+2).value = "$ {:,.2f}".format(data[17]) or 0.0 # taxes
-        wrk_sheet.cell(row=footer_row, column=col_num+2).alignment = alignment_right
-        wrk_sheet.cell(row=footer_row, column=col_num+2).font = table_font
-        wrk_sheet.cell(row=footer_row, column=col_num+2).border = top_border
-        wrk_sheet.cell(row=footer_row, column=col_num+3).border = top_border
-        footer_row += 1
-
-        if self.with_img:
-            wrk_sheet.merge_cells("G"+str(footer_row)+":H"+str(footer_row))
-            wrk_sheet.merge_cells("I"+str(footer_row)+":J"+str(footer_row))
-        else:
-            wrk_sheet.merge_cells("F"+str(footer_row)+":G"+str(footer_row))
-            wrk_sheet.merge_cells("H"+str(footer_row)+":I"+str(footer_row))
-
-        wrk_sheet.cell(row=footer_row, column=col_num).value = "Total"
-        wrk_sheet.cell(row=footer_row, column=col_num).alignment = alignment_left
-        wrk_sheet.cell(row=footer_row, column=col_num).border = top_border
-        wrk_sheet.cell(row=footer_row, column=col_num).font = Font(size=11, bold=True, name="Calibri")
-        wrk_sheet.cell(row=footer_row, column=col_num+1).border = top_border
-        wrk_sheet.cell(row=footer_row, column=col_num+2).value = "({}) $ {:,.2f}".format(data[18],data[19]) # total
-        wrk_sheet.cell(row=footer_row, column=col_num+2).alignment = alignment_right
-        wrk_sheet.cell(row=footer_row, column=col_num+2).font = table_font
-        wrk_sheet.cell(row=footer_row, column=col_num+2).border = top_border
-        wrk_sheet.cell(row=footer_row, column=col_num+3).border = top_border
-        footer_row += 1
-
-        if self.with_img:
-            wrk_sheet.merge_cells("G"+str(footer_row)+":H"+str(footer_row))
-            wrk_sheet.merge_cells("I"+str(footer_row)+":J"+str(footer_row))
-        else:
-            wrk_sheet.merge_cells("F"+str(footer_row)+":G"+str(footer_row))
-            wrk_sheet.merge_cells("H"+str(footer_row)+":I"+str(footer_row))
-
-        wrk_sheet.cell(row=footer_row, column=col_num).value = "Total Quantity"
-        wrk_sheet.cell(row=footer_row, column=col_num).font = Font(size=11, bold=True, name="Calibri")
-        wrk_sheet.cell(row=footer_row, column=col_num).alignment = alignment_left
-        wrk_sheet.cell(row=footer_row, column=col_num).border = top_border
-        wrk_sheet.cell(row=footer_row, column=col_num+1).border = top_border
-        wrk_sheet.cell(row=footer_row, column=col_num+2).value = int(data[20]) or 0.0 # TotalQuantity
-        wrk_sheet.cell(row=footer_row, column=col_num+2).alignment = alignment_right
-        wrk_sheet.cell(row=footer_row, column=col_num+2).font = table_font
-        wrk_sheet.cell(row=footer_row, column=col_num+2).border = top_border
-        wrk_sheet.cell(row=footer_row, column=col_num+3).border = top_border
-        footer_row += 1
-
-        if self.with_img:
-            wrk_sheet.merge_cells("G"+str(footer_row)+":H"+str(footer_row))
-            wrk_sheet.merge_cells("I"+str(footer_row)+":J"+str(footer_row))
-        else:
-            wrk_sheet.merge_cells("F"+str(footer_row)+":G"+str(footer_row))
-            wrk_sheet.merge_cells("H"+str(footer_row)+":I"+str(footer_row))
-        
-        wrk_sheet.cell(row=footer_row, column=col_num).value = "Total Weight (kg)"
-        wrk_sheet.cell(row=footer_row, column=col_num).font = Font(size=11, bold=True, name="Calibri")
-        wrk_sheet.cell(row=footer_row, column=col_num).alignment = alignment_left
-        wrk_sheet.cell(row=footer_row, column=col_num).border = top_border
-        wrk_sheet.cell(row=footer_row, column=col_num+1).border = top_border
-        wrk_sheet.cell(row=footer_row, column=col_num+2).value = '{:,.2f}'.format(data[21]) or 0.0 # TotalWeight
-        wrk_sheet.cell(row=footer_row, column=col_num+2).alignment = alignment_right
-        wrk_sheet.cell(row=footer_row, column=col_num+2).font = table_font
-        wrk_sheet.cell(row=footer_row, column=col_num+2).border = top_border
-        wrk_sheet.cell(row=footer_row, column=col_num+3).border = top_border
-        footer_row += 1
+            wrk_sheet.cell(row=footer_row, column=col_num).value = "Total Weight (kg)"
+            wrk_sheet.cell(row=footer_row, column=col_num).font = Font(size=11, bold=True, name="Calibri")
+            wrk_sheet.cell(row=footer_row, column=col_num).alignment = alignment_left
+            wrk_sheet.cell(row=footer_row, column=col_num).border = top_border
+            wrk_sheet.cell(row=footer_row, column=col_num+1).border = top_border
+            wrk_sheet.cell(row=footer_row, column=col_num+2).value = '{:,.2f}'.format(data[21]) or 0.0 # TotalWeight
+            wrk_sheet.cell(row=footer_row, column=col_num+2).alignment = alignment_right
+            wrk_sheet.cell(row=footer_row, column=col_num+2).font = table_font
+            wrk_sheet.cell(row=footer_row, column=col_num+2).border = top_border
+            wrk_sheet.cell(row=footer_row, column=col_num+3).border = top_border
+            footer_row += 1
 
         save_wrksht = wb if self.with_img else wb_xlsx
         file_ext = '.xlsm' if self.with_img else '.xlsx'

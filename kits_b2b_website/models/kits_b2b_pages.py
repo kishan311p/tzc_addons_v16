@@ -1,6 +1,5 @@
 from odoo import fields, models, api, _
 
-
 class kits_b2b_pages(models.Model):
     _name = 'kits.b2b.pages'
     _description = "B2B Pages"
