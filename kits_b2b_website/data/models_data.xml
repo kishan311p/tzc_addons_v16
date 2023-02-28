@@ -264,10 +264,10 @@ Sunglasses</field>
         <field name="page_type">our_story</field>
         <field name="name">Our Story</field>
         <field name="is_our_core_values">True</field>
-        <field name="header_text_1">No current vacancies</field>
+        <field name="header_text_1">Join Our Team</field>
         <field name="text_1">Everything Optical have been suppling luxury branded optical frames and sunglasses to emerging markets across the world, which include Africa, South and Central America, Middle East and South Asia. Our office, located strategically across the globe have been serving these markets with the best quality eyewear, focusing on creating value for our customers.</field>
         <field name="text_1_redirect_url">https://b2b.teameto.com/aboutus</field>
-        <field name="text_1_redirect_url_text">View Open Positions</field>
+        <field name="text_1_redirect_url_text">No current vacancies</field>
         <field name="website_id" eval="kits_team_eto_website" />
         <field name="text_2">Are you an eyewear enthusiast that is energetic and looking to work in a dynamic environment. Team ETO is constantly looking to grow and attract talented individuals that are looking for a promising career.</field>
         <field name="header_text_2">Our Team</field>
@@ -415,6 +415,7 @@ Sunglasses</field>
     <record id="kits_aboutus_our_team_1_image" model="kits.b2b.image.model">
         <field name="header_description">Aliraza Rajani</field>
         <field name="description">Founder &amp; CEO</field>
+        <field name="sequence">1</field>
         <field name="url">https://cdn.teameto.com/data/B2C1/new_tzc_b2b_images/team/team-1.png</field>
         <field name="website_id" eval="kits_team_eto_website" />
     </record>
@@ -422,6 +423,7 @@ Sunglasses</field>
     <record id="kits_aboutus_our_team_2_image" model="kits.b2b.image.model">
         <field name="header_description">Musadik Rajani</field>
         <field name="description">Senior Vice President</field>
+        <field name="sequence">2</field>
         <field name="url">https://cdn.teameto.com/data/B2C1/new_tzc_b2b_images/team/team-2.png</field>
         <field name="website_id" eval="kits_team_eto_website" />
     </record>
@@ -429,6 +431,7 @@ Sunglasses</field>
     <record id="kits_aboutus_our_team_3_image" model="kits.b2b.image.model">
         <field name="header_description">Mazaher Rajani</field>
         <field name="description">VP Operations – Middle East &amp; Africa</field>
+        <field name="sequence">3</field>
         <field name="url">https://cdn.teameto.com/data/B2C1/new_tzc_b2b_images/team/team-2.png</field>
         <field name="website_id" eval="kits_team_eto_website" />
     </record>
@@ -436,78 +439,84 @@ Sunglasses</field>
     <record id="kits_aboutus_our_team_4_image" model="kits.b2b.image.model">
         <field name="header_description">Behrouz Rouhani</field>
         <field name="description">Project Manager</field>
-        <field name="url"></field>
-        <field name="website_id" eval="kits_team_eto_website" />
-    </record>
-    <record id="kits_aboutus_our_team_4_image" model="kits.b2b.image.model">
-        <field name="header_description">Behrouz Rouhani</field>
-        <field name="description">Project Manager</field>
+        <field name="sequence">4</field>
         <field name="url"></field>
         <field name="website_id" eval="kits_team_eto_website" />
     </record>
     <record id="kits_aboutus_our_team_5_image" model="kits.b2b.image.model">
         <field name="header_description">Johanna Blanco Eidelman</field>
         <field name="description">Sales Manager</field>
+        <field name="sequence">5</field>
         <field name="url"></field>
         <field name="website_id" eval="kits_team_eto_website" />
     </record>
     <record id="kits_aboutus_our_team_6_image" model="kits.b2b.image.model">
         <field name="header_description">Anabelle Estrañero</field>
         <field name="description">Administration &amp; Office Manager – Dubai</field>
+        <field name="sequence">6</field>
         <field name="url"></field>
         <field name="website_id" eval="kits_team_eto_website" />
     </record>
     <record id="kits_aboutus_our_team_7_image" model="kits.b2b.image.model">
         <field name="header_description">Erica Hermoso</field>
         <field name="description">Sales Executive</field>
+        <field name="sequence">7</field>
         <field name="url"></field>
         <field name="website_id" eval="kits_team_eto_website" />
     </record>
     <record id="kits_aboutus_our_team_8_image" model="kits.b2b.image.model">
         <field name="header_description">Haider Hassan Anwarulhaq Bukhari</field>
         <field name="description">Territorial Manager</field>
+        <field name="sequence">8</field>
         <field name="url"></field>
         <field name="website_id" eval="kits_team_eto_website" />
     </record>
     <record id="kits_aboutus_our_team_9_image" model="kits.b2b.image.model">
         <field name="header_description">John Nasarine S. Lunod</field>
         <field name="description">Sales Executive</field>
+        <field name="sequence">9</field>
         <field name="url"></field>
         <field name="website_id" eval="kits_team_eto_website" />
     </record>
     <record id="kits_aboutus_our_team_10_image" model="kits.b2b.image.model">
         <field name="header_description">Lyra Regina De Luzon</field>
         <field name="description">Country Manager</field>
+        <field name="sequence">10</field>
         <field name="url"></field>
         <field name="website_id" eval="kits_team_eto_website" />
     </record>
     <record id="kits_aboutus_our_team_11_image" model="kits.b2b.image.model">
         <field name="header_description">Mouna Ben Aicha</field>
         <field name="description">Business Development Executive – French Market</field>
+        <field name="sequence">11</field>
         <field name="url"></field>
         <field name="website_id" eval="kits_team_eto_website" />
     </record>
     <record id="kits_aboutus_our_team_12_image" model="kits.b2b.image.model">
         <field name="header_description">Murielle Annie Makon</field>
         <field name="description">Sales Executive</field>
+        <field name="sequence">12</field>
         <field name="url"></field>
         <field name="website_id" eval="kits_team_eto_website" />
     </record>
     <record id="kits_aboutus_our_team_13_image" model="kits.b2b.image.model">
         <field name="header_description">Aashiq Siddik</field>
         <field name="description">Digital Marketing Specialist</field>
+        <field name="sequence">13</field>
         <field name="url"></field>
         <field name="website_id" eval="kits_team_eto_website" />
     </record>
     <record id="kits_aboutus_our_team_14_image" model="kits.b2b.image.model">
         <field name="header_description">Awais Tariq</field>
         <field name="description">Sales Executive</field>
+        <field name="sequence">14</field>
         <field name="url"></field>
         <field name="website_id" eval="kits_team_eto_website" />
     </record>
     <record id="kits_aboutus_our_team_15_image" model="kits.b2b.image.model">
         <field name="header_description">Country Manager</field>
         <field name="description">Sabri Baaka</field>
+        <field name="sequence">15</field>
         <field name="url"></field>
         <field name="website_id" eval="kits_team_eto_website" />
     </record>
