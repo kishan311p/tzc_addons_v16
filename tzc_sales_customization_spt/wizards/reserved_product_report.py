@@ -93,7 +93,7 @@ class reserved_product_report(models.TransientModel):
                     INNER JOIN RES_PARTNER AS R_PAR ON R_USER.PARTNER_ID = R_PAR.ID
                     INNER JOIN SALE_ORDER_LINE AS SOL ON SOL.ORDER_ID = SO.ID
                     INNER JOIN PRODUCT_PRODUCT AS PP ON SOL.PRODUCT_ID = PP.ID
-                    WHERE PP.DEFAULT_CODE = '{sku.strip()}' '''
+                    WHERE SOL.STATE IN ('in_scanning','scanned','scan') AND PP.DEFAULT_CODE = '{sku.strip()}' '''
 
             self.env.cr.execute(query)
             record_data = self.env.cr.fetchall()

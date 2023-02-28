@@ -98,76 +98,77 @@ class shipped_orders_report_wizard_spt(models.TransientModel):
 
         report_data = self.get_report_data_by_query()
         row_index = table_header_row+1
-        for data in report_data:
-            if data[9] == '':
-                sheet.row_dimensions[row_index].height = 35
-            else:
-                height = 3*len(data[9])/2
-                sheet.row_dimensions[row_index].height = height if 3*len(data[9]) > 30 else 35
-            sheet.cell(row=row_index, column=1).value = str(data[0])
-            sheet.cell(row=row_index, column=2).value = data[1]
-            sheet.cell(row=row_index, column=3).value = str(data[2])
-            sheet.cell(row=row_index, column=4).value = data[3] if data[3] != None else ''
-            sheet.cell(row=row_index, column=5).value = data[4]
-            sheet.cell(row=row_index, column=6).value = data[5]
-            sheet.cell(row=row_index, column=7).value = data[6]
-            sheet.cell(row=row_index, column=8).value = data[7]
-            sheet.cell(row=row_index, column=9).value = data[8]
-            sheet.cell(row=row_index, column=10).value = data[9]
-            sale_order = self.env['sale.order'].search([('name','=',data[1])])
-            sheet.cell(row=row_index, column=11).value = sale_order.country_id.name if sale_order.country_id else ''
-            address = self.env['res.partner'].search([('id','=',data[10])])
-            sheet.cell(row=row_index, column=12).value = self.show_address(address)
-            sheet.cell(row=row_index, column=13).value = data[11]
-            sheet.cell(row=row_index, column=14).value = data[12]
+        if report_data:
+            for data in report_data:
+                if data[9] == '':
+                    sheet.row_dimensions[row_index].height = 35
+                else:
+                    height = 3*len(data[9])/2
+                    sheet.row_dimensions[row_index].height = height if 3*len(data[9]) > 30 else 35
+                sheet.cell(row=row_index, column=1).value = str(data[0])
+                sheet.cell(row=row_index, column=2).value = data[1]
+                sheet.cell(row=row_index, column=3).value = str(data[2])
+                sheet.cell(row=row_index, column=4).value = data[3] if data[3] != None else ''
+                sheet.cell(row=row_index, column=5).value = data[4]
+                sheet.cell(row=row_index, column=6).value = data[5]
+                sheet.cell(row=row_index, column=7).value = data[6]
+                sheet.cell(row=row_index, column=8).value = data[7]
+                sheet.cell(row=row_index, column=9).value = data[8]
+                sheet.cell(row=row_index, column=10).value = data[9]
+                sale_order = self.env['sale.order'].search([('name','=',data[1])])
+                sheet.cell(row=row_index, column=11).value = sale_order.country_id.name if sale_order.country_id else ''
+                address = self.env['res.partner'].search([('id','=',data[10])])
+                sheet.cell(row=row_index, column=12).value = self.show_address(address)
+                sheet.cell(row=row_index, column=13).value = data[11]
+                sheet.cell(row=row_index, column=14).value = data[12]
 
-            sheet.cell(row=row_index, column=1).font = table_font
-            sheet.cell(row=row_index, column=2).font = table_font
-            sheet.cell(row=row_index, column=3).font = table_font
-            sheet.cell(row=row_index, column=4).font = table_font
-            sheet.cell(row=row_index, column=5).font = table_font
-            sheet.cell(row=row_index, column=6).font = table_font
-            sheet.cell(row=row_index, column=7).font = table_font
-            sheet.cell(row=row_index, column=8).font = table_font
-            sheet.cell(row=row_index, column=9).font = table_font
-            sheet.cell(row=row_index, column=10).font = table_font
-            sheet.cell(row=row_index, column=11).font = table_font
-            sheet.cell(row=row_index, column=12).font = table_font
-            sheet.cell(row=row_index, column=13).font = table_font
-            sheet.cell(row=row_index, column=14).font = table_font
+                sheet.cell(row=row_index, column=1).font = table_font
+                sheet.cell(row=row_index, column=2).font = table_font
+                sheet.cell(row=row_index, column=3).font = table_font
+                sheet.cell(row=row_index, column=4).font = table_font
+                sheet.cell(row=row_index, column=5).font = table_font
+                sheet.cell(row=row_index, column=6).font = table_font
+                sheet.cell(row=row_index, column=7).font = table_font
+                sheet.cell(row=row_index, column=8).font = table_font
+                sheet.cell(row=row_index, column=9).font = table_font
+                sheet.cell(row=row_index, column=10).font = table_font
+                sheet.cell(row=row_index, column=11).font = table_font
+                sheet.cell(row=row_index, column=12).font = table_font
+                sheet.cell(row=row_index, column=13).font = table_font
+                sheet.cell(row=row_index, column=14).font = table_font
 
-            sheet.cell(row=row_index, column=1).border = bottom_border
-            sheet.cell(row=row_index, column=2).border = bottom_border
-            sheet.cell(row=row_index, column=3).border = bottom_border
-            sheet.cell(row=row_index, column=4).border = bottom_border
-            sheet.cell(row=row_index, column=5).border = bottom_border
-            sheet.cell(row=row_index, column=6).border = bottom_border
-            sheet.cell(row=row_index, column=7).border = bottom_border
-            sheet.cell(row=row_index, column=8).border = bottom_border
-            sheet.cell(row=row_index, column=9).border = bottom_border
-            sheet.cell(row=row_index, column=10).border = bottom_border
-            sheet.cell(row=row_index, column=11).border = bottom_border
-            sheet.cell(row=row_index, column=12).border = bottom_border
-            sheet.cell(row=row_index, column=13).border = bottom_border
-            sheet.cell(row=row_index, column=14).border = bottom_border
+                sheet.cell(row=row_index, column=1).border = bottom_border
+                sheet.cell(row=row_index, column=2).border = bottom_border
+                sheet.cell(row=row_index, column=3).border = bottom_border
+                sheet.cell(row=row_index, column=4).border = bottom_border
+                sheet.cell(row=row_index, column=5).border = bottom_border
+                sheet.cell(row=row_index, column=6).border = bottom_border
+                sheet.cell(row=row_index, column=7).border = bottom_border
+                sheet.cell(row=row_index, column=8).border = bottom_border
+                sheet.cell(row=row_index, column=9).border = bottom_border
+                sheet.cell(row=row_index, column=10).border = bottom_border
+                sheet.cell(row=row_index, column=11).border = bottom_border
+                sheet.cell(row=row_index, column=12).border = bottom_border
+                sheet.cell(row=row_index, column=13).border = bottom_border
+                sheet.cell(row=row_index, column=14).border = bottom_border
 
-            sheet.cell(row=row_index, column=1).alignment = align_left
-            sheet.cell(row=row_index, column=2).alignment = align_left
-            sheet.cell(row=row_index, column=3).alignment = align_left
-            sheet.cell(row=row_index, column=4).alignment = align_left
-            sheet.cell(row=row_index, column=5).alignment = align_left
-            sheet.cell(row=row_index, column=6).alignment = align_left
-            sheet.cell(row=row_index, column=7).alignment = align_right
-            sheet.cell(row=row_index, column=8).alignment = align_right
-            sheet.cell(row=row_index, column=9).alignment = align_left
-            sheet.cell(row=row_index, column=10).alignment = align_left
-            sheet.cell(row=row_index, column=11).alignment = align_left
-            sheet.cell(row=row_index, column=12).alignment = align_left
-            sheet.cell(row=row_index, column=13).alignment = align_right
-            sheet.cell(row=row_index, column=14).alignment = align_right
-            row_index += 1
+                sheet.cell(row=row_index, column=1).alignment = align_left
+                sheet.cell(row=row_index, column=2).alignment = align_left
+                sheet.cell(row=row_index, column=3).alignment = align_left
+                sheet.cell(row=row_index, column=4).alignment = align_left
+                sheet.cell(row=row_index, column=5).alignment = align_left
+                sheet.cell(row=row_index, column=6).alignment = align_left
+                sheet.cell(row=row_index, column=7).alignment = align_right
+                sheet.cell(row=row_index, column=8).alignment = align_right
+                sheet.cell(row=row_index, column=9).alignment = align_left
+                sheet.cell(row=row_index, column=10).alignment = align_left
+                sheet.cell(row=row_index, column=11).alignment = align_left
+                sheet.cell(row=row_index, column=12).alignment = align_left
+                sheet.cell(row=row_index, column=13).alignment = align_right
+                sheet.cell(row=row_index, column=14).alignment = align_right
+                row_index += 1
 
-        if not report_data:
+        else:
             sheet.merge_cells("A"+str(row_index)+":M"+str(row_index))
             sheet.cell(row=row_index, column=1).value = 'There is no orderes between date ' + \
                 str(self.start_date)+' and '+str(self.end_date)+' !'
@@ -219,7 +220,7 @@ class shipped_orders_report_wizard_spt(models.TransientModel):
                 INNER JOIN STOCK_PICKING AS SP ON SO.NAME = SP.ORIGIN
                 INNER JOIN RES_PARTNER AS RP ON SO.PARTNER_ID = RP.ID
                 INNER JOIN SHIPPING_PROVIDER_SPT AS SPS ON SP.SHIPPING_ID = SPS.ID
-                INNER JOIN RES_CURRENCY AS RCU ON RCU.ID = SO.B2B_CURRENCY_ID
+                LEFT JOIN RES_CURRENCY AS RCU ON RCU.ID = SO.B2B_CURRENCY_ID
 				INNER JOIN STOCK_PICKING_TYPE AS SPT ON SPT.ID = SP.PICKING_TYPE_ID
                 WHERE SP.STATE = 'done' AND SPT.CODE = 'outgoing' '''
         

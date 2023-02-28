@@ -44,29 +44,7 @@ class sales_report_for_sales_person_wizard_spt(models.TransientModel):
         
         
         return sale_order_obj.search(domain).sorted(key=lambda x:x.partner_id.name)
-
-    def get_excel_report_data(self):
-        query = '''SELECT COALESCE(SO.NAME,'') AS NAME,
-                    COALESCE(RP.NAME,'') AS SALES,
-                    SO.DATE_ORDER,
-                    COALESCE(SO.SOURCE_SPT,'') AS SOURCE,
-                    COALESCE(SO.AMOUNT_TOTAL,0) AS TOTAL
-                FROM SALE_ORDER AS SO
-                INNER JOIN RES_PARTNER AS RP ON SO.PARTNER_ID = RP.ID
-                WHERE'''
-        for rec in self:
-            if (self.user_ids):
-                users = f'({self.user_ids.id})' if len(self.user_ids.ids)==1 else f'{tuple(self.user_ids.ids)}'
-                query = query+' SO.USER_ID IN ' + users
-                #  f'({self.user_ids.id})' if len(self.user_ids.ids)==1 else f'{tuple(self.user_ids.ids)}'
-            if self.start_date:
-                query = query+" AND SO.DATE_ORDER >= '%s'" % str(self.start_date)
-            if self.end_date:
-                query = query+" AND SO.DATE_ORDER <= '%s'" % str(self.end_date)
-            self.env.cr.execute(query)
-            report_data=self.env.cr.fetchall()
-        return report_data
-
+        
     def action_create_excel_report(self):
         for record in self:
             active_id= self.id
@@ -94,24 +72,28 @@ class sales_report_for_sales_person_wizard_spt(models.TransientModel):
                 sheet.cell(row=9, column=4).value = 'Medium'
                 sheet.cell(row=9, column=5).value = 'Total'
                 row_index = 11
-                report_data = self.get_excel_report_data()
+
+                query = f'''SELECT COALESCE(SO.NAME,'') AS NAME,
+                    COALESCE(RP.NAME,'') AS SALES,
+                    SO.DATE_ORDER,
+                    COALESCE(SO.SOURCE_SPT,'') AS SOURCE,
+                    COALESCE(SO.AMOUNT_TOTAL,0) AS TOTAL
+                FROM SALE_ORDER AS SO
+                INNER JOIN RES_PARTNER AS RP ON SO.PARTNER_ID = RP.ID
+                WHERE SO.USER_ID = {user.id}'''
+                if self.start_date:
+                    query = query+" AND SO.DATE_ORDER >= '%s'" % str(self.start_date)
+                if self.end_date:
+                    query = query+" AND SO.DATE_ORDER <= '%s'" % str(self.end_date)
+                self.env.cr.execute(query)
+                report_data=self.env.cr.fetchall()
+
                 for order in report_data:
                     sheet.cell(row=row_index, column=1).value = order[0]
                     sheet.cell(row=row_index, column=2).value = order[1]
                     sheet.cell(row=row_index, column=3).value = datetime.strftime(order[2],'%m-%d-%Y %H:%M:%S')
                     if order[3]:
-                        medium = order[3]
-                    # if order.catalog_id:
-                    #     medium = 'Catalog'
-                    # elif order.website_id:
-                    #     medium = 'Website'
-                        
-                    # else:
-                    #     pos_id = pos_obj.search([('sale_order_id','=',order.id)])
-                    #     if pos_id:
-                    #         medium = 'POS Order'
-                    #     else:
-                    #         medium = 'Normal'                    
+                        medium = order[3]                    
                     sheet.cell(row=row_index, column=4).value = medium
                     sheet.cell(row=row_index, column=5).value = '{:,.2f}'.format(float(order[4]))
                     sheet.cell(row=row_index, column=5).alignment = right_alignment

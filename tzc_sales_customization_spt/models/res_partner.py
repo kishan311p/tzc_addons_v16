@@ -1423,33 +1423,60 @@ class res_partner(models.Model):
                     delivery_address.append(address.zip)
                 shipping_address.append(','.join(delivery_address))
 
-            sheet.cell(row=row_index, column=1).value = partner.id
-            sheet.cell(row=row_index, column=1).alignment = left_alignment
-            sheet.cell(row=row_index, column=2).value = partner.internal_id or ''
-            sheet.cell(row=row_index, column=3).value = partner.name or ''
-            sheet.cell(row=row_index, column=4).value = 'Yes' if partner.company_type == 'company' else 'No'
-            sheet.cell(row=row_index, column=5).value = partner.user_id.name or ''
-            sheet.cell(row=row_index, column=6).value = partner.user_id.partner_id.internal_id or ''
-            sheet.cell(row=row_index, column=7).value = 'Yes' if partner.active else 'No'
-            sheet.cell(row=row_index, column=8).value = partner.phone or ''
-            sheet.cell(row=row_index, column=9).value = partner.mobile or ''
-            sheet.cell(row=row_index, column=10).value = partner.email or ''
-            sheet.cell(row=row_index, column=11).value = ','.join([l for l in [partner.street or '', partner.street2 or ''] if l])
-            sheet.cell(row=row_index, column=12).value = partner.zip or ''
-            sheet.cell(row=row_index, column=13).value = partner.state_id.name or ''
-            sheet.cell(row=row_index, column=14).value = partner.country_id.name or ''
-            sheet.cell(row=row_index, column=15).value = ','.join(partner.business_type_ids.mapped('name')) or ''
-            sheet.cell(row=row_index, column=16).value = dict(self._fields['customer_type'].selection).get(partner.customer_type) or ''
-            sheet.cell(row=row_index, column=17).value = partner._get_external_ids()[partner.id][0] if partner._get_external_ids()[partner.id] else ''
-            sheet.cell(row=row_index, column=18).value = partner.create_date.strftime('%d-%m-%Y') or  ''
-            sheet.cell(row=row_index, column=18).alignment = left_alignment
-            sheet.cell(row=row_index, column=19).value = partner.write_date.strftime('%d-%m-%Y') or ''
-            sheet.cell(row=row_index, column=19).alignment = left_alignment
-            sheet.cell(row=row_index, column=20).value = order_id.picked_qty_order_total if order_id and order_id.picked_qty_order_total else order_id.amount_total if order_id else 0.0
-            sheet.cell(row=row_index, column=20).alignment = right_alignment
-            sheet.cell(row=row_index, column=21).value = partner.contact_name_spt or ''
-            sheet.cell(row=row_index, column=22).value = ' | '.join(shipping_address)
-            row_index += 1
+            query = f'''
+                SELECT RP.ID,
+                    COALESCE(RP.INTERNAL_ID,'') AS INTERNAL_ID,
+                    COALESCE(RP.NAME,'') AS NAME,
+                   
+                    RP.ACTIVE,
+                    RP.PHONE,
+                    RP.MOBILE,
+                    RP.EMAIL,
+                    RP.STREET,
+                    RP.STREET2,
+                    RP.ZIP,
+                    RCS.NAME AS STATE,
+                    RC.NAME->>'en_US' AS COUNTRY,
+                    RP.CUSTOMER_TYPE,
+                    RP.CREATE_DATE,
+                    RP.WRITE_DATE,
+                    RP.CONTACT_NAME_SPT
+                FROM RES_PARTNER AS RP
+                LEFT JOIN RES_USERS AS RU ON RP.ID = RU.PARTNER_ID
+                LEFT JOIN RES_COUNTRY_STATE AS RCS ON RP.STATE_ID = RCS.ID
+                LEFT JOIN RES_COUNTRY AS RC ON RP.COUNTRY_ID = RC.ID
+                WHERE RP.ID = {partner.id}
+            '''
+            self.env.cr.execute(query)
+            records = self.env.cr.fetchall()
+            for data in records:
+                sheet.cell(row=row_index, column=1).value = data[0]
+                sheet.cell(row=row_index, column=1).alignment = left_alignment
+                sheet.cell(row=row_index, column=2).value = data[1] or ''
+                sheet.cell(row=row_index, column=3).value = data[2] or ''
+                sheet.cell(row=row_index, column=4).value = 'Yes' if partner.company_type == 'company' else 'No'
+                sheet.cell(row=row_index, column=5).value = partner.user_id.name or ''
+                sheet.cell(row=row_index, column=6).value = partner.user_id.partner_id.internal_id or ''
+                sheet.cell(row=row_index, column=7).value = 'Yes' if data[3] else 'No'
+                sheet.cell(row=row_index, column=8).value = data[4] or ''
+                sheet.cell(row=row_index, column=9).value = data[5] or ''
+                sheet.cell(row=row_index, column=10).value = data[6] or ''
+                sheet.cell(row=row_index, column=11).value = ','.join([l for l in [data[7] or '', data[8] or ''] if l])
+                sheet.cell(row=row_index, column=12).value = data[9] or ''
+                sheet.cell(row=row_index, column=13).value = data[10] or ''
+                sheet.cell(row=row_index, column=14).value = data[11] or ''
+                sheet.cell(row=row_index, column=15).value = ','.join(partner.business_type_ids.mapped('name')) or ''
+                sheet.cell(row=row_index, column=16).value = dict(self._fields['customer_type'].selection).get(data[12]) or ''
+                sheet.cell(row=row_index, column=17).value = partner._get_external_ids()[partner.id][0] if partner._get_external_ids()[partner.id] else ''
+                sheet.cell(row=row_index, column=18).value = data[13].strftime('%d-%m-%Y') or  ''
+                sheet.cell(row=row_index, column=18).alignment = left_alignment
+                sheet.cell(row=row_index, column=19).value = data[14].strftime('%d-%m-%Y') or ''
+                sheet.cell(row=row_index, column=19).alignment = left_alignment
+                sheet.cell(row=row_index, column=20).value = order_id.picked_qty_order_total if order_id and order_id.picked_qty_order_total else order_id.amount_total if order_id else 0.0
+                sheet.cell(row=row_index, column=20).alignment = right_alignment
+                sheet.cell(row=row_index, column=21).value = data[15] or ''
+                sheet.cell(row=row_index, column=22).value = ' | '.join(shipping_address)
+                row_index += 1
         
         sheet.column_dimensions['A'].width = 10
         sheet.column_dimensions['B'].width = 20

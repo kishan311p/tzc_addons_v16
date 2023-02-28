@@ -109,7 +109,7 @@ class brand_qty_report_wizard(models.TransientModel):
                                 FROM PRODUCT_PRODUCT AS PP
                                 INNER JOIN ACCOUNT_MOVE_LINE AS AML ON AML.PRODUCT_ID = PP.ID
                                 INNER JOIN PRODUCT_BRAND_SPT AS PBS ON PP.BRAND = PBS.ID
-                                WHERE PBS.ID = {brand.id} AND AML.PARENT_STATE = 'post' '''
+                                WHERE PBS.ID = {brand.id} AND AML.PARENT_STATE = 'posted' '''
                             if start_date:
                                 query = query + " AND AML.CREATE_DATE >= '%s'" % (start_date)
                             if end_date:

@@ -103,112 +103,144 @@ class kits_customers_report_wizard(models.TransientModel):
 
         for partner in contacts_ids:
 
-            partner_adress = []
-            if partner.street:
-                partner_adress.append(partner.street)
-            if partner.street2:
-                partner_adress.append(partner.street2)
 
-            if self.all_fields:
-                sheet.cell(row=row_index, column=1).value = partner.id if partner.id else ''
-                sheet.cell(row=row_index, column=1).alignment = align_left
-                sheet.cell(row=row_index, column=2).value = partner.name if partner.name else '' 
-                sheet.cell(row=row_index, column=3).value = str(partner.is_company) 
-                sheet.cell(row=row_index, column=4).value = partner.user_id.internal_id if partner.user_id.internal_id else ''
-                sheet.cell(row=row_index, column=5).value = partner.user_id.name if partner.user_id else ''
-                sheet.cell(row=row_index, column=6).value = str(partner.active)
-                sheet.cell(row=row_index, column=7).value = partner.phone if partner.phone else ''
-                sheet.cell(row=row_index, column=8).value = partner.mobile if partner.mobile else ''
-                sheet.cell(row=row_index, column=9).value = partner.email if partner.email else ''
-                sheet.cell(row=row_index, column=10).value = ", ".join(partner_adress) if partner_adress else ''
-                sheet.cell(row=row_index, column=11).value = partner.zip if partner.zip else ''
-                sheet.cell(row=row_index, column=12).value = partner.state_id.name if partner.state_id else ''
-                sheet.cell(row=row_index, column=13).value = partner.country_id.name if partner.country_id else ''
-                sheet.cell(row=row_index, column=14).value = ', '.join(partner.business_type_ids.mapped('name')) if partner.business_type_ids else ''
-                sheet.cell(row=row_index, column=15).value = partner.company_id.name if partner.company_id else ''
-                sheet.cell(row=row_index, column=16).value = dict(partner._fields['company_type'].selection).get(partner.company_type)
-                sheet.cell(row=row_index, column=17).value = dict(partner._fields['customer_type'].selection).get(partner.customer_type) if partner.customer_type else ''
-                sheet.cell(row=row_index, column=18).value = dict(partner._fields['activity_state'].selection).get(partner.activity_state) if partner.activity_state else ''
-                sheet.cell(row=row_index, column=19).value = partner.journal_item_count if partner.journal_item_count else ''
-                sheet.cell(row=row_index, column=19).alignment = align_left
-                sheet.cell(row=row_index, column=20).value = partner.create_date.strftime('%d-%m-%Y') if partner.create_date else ''
-                sheet.cell(row=row_index, column=21).value = partner.search_read([('id','=',partner.id)],['__last_update'])[0].get('__last_update').strftime('%d-%m-%Y')
-                sheet.cell(row=row_index, column=22).value = partner.last_order_value if partner.last_order_value else ''
-                sheet.cell(row=row_index, column=22).alignment = align_right
-                row_index += 1
+            query = f'''
+                SELECT RP.ID,
+                    COALESCE(RP.NAME,'') AS NAME,
+                    RP.IS_COMPANY,
+                    RP.ACTIVE,
+                    RP.PHONE,
+                    RP.MOBILE,
+                    RP.EMAIL,
+                    RP.STREET,
+                    RP.STREET2,
+                    RP.ZIP,
+                    RCS.NAME AS STATE,
+                    RC.NAME->>'en_US' AS COUNTRY,
+                    RP.CUSTOMER_TYPE,
+                    RP.CREATE_DATE,
+                    RP.WRITE_DATE,
+                    RP.CONTACT_NAME_SPT,
+                    RP.LAST_ORDER_VALUE,
+                    RCG.NAME AS TERRITORY,
+                    RP.IS_EMAIL_VERIFIED,
+	                RP.IS_GRANTED_PORTAL_ACCESS
+                FROM RES_PARTNER AS RP
+                LEFT JOIN RES_USERS AS RU ON RP.ID = RU.PARTNER_ID
+                LEFT JOIN RES_COUNTRY_STATE AS RCS ON RP.STATE_ID = RCS.ID
+                LEFT JOIN RES_COUNTRY AS RC ON RP.COUNTRY_ID = RC.ID
+                LEFT JOIN RES_COUNTRY_GROUP AS RCG ON RC.TERRITORY_ID = RCG.ID
+                WHERE RP.ID = {partner.id}
+            '''
+            self.env.cr.execute(query)
+            records = self.env.cr.fetchall()
 
-                sheet.column_dimensions['A'].width = 10
-                sheet.column_dimensions['B'].width = 25
-                sheet.column_dimensions['C'].width = 15
-                sheet.column_dimensions['D'].width = 25
-                sheet.column_dimensions['E'].width = 25
-                sheet.column_dimensions['F'].width = 10
-                sheet.column_dimensions['G'].width = 15
-                sheet.column_dimensions['H'].width = 15
-                sheet.column_dimensions['I'].width = 25
-                sheet.column_dimensions['J'].width = 30
-                sheet.column_dimensions['K'].width = 15
-                sheet.column_dimensions['L'].width = 15
-                sheet.column_dimensions['M'].width = 15
-                sheet.column_dimensions['N'].width = 15
-                sheet.column_dimensions['O'].width = 30
-                sheet.column_dimensions['P'].width = 15
-                sheet.column_dimensions['Q'].width = 15
-                sheet.column_dimensions['R'].width = 15
-                sheet.column_dimensions['S'].width = 15
-                sheet.column_dimensions['T'].width = 15
-                sheet.column_dimensions['U'].width = 20
-                sheet.column_dimensions['V'].width = 20
-            else:
-                sheet.cell(row=row_index, column=1).value = partner.create_date.strftime("%d-%m-%Y") if partner.create_date else ''
-                sheet.cell(row=row_index, column=3).value = partner.name if partner.name else ''
-                sheet.cell(row=row_index, column=4).value = dict(self.env['res.partner']._fields['customer_type'].selection).get(partner.customer_type)
-                sheet.cell(row=row_index, column=5).value = partner.phone if partner.phone else ''
-                sheet.cell(row=row_index, column=6).value = ", ".join(partner_adress)
-                sheet.cell(row=row_index, column=7).value = partner.state_id.name if partner.state_id else ''
-                sheet.cell(row=row_index, column=8).value = partner.zip if partner.zip else ''
-                sheet.cell(row=row_index, column=9).value = partner.country_id.name if partner.country_id else ''
-                sheet.cell(row=row_index, column=10).value = partner.territory.name if partner.territory else ''
-                sheet.cell(row=row_index, column=11).value = partner.email if partner.email else ''
-                sheet.cell(row=row_index, column=12).value = "True" if partner.is_email_verified else "False"
-                sheet.cell(row=row_index, column=13).value = "True" if partner.is_granted_portal_access else "False"
-                sheet.cell(row=row_index, column=14).value = partner.user_id.name if partner.user_id else ''
-                sheet.cell(row=row_index, column=15).value = ", ".join(partner.sale_order_ids.mapped('name')) if partner.sale_order_ids else ''
-                sheet.cell(row=row_index, column=16).value = ", ".join(partner.catalog_ids.mapped('name')) if partner.catalog_ids else ''
-                sheet.cell(row=row_index, column=17).value = partner.total_invoiced or 0
-                row_index += 1
+            for data in records:
+                partner_adress = []
+                if partner.street:
+                    partner_adress.append(data[7])
+                if partner.street2:
+                    partner_adress.append(data[8])
+                if self.all_fields:
+                    sheet.cell(row=row_index, column=1).value = data[0] or ''
+                    sheet.cell(row=row_index, column=1).alignment = align_left
+                    sheet.cell(row=row_index, column=2).value = data[1] or '' 
+                    sheet.cell(row=row_index, column=3).value = str(data[2]) 
+                    sheet.cell(row=row_index, column=4).value = partner.user_id.internal_id if partner.user_id.internal_id else ''
+                    sheet.cell(row=row_index, column=5).value = partner.user_id.name if partner.user_id else ''
+                    sheet.cell(row=row_index, column=6).value = str(data[3])
+                    sheet.cell(row=row_index, column=7).value = data[4] or ''
+                    sheet.cell(row=row_index, column=8).value = data[5] or ''
+                    sheet.cell(row=row_index, column=9).value = data[6] or ''
+                    sheet.cell(row=row_index, column=10).value = ", ".join(partner_adress) if partner_adress else ''
+                    sheet.cell(row=row_index, column=11).value = data[10] or ''
+                    sheet.cell(row=row_index, column=12).value = data[11] or ''
+                    sheet.cell(row=row_index, column=13).value = data[12] or ''
+                    sheet.cell(row=row_index, column=14).value = ', '.join(partner.business_type_ids.mapped('name')) if partner.business_type_ids else ''
+                    sheet.cell(row=row_index, column=15).value = partner.company_id.name if partner.company_id else ''
+                    sheet.cell(row=row_index, column=16).value = dict(partner._fields['company_type'].selection).get(partner.company_type)
+                    sheet.cell(row=row_index, column=17).value = dict(partner._fields['customer_type'].selection).get(data[13]) if data[13] else ''
+                    sheet.cell(row=row_index, column=18).value = dict(partner._fields['activity_state'].selection).get(data[14]) if partner.activity_state else ''
+                    sheet.cell(row=row_index, column=19).value = partner.journal_item_count if partner.journal_item_count else ''
+                    sheet.cell(row=row_index, column=19).alignment = align_left
+                    sheet.cell(row=row_index, column=20).value = data[15].strftime('%d-%m-%Y') or ''
+                    sheet.cell(row=row_index, column=21).value = partner.search_read([('id','=',partner.id)],['__last_update'])[0].get('__last_update').strftime('%d-%m-%Y')
+                    sheet.cell(row=row_index, column=22).value = data[16] or ''
+                    sheet.cell(row=row_index, column=22).alignment = align_right
+                    row_index += 1
 
-                sheet.column_dimensions['A'].width = 15
-                sheet.column_dimensions['B'].width = 15
-                sheet.column_dimensions['C'].width = 30
-                sheet.column_dimensions['D'].width = 15
-                sheet.column_dimensions['E'].width = 25
-                sheet.column_dimensions['F'].width = 35
-                sheet.column_dimensions['G'].width = 15
-                sheet.column_dimensions['H'].width = 15
-                sheet.column_dimensions['I'].width = 18
-                sheet.column_dimensions['J'].width = 18
-                sheet.column_dimensions['K'].width = 25
-                sheet.column_dimensions['L'].width = 15
-                sheet.column_dimensions['M'].width = 18
-                sheet.column_dimensions['N'].width = 25
-                sheet.column_dimensions['O'].width = 30
-                sheet.column_dimensions['P'].width = 30
-                sheet.column_dimensions['Q'].width = 15
+                    sheet.column_dimensions['A'].width = 10
+                    sheet.column_dimensions['B'].width = 25
+                    sheet.column_dimensions['C'].width = 15
+                    sheet.column_dimensions['D'].width = 25
+                    sheet.column_dimensions['E'].width = 25
+                    sheet.column_dimensions['F'].width = 10
+                    sheet.column_dimensions['G'].width = 15
+                    sheet.column_dimensions['H'].width = 15
+                    sheet.column_dimensions['I'].width = 25
+                    sheet.column_dimensions['J'].width = 30
+                    sheet.column_dimensions['K'].width = 15
+                    sheet.column_dimensions['L'].width = 15
+                    sheet.column_dimensions['M'].width = 15
+                    sheet.column_dimensions['N'].width = 15
+                    sheet.column_dimensions['O'].width = 30
+                    sheet.column_dimensions['P'].width = 15
+                    sheet.column_dimensions['Q'].width = 15
+                    sheet.column_dimensions['R'].width = 15
+                    sheet.column_dimensions['S'].width = 15
+                    sheet.column_dimensions['T'].width = 15
+                    sheet.column_dimensions['U'].width = 20
+                    sheet.column_dimensions['V'].width = 20
+                else:
+                    sheet.cell(row=row_index, column=1).value = partner.create_date.strftime("%d-%m-%Y") if partner.create_date else ''
+                    sheet.cell(row=row_index, column=3).value = partner.name if partner.name else ''
+                    sheet.cell(row=row_index, column=4).value = dict(self.env['res.partner']._fields['customer_type'].selection).get(partner.customer_type)
+                    sheet.cell(row=row_index, column=5).value = partner.phone if partner.phone else ''
+                    sheet.cell(row=row_index, column=6).value = ", ".join(partner_adress)
+                    sheet.cell(row=row_index, column=7).value = partner.state_id.name if partner.state_id else ''
+                    sheet.cell(row=row_index, column=8).value = partner.zip if partner.zip else ''
+                    sheet.cell(row=row_index, column=9).value = partner.country_id.name if partner.country_id else ''
+                    sheet.cell(row=row_index, column=10).value = partner.territory.name if partner.territory else ''
+                    sheet.cell(row=row_index, column=11).value = partner.email if partner.email else ''
+                    sheet.cell(row=row_index, column=12).value = "True" if partner.is_email_verified else "False"
+                    sheet.cell(row=row_index, column=13).value = "True" if partner.is_granted_portal_access else "False"
+                    sheet.cell(row=row_index, column=14).value = partner.user_id.name if partner.user_id else ''
+                    sheet.cell(row=row_index, column=15).value = ", ".join(partner.sale_order_ids.mapped('name')) if partner.sale_order_ids else ''
+                    sheet.cell(row=row_index, column=16).value = ", ".join(partner.catalog_ids.mapped('name')) if partner.catalog_ids else ''
+                    sheet.cell(row=row_index, column=17).value = partner.total_invoiced or 0
+                    row_index += 1
 
-        fp = BytesIO()
-        workbook.save(fp)
-        fp.seek(0)
-        data = fp.read()
-        fp.close()
-        self.file = base64.b64encode(data)
+                    sheet.column_dimensions['A'].width = 15
+                    sheet.column_dimensions['B'].width = 15
+                    sheet.column_dimensions['C'].width = 30
+                    sheet.column_dimensions['D'].width = 15
+                    sheet.column_dimensions['E'].width = 25
+                    sheet.column_dimensions['F'].width = 35
+                    sheet.column_dimensions['G'].width = 15
+                    sheet.column_dimensions['H'].width = 15
+                    sheet.column_dimensions['I'].width = 18
+                    sheet.column_dimensions['J'].width = 18
+                    sheet.column_dimensions['K'].width = 25
+                    sheet.column_dimensions['L'].width = 15
+                    sheet.column_dimensions['M'].width = 18
+                    sheet.column_dimensions['N'].width = 25
+                    sheet.column_dimensions['O'].width = 30
+                    sheet.column_dimensions['P'].width = 30
+                    sheet.column_dimensions['Q'].width = 15
 
-        return {
-            'type': 'ir.actions.act_url',
-            'url': 'web/content/?model=kits.customers.report.wizard&download=true&field=file&id=%s&filename=%s.xlsx' % (self.id,f_name),
-            'target': 'self',
-        }
-    
+            fp = BytesIO()
+            workbook.save(fp)
+            fp.seek(0)
+            data = fp.read()
+            fp.close()
+            self.file = base64.b64encode(data)
+
+            return {
+                'type': 'ir.actions.act_url',
+                'url': 'web/content/?model=kits.customers.report.wizard&download=true&field=file&id=%s&filename=%s.xlsx' % (self.id,f_name),
+                'target': 'self',
+            }
+        
     def action_signup_user_xlsx_report(self):
         self.validate_dates()
 

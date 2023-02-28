@@ -33,7 +33,7 @@ class bank_inventory_report_wizard(models.TransientModel):
     def action_print_report_file(self):
         product_obj = self.env['product.product']
         sol_obj = self.env['sale.order.line']
-        header = ['NAME', 'SKU', 'Brand', 'MODEL', 'CATEGORY', 'CAD PRICE','USD PRICE']
+        header = ['NAME', 'SKU', 'Brand', 'MODEL', 'CATEGORY','USD PRICE']
         if not (int(self.start_year) == datetime.now().year and int(self.start_month) == datetime.now().month ) and (not (self.start_month,self.start_year) > (self.end_month,self.end_year)):
             last_start_date = calendar.monthrange(
                 int(self.start_year), int(self.start_month))[1]
@@ -59,10 +59,10 @@ class bank_inventory_report_wizard(models.TransientModel):
                 brand = product.brand.name
                 model = product.model.name
                 category = product.categ_id.name
-                cad_price = product.lst_price
-                usd_price = product.lst_price_usd
+                # cad_price = product.lst_price
+                usd_price = product.lst_price
                 on_hand = product.qty_available
-                line_data = [name[0][1], sku, brand, model, category, cad_price , usd_price]
+                line_data = [name[0][1], sku, brand, model, category, usd_price]
                 months_on_hand = []
                 for month in months:
                     total_delivered = 0.00
