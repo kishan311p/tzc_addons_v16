@@ -4,7 +4,8 @@ from odoo import api, fields, models
 class KitsB2BHomeAdvertisement(models.Model):
     _name = 'kits.b2b.home.advertisement'
     _description = 'B2B Home Advertisement'
-
+    
+    sequence = fields.Integer(index=True,)
     name = fields.Html('Description')
     icon_url = fields.Char('Icon URL')
     icon = fields.Char(

@@ -124,24 +124,28 @@ Original Design Eyewear </field>
     </record>
     <record id="kits_homepage_banner_image_account" model="kits.b2b.image.model">
         <field name="description">1. Sign In/Create an account</field>
+        <field name="sequence">1</field>
         <field name="url">https://cdn.teameto.com/data/B2C1/new_tzc_b2b_images/roadmap/r-1.svg</field>
         <field name="website_id" eval="kits_team_eto_website" />
         <field name="parent_id" eval="kits_homepage_banner_image_1" />
     </record>
     <record id="kits_homepage_banner_image_shop" model="kits.b2b.image.model">
         <field name="description">2. Add to cart</field>
+        <field name="sequence">2</field>
         <field name="url">https://cdn.teameto.com/data/B2C1/new_tzc_b2b_images/roadmap/r-2.svg</field>
         <field name="website_id" eval="kits_team_eto_website" />
         <field name="parent_id" eval="kits_homepage_banner_image_1" />
     </record>
     <record id="kits_homepage_banner_image_shipping" model="kits.b2b.image.model">
         <field name="description">3. Checkout</field>
+        <field name="sequence">3</field>
         <field name="url">https://cdn.teameto.com/data/B2C1/new_tzc_b2b_images/roadmap/r-3.svg</field>
         <field name="website_id" eval="kits_team_eto_website" />
         <field name="parent_id" eval="kits_homepage_banner_image_1" />
     </record>
     <record id="kits_homepage_banner_image_paynow" model="kits.b2b.image.model">
         <field name="description">4. Pay After Order is ready</field>
+        <field name="sequence">4</field>
         <field name="url">https://cdn.teameto.com/data/B2C1/new_tzc_b2b_images/roadmap/r-4.svg</field>
         <field name="website_id" eval="kits_team_eto_website" />
         <field name="parent_id" eval="kits_homepage_banner_image_1" />
@@ -949,6 +953,28 @@ Sunglasses</field>
         <field name="my_dashboard_model_id" eval="kits_team_eto_website" />
         <field name="sequence">10003</field>
         <field name="redirect_url">/order</field>
+    </record>
+
+
+    <record id="kits_b2b_home_advertisement_contact_info_teameto_com" model="kits.b2b.home.advertisement">
+        <field name="name">Contact info@teameto.com</field>
+        <field name="page_id" eval="kits_team_eto_website" />
+        <field name="sequence">4</field>
+    </record>
+    <record id="kits_b2b_home_advertisement_register_to_view_prices" model="kits.b2b.home.advertisement">
+        <field name="name">Register to View Prices</field>
+        <field name="page_id" eval="kits_team_eto_website" />
+        <field name="sequence">3</field>
+    </record>
+    <record id="kits_b2b_home_advertisement_no_minimums" model="kits.b2b.home.advertisement">
+        <field name="name">No Minimums</field>
+        <field name="page_id" eval="kits_team_eto_website" />
+        <field name="sequence">2</field>
+    </record>
+    <record id="kits_b2b_home_advertisement_orders_over_1000" model="kits.b2b.home.advertisement">
+        <field name="name">Free Shipping on Orders over $1000</field>
+        <field name="page_id" eval="kits_team_eto_website" />
+        <field name="sequence">1</field>
     </record>
 </data>
 </odoo>
