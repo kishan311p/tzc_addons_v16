@@ -39,3 +39,5 @@ class kits_b2b_pages(models.Model):
     contact_us_slider_ids = fields.One2many(
         'kits.b2b.website.slider', 'cu_page_id', 'Sliders'
     )
+    char_field = fields.Char('Char Field')
+    

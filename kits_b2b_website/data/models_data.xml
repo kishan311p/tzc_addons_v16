@@ -264,18 +264,23 @@ Sunglasses</field>
         <field name="page_type">our_story</field>
         <field name="name">Our Story</field>
         <field name="is_our_core_values">True</field>
-        <field name="header_text_1">Join Our Team</field>
-        <field name="text_1">It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. he point of using Lorem Ipsum is that.</field>
+        <field name="header_text_1">No current vacancies</field>
+        <field name="text_1">Everything Optical have been suppling luxury branded optical frames and sunglasses to emerging markets across the world, which include Africa, South and Central America, Middle East and South Asia. Our office, located strategically across the globe have been serving these markets with the best quality eyewear, focusing on creating value for our customers.</field>
         <field name="text_1_redirect_url">https://b2b.teameto.com/aboutus</field>
         <field name="text_1_redirect_url_text">View Open Positions</field>
         <field name="website_id" eval="kits_team_eto_website" />
-        <field name="text_2">It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. he point of using Lorem Ipsum is that.</field>
+        <field name="text_2">Are you an eyewear enthusiast that is energetic and looking to work in a dynamic environment. Team ETO is constantly looking to grow and attract talented individuals that are looking for a promising career.</field>
         <field name="header_text_2">Our Team</field>
+        <field name="text_field">Everything Optical is focused on our customers. We understand that that our customer success is our success. We offer our clients only the best in quality eyewear frames direct from designers. Dedicated managers are assigned to our clients to provide unmatched customer service. All our customers are given access to our exclusive wholesale portal with visibility into our ready to ship inventory that is only a matter of clicks away from being shipped. Over the last two decades we have been suppling to clients internationally from our portfolio of 100+ designer brands. Our team works towards building trust and long-term partnerships with our clients by being transparent throughout our process and holding true to our value system.
+            When you partner with us, your dedicated sales manager will work closely with you to provide customized offerings that meet your need and ensure your successes.
+            </field>
+        <field name="char_field">hr@teameto.com</field>
+        
     </record>
 
     <record id="kits_aboutus_1_image" model="kits.b2b.image.model">
-        <field name="header_description">Lorem ipsum is standard dummy text, me, and all humans in the pursuit to live supernatural.</field>
-        <field name="description">It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. he point of using Lorem Ipsum is that.</field>
+        <field name="header_description">Over 25 years of wholesale designer eyewear distribution worldwide.</field>
+        <field name="description">Everything Optical have been suppling luxury branded optical frames and sunglasses to emerging markets across the world, which include Africa, South and Central America, Middle East and South Asia. Our office, located strategically across the globe have been serving these markets with the best quality eyewear, focusing on creating value for our customers.</field>
         <field name="url">https://cdn.teameto.com/data/B2C1/new_tzc_b2b_images/aboout-gellery/01.png</field>
         <field name="redirect_url">https://b2b.teameto.com/aboutus</field>
         <field name="redirect_text">Join Our Team</field>
@@ -284,8 +289,8 @@ Sunglasses</field>
     </record>
 
     <record id="kits_aboutus_1_image" model="kits.b2b.image.model">
-        <field name="header_description">Lorem ipsum is standard dummy text, me, and all humans in the pursuit to live supernatural.</field>
-        <field name="description">It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. he point of using Lorem Ipsum is that.</field>
+        <field name="header_description">Over 25 years of wholesale designer eyewear distribution worldwide.</field>
+        <field name="description">Everything Optical have been suppling luxury branded optical frames and sunglasses to emerging markets across the world, which include Africa, South and Central America, Middle East and South Asia. Our office, located strategically across the globe have been serving these markets with the best quality eyewear, focusing on creating value for our customers.</field>
         <field name="url">https://cdn.teameto.com/data/B2C1/new_tzc_b2b_images/aboout-gellery/01.png</field>
         <field name="redirect_url">https://b2b.teameto.com/aboutus</field>
         <field name="redirect_text">Join Our Team</field>
@@ -295,8 +300,8 @@ Sunglasses</field>
 
 
     <record id="kits_aboutus_2_image" model="kits.b2b.image.model">
-        <field name="header_description">Lorem ipsum is standard dummy text, me, and all humans in the pursuit to live supernatural.</field>
-        <field name="description">It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. he point of using Lorem Ipsum is that.</field>
+        <field name="header_description">Over 25 years of wholesale designer eyewear distribution worldwide.</field>
+        <field name="description">Everything Optical have been suppling luxury branded optical frames and sunglasses to emerging markets across the world, which include Africa, South and Central America, Middle East and South Asia. Our office, located strategically across the globe have been serving these markets with the best quality eyewear, focusing on creating value for our customers.</field>
         <field name="url">https://cdn.teameto.com/data/B2C1/new_tzc_b2b_images/aboout-gellery/02.png</field>
         <field name="redirect_url">https://b2b.teameto.com/aboutus</field>
         <field name="redirect_text">Join Our Team</field>
@@ -306,8 +311,8 @@ Sunglasses</field>
 
 
     <record id="kits_aboutus_3_image" model="kits.b2b.image.model">
-        <field name="header_description">Lorem ipsum is standard dummy text, me, and all humans in the pursuit to live supernatural.</field>
-        <field name="description">It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. he point of using Lorem Ipsum is that.</field>
+        <field name="header_description">Over 25 years of wholesale designer eyewear distribution worldwide.</field>
+        <field name="description">Everything Optical have been suppling luxury branded optical frames and sunglasses to emerging markets across the world, which include Africa, South and Central America, Middle East and South Asia. Our office, located strategically across the globe have been serving these markets with the best quality eyewear, focusing on creating value for our customers.</field>
         <field name="url">https://cdn.teameto.com/data/B2C1/new_tzc_b2b_images/aboout-gellery/03.png</field>
         <field name="redirect_url">https://b2b.teameto.com/aboutus</field>
         <field name="redirect_text">Join Our Team</field>
@@ -316,8 +321,8 @@ Sunglasses</field>
     </record>
 
     <record id="kits_aboutus_4_image" model="kits.b2b.image.model">
-        <field name="header_description">Lorem ipsum is standard dummy text, me, and all humans in the pursuit to live supernatural.</field>
-        <field name="description">It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. he point of using Lorem Ipsum is that.</field>
+        <field name="header_description">Over 25 years of wholesale designer eyewear distribution worldwide.</field>
+        <field name="description">Everything Optical have been suppling luxury branded optical frames and sunglasses to emerging markets across the world, which include Africa, South and Central America, Middle East and South Asia. Our office, located strategically across the globe have been serving these markets with the best quality eyewear, focusing on creating value for our customers.</field>
         <field name="url">https://cdn.teameto.com/data/B2C1/new_tzc_b2b_images/aboout-gellery/04.png</field>
         <field name="redirect_url">https://b2b.teameto.com/aboutus</field>
         <field name="redirect_text">Join Our Team</field>
@@ -382,88 +387,236 @@ Sunglasses</field>
         <field name="website_id" eval="kits_team_eto_website" />
         <field name="our_core_values_id" eval="kits_aboutus_page" />
     </record>
-    <record id="kits_aboutus_optimetrist" model="kits.b2b.key.value.model">
-        <field name="name">Optimetrist</field>
-        <field name="value">20+</field>
+    <record id="kits_aboutus_brands" model="kits.b2b.key.value.model">
+        <field name="name">Brands</field>
+        <field name="value">100+</field>
         <field name="page_id" eval="kits_aboutus_page" />
         <field name="website_id" eval="kits_team_eto_website" />
     </record>
     <record id="kits_aboutus_locations" model="kits.b2b.key.value.model">
         <field name="name">Locations</field>
-        <field name="value">18</field>
+        <field name="value">3</field>
         <field name="page_id" eval="kits_aboutus_page" />
         <field name="website_id" eval="kits_team_eto_website" />
     </record>
-    <record id="kits_aboutus_services" model="kits.b2b.key.value.model">
-        <field name="name">Services</field>
-        <field name="value">100+</field>
+    <record id="kits_aboutus_years_of_experience" model="kits.b2b.key.value.model">
+        <field name="name">Years Of Experience</field>
+        <field name="value">25+</field>
         <field name="page_id" eval="kits_aboutus_page" />
         <field name="website_id" eval="kits_team_eto_website" />
     </record>
-    <record id="kits_aboutus_insurance_affiliations" model="kits.b2b.key.value.model">
-        <field name="name">Insurance Affiliations</field>
-        <field name="value">10+</field>
+    <record id="kits_aboutus_markets" model="kits.b2b.key.value.model">
+        <field name="name">Markets</field>
+        <field name="value">30+</field>
         <field name="page_id" eval="kits_aboutus_page" />
         <field name="website_id" eval="kits_team_eto_website" />
     </record>
 
     <record id="kits_aboutus_our_team_1_image" model="kits.b2b.image.model">
-        <field name="header_description">Musadik Rajani</field>
-        <field name="description">Co-founder &amp; CEO</field>
+        <field name="header_description">Aliraza Rajani</field>
+        <field name="description">Founder &amp; CEO</field>
         <field name="url">https://cdn.teameto.com/data/B2C1/new_tzc_b2b_images/team/team-1.png</field>
         <field name="website_id" eval="kits_team_eto_website" />
     </record>
 
     <record id="kits_aboutus_our_team_2_image" model="kits.b2b.image.model">
-        <field name="header_description">Mazhar Rajani</field>
-        <field name="description">Co-founder &amp; CTO</field>
+        <field name="header_description">Musadik Rajani</field>
+        <field name="description">Senior Vice President</field>
         <field name="url">https://cdn.teameto.com/data/B2C1/new_tzc_b2b_images/team/team-2.png</field>
         <field name="website_id" eval="kits_team_eto_website" />
     </record>
 
     <record id="kits_aboutus_our_team_3_image" model="kits.b2b.image.model">
-        <field name="header_description">Andreas Brixen</field>
-        <field name="description">Sales Lead</field>
-        <field name="url">https://cdn.teameto.com/data/B2C1/new_tzc_b2b_images/team/team-1.png</field>
-        <field name="website_id" eval="kits_team_eto_website" />
-    </record>
-
-    <record id="kits_aboutus_our_team_4_image" model="kits.b2b.image.model">
-        <field name="header_description">Musadik Rajani</field>
-        <field name="description">Co-founder &amp; CEO</field>
+        <field name="header_description">Mazaher Rajani</field>
+        <field name="description">VP Operations – Middle East &amp; Africa</field>
         <field name="url">https://cdn.teameto.com/data/B2C1/new_tzc_b2b_images/team/team-2.png</field>
         <field name="website_id" eval="kits_team_eto_website" />
     </record>
 
+    <record id="kits_aboutus_our_team_4_image" model="kits.b2b.image.model">
+        <field name="header_description">Behrouz Rouhani</field>
+        <field name="description">Project Manager</field>
+        <field name="url"></field>
+        <field name="website_id" eval="kits_team_eto_website" />
+    </record>
+    <record id="kits_aboutus_our_team_4_image" model="kits.b2b.image.model">
+        <field name="header_description">Behrouz Rouhani</field>
+        <field name="description">Project Manager</field>
+        <field name="url"></field>
+        <field name="website_id" eval="kits_team_eto_website" />
+    </record>
+    <record id="kits_aboutus_our_team_5_image" model="kits.b2b.image.model">
+        <field name="header_description">Johanna Blanco Eidelman</field>
+        <field name="description">Sales Manager</field>
+        <field name="url"></field>
+        <field name="website_id" eval="kits_team_eto_website" />
+    </record>
+    <record id="kits_aboutus_our_team_6_image" model="kits.b2b.image.model">
+        <field name="header_description">Anabelle Estrañero</field>
+        <field name="description">Administration &amp; Office Manager – Dubai</field>
+        <field name="url"></field>
+        <field name="website_id" eval="kits_team_eto_website" />
+    </record>
+    <record id="kits_aboutus_our_team_7_image" model="kits.b2b.image.model">
+        <field name="header_description">Erica Hermoso</field>
+        <field name="description">Sales Executive</field>
+        <field name="url"></field>
+        <field name="website_id" eval="kits_team_eto_website" />
+    </record>
+    <record id="kits_aboutus_our_team_8_image" model="kits.b2b.image.model">
+        <field name="header_description">Haider Hassan Anwarulhaq Bukhari</field>
+        <field name="description">Territorial Manager</field>
+        <field name="url"></field>
+        <field name="website_id" eval="kits_team_eto_website" />
+    </record>
+    <record id="kits_aboutus_our_team_9_image" model="kits.b2b.image.model">
+        <field name="header_description">John Nasarine S. Lunod</field>
+        <field name="description">Sales Executive</field>
+        <field name="url"></field>
+        <field name="website_id" eval="kits_team_eto_website" />
+    </record>
+    <record id="kits_aboutus_our_team_10_image" model="kits.b2b.image.model">
+        <field name="header_description">Lyra Regina De Luzon</field>
+        <field name="description">Country Manager</field>
+        <field name="url"></field>
+        <field name="website_id" eval="kits_team_eto_website" />
+    </record>
+    <record id="kits_aboutus_our_team_11_image" model="kits.b2b.image.model">
+        <field name="header_description">Mouna Ben Aicha</field>
+        <field name="description">Business Development Executive – French Market</field>
+        <field name="url"></field>
+        <field name="website_id" eval="kits_team_eto_website" />
+    </record>
+    <record id="kits_aboutus_our_team_12_image" model="kits.b2b.image.model">
+        <field name="header_description">Murielle Annie Makon</field>
+        <field name="description">Sales Executive</field>
+        <field name="url"></field>
+        <field name="website_id" eval="kits_team_eto_website" />
+    </record>
+    <record id="kits_aboutus_our_team_13_image" model="kits.b2b.image.model">
+        <field name="header_description">Aashiq Siddik</field>
+        <field name="description">Digital Marketing Specialist</field>
+        <field name="url"></field>
+        <field name="website_id" eval="kits_team_eto_website" />
+    </record>
+    <record id="kits_aboutus_our_team_14_image" model="kits.b2b.image.model">
+        <field name="header_description">Awais Tariq</field>
+        <field name="description">Sales Executive</field>
+        <field name="url"></field>
+        <field name="website_id" eval="kits_team_eto_website" />
+    </record>
+    <record id="kits_aboutus_our_team_15_image" model="kits.b2b.image.model">
+        <field name="header_description">Country Manager</field>
+        <field name="description">Sabri Baaka</field>
+        <field name="url"></field>
+        <field name="website_id" eval="kits_team_eto_website" />
+    </record>
+
     <record id="kits_aboutus_our_team_1_slider" model="kits.b2b.website.slider">
-        <field name="name">Musadik Rajani</field>
+        <field name="name">Aliraza Rajani</field>
         <field name="slider_type">our_story</field>
         <field name="website_id" eval="kits_team_eto_website" />
         <field name="page_id" eval="kits_aboutus_page" />
         <field name="image_id" eval="kits_aboutus_our_team_1_image" />
     </record>
     <record id="kits_aboutus_our_team_2_slider" model="kits.b2b.website.slider">
-        <field name="name">Mazhar Rajani</field>
+        <field name="name">Musadik Rajani</field>
         <field name="slider_type">our_story</field>
         <field name="website_id" eval="kits_team_eto_website" />
         <field name="page_id" eval="kits_aboutus_page" />
         <field name="image_id" eval="kits_aboutus_our_team_2_image" />
     </record>
     <record id="kits_aboutus_our_team_3_slider" model="kits.b2b.website.slider">
-        <field name="name">Andreas Brixen</field>
+        <field name="name">Mazaher Rajani</field>
         <field name="slider_type">our_story</field>
         <field name="website_id" eval="kits_team_eto_website" />
         <field name="page_id" eval="kits_aboutus_page" />
         <field name="image_id" eval="kits_aboutus_our_team_3_image" />
     </record>
     <record id="kits_aboutus_our_team_4_slider" model="kits.b2b.website.slider">
-        <field name="name">Mazhar Rajani</field>
+        <field name="name">Behrouz Rouhani</field>
         <field name="slider_type">our_story</field>
         <field name="website_id" eval="kits_team_eto_website" />
         <field name="page_id" eval="kits_aboutus_page" />
         <field name="image_id" eval="kits_aboutus_our_team_4_image" />
     </record>
-
+    <record id="kits_aboutus_our_team_5_slider" model="kits.b2b.website.slider">
+        <field name="name">Johanna Blanco Eidelman</field>
+        <field name="slider_type">our_story</field>
+        <field name="website_id" eval="kits_team_eto_website" />
+        <field name="page_id" eval="kits_aboutus_page" />
+        <field name="image_id" eval="kits_aboutus_our_team_4_image" />
+    </record>
+    <record id="kits_aboutus_our_team_6_slider" model="kits.b2b.website.slider">
+        <field name="name">Anabelle Estrañero</field>
+        <field name="slider_type">our_story</field>
+        <field name="website_id" eval="kits_team_eto_website" />
+        <field name="page_id" eval="kits_aboutus_page" />
+        <field name="image_id" eval="kits_aboutus_our_team_4_image" />
+    </record>
+    <record id="kits_aboutus_our_team_7_slider" model="kits.b2b.website.slider">
+        <field name="name">Erica Hermoso</field>
+        <field name="slider_type">our_story</field>
+        <field name="website_id" eval="kits_team_eto_website" />
+        <field name="page_id" eval="kits_aboutus_page" />
+        <field name="image_id" eval="kits_aboutus_our_team_4_image" />
+    </record>
+    <record id="kits_aboutus_our_team_8_slider" model="kits.b2b.website.slider">
+        <field name="name">Haider Hassan Anwarulhaq Bukhari</field>
+        <field name="slider_type">our_story</field>
+        <field name="website_id" eval="kits_team_eto_website" />
+        <field name="page_id" eval="kits_aboutus_page" />
+        <field name="image_id" eval="kits_aboutus_our_team_4_image" />
+    </record>
+    <record id="kits_aboutus_our_team_9_slider" model="kits.b2b.website.slider">
+        <field name="name">John Nasarine S. Lunod</field>
+        <field name="slider_type">our_story</field>
+        <field name="website_id" eval="kits_team_eto_website" />
+        <field name="page_id" eval="kits_aboutus_page" />
+        <field name="image_id" eval="kits_aboutus_our_team_4_image" />
+    </record>
+    <record id="kits_aboutus_our_team_10_slider" model="kits.b2b.website.slider">
+        <field name="name">Lyra Regina De Luzon</field>
+        <field name="slider_type">our_story</field>
+        <field name="website_id" eval="kits_team_eto_website" />
+        <field name="page_id" eval="kits_aboutus_page" />
+        <field name="image_id" eval="kits_aboutus_our_team_4_image" />
+    </record>
+    <record id="kits_aboutus_our_team_11_slider" model="kits.b2b.website.slider">
+        <field name="name">Mouna Ben Aicha</field>
+        <field name="slider_type">our_story</field>
+        <field name="website_id" eval="kits_team_eto_website" />
+        <field name="page_id" eval="kits_aboutus_page" />
+        <field name="image_id" eval="kits_aboutus_our_team_4_image" />
+    </record>
+    <record id="kits_aboutus_our_team_12_slider" model="kits.b2b.website.slider">
+        <field name="name">Murielle Annie Makon</field>
+        <field name="slider_type">our_story</field>
+        <field name="website_id" eval="kits_team_eto_website" />
+        <field name="page_id" eval="kits_aboutus_page" />
+        <field name="image_id" eval="kits_aboutus_our_team_4_image" />
+    </record>
+    <record id="kits_aboutus_our_team_13_slider" model="kits.b2b.website.slider">
+        <field name="name">Aashiq Siddik</field>
+        <field name="slider_type">our_story</field>
+        <field name="website_id" eval="kits_team_eto_website" />
+        <field name="page_id" eval="kits_aboutus_page" />
+        <field name="image_id" eval="kits_aboutus_our_team_4_image" />
+    </record>
+    <record id="kits_aboutus_our_team_14_slider" model="kits.b2b.website.slider">
+        <field name="name">Awais Tariq</field>
+        <field name="slider_type">our_story</field>
+        <field name="website_id" eval="kits_team_eto_website" />
+        <field name="page_id" eval="kits_aboutus_page" />
+        <field name="image_id" eval="kits_aboutus_our_team_4_image" />
+    </record>
+    <record id="kits_aboutus_our_team_15_slider" model="kits.b2b.website.slider">
+        <field name="name">Sabri Baaka</field>
+        <field name="slider_type">our_story</field>
+        <field name="website_id" eval="kits_team_eto_website" />
+        <field name="page_id" eval="kits_aboutus_page" />
+        <field name="image_id" eval="kits_aboutus_our_team_4_image" />
+    </record>
 
     <record id="kitsour_core_values_image" model="kits.b2b.image.model">
         <field name="url">https://cdn.teameto.com/data/B2C1/new_tzc_b2b_images/map.png</field>
@@ -477,29 +630,30 @@ Sunglasses</field>
         <field name="banner_1_id" eval="kitsour_core_values_image" />
     </record>
     <record id="kits_our_core_values_canada" model="kits.b2b.key.value.model">
-        <field name="name">Toronto, Canada</field>
+        <field name="name">Head Office
+        Toronto, Canada</field>
         <field name="value">366 Denison Street, Unit 4 Markham, Ontario, Canada.</field>
         <field name="page_id" eval="kits_our_core_values_page" />
         <field name="website_id" eval="kits_team_eto_website" />
     </record>
-    <record id="kits_our_core_values_pakistan" model="kits.b2b.key.value.model">
+    <!-- <record id="kits_our_core_values_pakistan" model="kits.b2b.key.value.model">
         <field name="name">Karachi, Pakistan</field>
         <field name="value">Suite # 9, 3rd Floor, Sasi Arcade Clifton Karachi, Pakistan</field>
         <field name="page_id" eval="kits_our_core_values_page" />
         <field name="website_id" eval="kits_team_eto_website" />
-    </record>
+    </record> -->
     <record id="kits_our_core_values_tanzania" model="kits.b2b.key.value.model">
         <field name="name">Dar Es Salaam, Tanzania</field>
         <field name="value">123 Samora Ave Dar es Salaam, Tanzania</field>
         <field name="page_id" eval="kits_our_core_values_page" />
         <field name="website_id" eval="kits_team_eto_website" />
     </record>
-    <record id="kits_our_core_values_kenya" model="kits.b2b.key.value.model">
+    <!-- <record id="kits_our_core_values_kenya" model="kits.b2b.key.value.model">
         <field name="name">Nairobi, Kenya</field>
         <field name="value">Suite D10, 2nd Floor, Krishna Centre, Woodvale Grove, Westlands Nairobi, Kenya</field>
         <field name="page_id" eval="kits_our_core_values_page" />
         <field name="website_id" eval="kits_team_eto_website" />
-    </record>
+    </record> -->
     <record id="kits_our_core_values_uae" model="kits.b2b.key.value.model">
         <field name="name">Dubai, UAE</field>
         <field name="value">Oﬃce 508, Latifa Tower, Trade Center 1, Sheikh Zayed Road Dubai, UAE</field>
@@ -547,13 +701,10 @@ Sunglasses</field>
         <field name="name">Contact Us</field>
         <field name="website_id" eval="kits_team_eto_website" />
         <field name="header_text_2">Contact Us</field>
-        <field name="text_2">Thank you for reaching out. We’ll make sure that our team receives your message!</field>
+        <field name="text_2">Got a question for us? Fill in your details and message and we will get back to you shortly.</field>
         <field name="banner_2_id" eval="kits_contact_us_image_2" />
         <field name="banner_1_id" eval="kits_contact_us_image_1" />
         <field name="is_our_core_values">True</field>
-        <field name="text_field">Everything Optical is focused on our customers. We understand that that our customer success is our success. We offer our clients only the best in quality eyewear frames direct from designers. Dedicated managers are assigned to our clients to provide unmatched customer service. All our customers are given access to our exclusive wholesale portal with visibility into our ready to ship inventory that is only a matter of clicks away from being shipped. Over the last two decades we have been suppling to clients internationally from our portfolio of 100+ designer brands. Our team works towards building trust and long-term partnerships with our clients by being transparent throughout our process and holding true to our value system.
-            When you partner with us, your dedicated sales manager will work closely with you to provide customized offerings that meet your need and ensure your successes.
-            </field>
     </record>
 
     <record id="kits_contact_us_image_1_slider" model="kits.b2b.image.model">
@@ -773,19 +924,19 @@ Sunglasses</field>
         <field name="currency_id" ref="base.CAD" />
     </record>
     <record id="kits_b2b_catalog_my_dashboard" model="kits.b2b.menus">
-        <field name="name">Catalogs</field>
+        <field name="name">My Catalogs</field>
         <field name="my_dashboard_model_id" eval="kits_team_eto_website" />
         <field name="sequence">10001</field>
         <field name="redirect_url">/catalog</field>
     </record>
     <record id="kits_b2b_quotations_my_dashboard" model="kits.b2b.menus">
-        <field name="name">Quotations</field>
+        <field name="name">My Quotations</field>
         <field name="my_dashboard_model_id" eval="kits_team_eto_website" />
         <field name="sequence">10002</field>
         <field name="redirect_url">/quotation</field>
     </record>
     <record id="kits_b2b_order_us_my_dashboard" model="kits.b2b.menus">
-        <field name="name">Orders</field>
+        <field name="name">My Orders</field>
         <field name="my_dashboard_model_id" eval="kits_team_eto_website" />
         <field name="sequence">10003</field>
         <field name="redirect_url">/order</field>

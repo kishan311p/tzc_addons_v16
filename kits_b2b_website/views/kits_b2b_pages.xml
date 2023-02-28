@@ -50,6 +50,7 @@
                             </group>
                             <group string="Why Choose US?">
                                 <field name="text_field" string="Why Choose US?" />
+                                <field name="char_field" string="HR Email" />
                             </group>
                             <group attrs="{'invisible': [('page_type','not in',['home'])]}">
                                 <group>
