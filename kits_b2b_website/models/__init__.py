@@ -2,6 +2,7 @@ from . import kits_b2b_website
 from . import kits_b2b_website_slider
 from . import kits_b2b_menus
 from . import kits_b2b_pages
+from . import kits_b2b_home_advertisement
 from . import kits_b2b_image_model
 from . import kits_b2b_key_value_model
 from . import res_partner

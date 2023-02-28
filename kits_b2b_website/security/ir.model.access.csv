@@ -6,6 +6,7 @@ access_kits_b2b_image_model,access.kits.b2b.image.model,model_kits_b2b_image_mod
 access_kits_b2b_website_slider,access.kits.b2b.website.slider,model_kits_b2b_website_slider,,1,1,1,1
 access_kits_b2b_key_value_model,access.kits.b2b.key.value.model,model_kits_b2b_key_value_model,,1,1,1,1
 access_kits_b2b_multi_currency_mapping,access.kits.b2b.multi.currency.mapping,model_kits_b2b_multi_currency_mapping,,1,1,1,1
+access_kits_b2b_home_advertisement,access.kits.b2b.home.advertisement,model_kits_b2b_home_advertisement,,1,1,1,1
 
 access_kits_b2b_user_token_all,access.kits.b2b.user.token.all,model_kits_b2b_user_token,,1,1,1,1
 access_kits_b2b_product_wishlist_all,access.kits.b2b.product.wishlist.all,model_kits_b2b_product_wishlist,,1,0,0,0

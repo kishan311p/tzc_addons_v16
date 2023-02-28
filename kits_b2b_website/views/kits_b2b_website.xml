@@ -43,6 +43,21 @@
                                 </form>
                             </field>
                         </page>
+                        <page name="header_ads" string="Header Slider">
+                            <field name="home_ad_ids" context="{'default_page_id': id}">
+                                <tree editable="bottom">
+                                    <field name="name" />
+                                </tree>
+                                <form>
+                                    <sheet>
+                                        <group>
+                                            <field name="name" />
+                                            <field name="page_id" invisible="1" />
+                                        </group>
+                                    </sheet>
+                                </form>
+                            </field>
+                        </page>
                         <page name="recommended_products" string="Recommended Products">
 
                             <field name="recommended_products_ids" options="{'no_create': True}">
