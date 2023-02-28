@@ -3,8 +3,6 @@ from odoo import _, api, fields, models
 class sale_order(models.Model):
     _inherit = 'sale.order'
     
-    b2b_currency_id = fields.Many2one('res.currency', string=' Currency')
-
     def compute_all(self):
         for record in self:
             record.order_line._compute_amount()

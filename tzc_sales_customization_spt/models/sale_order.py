@@ -317,8 +317,14 @@ class sale_order(models.Model):
     website_id = fields.Many2one('website')
     merged_order= fields.Boolean()
     merge_reference = fields.Many2many("sale.order","merged_order_sale_order_rel","merge_order_id","order_id","Merge Order of")
+
+    def _get_currency_id(self):
+        if self.pricelist_id:
+            return self.pricelist_id.currency_id.id
+        else:
+            return self.partner_id.preferred_currency.id
     
-    b2b_currency_id = fields.Many2one('res.currency',related='pricelist_id.currency_id' ,string=' Currency')
+    b2b_currency_id = fields.Many2one('res.currency',default=_get_currency_id ,string=' Currency')
 
     def compute_all(self):
         for record in self:
