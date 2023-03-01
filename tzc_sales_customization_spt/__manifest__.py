@@ -78,7 +78,6 @@
         'views/res_company.xml',
         'views/stock_picking_view.xml',
         'views/shipping_provider_spt_view.xml',
-        'views/res_partner_view.xml',
         'views/kits_commission_rules_view.xml',
         'views/import_partner_spt_view.xml',
         'views/manage_template_view.xml',
@@ -103,6 +102,7 @@
         'views/campaign_report_contacts.xml',
         'views/campaign_monetization_view_spt.xml',
         'views/mailing_mailing_view.xml',
+        'views/res_partner_view.xml',
 
         # Wizard
         'wizards/kits_warning_wizard_view.xml',
