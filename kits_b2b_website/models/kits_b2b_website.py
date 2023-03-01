@@ -54,8 +54,22 @@ class kits_b2b_website(models.Model):
     )
     location_text = fields.Text('Location')
     location_icon_url = fields.Char('Location Icon URL')
-    location_icon = fields.Char('Location Icon',related='location_icon_url',store=True)
-    
+    location_icon = fields.Char(
+        'Location Icon',
+        related='location_icon_url',
+        store=True
+    )
+
     shipping_text = fields.Text('Shipping Cart')
     shipping_icon_url = fields.Char('Shipping Icon URL')
-    shipping_icon = fields.Char('Shipping Icon',related='shipping_icon_url',store=True)
+    shipping_icon = fields.Char(
+        'Shipping Icon',
+        related='shipping_icon_url',
+        store=True
+    )
+
+    login_slider_ids = fields.One2many(
+        'kits.b2b.image.model',
+        'login_id',
+        string="Login Slider"
+    )

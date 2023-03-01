@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+<!-- Keep noupdate = 0 Till Live -->
+    <data noupdate="0">
+        <record id="login_slider_1" model="kits.b2b.image.model">
+            <field name="sequence">1</field>
+            <field name="header_description">Leonardo da Vinci</field>
+            <field name="description">Beauty perishes in life, but is immortal in art.</field>
+            <field name="url">https://b2b.teameto.com/assets/img/login/login-slide-2.png</field>
+            <field name="login_id" ref="kits_b2b_website.kits_team_eto_website" />
+        </record>
+
+        <record id="login_slider_2" model="kits.b2b.image.model">
+            <field name="sequence">2</field>
+            <field name="header_description">Leonardo da Vinci</field>
+            <field name="description">Beauty perishes in life, but is immortal in art.</field>
+            <field name="url">https://b2b.teameto.com/assets/img/login/login-slide-3.png</field>
+            <field name="login_id" ref="kits_b2b_website.kits_team_eto_website" />
+        </record>
+    </data>
+
+</odoo>

@@ -7,7 +7,7 @@
             <form string="">
                 <sheet>
                     <div style="margin-bottom: 10px;">
-                        <field name="logo" widget="image" options="{'zoom': true,'preview_image':'image_logo','size': [512, 512]}" string="Logo"/>
+                        <field name="logo" widget="image" options="{'zoom': true,'preview_image':'logo','size': [512, 512]}" string="Logo"/>
                     </div>
                     <group>
                         <group>
@@ -24,6 +24,17 @@
                         </group>
                     </group>
                     <notebook>
+                        <page name="login_slider" string="Login Slider">
+                            <field name="login_slider_ids" context="{'default_login_id':id}">
+                                <tree editable="bottom">
+                                    <field name="sequence" widget="handle" />
+                                    <field name="header_description" string="Writer" />
+                                    <field name="description" string="Quote" />
+                                    <field name="url" />
+                                    <field name="image_icon" widget="image" options="{'zoom': true,'preview_image':'image_icon','size': [128, 128]}" />
+                                </tree>
+                            </field>
+                        </page>
                         <page name="my_dashboard" string="My Dashboard">
                             <field name="my_dashboard_ids">
                                 <tree>
@@ -143,10 +154,10 @@
                                 <group>
 
                                     <field name="location_icon_url" />
-                                    <field name="location_icon" widget="image" options="{'zoom': true,'preview_image':'location_icon_url','size': [128, 128]}"/>
+                                    <field name="location_icon" widget="image" options="{'zoom': true,'preview_image':'location_icon','size': [128, 128]}"/>
                                     <field name="location_text" string="Delivery Price Text" />
                                     <field name="shipping_icon_url" />
-                                    <field name="shipping_icon" widget="image" options="{'zoom': true,'preview_image':'shipping_icon_url','size': [128, 128]}"/>
+                                    <field name="shipping_icon" widget="image" options="{'zoom': true,'preview_image':'shipping_icon','size': [128, 128]}"/>
                                     <field name="shipping_text" string="Delivery Text" />
                                 </group>
                             </group>

@@ -21,3 +21,4 @@ class kits_b2b_image_model(models.Model):
         'kits.b2b.pages',
         'How To shop Page'
     )
+    login_id = fields.Many2one('kits.b2b.website', 'Login')
