@@ -639,6 +639,7 @@ class res_partner(models.Model):
                         rec.mailgun_verification_status = 'approved'
                     rec.result = request.get('result')
                     rec.mail_risk = request.get('risk')
+            shipping_id = self.search([('parent_id','=',rec.id)])
 
         if 'customer_type' in vals.keys() and vals['customer_type'] in ['b2b_regular','b2b_regular']:
                 config_parameter = config_parameter_obj.sudo().get_param('user_ids_spt', False)
