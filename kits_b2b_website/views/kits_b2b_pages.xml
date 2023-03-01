@@ -139,8 +139,9 @@
                             </field>
                         </page>
                         <page name="our_network" string="Our Branch" attrs="{'invisible': [('page_type','not in',['our_core_values'])]}">
-                            <field name="key_value_model_ids" attrs="{'invisible': [('page_type','not in',['our_core_values'])]}">
+                            <field name="branch_data_ids" attrs="{'invisible': [('page_type','not in',['our_core_values'])]}">
                                 <tree editable="bottom">
+                                    <field name="head_office"/>
                                     <field name="name"/>
                                     <field name="value"/>
                                 </tree>

@@ -8,3 +8,6 @@ class kits_b2b_key_value_model(models.Model):
     value = fields.Text('Value')
     website_id = fields.Many2one('kits.b2b.website','Website')
     page_id = fields.Many2one('kits.b2b.pages','page')
+    head_office = fields.Boolean('Header Office?')
+
+    contact_us_page_id = fields.Many2one('kits.b2b.pages','Contact Us Page')

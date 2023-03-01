@@ -6,15 +6,20 @@
         <field name="arch" type="xml">
             <form string="">
                 <sheet>
+                    <div>
+                        <h2>
+                            <field name="name" />
+                        </h2>
+                    </div>
                     <group>
                         <group>
-                            <field name="name" />
-                            <field name="redirect_url" readonly="1"/>
-                            <field name="query_params" readonly="1" />
+                            <field name="menu_type" />
+                            <field name="redirect_url" attrs="{'invisible':[('menu_type','not in',['redirect','dashboard'])]}" />
+                            <field name="query_params" attrs="{'invisible':[('menu_type','!=','filter')]}" />
                         </group>
                         <group>
-                            <field name="page_id" />
                             <field name="website_id" />
+                            <field name="in_more" attrs="{'invisible':[('menu_type','not in',['redirect','filter'])]}" />
                         </group>
                     </group>
                 </sheet>
@@ -30,7 +35,7 @@
             <tree string="">
                 <field name="sequence" widget="handle"/>
                 <field name="name" />
-                <field name="redirect_url"  readonly="1"/>
+                <field name="redirect_url" readonly="1"/>
                 <field name="website_id" />
             </tree>
         </field>

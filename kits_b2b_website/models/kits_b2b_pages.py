@@ -1,5 +1,6 @@
 from odoo import fields, models, api, _
 
+
 class kits_b2b_pages(models.Model):
     _name = 'kits.b2b.pages'
     _description = "B2B Pages"
@@ -25,6 +26,11 @@ class kits_b2b_pages(models.Model):
         'kits.b2b.website.slider', 'page_id', 'Sliders')
     key_value_model_ids = fields.One2many(
         'kits.b2b.key.value.model', 'page_id', 'Key Value')
+    branch_data_ids = fields.One2many(
+        'kits.b2b.key.value.model',
+        'contact_us_page_id',
+        string='Branches'
+    )
     header_text_2 = fields.Char('Header Text')
     text_2 = fields.Char('Text')
     image_url_text_2 = fields.Char('Image URL')

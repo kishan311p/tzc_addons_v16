@@ -657,10 +657,11 @@ Sunglasses</field>
             <field name="banner_1_id" eval="kitsour_core_values_image" />
         </record>
         <record id="kits_our_core_values_canada" model="kits.b2b.key.value.model">
-            <field name="name">Head Office
-        Toronto, Canada</field>
+            <field name="head_office">True</field>
+            <field name="name">Toronto, Canada</field>
             <field name="value">366 Denison Street, Unit 4 Markham, Ontario, Canada.</field>
             <field name="page_id" eval="kits_our_core_values_page" />
+            <field name="contact_us_page_id" eval="kits_our_core_values_page" />
             <field name="website_id" eval="kits_team_eto_website" />
         </record>
         <!-- <record id="kits_our_core_values_pakistan" model="kits.b2b.key.value.model">
@@ -673,6 +674,7 @@ Sunglasses</field>
             <field name="name">Dar Es Salaam, Tanzania</field>
             <field name="value">123 Samora Ave Dar es Salaam, Tanzania</field>
             <field name="page_id" eval="kits_our_core_values_page" />
+            <field name="contact_us_page_id" eval="kits_our_core_values_page" />
             <field name="website_id" eval="kits_team_eto_website" />
         </record>
         <!-- <record id="kits_our_core_values_kenya" model="kits.b2b.key.value.model">
@@ -685,6 +687,7 @@ Sunglasses</field>
             <field name="name">Dubai, UAE</field>
             <field name="value">Oﬃce 508, Latifa Tower, Trade Center 1, Sheikh Zayed Road Dubai, UAE</field>
             <field name="page_id" eval="kits_our_core_values_page" />
+            <field name="contact_us_page_id" eval="kits_our_core_values_page" />
             <field name="website_id" eval="kits_team_eto_website" />
         </record>
 
@@ -895,6 +898,7 @@ Sunglasses</field>
             <field name="redirect_url">/shop</field>
             <field name="query_params">7</field>
             <field name="fileter_params">Category</field>
+            <field name="menu_type">filter</field>
         </record>
         <record id="kits_b2b_sunglasses_menus" model="kits.b2b.menus">
             <field name="name">Sunglasses</field>
@@ -903,6 +907,7 @@ Sunglasses</field>
             <field name="redirect_url">/shop</field>
             <field name="query_params">6</field>
             <field name="fileter_params">Category</field>
+            <field name="menu_type">filter</field>
         </record>
         <record id="kits_b2b_new_arrivals_menus" model="kits.b2b.menus">
             <field name="name">New Arrivals</field>
@@ -910,6 +915,7 @@ Sunglasses</field>
             <field name="is_published">True</field>
             <field name="redirect_url">/shop</field>
             <field name="query_params">True</field>
+            <field name="menu_type">filter</field>
         </record>
         <record id="kits_b2b_sale_menus" model="kits.b2b.menus">
             <field name="name">Sale</field>
@@ -917,12 +923,15 @@ Sunglasses</field>
             <field name="is_published">True</field>
             <field name="redirect_url">/shop</field>
             <field name="query_params">?male=male&amp;female=female&amp;kids=eye_size-35,47</field>
+            <field name="menu_type">filter</field>
         </record>
         <record id="kits_b2b_brands_menus" model="kits.b2b.menus">
             <field name="name">Brands</field>
             <field name="website_id" eval="kits_team_eto_website" />
             <field name="is_published">True</field>
             <field name="redirect_url">/brand-menu</field>
+            <field name="menu_type">redirect</field>
+            <field name="in_more">True</field>
         </record>
         <record id="kits_b2b_our_story_menus" model="kits.b2b.menus">
             <field name="name">Our Story</field>
@@ -930,6 +939,8 @@ Sunglasses</field>
             <field name="page_id" eval="kits_aboutus_page" />
             <field name="is_published">True</field>
             <field name="redirect_url">/aboutus</field>
+            <field name="menu_type">redirect</field>
+            <field name="in_more">True</field>
         </record>
         <record id="kits_b2b_faqs_menus" model="kits.b2b.menus">
             <field name="name">FAQ's</field>
@@ -937,6 +948,8 @@ Sunglasses</field>
             <field name="page_id" eval="kits_faqs_page" />
             <field name="is_published">True</field>
             <field name="redirect_url">/faqs</field>
+            <field name="menu_type">redirect</field>
+            <field name="in_more">True</field>
         </record>
         <record id="kits_b2b_contact_us_menus" model="kits.b2b.menus">
             <field name="name">Contact Us</field>
@@ -944,6 +957,7 @@ Sunglasses</field>
             <field name="page_id" eval="kits_contact_us" />
             <field name="is_published">True</field>
             <field name="redirect_url">/contact-us</field>
+            <field name="menu_type">redirect</field>
         </record>
         <record id="kits_b2b_currency_mapping" model="kits.b2b.multi.currency.mapping">
             <field name="currency_rate">2.00</field>
@@ -955,18 +969,21 @@ Sunglasses</field>
             <field name="my_dashboard_model_id" eval="kits_team_eto_website" />
             <field name="sequence">10001</field>
             <field name="redirect_url">/catalog</field>
+            <field name="menu_type">dashboard</field>
         </record>
         <record id="kits_b2b_quotations_my_dashboard" model="kits.b2b.menus">
             <field name="name">My Quotations</field>
             <field name="my_dashboard_model_id" eval="kits_team_eto_website" />
             <field name="sequence">10002</field>
             <field name="redirect_url">/quotation</field>
+            <field name="menu_type">dashboard</field>
         </record>
         <record id="kits_b2b_order_us_my_dashboard" model="kits.b2b.menus">
             <field name="name">My Orders</field>
             <field name="my_dashboard_model_id" eval="kits_team_eto_website" />
             <field name="sequence">10003</field>
             <field name="redirect_url">/order</field>
+            <field name="menu_type">dashboard</field>
         </record>
 
 
