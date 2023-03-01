@@ -27,8 +27,8 @@ class account_move(models.Model):
         order = self.env['sale.order'].search([('invoice_ids','in',self.ids)],limit=1)
         return order.sale_manager_id.id
     
-    quickbooks_backend_id = fields.Many2one("kits.quickbooks.backend", "Quickbooks Backend")
-    quickbooks_invoice_id = fields.Char("Quickbooks Invoice Id")
+    # quickbooks_backend_id = fields.Many2one("kits.quickbooks.backend", "Quickbooks Backend")
+    # quickbooks_invoice_id = fields.Char("Quickbooks Invoice Id")
 
     commission_line_ids = fields.One2many('kits.commission.lines','invoice_id','Commissions')
     is_commission_paid = fields.Boolean('Paid ?')

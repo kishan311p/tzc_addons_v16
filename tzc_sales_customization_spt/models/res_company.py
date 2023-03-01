@@ -18,7 +18,7 @@ class res_company(models.Model):
     production_merchant_id_usd = fields.Char('Production Merchant ID (USD)')
     production_hash_value_usd = fields.Char('Production Hash Value (USD)')
 
-    kits_quickbooks_backend_id = fields.Many2one("kits.quickbooks.backend", "Quickbook Backend Id")
+    # kits_quickbooks_backend_id = fields.Many2one("kits.quickbooks.backend", "Quickbook Backend Id")
 
     excel_token = fields.Char(string="Excel Token")
 
