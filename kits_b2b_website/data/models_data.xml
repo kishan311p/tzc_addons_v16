@@ -38,6 +38,8 @@
             <field name="text_1_redirect_url_text">View Our Story</field>
             <field name="banner_1_id" eval="kits_homepage_banner_image_1" />
             <field name="website_id" eval="kits_team_eto_website" />
+            <field name="how_to_shop_background">https://cdn.teameto.com/data/B2C1/new_tzc_b2b_images/roadmap/roadmap-bg.png</field>
+            <field name="how_to_shop_redirect_url">https://b2b.teameto.com/shop</field>
         </record>
 
         <record id="kit_main_baner1" model="kits.b2b.image.model">
@@ -990,3 +992,4 @@ Sunglasses</field>
         </record>
     </data>
 </odoo>
+

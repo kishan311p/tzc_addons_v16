@@ -80,6 +80,7 @@
                             <field name="is_salesperson"/>
                             <field name="is_email_verified"/>
                             <field name="is_granted_portal_access"/>
+                            <field name="is_default_shipping"/>
                         </group>
                         <group>
                             <field name="business_fax"/>

@@ -79,7 +79,7 @@ class res_partner(models.Model):
     is_internal_user = fields.Boolean(string="Is Internal User")
     signup_from_website = fields.Boolean(string='Sinup From Website')
     mailgun_verification_status = fields.Selection([('approved','Mg Approved'),('rejected','MG Rejected')],'MG Status')
-    
+    is_default_shipping= fields.Boolean('Default Shipping Address')
     # wk_website_loyalty_points = fields.Float(
     #     string='Website Loyalty Points',
     #     help='The points are the points with which the user is awarded of being Loyal !',
