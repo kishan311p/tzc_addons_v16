@@ -32,20 +32,21 @@ class mailing_trace(models.Model):
     @api.model_create_multi
     def create(self,vals_list):
         res = super(mailing_trace,self).create(vals_list)
-        campaing_contact_list=[]
-        for trace in res:
-            mailing_contact = self.env['mailing.contact'].search([('email','=',trace.email)],limit=1)
-            
-            campaing_contact_list.append({
-                'trace_id':trace.id,
-                'email':trace.email or '',
-                'mass_mailing_id':trace.mass_mailing_id.id,
-                'mailing_contact_id':mailing_contact.id,
-                'activity_id':trace.marketing_trace_id.activity_id.id,
-                'campaign_id':trace.marketing_trace_id.activity_id.campaign_id.id,
-                'state':'draft',
-            })
-        self.env['campaign.report.contacts'].create(campaing_contact_list)
+        if res._context.get('raise_campaign'):
+            campaing_contact_list=[]
+            for trace in res:
+                mailing_contact = self.env['mailing.contact'].search([('email','=',trace.email)],limit=1)
+                
+                campaing_contact_list.append({
+                    'trace_id':trace.id,
+                    'email':trace.email or '',
+                    'mass_mailing_id':trace.mass_mailing_id.id,
+                    'mailing_contact_id':mailing_contact.id,
+                    'activity_id':trace.marketing_trace_id.activity_id.id,
+                    'campaign_id':trace.marketing_trace_id.activity_id.campaign_id.id,
+                    'state':'draft',
+                })
+            self.env['campaign.report.contacts'].create(campaing_contact_list)
         return res
 
     # def set_clicked(self):
