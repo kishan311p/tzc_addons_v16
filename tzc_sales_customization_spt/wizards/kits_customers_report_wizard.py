@@ -153,17 +153,17 @@ class kits_customers_report_wizard(models.TransientModel):
                     sheet.cell(row=row_index, column=8).value = data[5] or ''
                     sheet.cell(row=row_index, column=9).value = data[6] or ''
                     sheet.cell(row=row_index, column=10).value = ", ".join(partner_adress) if partner_adress else ''
-                    sheet.cell(row=row_index, column=11).value = data[10] or ''
-                    sheet.cell(row=row_index, column=12).value = data[11] or ''
-                    sheet.cell(row=row_index, column=13).value = data[12] or ''
+                    sheet.cell(row=row_index, column=11).value = data[9] or ''
+                    sheet.cell(row=row_index, column=12).value = data[10] or ''
+                    sheet.cell(row=row_index, column=13).value = data[11] or ''
                     sheet.cell(row=row_index, column=14).value = ', '.join(partner.business_type_ids.mapped('name')) if partner.business_type_ids else ''
                     sheet.cell(row=row_index, column=15).value = partner.company_id.name if partner.company_id else ''
                     sheet.cell(row=row_index, column=16).value = dict(partner._fields['company_type'].selection).get(partner.company_type)
-                    sheet.cell(row=row_index, column=17).value = dict(partner._fields['customer_type'].selection).get(data[13]) if data[13] else ''
-                    sheet.cell(row=row_index, column=18).value = dict(partner._fields['activity_state'].selection).get(data[14]) if partner.activity_state else ''
+                    sheet.cell(row=row_index, column=17).value = dict(partner._fields['customer_type'].selection).get(data[12]) if data[12] else ''
+                    sheet.cell(row=row_index, column=18).value = dict(partner._fields['activity_state'].selection).get(data[13]) if partner.activity_state else ''
                     sheet.cell(row=row_index, column=19).value = partner.journal_item_count if partner.journal_item_count else ''
                     sheet.cell(row=row_index, column=19).alignment = align_left
-                    sheet.cell(row=row_index, column=20).value = data[15].strftime('%d-%m-%Y') or ''
+                    sheet.cell(row=row_index, column=20).value = data[14].strftime('%d-%m-%Y') or ''
                     sheet.cell(row=row_index, column=21).value = partner.search_read([('id','=',partner.id)],['__last_update'])[0].get('__last_update').strftime('%d-%m-%Y')
                     sheet.cell(row=row_index, column=22).value = data[16] or ''
                     sheet.cell(row=row_index, column=22).alignment = align_right
@@ -192,18 +192,18 @@ class kits_customers_report_wizard(models.TransientModel):
                     sheet.column_dimensions['U'].width = 20
                     sheet.column_dimensions['V'].width = 20
                 else:
-                    sheet.cell(row=row_index, column=1).value = partner.create_date.strftime("%d-%m-%Y") if partner.create_date else ''
-                    sheet.cell(row=row_index, column=3).value = partner.name if partner.name else ''
-                    sheet.cell(row=row_index, column=4).value = dict(self.env['res.partner']._fields['customer_type'].selection).get(partner.customer_type)
-                    sheet.cell(row=row_index, column=5).value = partner.phone if partner.phone else ''
+                    sheet.cell(row=row_index, column=1).value = data[13].strftime("%d-%m-%Y") if data[13] else ''
+                    sheet.cell(row=row_index, column=3).value = data[1] or ''
+                    sheet.cell(row=row_index, column=4).value = dict(self.env['res.partner']._fields['customer_type'].selection).get(data[12])
+                    sheet.cell(row=row_index, column=5).value = data[4] or ''
                     sheet.cell(row=row_index, column=6).value = ", ".join(partner_adress)
-                    sheet.cell(row=row_index, column=7).value = partner.state_id.name if partner.state_id else ''
-                    sheet.cell(row=row_index, column=8).value = partner.zip if partner.zip else ''
-                    sheet.cell(row=row_index, column=9).value = partner.country_id.name if partner.country_id else ''
-                    sheet.cell(row=row_index, column=10).value = partner.territory.name if partner.territory else ''
-                    sheet.cell(row=row_index, column=11).value = partner.email if partner.email else ''
-                    sheet.cell(row=row_index, column=12).value = "True" if partner.is_email_verified else "False"
-                    sheet.cell(row=row_index, column=13).value = "True" if partner.is_granted_portal_access else "False"
+                    sheet.cell(row=row_index, column=7).value = data[10] or ''
+                    sheet.cell(row=row_index, column=8).value = data[9] or ''
+                    sheet.cell(row=row_index, column=9).value = data[11] or ''
+                    sheet.cell(row=row_index, column=10).value = data[17] or ''
+                    sheet.cell(row=row_index, column=11).value = data[6] or ''
+                    sheet.cell(row=row_index, column=12).value = "True" if data[18] else "False"
+                    sheet.cell(row=row_index, column=13).value = "True" if data[19] else "False"
                     sheet.cell(row=row_index, column=14).value = partner.user_id.name if partner.user_id else ''
                     sheet.cell(row=row_index, column=15).value = ", ".join(partner.sale_order_ids.mapped('name')) if partner.sale_order_ids else ''
                     sheet.cell(row=row_index, column=16).value = ", ".join(partner.catalog_ids.mapped('name')) if partner.catalog_ids else ''
@@ -313,83 +313,112 @@ class kits_customers_report_wizard(models.TransientModel):
 
         for user in users_ids:
 
-            user_adress = []
-            if user.street:
-                user_adress.append(user.street)
-            if user.street2:
-                user_adress.append(user.street2)
+            query = f'''
+                SELECT RU.ID,
+                        RP.NAME,
+                        RP.IS_COMPANY,
+                        RU.ACTIVE,
+                        RP.PHONE,
+                        RP.MOBILE,
+                        RP.EMAIL,
+                        RP.STREET,
+                        RP.STREET2,
+                        RP.ZIP,
+                        RCS.NAME AS STATE,
+                        RCO.NAME->>'en_US' AS COUNTRY,
+                        RC.NAME,
+                        RP.CUSTOMER_TYPE,
+                        RU.CREATE_DATE,
+                        RP.LAST_ORDER_VALUE,
+                        RCG.NAME->>'en_US' AS TERRITORY,
+                        RP.CITY
+                    FROM RES_USERS AS RU
+                    LEFT JOIN RES_PARTNER AS RP ON RU.PARTNER_ID = RP.ID
+                    LEFT JOIN RES_COMPANY AS RC ON RU.COMPANY_ID = RC.ID
+                    LEFT JOIN RES_COUNTRY_STATE AS RCS ON RP.STATE_ID = RCS.ID
+                    LEFT JOIN RES_COUNTRY AS RCO ON RP.COUNTRY_ID = RCO.ID
+                    LEFT JOIN RES_COUNTRY_GROUP AS RCG ON RP.TERRITORY = RCG.ID
+                    WHERE RU.ID = {user.id}
+            '''
+            self.env.cr.execute(query)
+            records = self.env.cr.fetchall()
+            for data in records:
+                user_adress = []
+                if user.street:
+                    user_adress.append(data[7])
+                if user.street2:
+                    user_adress.append(data[8])
+                if self.all_fields:
+                    sheet.cell(row=row_index, column=1).value = data[0] or ''
+                    sheet.cell(row=row_index, column=1).alignment = align_left
+                    sheet.cell(row=row_index, column=2).value = data[1] or '' 
+                    sheet.cell(row=row_index, column=3).value = str(data[2]) 
+                    sheet.cell(row=row_index, column=4).value = user.user_id.internal_id if user.internal_id else ''
+                    sheet.cell(row=row_index, column=5).value = user.user_id.name if user.user_id else ''
+                    sheet.cell(row=row_index, column=6).value = str(data[3])
+                    sheet.cell(row=row_index, column=7).value = data[4] or ''
+                    sheet.cell(row=row_index, column=8).value = data[5] or ''
+                    sheet.cell(row=row_index, column=9).value = data[6] or ''
+                    sheet.cell(row=row_index, column=10).value = ", ".join(user_adress) if user_adress else ''
+                    sheet.cell(row=row_index, column=11).value = data[9] or ''
+                    sheet.cell(row=row_index, column=12).value = data[10] or ''
+                    sheet.cell(row=row_index, column=13).value = data[11] or ''
+                    sheet.cell(row=row_index, column=14).value = ', '.join(user.business_type_ids.mapped('name')) if user.business_type_ids else ''
+                    sheet.cell(row=row_index, column=15).value = data[12] or ''
+                    sheet.cell(row=row_index, column=16).value = dict(user._fields['company_type'].selection(user)).get(user.company_type)
+                    sheet.cell(row=row_index, column=17).value = dict(user._fields['customer_type'].selection(user)).get(data[13]) if data[13] else ''
+                    sheet.cell(row=row_index, column=18).value = dict(user._fields['activity_state'].selection(user)).get(user.activity_state) if user.activity_state else ''
+                    sheet.cell(row=row_index, column=19).value = user.journal_item_count if user.journal_item_count else ''
+                    sheet.cell(row=row_index, column=19).alignment = align_left
+                    sheet.cell(row=row_index, column=20).value = data[14].strftime('%d-%m-%Y') if data[14] else ''
+                    sheet.cell(row=row_index, column=21).value = user.search_read([('id','=',user.id)],['__last_update'])[0].get('__last_update').strftime('%d-%m-%Y')
+                    sheet.cell(row=row_index, column=22).value = data[15] or ''
+                    sheet.cell(row=row_index, column=22).alignment = align_left
+                    row_index += 1
+                
+                    sheet.column_dimensions['A'].width = 10
+                    sheet.column_dimensions['B'].width = 25
+                    sheet.column_dimensions['C'].width = 15
+                    sheet.column_dimensions['D'].width = 25
+                    sheet.column_dimensions['E'].width = 25
+                    sheet.column_dimensions['F'].width = 10
+                    sheet.column_dimensions['G'].width = 15
+                    sheet.column_dimensions['H'].width = 15
+                    sheet.column_dimensions['I'].width = 25
+                    sheet.column_dimensions['J'].width = 30
+                    sheet.column_dimensions['K'].width = 15
+                    sheet.column_dimensions['L'].width = 15
+                    sheet.column_dimensions['M'].width = 15
+                    sheet.column_dimensions['N'].width = 15
+                    sheet.column_dimensions['O'].width = 30
+                    sheet.column_dimensions['P'].width = 15
+                    sheet.column_dimensions['Q'].width = 15
+                    sheet.column_dimensions['R'].width = 15
+                    sheet.column_dimensions['S'].width = 15
+                    sheet.column_dimensions['T'].width = 15
+                    sheet.column_dimensions['U'].width = 20
+                    sheet.column_dimensions['V'].width = 20
+                else:
+                    sheet.cell(row=row_index, column=1).value = data[14].strftime("%d-%m-%Y") if data[14] else ''
+                    sheet.cell(row=row_index, column=2).value = data[1] or ''
+                    sheet.cell(row=row_index, column=3).value = data[6] or ''
+                    sheet.cell(row=row_index, column=4).value = user.user_id.name if user.user_id else ''
+                    sheet.cell(row=row_index, column=5).value = data[11] or ''
+                    sheet.cell(row=row_index, column=6).value = data[16] or ''
+                    sheet.cell(row=row_index, column=7).value = data[17] or ''
+                    sheet.cell(row=row_index, column=8).value = data[4] or ''
+                    sheet.cell(row=row_index, column=9).value = ", ".join(user_adress)
+                    row_index += 1
 
-            if self.all_fields:
-                sheet.cell(row=row_index, column=1).value = user.id if user.id else ''
-                sheet.cell(row=row_index, column=1).alignment = align_left
-                sheet.cell(row=row_index, column=2).value = user.name if user.name else '' 
-                sheet.cell(row=row_index, column=3).value = str(user.is_company) 
-                sheet.cell(row=row_index, column=4).value = user.user_id.internal_id if user.internal_id else ''
-                sheet.cell(row=row_index, column=5).value = user.user_id.name if user.user_id else ''
-                sheet.cell(row=row_index, column=6).value = str(user.active)
-                sheet.cell(row=row_index, column=7).value = user.phone if user.phone else ''
-                sheet.cell(row=row_index, column=8).value = user.mobile if user.mobile else ''
-                sheet.cell(row=row_index, column=9).value = user.email if user.email else ''
-                sheet.cell(row=row_index, column=10).value = ", ".join(user_adress) if user_adress else ''
-                sheet.cell(row=row_index, column=11).value = user.zip if user.zip else ''
-                sheet.cell(row=row_index, column=12).value = user.state_id.name if user.state_id else ''
-                sheet.cell(row=row_index, column=13).value = user.country_id.name if user.country_id else ''
-                sheet.cell(row=row_index, column=14).value = ', '.join(user.business_type_ids.mapped('name')) if user.business_type_ids else ''
-                sheet.cell(row=row_index, column=15).value = user.company_id.name if user.company_id else ''
-                sheet.cell(row=row_index, column=16).value = dict(user._fields['company_type'].selection(user)).get(user.company_type)
-                sheet.cell(row=row_index, column=17).value = dict(user._fields['customer_type'].selection(user)).get(user.customer_type) if user.customer_type else ''
-                sheet.cell(row=row_index, column=18).value = dict(user._fields['activity_state'].selection(user)).get(user.activity_state) if user.activity_state else ''
-                sheet.cell(row=row_index, column=19).value = user.journal_item_count if user.journal_item_count else ''
-                sheet.cell(row=row_index, column=19).alignment = align_left
-                sheet.cell(row=row_index, column=20).value = user.create_date.strftime('%d-%m-%Y') if user.create_date else ''
-                sheet.cell(row=row_index, column=21).value = user.search_read([('id','=',user.id)],['__last_update'])[0].get('__last_update').strftime('%d-%m-%Y')
-                sheet.cell(row=row_index, column=22).value = user.last_order_value if user.last_order_value else ''
-                sheet.cell(row=row_index, column=22).alignment = align_left
-                row_index += 1
-            
-                sheet.column_dimensions['A'].width = 10
-                sheet.column_dimensions['B'].width = 25
-                sheet.column_dimensions['C'].width = 15
-                sheet.column_dimensions['D'].width = 25
-                sheet.column_dimensions['E'].width = 25
-                sheet.column_dimensions['F'].width = 10
-                sheet.column_dimensions['G'].width = 15
-                sheet.column_dimensions['H'].width = 15
-                sheet.column_dimensions['I'].width = 25
-                sheet.column_dimensions['J'].width = 30
-                sheet.column_dimensions['K'].width = 15
-                sheet.column_dimensions['L'].width = 15
-                sheet.column_dimensions['M'].width = 15
-                sheet.column_dimensions['N'].width = 15
-                sheet.column_dimensions['O'].width = 30
-                sheet.column_dimensions['P'].width = 15
-                sheet.column_dimensions['Q'].width = 15
-                sheet.column_dimensions['R'].width = 15
-                sheet.column_dimensions['S'].width = 15
-                sheet.column_dimensions['T'].width = 15
-                sheet.column_dimensions['U'].width = 20
-                sheet.column_dimensions['V'].width = 20
-            else:
-                sheet.cell(row=row_index, column=1).value = user.create_date.strftime("%d-%m-%Y") if user.create_date else ''
-                sheet.cell(row=row_index, column=2).value = user.name if user.name else ''
-                sheet.cell(row=row_index, column=3).value = user.email if user.email else ''
-                sheet.cell(row=row_index, column=4).value = user.user_id.name if user.user_id else ''
-                sheet.cell(row=row_index, column=5).value = user.country_id.name if user.country_id.name else ''
-                sheet.cell(row=row_index, column=6).value = user.territory.name if user.territory.name else ''
-                sheet.cell(row=row_index, column=7).value = user.city if user.city else ''
-                sheet.cell(row=row_index, column=8).value = user.phone if user.phone else ''
-                sheet.cell(row=row_index, column=9).value = ", ".join(user_adress)
-                row_index += 1
-
-                sheet.column_dimensions['A'].width = 15
-                sheet.column_dimensions['B'].width = 20
-                sheet.column_dimensions['C'].width = 30
-                sheet.column_dimensions['D'].width = 25
-                sheet.column_dimensions['E'].width = 15
-                sheet.column_dimensions['F'].width = 15
-                sheet.column_dimensions['G'].width = 15
-                sheet.column_dimensions['H'].width = 18
-                sheet.column_dimensions['I'].width = 30
+                    sheet.column_dimensions['A'].width = 15
+                    sheet.column_dimensions['B'].width = 20
+                    sheet.column_dimensions['C'].width = 30
+                    sheet.column_dimensions['D'].width = 25
+                    sheet.column_dimensions['E'].width = 15
+                    sheet.column_dimensions['F'].width = 15
+                    sheet.column_dimensions['G'].width = 15
+                    sheet.column_dimensions['H'].width = 18
+                    sheet.column_dimensions['I'].width = 30
 
         fp = BytesIO()
         workbook.save(fp)

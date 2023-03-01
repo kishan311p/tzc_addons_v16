@@ -131,80 +131,83 @@ class shipping_cost_analysis_wizard(models.TransientModel):
 
         row_index=table_header+1
 
-        query = f'''SELECT 	COALESCE(SO.NAME,'') AS NAME,
-                            COALESCE(SO.STATE,'')AS STATE,
-                            SO.SHIPPED_DATE,
-                            COALESCE(RP_USER.NAME,'') AS SALESPERSON,
-                            CASE
-                                WHEN SO.STATE = 'shipped' THEN SO.AMOUNT_TOTAL ELSE 00
-                            END AS TOTAL_AMOUNT,
-                            COALESCE(RC.NAME,'') AS CURRENCY,
-                            COALESCE(SO.AMOUNT_IS_SHIPPING_TOTAL,00.00) AS AMOUNT_IS_SHIPPING_TOTAL,
-                            COALESCE(SO.DELIVERED_QTY,0) AS DELIVERED_QTY,
-                            COALESCE(RP.INTERNAL_ID,'') AS CUSTOMER_ID,
-                            COALESCE(RP.NAME,'') AS CUSTOMER,
-                            COALESCE(R_COU.NAME->>'en_US','') AS COUNTRY,
-                            COALESCE(RP.CITY,'') AS CITY,
-                            COALESCE(RP.ZIP,'') AS ZIP,
-                            COALESCE(RP.STREET,'')AS STREET,
-                            COALESCE(RP.STREET2,'') AS STREET2,
-                            COALESCE(SUM(PP.LENGTH * PP.WIDTH * PP.HEIGHT/100),00) AS PRODUCT_VOLUME,
-                            COALESCE(SO.WEIGHT_TOTAL_KG,00) AS CALCULATED_WEIGHT,
-                            COALESCE(SO.ACTUAL_WEIGHT,00) AS ACTUAL_WEIGHT,
-                            CASE
-                                WHEN SP.STATE NOT IN ('cancel') AND SP.NAME LIKE 'WH/OUT%' THEN SPS.NAME ELSE ''
-                            END AS CARRIER,
-                            CASE
-                                WHEN SP.STATE NOT IN ('cancel') AND SP.NAME LIKE 'WH/OUT%' THEN SP.TRACKING_NUMBER_SPT ELSE ''
-                            END AS TRACKING_NO
-                    FROM SALE_ORDER AS SO
-                    INNER JOIN SHIPPING_PROVIDER_SPT AS SPS ON SPS.ID = SO.SHIPPING_ID
-                    LEFT JOIN RES_CURRENCY AS RC ON RC.ID = SO.B2B_CURRENCY_ID
-                    INNER JOIN SALE_ORDER_LINE AS SOL ON SOL.ORDER_ID = SO.ID
-                    INNER JOIN PRODUCT_PRODUCT AS PP ON PP.ID = SOL.PRODUCT_ID
-                    INNER JOIN RES_PARTNER AS RP ON RP.ID = SO.PARTNER_ID
-                    INNER JOIN RES_COUNTRY AS R_COU ON R_COU.ID = RP.COUNTRY_ID
-                    INNER JOIN STOCK_PICKING AS SP ON SP.ORIGIN = SO.NAME
-                    INNER JOIN RES_USERS AS RU ON RU.ID = SO.USER_ID
-                    INNER JOIN RES_PARTNER AS RP_USER ON RP_USER.ID = RU.PARTNER_ID
-                    WHERE SO.STATE IN ('shipped','draft_inv','open_inv','paid') AND SPS.NAME = 'Pick Up' '''
+        
+        query='''
+                SELECT SO.ID,
+                    COALESCE(SO.NAME,'') AS NAME,
+                    COALESCE(SO.STATE,'')AS STATE,
+                    COALESCE(RP_USER.NAME,'') AS SALESPERSON,
+                    SO.SHIPPED_DATE,
+                    CASE
+                        WHEN SO.STATE = 'shipped' THEN SO.AMOUNT_TOTAL ELSE AM.AMOUNT_TOTAL
+                    END AS TOTAL_AMOUNT,
+                    COALESCE(RC.NAME,'') AS CURRENCY,
+                    COALESCE(SO.AMOUNT_IS_SHIPPING_TOTAL,00.00) AS AMOUNT_IS_SHIPPING_TOTAL,
+                    COALESCE(SO.DELIVERED_QTY,0) AS DELIVERED_QTY,
+                    COALESCE(RP.INTERNAL_ID,'') AS CUSTOMER_ID,
+                    COALESCE(RP.NAME,'') AS CUSTOMER,
+                    COALESCE(R_COU.NAME->>'en_US','') AS COUNTRY,
+                    COALESCE(RP.CITY,'') AS CITY,
+                    COALESCE(RP.ZIP,'') AS ZIP,
+                    COALESCE(RP.STREET,'')AS STREET,
+                    COALESCE(RP.STREET2,'') AS STREET2,
+                    COALESCE(SUM(PP.LENGTH * PP.WIDTH * PP.HEIGHT/100),00) AS PRODUCT_VOLUME,
+                    COALESCE(SO.WEIGHT_TOTAL_KG,00) AS CALCULATED_WEIGHT,
+                    COALESCE(SO.ACTUAL_WEIGHT,00) AS ACTUAL_WEIGHT,
+                    SPS.NAME,
+                    SP.TRACKING_NUMBER_SPT
+                    
+                FROM SALE_ORDER AS SO
+                LEFT JOIN SHIPPING_PROVIDER_SPT AS SPS ON SO.SHIPPING_ID = SPS.ID
+                INNER JOIN ACCOUNT_MOVE AS AM ON SO.NAME = AM.INVOICE_ORIGIN
+                INNER JOIN SALE_ORDER_LINE AS SOL ON SO.ID = SOL.ORDER_ID
+                LEFT JOIN RES_CURRENCY AS RC ON SO.B2B_CURRENCY_ID = RC.ID
+                LEFT JOIN RES_PARTNER AS RP ON SO.PARTNER_ID = RP.ID
+                INNER JOIN RES_USERS AS RU ON RU.ID = SO.USER_ID
+                INNER JOIN RES_PARTNER AS RP_USER ON RP_USER.ID = RU.PARTNER_ID
+                LEFT JOIN RES_COUNTRY AS R_COU ON RP.COUNTRY_ID = R_COU.ID
+                LEFT JOIN PRODUCT_PRODUCT AS PP ON SOL.PRODUCT_ID = PP.ID
+                INNER JOIN STOCK_PICKING AS SP ON SP.ORIGIN = SO.NAME
+                WHERE SO.STATE in ('shipped','draft_inv','open_inv','paid') AND LOWER(SPS.NAME) != 'pick up'
+                AND AM.STATE != 'cancel' AND SP.STATE NOT IN ('cancel') AND SP.NAME LIKE 'WH/OUT%'
+                '''
         if self.start_date:
             query = query + " AND SO.DATE_ORDER >= '%s'" % (str(self.start_date))
         if self.end_date:
             query = query + " AND SO.DATE_ORDER <= '%s'" % (str(self.end_date))
-        query = query + " GROUP BY SO.NAME,SO.STATE,SO.SHIPPED_DATE,SO.AMOUNT_TOTAL,RC.NAME,SO.AMOUNT_IS_SHIPPING_TOTAL,SO.DELIVERED_QTY,SO.ID,RP.INTERNAL_ID,RP.NAME,RP.CITY,RP.ZIP,R_COU.NAME,RP.STREET,RP.STREET2,SP.STATE,SP.NAME,SPS.NAME,SP.TRACKING_NUMBER_SPT,RP_USER.NAME"
+        query = query + " GROUP BY SO.NAME,SO.ID,AM.AMOUNT_TOTAL,SPS.NAME,RC.NAME,RP.INTERNAL_ID,RP.NAME,RP_USER.NAME,R_COU.NAME,RP.CITY,RP.ZIP,RP.STREET,RP.STREET2,SP.STATE,SP.NAME,SP.TRACKING_NUMBER_SPT"
         self.env.cr.execute(query)
         record_data = self.env.cr.fetchall()
         for data in record_data:
-            order = self.env['sale.order'].search([('name','=',data[0])])
-            sheet.cell(row=row_index, column=1).value = data[2].strftime("%d-%m-%Y") if data[2] else ''
-            sheet.cell(row=row_index, column=2).value = data[0]
-            sheet.cell(row=row_index, column=3).value = dict((order._fields['state'].selection)).get(data[1])
+            order = self.env['sale.order'].search([('id','=',data[0])])
+            sheet.cell(row=row_index, column=1).value = data[4].strftime("%d-%m-%Y") if data[2] else ''
+            sheet.cell(row=row_index, column=2).value = data[1] or ''
+            sheet.cell(row=row_index, column=3).value = dict((order._fields['state'].selection)).get(data[2])
             sheet.cell(row=row_index, column=4).value = data[3]
-            sheet.cell(row=row_index, column=5).value = "{:,.2f}".format(data[4])
+            sheet.cell(row=row_index, column=5).value = "{:,.2f}".format(data[5])
             sheet.cell(row=row_index, column=5).alignment = right_alignment
-            sheet.cell(row=row_index, column=6).value = data[5]
+            sheet.cell(row=row_index, column=6).value = data[6]
             sheet.cell(row=row_index, column=6).alignment = right_alignment
-            sheet.cell(row=row_index, column=7).value = data[7]
+            sheet.cell(row=row_index, column=7).value = data[8]
             sheet.cell(row=row_index, column=7).alignment = left_alignment
-            sheet.cell(row=row_index, column=8).value = round(data[15],2)
+            sheet.cell(row=row_index, column=8).value = round(data[16],2)
             sheet.cell(row=row_index, column=8).alignment = left_alignment
-            sheet.cell(row=row_index, column=9).value = round(data[16],2)
+            sheet.cell(row=row_index, column=9).value = round(data[18],2)
             sheet.cell(row=row_index, column=9).alignment = left_alignment
-            sheet.cell(row=row_index, column=10).value = round(data[17],2)
+            sheet.cell(row=row_index, column=10).value = round(data[19],2)
             sheet.cell(row=row_index, column=10).alignment = left_alignment
-            sheet.cell(row=row_index, column=11).value = data[8]
-            sheet.cell(row=row_index, column=12).value = data[9]
-            sheet.cell(row=row_index, column=13).value = '{},'.format(data[13])+'{}'.format(data[14])
+            sheet.cell(row=row_index, column=11).value = data[9]
+            sheet.cell(row=row_index, column=12).value = data[10]
+            sheet.cell(row=row_index, column=13).value = '{},'.format(data[14])+'{}'.format(data[15])
             sheet.cell(row=row_index, column=13).alignment = left_alignment
-            sheet.cell(row=row_index, column=14).value = data[11]
+            sheet.cell(row=row_index, column=14).value = data[12]
             sheet.cell(row=row_index, column=14).alignment = left_alignment
-            sheet.cell(row=row_index, column=15).value = data[12]
+            sheet.cell(row=row_index, column=15).value = data[13]
             sheet.cell(row=row_index, column=15).alignment = left_alignment
-            sheet.cell(row=row_index, column=16).value = data[10]
+            sheet.cell(row=row_index, column=16).value = data[11]
             sheet.cell(row=row_index, column=16).alignment = left_alignment
-            sheet.cell(row=row_index, column=17).value = data[18] if data[18] else "None"
-            sheet.cell(row=row_index, column=18).value = data[19]
+            sheet.cell(row=row_index, column=17).value = data[19] if data[19] else "None"
+            sheet.cell(row=row_index, column=18).value = data[20]
             order_data = {}
             if self.carrier_id:
                 response = self.get_shipping_method(order)
@@ -212,7 +215,7 @@ class shipping_cost_analysis_wizard(models.TransientModel):
                 if response:
                     if not response['error_message'] and response['price'] != False and response['success'] == True:
                         order_data['calcu_shipping_cost'] = round(response['price'],2)
-                        order_data['differ'] = abs(data[6] - order_data['calcu_shipping_cost']) if order_data['calcu_shipping_cost'] else 0.0
+                        order_data['differ'] = abs(data[7] - order_data['calcu_shipping_cost']) if order_data['calcu_shipping_cost'] else 0.0
                     else:
                         order_data['calcu_shipping_cost'] = 'N\A'
                         order_data['differ'] = 0.0
@@ -247,7 +250,7 @@ class shipping_cost_analysis_wizard(models.TransientModel):
                 else:
                     order_data['calcu_shipping_cost'] = 'N\A'
                     order_data['differ'] = 0.0
-            sheet.cell(row=row_index, column=19).value = "{:,.2f}".format(data[6]) or 0.0
+            sheet.cell(row=row_index, column=19).value = "{:,.2f}".format(data[7]) or 0.0
             sheet.cell(row=row_index, column=19).alignment = right_alignment
             sheet.cell(row=row_index, column=20).value = order_data['carrier_method']
             sheet.cell(row=row_index, column=20).alignment = left_alignment
