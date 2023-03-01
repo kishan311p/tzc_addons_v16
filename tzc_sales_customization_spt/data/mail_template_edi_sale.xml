@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data >
+
+        <record id="sale.email_template_edi_sale" model="mail.template">
+            <field name="name">Sales Order: Send by email</field>
+            <field name="model_id" ref="sale.model_sale_order"/>
+            <field name="subject">{{'Your proforma from Everything Optical (ETO) is ready' if ctx.get('proforma') else 'Your Account Manager has sent you a quotation to review'}}</field>
+            <field name="email_from">"ETO-Support" &lt;{{(object.company_id.catchall_email or user.email)}}&gt;</field>
+            <!-- <field name="email_from">${(object.user_id.email) | safe}</field> -->
+            <!-- <field name="email_from">${(object.user_id.email_formatted or user.email_formatted) | safe}</field> -->
+            <field name="partner_to">{{object.partner_id.id}}</field>
+            <field name="body_html" type="html">
+                <div style="margin: 0px; padding: 0px;">
+                    <p style="margin-top: 0px; padding: 0px; font-size: 13px;">
+                    <t t-set="doc_name" t-value="'quotation' if object.state in ('draft', 'sent') else 'order'"/>
+                        Dear <t t-out="object.partner_id.name"/>,
+                    <t t-if="ctx.get('proforma',false)">
+                        Your Pro forma invoice for order <a t-attf-href="{{object.get_base_url()}}/my/orders/{{object.id}}?{{object.get_access_token_spt()}}" style="text-decoration: none;" class="o_default_snippet_text"><span style="font-weight: bold;" t-out="object.name or ''"></span></a>
+                        <t t-if="object.origin">
+                                (with reference: <t t-out="object.origin"/>)
+                        </t>
+            is now available.
+                </t>
+                You can reply to this email if you have any questions, or reach out to your Account Manager for more help.
+                <t t-else="">
+                    Your Account Manager has sent you a quotation, which is awaiting your review. Click on the View Quotation button below.
+                    <br/>
+                    <br/>
+                    <a t-attf-href="{{object.get_base_url()}}/my/orders/{{object.id}}?{{object.get_access_token_spt()}}" style="background-color:#7693f8 !important; padding: 10px; text-decoration: none; color: #fff; border-radius: 5px; font-size: 16px;" class="o_default_snippet_text">
+                                                            View Quotation
+                    </a>
+                    <br/>
+                    <br/>
+                </t>
+                <br/>
+                </p>
+                <p style="margin-bottom:0px;">                 
+                Thank you,<br/>
+                <t t-if="object.user_id and object.user_id.sudo().name">
+                    <t t-out="object.user_id.sudo().name"/>
+                </t>
+                <t t-else="">
+            ETO Support
+                </t>
+            </p>
+            <a t-attf-href="{{object.get_base_url()}}/report/pdf/sale.report_saleorder/{{object.id}}">
+                <img src="/tzc_sales_customization_spt/static/src/img/pdf.png" style="height:60px;width:100px;"/>
+            </a>
+            <p>
+                <t t-if="not ctx.get('proforma') and object.user_id.signature">
+                    <t t-out="object.user_id.signature"/>
+                </t>
+            </p>
+        </div>
+    </field>
+    <field name="lang">{{object.partner_id.lang}}</field>
+    <!-- <field name="user_signature" eval="False"/> -->
+    <field name="auto_delete" eval="False"/>
+</record>
+
+
+</data>
+</odoo>

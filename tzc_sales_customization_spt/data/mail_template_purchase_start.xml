@@ -58,8 +58,8 @@
                                                        ETO Support
                                                     </p>
                                                     <!-- <br/> -->
-                                                    <a t-attf-href="object.get_base_url()/report/pdf/sale.report_saleorder/object.id">
-                                                        <img t-attf-src="/tzc_sales_customization_spt/static/src/img/pdf.png" style="height:60px;width:100px;" />
+                                                    <a t-attf-href="{{object.get_base_url()}}/report/pdf/sale.report_saleorder/{{object.id}}">
+                                                        <img src="/tzc_sales_customization_spt/static/src/img/pdf.png" style="height:60px;width:100px;" />
                                                     </a>
                                                 </td>
                                             </tr>
@@ -83,7 +83,7 @@
                                                     <td valign="middle" align="left" style="opacity: 0.7;">
                                                         <t t-out="object.env.company.phone"/>
                                                         <t t-if="object.env.company.email">
-                                                            <a t-attf-href="'mailto:%s' % ${object.env.company.email}" style="text-decoration:none; color: #454748;"><t t-out="object.env.company.email"/></a>
+                                                            |<a t-attf-href="'mailto:%s' % ${object.env.company.email}" style="text-decoration:none; color: #454748;"><t t-out="object.env.company.email"/></a>
                                                         </t>
                                                         <t t-if="object.env.company.website">
                                                             |<a t-attf-href="'%s' % object.env.company.website" style="text-decoration:none; color: #454748;">                        

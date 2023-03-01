@@ -49,6 +49,9 @@
         'data/payment_mail_template.xml',
         'data/send_payment_link_mail_template.xml',
         'data/mail_template_warehouse_abandone_cart.xml',
+        'data/mail_template_edi_sale.xml',
+        'data/mail_template_catalog_quotation_spt.xml',
+
 
         # Views
         'views/product_product_view.xml',
@@ -190,6 +193,7 @@
 
         # Templates
         'template/excel_data.xml',
+        'template/template.xml',
 
     ],
     

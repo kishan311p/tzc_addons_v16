@@ -147,6 +147,7 @@
                                 <!-- HEADER -->
                                 <tr>
                                     <td align="center" style="min-width: 590px;">
+                                        
                                         <t t-if="message.env.cr.dbname != 'eto_production'">
                                             <div class="corner-ribbon" style="top: 5%;position:absolute;width: 165px;font-weight: bold;color: #dc0e0e;font-size: 36px;text-align: center;">TEST</div>
                                         </t>

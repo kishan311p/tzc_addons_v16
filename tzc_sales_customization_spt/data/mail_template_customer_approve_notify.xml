@@ -58,8 +58,7 @@ ETO Support</p>
                                 <p style="margin-top:0px;">Hello <t t-out="object.user_id.name"/>
 , </p>
                                 <!-- <br/> -->
-                                <p>Client <t t-out="object.name"/>
- has been approved, and they can now access their pricing and place orders.
+                                <p>Client <t t-out="object.name"/> has been approved, and they can now access their pricing and place orders.
                                                     Please follow up with the client.</p>
                                 <!-- <br/> -->
                                 <p style="margin-bottom:0px;">Thank you,<br/>

@@ -12,106 +12,62 @@
             <field name="auto_delete" eval="False"/>
             <field name="lang">{{object.sale_id.user_id.partner_id.lang}}</field>
             <field name="body_html" type="html">
-                <table border="0" cellpadding="0" cellspacing="0" style="padding-top: 16px; background-color: #F1F1F1; font-family:Verdana, Arial,sans-serif; color: #454748; width: 100%; border-collapse:separate;">
-                    <tr>
-                        <td align="center">
-                            <table border="0" cellpadding="0" cellspacing="0" width="590" style="padding: 16px; background-color: white; color: #454748; border-collapse:separate;">
-                                <tbody>
-                                    <!-- HEADER -->
-                                    <tr>
-                                        <td align="center" style="min-width: 590px;">
-                                            <table border="0" cellpadding="0" cellspacing="0" width="590" style="min-width: 590px; background-color: white; padding: 0px 8px 0px 8px; border-collapse:separate;">
-                                                <tr>
-                                                    <td valign="middle" style="width: 245px;">
-                                                        <span style="font-size: 20px; font-weight: bold;">
-                                                            <t t-out="object.sale_id.name"/>
-                                                        </span>
-                                                    </td>
-                                                    <td valign="middle" style="width: 145px;" align="right">
-                                                        <img src="/web/image?model=res.company&amp;id=1&amp;field=logo" style="padding: 0px; margin: 0px; height: auto; width: 280px;" alt="{{object.sale_id.user_id.company_id.name}}"/>
-                                                    </td>
-                                                </tr>
-                                                <tr>
-                                                    <td colspan="2" style="text-align:center;">
-                                                        <hr width="100%" style="background-color:rgb(204,204,204);border:medium none;clear:both;display:block;font-size:0px;min-height:1px;line-height:0; margin:16px 0px 16px 0px;"/>
-                                                    </td>
-                                                </tr>
-                                            </table>
-                                        </td>
-                                    </tr>
-                                    <!-- CONTENT -->
-                                    <td align="center" style="min-width: 590px;">
-                                        <table border="0" cellpadding="0" cellspacing="0" width="590" style="min-width: 590px; background-color: white; padding: 0px 8px 0px 8px; border-collapse:separate;">
-                                            <tr>
-                                                <td valign="top" style="font-size: 13px;">
-                                                    <p style="margin-top:0px;">Hello <t t-out="object.sale_id.user_id.partner_id.name"/>,</p>
-                                                    <!-- <br/> -->
-                                                    <p>Good news!<br/>
-                                                    The order number <b><t t-out="object.sale_id.name"/></b> for client <b><t t-out="object.sale_id.partner_id.name"/></b>, has been shipped. 
-                                                    <br/>
+                <!-- CONTENT -->
+                    <table border="0" cellpadding="0" cellspacing="0" width="590" style="min-width: 590px; background-color: white; padding: 0px 8px 0px 8px; border-collapse:separate;">
+                        <tr>
+                            <td valign="top" style="font-size: 13px;">
+                                <p style="margin-top:0px;">Hello <t t-out="object.sale_id.user_id.partner_id.name"/>
+,</p>
+                                <!-- <br/> -->
+                                <p>Good news!<br/>
+                                                    The order number <b>
+                                <t t-out="object.sale_id.name"/>
+                            </b> for client <b>
+                            <t t-out="object.sale_id.partner_id.name"/>
+                        </b>, has been shipped. 
+                        <br/>
                                                    The tracking details of the shipment is:
-                                                    <br/>
-                                                    <b>Shipping Provider: </b> <t t-out="object.shipping_id.name or ''"/><br/>
-                                                    <b>Tracking Number: </b> <t t-out="object.tracking_number_spt or ''"/><br/>
-                                                    </p>
-                                                    <p>Please follow up with the client.</p>
-                                                    <p style="margin-bottom:0px;">Thank you,<br/>
+                        <br/>
+                        <b>Shipping Provider: </b>
+                        <t t-out="object.shipping_id.name or ''"/>
+                        <br/>
+                        <b>Tracking Number: </b>
+                        <t t-out="object.tracking_number_spt or ''"/>
+                        <br/>
+                    </p>
+                    <p>Please follow up with the client.</p>
+                    <p style="margin-bottom:0px;">Thank you,<br/>
                                                     ETO Support</p>
-                                                    <a href="{{object.get_base_url()}}/report/pdf/sale.report_saleorder/{{object.sale_id.id}}">
-                                                        <img src="/tzc_sales_customization_spt/static/src/img/pdf.png" style="height:60px;width:100px;"/>
-                                                    </a>
+                    <a t-attf-href="{{object.get_base_url()}}/report/pdf/sale.report_saleorder/{{object.sale_id.id}}">
+                        <img src="/tzc_sales_customization_spt/static/src/img/pdf.png" style="height:60px;width:100px;"/>
+                    </a>
 
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <td style="text-align:center;">
-                                                    <hr width="100%" style="background-color:rgb(204,204,204);border:medium none;clear:both;display:block;font-size:0px;min-height:1px;line-height:0; margin: 16px 0px 16px 0px;"/>
-                                                </td>
-                                            </tr>
-                                        </table>
-                                    </td>
-                                    <!-- FOOTER -->
-                                    <tr>
-                                        <td align="center" style="min-width: 590px;">
-                                            <table border="0" cellpadding="0" cellspacing="0" width="590" style="min-width: 590px; background-color: white; font-size: 11px; padding: 0px 8px 0px 8px; border-collapse:separate;">
-                                                <tr>
-                                                    <td valign="middle" align="left">
-                                                        <t t-out="object.sale_id.user_id.company_id.name"/>
-                                                    </td>
-                                                </tr>
-                                                <tr>
-                                                    <td valign="middle" align="left" style="opacity: 0.7;">
-                                                                <t t-out="object.sale_id.user_id.company_id.phone"/>
-                                                                <t t-if="object.sale_id.user_id.company_id.email">
-                                                                |                                                <a href="'mailto:%s' % {{object.sale_id.user_id.company_id.email}}" style="text-decoration:none; color: #454748;"><t t-out="object.sale_id.user_id.company_id.email"/></a>
-                                                                </t>
-                                                               <t t-if=" object.sale_id.user_id.company_id.website">
-                                                                    |                                                <a href="'%s' % {{object.sale_id.user_id.company_id.website}}" style="text-decoration:none; color: #454748;">
-                                                                    <t t-out="object.sale_id.user_id.company_id.website"/>
-                                                                        </a>
-                                                                </t>
-                                                    </td>
-                                                </tr>
-                                            </table>
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </td>
-                    </tr>
-                    <!-- POWERED BY -->
-                    <tr>
-                        <td align="center" style="min-width: 590px;">
-                            <table border="0" cellpadding="0" cellspacing="0" width="590" style="min-width: 590px; background-color: #F1F1F1; color: #454748; padding: 8px; border-collapse:separate;">
-                                <tr>
-                                    <td style="text-align: center; font-size: 13px;">
-                                            Powered by <a target="_blank" href="www.teameto.com" style="color: #7693f8;">ETO</a>
-                                    </td>
-                                </tr>
-                            </table>
-                        </td>
-                    </tr>
-                </table>
+                </td>
+            </tr>
+            <tr>
+                <td style="text-align:center;">
+                    <hr width="100%" style="background-color:rgb(204,204,204);border:medium none;clear:both;display:block;font-size:0px;min-height:1px;line-height:0; margin: 16px 0px 16px 0px;"/>
+                </td>
+            </tr>
+        </table>
+    
+</field>
+</record>
+<record id="mail_template_notify_salesperson_order_scanned" model="mail.template">
+<field name="name">Send Scanned Order Notification To Salesperson</field>
+<field name="subject">Order {{object.sale_id.name}} Is Scanned.</field>
+<field name="email_from">{{object.get_wh_user() }}</field>
+<field name="email_to">{{object.sale_id.user_id.email }}</field>
+<field name="reply_to">{{(object.sale_id.user_id.company_id.catchall)}},{{(object.sale_id.user_id.email) }}</field>
+<field name="model_id" ref="stock.model_stock_picking" />
+<field name="auto_delete" eval="False" />
+<field name="lang">{{object.sale_id.user_id.lang}}</field>
+<field name="body_html" type="xml">
+<table border="0" cellpadding="0" cellspacing="0" width="590" style="padding: 0px; background-color: white; color: #454748; border-collapse:separate;">
+<tbody>
+<!-- CONTENT -->
+<tr>
+<td valign="top" style="font-size:13px;">
 
             </field>
         </record>

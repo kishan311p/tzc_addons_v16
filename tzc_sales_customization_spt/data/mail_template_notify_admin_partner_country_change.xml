@@ -30,8 +30,8 @@
                                     <t t-if="object.country_id.id">
                                         <p>
                                             <t t-out="object.env.user.name"/>
- has changed the country to <t t-out="object.country_id.name"/>
- for the client <t t-out="object.name"/>
+ has changed the country to "<t t-out="object.country_id.name"/>"
+ for the client "<t t-out="object.name"/>"
                                     </p>
                                     <t t-set="order_names" t-value="object.give_required_sale_orders_names(object.sale_order_ids,['cancel','merged','draft_inv','open_inv','paid'])"/>
                                     <t t-if="order_names">
@@ -87,8 +87,8 @@
                         <!-- <br/> -->
                         <p>
                             <t t-out="object.env.user.name"/>
- has changed email to <t t-out="object.email"/>
- of customer <t t-out="object.name"/>
+ has changed email to "<t t-out="object.email"/>"
+ of customer "<t t-out="object.name"/>"
  .
                     <br/>
  So the old email address will not be valid for login. Please make sure <t t-out="object.env.user.name"/>
@@ -129,17 +129,12 @@ ETO Support
                 </t>
                 <!-- <br/> -->
                 <p>
-                    <t t-out="object.env.user.name"/>
- has changed the salesperson to <t t-out="object.user_id.name"/>
- of customer <t t-out="object.name"/>
-.</p>
+                    <t t-out="object.env.user.name"/> has changed the salesperson to "<t t-out="object.user_id.name"/>" of customer "<t t-out="object.name"/>".</p>
 
             <t t-set="changed_orders" t-value="ctx.get('changed_orders')"/>
             <!-- % set changed_orders = ctx.get('changed_orders') -->
             <t t-if="changed_orders">
-                <br/>
-                <p>Salesperson of following orders are changed to <t t-out="object.user_id.name"/>
-:-                <br />
+                <p>Salesperson of following orders are changed to <t t-out="object.user_id.name"/>:-                <br />
                 <t t-out="','.join(changed_orders)"/>
             </p>
 
@@ -147,7 +142,6 @@ ETO Support
         <t t-else="">
             <t t-set="order_names" t-value="object.give_required_sale_orders_names(object.sale_order_ids,['quotation','sent','received','order','scan','shipped'])"/>
             <t t-if="order_names">
-                <br/>
                 <p>Please review following orders if you want to change salesperson or any other details<br/>
                 <t t-out="','.join(order_names)"/>
             </p>

@@ -12,6 +12,7 @@
             <field name="model_id" ref="product.model_product_product"/>
             <field name="binding_model_id" ref="product.model_product_product" />
             <field name="state">code</field>
+            <field name="sequence" eval='2' />
             <field name="code">action = env.get('product.product').refresh_product_image()</field>
         </record>
         <record model="ir.actions.server" id="action_create_package_product">
@@ -20,6 +21,7 @@
             <field name="binding_model_id" ref="product.model_product_product" />
             <field name="groups_id" eval="[(4,ref('base.group_system'))]" />
             <field name="state">code</field>
+            <field name="sequence" eval="100" />
             <field name="code">
             if records:
                 action = records.action_create_bundal_product()
@@ -31,6 +33,7 @@
             <field name="binding_model_id" ref="product.model_product_product" />
             <field name="groups_id" eval="[(4, ref('base.group_system'))]"/>
             <field name="state">code</field>
+            <field name="sequence">5</field>
             <field name="code">
             if records:
                 action = records.action_open_on_sale_wizard()
@@ -104,6 +107,7 @@
             <field name="model_id" ref="product.model_product_product"/>
             <field name="binding_model_id" ref="product.model_product_product" />
             <field name="groups_id" eval="[(4, ref('base.group_system'))]"/>
+            <field name="sequence">7</field>
             <field name="state">code</field>
             <field name="code">
             if records:
@@ -115,6 +119,7 @@
             <field name="model_id" ref="product.model_product_product"/>
             <field name="binding_model_id" ref="product.model_product_product" />
             <field name="groups_id" eval="[(4, ref('base.group_system'))]"/>
+            <field name="sequence">8</field>
             <field name="state">code</field>
             <field name="code">
             if records:
@@ -125,6 +130,7 @@
             <field name="name">Add to Price Drop</field>
             <field name="model_id" ref="model_product_product"/>
             <field name="binding_model_id" ref="model_product_product"/>
+            <field name="sequence">9</field>
             <field name="state">code</field>
             <field name="code">
             if records:
@@ -136,6 +142,7 @@
             <field name="name">Remove to Price Drop</field>
             <field name="model_id" ref="model_product_product"/>
             <field name="binding_model_id" ref="model_product_product"/>
+            <field name="sequence">10</field>
             <field name="state">code</field>
             <field name="code">
             if records:
@@ -156,6 +163,7 @@
             <field name="name">Edit Products</field>
             <field name="model_id" ref="product.model_product_product"/>
             <field name="binding_model_id" ref="product.model_product_product" />
+            <field name="sequence">6</field>
             <field name="state">code</field>
             <field name="groups_id" eval="[(4, ref('base.group_system')),(4, ref('stock.group_stock_manager'))]"/>
             <field name="code">
@@ -192,9 +200,10 @@
         </record> -->
 
         <record id="ir_actions_server_sale_cart_recovery_email" model="ir.actions.server">
-            <field name="name">Send a Cart Recovery Email</field>
+            <field name="name">Send Abandoned Email</field>
             <field name="type">ir.actions.server</field>
             <field name="model_id" ref="model_sale_order"/>
+            <field name="sequence">5</field>
             <field name="state">code</field>
             <field name="code">
             if records:
@@ -207,7 +216,7 @@
             <field name="name">Send To Salesperson</field>
             <field name="model_id" ref="sale.model_sale_order"/>
             <field name="binding_model_id" ref="sale.model_sale_order"/>
-            <field name="sequence" eval="1"/>
+            <field name="sequence" eval="6"/>
             <field name="state">code</field>
             <field name="code">
                 action = records.recovery_mail_salesperson()
@@ -218,6 +227,7 @@
             <field name="binding_model_id" ref="base.model_res_partner"/>
             <field name="model_id" ref="base.model_res_partner"/>
             <field name="state">code</field>
+            <field name="sequence">100</field>
             <field name="code">
                 if records:
                     action = records.action_contact_mailgun_verification()
@@ -228,6 +238,7 @@
             <field name="model_id" ref="sale.model_sale_order"/>
             <field name="binding_model_id" ref="sale.model_sale_order"/>
             <field name="state">code</field>
+            <field name="sequence">6</field>
             <field name="code">
                 action = records.recovery_mail_warehouse()
             </field>
@@ -237,6 +248,7 @@
             <field name="name">Grant Portal Access</field>
             <field name="binding_model_id" ref="portal.model_res_partner"/>
             <field name="model_id" ref="base.model_res_partner"/>
+            <field name="sequence">7</field>
             <field name="state">code</field>
             <field name="code">
             if records:
@@ -256,6 +268,7 @@
             <field name="name">Set Pricelist</field>
             <field name="model_id" ref="base.model_res_partner"/>
             <field name="binding_model_id" ref="base.model_res_partner"/>
+            <field name="sequence">5</field>
             <field name="state">code</field>
             <field name="code">action = records.action_open_pricelist_wizard()</field>
         </record>
@@ -266,6 +279,7 @@
             <field name="name">Set ETO</field>
             <field name="model_id" ref="base.model_res_partner"/>
             <field name="binding_model_id" ref="base.model_res_partner"/>
+            <field name="sequence">6</field>
             <field name="state">code</field>
             <field name="code">action = records.action_open_eto_wizard()</field>
         </record>
@@ -276,6 +290,7 @@
             <field name="binding_model_id" ref="base.model_res_partner" />
             <!-- <field name="groups_id" eval="[(4,ref('base.group_system'))]"/> -->
             <field name="state">code</field>
+            <field name="sequence">8</field>
             <field name="code">
                 action = records.action_verify_email()
             </field>
@@ -285,6 +300,7 @@
             <field name="model_id" ref="model_sale_order"/>
             <field name="binding_model_id" ref="model_sale_order" />
             <field name="binding_view_types">form</field>
+            <field name="sequence">7</field>
             <field name="state">code</field>
             <field name="code">
                 action = records.action_order_xls_report()
@@ -296,6 +312,7 @@
             <field name="groups_id" eval="[(4,ref('base.group_system')),(4, ref('tzc_sales_customization_spt.group_sales_manager_spt'))]"/>
             <field name="model_id" ref="base.model_res_partner"/>
             <field name="binding_model_id" ref="base.model_res_partner" />
+            <field name="sequence">9</field>
             <field name="state">code</field>
             <field name="code">
                 action = records.action_change_password_of_related_user()
@@ -308,13 +325,14 @@
             <field name="binding_view_types">form</field>
             <field name="groups_id" eval="[(4, ref('base.group_system')),(4, ref('account.group_account_user'))]"/>
             <field name="state">code</field>
+            <field name="sequence">9</field>
             <field name="code">
                 if records:
                     action = records.action_is_paid()
             </field>
         </record>
 
-	<record id='mail.action_partner_mass_mail' model='ir.actions.act_window'>
+        <record id='mail.action_partner_mass_mail' model='ir.actions.act_window'>
             <field name="binding_model_id" eval="False" />
         </record>
         <record id='web_enterprise.download_contact' model='ir.actions.server'>
@@ -325,6 +343,7 @@
             <field name="name">Send Email</field>
             <field name="model_id" ref="base.model_res_partner"/>
             <field name="binding_model_id" ref="base.model_res_partner"/>
+            <field name="sequence">11</field>
             <field name="state">code</field>
             <field name="code">
                 if records:
@@ -336,6 +355,7 @@
             <field name="name">Delete</field>
             <field name="model_id" ref="base.model_res_partner"/>
             <field name="binding_model_id" ref="base.model_res_partner"/>
+            <field name="sequence">10</field>
             <field name="state">code</field>
             <field name="code">action = records.action_delete_partner()</field>
         </record>
@@ -344,6 +364,7 @@
             <field name="name">Contact Detail</field>
             <field name="model_id" ref="base.model_res_partner"/>
             <field name="state">code</field>
+            <field name="sequence">3</field>
             <field name="code">action = env.get('res.partner').action_create_contact_report()</field>
         </record>
 
@@ -388,12 +409,13 @@
             <field name="model_id" ref="base.model_res_partner"/>
             <field name="groups_id" eval="[(4, ref('base.group_system'))]"/>
             <field name="binding_model_id" ref="base.model_res_partner" />
+            <field name="sequence">3</field>
             <field name="state">code</field>
             <field name="code">
                 if records:
-                    action = records.execute_followup()
+                    action = records.action_manually_process_automatic_followups()
             </field>
-        </record> -->
+        </record>
 
         <record id="model_res_user_action_sent_mail_spt" model="ir.actions.server">
             <field name="groups_id" eval="[(4, ref('base.group_system'))]"/>
@@ -421,6 +443,31 @@
                 action = records.action_shift_timeline()
             </field>
         </record>
+
+        <record id="sale.action_accrued_revenue_entry" model="ir.actions.act_window">
+            <field name="binding_model_id" eval='False'/>
+        </record>
+
+        <record id="sale.action_sale_order_generate_link" model="ir.actions.act_window">
+            <field name="binding_model_id" eval='False'/>
+        </record>
+        <record id="privacy_lookup.ir_action_server_action_privacy_lookup_partner" model="ir.actions.server">
+            <field name="binding_model_id" eval='False'/>
+        </record>
+        <record id="sale.model_sale_order_action_share" model="ir.actions.server">
+            <field name="sequence" eval='3'/>
+        </record>
+        <record id="model_sale_order_action_share" model="ir.actions.server">
+            <!-- <field name="groups_id" eval="[(4, ref('cancel_sale_order_spt.group_cancel_sale_order_rule_spt'))]"/> -->
+            <field name="name">Cancel Sale Order</field>
+            <field name="model_id" ref="sale.model_sale_order"/>
+            <field name="binding_model_id" ref="sale.model_sale_order"/>
+            <field name="state">code</field>
+            <field name="code">action = records.sale_order_cancel_spt()</field>
+            <field name="sequence">10</field>
+        </record>
+
+	
         <record model="ir.actions.server" id="action_quotation_merge_spt">
             <field name="name">Merge Quotation</field>
             <field name="model_id" ref="sale.model_sale_order"/>

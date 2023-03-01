@@ -81,6 +81,6 @@
             <field name="res_model">kits.commission.rules</field>
             <field name="view_mode">tree,form</field>
         </record>
-        <menuitem id="menu_commission_rules" name="Commission Rule" action="action_kits_commission_rules" sequence="10" parent="sale.menu_sale_config"/>
+        <menuitem id="menu_commission_rules" name="Commission Rule" action="action_kits_commission_rules" sequence="11" parent="sale.menu_sale_config"/>
     </data>
 </odoo>
