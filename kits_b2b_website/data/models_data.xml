@@ -15,7 +15,8 @@
         <field name="shipping_icon_url">https://cdn.teameto.com/data/B2C1/new_tzc_b2b_images/cart-flow/car.png</field>
         <field name="location_text">Free Delivery Over $120</field>
         <field name="shipping_text">Dubai: Next business bay, Shaikh zayed road.</field>
-
+        <field name="how_to_shop_background">https://cdn.teameto.com/data/B2C1/new_tzc_b2b_images/roadmap/roadmap-bg.png</field>
+        <field name="how_to_shop_redirect_url">https://b2b.teameto.com/shop</field>
     </record>
     <record id="kits_homepage_banner_image_1" model="kits.b2b.image.model">
         <field name="header_description">How to Shop</field>
@@ -132,6 +133,7 @@ Original Design Eyewear </field>
         <field name="sequence">1</field>
         <field name="url">https://cdn.teameto.com/data/B2C1/new_tzc_b2b_images/roadmap/r-1.svg</field>
         <field name="website_id" eval="kits_team_eto_website" />
+        <field name="how_to_shop_website_id" eval="kits_team_eto_website" />
         <field name="parent_id" eval="kits_homepage_banner_image_1" />
     </record>
     <record id="kits_homepage_banner_image_shop" model="kits.b2b.image.model">
@@ -139,6 +141,7 @@ Original Design Eyewear </field>
         <field name="sequence">2</field>
         <field name="url">https://cdn.teameto.com/data/B2C1/new_tzc_b2b_images/roadmap/r-2.svg</field>
         <field name="website_id" eval="kits_team_eto_website" />
+        <field name="how_to_shop_website_id" eval="kits_team_eto_website" />
         <field name="parent_id" eval="kits_homepage_banner_image_1" />
     </record>
     <record id="kits_homepage_banner_image_shipping" model="kits.b2b.image.model">
@@ -146,6 +149,7 @@ Original Design Eyewear </field>
         <field name="sequence">3</field>
         <field name="url">https://cdn.teameto.com/data/B2C1/new_tzc_b2b_images/roadmap/r-3.svg</field>
         <field name="website_id" eval="kits_team_eto_website" />
+        <field name="how_to_shop_website_id" eval="kits_team_eto_website" />
         <field name="parent_id" eval="kits_homepage_banner_image_1" />
     </record>
     <record id="kits_homepage_banner_image_paynow" model="kits.b2b.image.model">
@@ -153,6 +157,7 @@ Original Design Eyewear </field>
         <field name="sequence">4</field>
         <field name="url">https://cdn.teameto.com/data/B2C1/new_tzc_b2b_images/roadmap/r-4.svg</field>
         <field name="website_id" eval="kits_team_eto_website" />
+        <field name="how_to_shop_website_id" eval="kits_team_eto_website" />
         <field name="parent_id" eval="kits_homepage_banner_image_1" />
     </record>
 
