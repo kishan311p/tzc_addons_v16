@@ -1429,3 +1429,12 @@ class ProductProduct(models.Model):
             'res_model': 'sale.catalog',
             'type': 'ir.actions.act_window',
         }
+    
+    @api.model
+    def get_product_name(self,barcode):
+        if barcode:
+            product = self.env['product.product'].search([('barcode','=',barcode)])
+            if product:
+                return {'product_name':product.variant_name ,'product_id':product.id}
+            return False
+        return False
