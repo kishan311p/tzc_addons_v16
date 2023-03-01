@@ -30,6 +30,7 @@
         <field name="model">kits.b2b.image.model</field>
         <field name="arch" type="xml">
             <tree editable="bottom">
+                <field name="sequence" widget="handle" />
                 <field name="image_icon" widget="image" class="oe_avatar" options="{'zoom': true,'preview_image': 'image_icon'}"/>
                 <field name="url" widget="url"/>
                 <field name="redirect_url" widget="url"/>

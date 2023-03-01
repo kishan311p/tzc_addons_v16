@@ -15,8 +15,6 @@
             <field name="shipping_icon_url">https://cdn.teameto.com/data/B2C1/new_tzc_b2b_images/cart-flow/car.png</field>
             <field name="location_text">Free Delivery Over $120</field>
             <field name="shipping_text">Dubai: Next business bay, Shaikh zayed road.</field>
-            <field name="how_to_shop_background">https://cdn.teameto.com/data/B2C1/new_tzc_b2b_images/roadmap/roadmap-bg.png</field>
-            <field name="how_to_shop_redirect_url">https://b2b.teameto.com/shop</field>
         </record>
         <record id="kits_homepage_banner_image_1" model="kits.b2b.image.model">
             <field name="header_description">How to Shop</field>
@@ -30,8 +28,12 @@
             <field name="name">Home Page</field>
             <field name="header_text_1">Everything Optical B2B</field>
             <field name="text_1">Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.
-
-It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout.</field>
+            
+            It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout.</field>
+            <field name="how_to_shop_title">How To Shop</field>
+            <field name="how_to_shop_button_text">Shop Now</field>
+            <field name="how_to_shop_background">https://cdn.teameto.com/data/B2C1/new_tzc_b2b_images/roadmap/roadmap-bg.png</field>
+            <field name="how_to_shop_redirect_url">https://b2b.teameto.com/shop</field>
             <field name="text_1_redirect_url">https://b2b.teameto.com/aboutus</field>
             <field name="text_1_redirect_url_text">View Our Story</field>
             <field name="banner_1_id" eval="kits_homepage_banner_image_1" />
@@ -133,7 +135,7 @@ Original Design Eyewear </field>
             <field name="sequence">1</field>
             <field name="url">https://cdn.teameto.com/data/B2C1/new_tzc_b2b_images/roadmap/r-1.svg</field>
             <field name="website_id" eval="kits_team_eto_website" />
-            <field name="how_to_shop_website_id" eval="kits_team_eto_website" />
+            <field name="how_to_shop_page_id" eval="kits_home_page" />
             <field name="parent_id" eval="kits_homepage_banner_image_1" />
         </record>
         <record id="kits_homepage_banner_image_shop" model="kits.b2b.image.model">
@@ -141,7 +143,7 @@ Original Design Eyewear </field>
             <field name="sequence">2</field>
             <field name="url">https://cdn.teameto.com/data/B2C1/new_tzc_b2b_images/roadmap/r-2.svg</field>
             <field name="website_id" eval="kits_team_eto_website" />
-            <field name="how_to_shop_website_id" eval="kits_team_eto_website" />
+            <field name="how_to_shop_page_id" eval="kits_home_page" />
             <field name="parent_id" eval="kits_homepage_banner_image_1" />
         </record>
         <record id="kits_homepage_banner_image_shipping" model="kits.b2b.image.model">
@@ -149,7 +151,7 @@ Original Design Eyewear </field>
             <field name="sequence">3</field>
             <field name="url">https://cdn.teameto.com/data/B2C1/new_tzc_b2b_images/roadmap/r-3.svg</field>
             <field name="website_id" eval="kits_team_eto_website" />
-            <field name="how_to_shop_website_id" eval="kits_team_eto_website" />
+            <field name="how_to_shop_page_id" eval="kits_home_page" />
             <field name="parent_id" eval="kits_homepage_banner_image_1" />
         </record>
         <record id="kits_homepage_banner_image_paynow" model="kits.b2b.image.model">
@@ -157,7 +159,7 @@ Original Design Eyewear </field>
             <field name="sequence">4</field>
             <field name="url">https://cdn.teameto.com/data/B2C1/new_tzc_b2b_images/roadmap/r-4.svg</field>
             <field name="website_id" eval="kits_team_eto_website" />
-            <field name="how_to_shop_website_id" eval="kits_team_eto_website" />
+            <field name="how_to_shop_page_id" eval="kits_home_page" />
             <field name="parent_id" eval="kits_homepage_banner_image_1" />
         </record>
 

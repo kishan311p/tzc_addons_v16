@@ -43,12 +43,12 @@
                                     <field name="banner_1_id" attrs="{'invisible': [('page_type','not in',['contact_us'])]}" />
 
                                     <field name="banner_1_image" widget="image" class="oe_avatar" options="{'zoom': true,'preview_image': 'banner_1_image'}" size="[150,150]" attrs="{'invisible': [('page_type','not in',['contact_us'])]}"/>
-                                    <field name="banner_2_id" attrs="{'invisible': [('page_type','not in',['contact_us'])]}"/>
-                                    <field name="banner_2_image" widget="image" class="oe_avatar" options="{'zoom': true,'preview_image': 'banner_2_image'}" attrs="{'invisible': [('page_type','not in',['contact_us'])]}"/>
+                                    <field name="banner_2_id" string="Banner" attrs="{'invisible': [('page_type','not in',['contact_us'])]}"/>
+                                    <field name="banner_2_image" widget="Background Image" class="oe_avatar" options="{'zoom': true,'preview_image': 'banner_2_image'}" attrs="{'invisible': [('page_type','not in',['contact_us'])]}"/>
                                 </group>
 
                             </group>
-                            <group string="Why Choose US?">
+                            <group string="Why Choose US?" attrs="{'invisible':[('page_type','!=','our_story')]}">
                                 <field name="text_field" string="Why Choose US?" />
                                 <field name="char_field" string="HR Email" />
                             </group>
@@ -59,6 +59,24 @@
                                 </group>
                             </group>
 
+                        </page>
+                        <page name="how_to_shop" string="How to Shop" attrs="{'invisible':[('page_type','!=','home')]}">
+                            <group>
+                                <field name="how_to_shop_redirect_url" string="Redirect URL" widget="url" />
+                                <field name="how_to_shop_button_text" string="Button Text" />
+                                <field name="how_to_shop_background" widget="url" />
+                                <field name="how_to_shop_background_image" class="oe_avatar" widget="image" options="{'zoom': true,'preview_image':'how_to_shop_background_image','size': [128, 128]}" />
+                            </group>
+                            <div>
+                                <field name='how_to_shop_ids' options="{'no_create': True}">
+                                    <tree editable="bottom" default_order="sequence asc">
+                                        <field name="sequence" widget="handle" />
+                                        <field name="image_icon" widget="image" options="{'zoom': true,'preview_image':'image_logo','size': [50, 50]}" />
+                                        <field name="url" widget="url" />
+                                        <field name="description" string="Title" />
+                                    </tree>
+                                </field>
+                            </div>
                         </page>
 
                         <page name="our_core_values" attrs="{'invisible': [('page_type','not in',['home','our_story'])]}" string="Our Core Values">
@@ -89,6 +107,7 @@
                                     <field name="image" widget="image" class="oe_avatar" options="{'zoom': true,'preview_image': 'image'}" size="[150,150]"/>
                                     <field name="image_id" string="Image URL"/>
                                     <field name="name" />
+                                    <field name="slider_type" />
                                 </tree>
                             </field>
                         </page>

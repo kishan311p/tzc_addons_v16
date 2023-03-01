@@ -38,7 +38,7 @@ class kits_b2b_website(models.Model):
         'product.product',
         string='Recommended Products'
     )
-    shipping = fields.Html('Shipping')
+    shipping = fields.Html('Terms & Conditions')
     privacy_policy = fields.Html('Privacy Policy')
     terms_and_conditions = fields.Html('Terms and Conditions')
     show_product_image = fields.Selection([

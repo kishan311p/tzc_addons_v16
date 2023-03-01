@@ -1,5 +1,6 @@
 from odoo import fields, models, api, _
 
+
 class kits_b2b_pages(models.Model):
     _name = 'kits.b2b.pages'
     _description = "B2B Pages"
@@ -41,3 +42,13 @@ class kits_b2b_pages(models.Model):
     )
     char_field = fields.Char('Char Field')
     
+    how_to_shop_title = fields.Char('How To Show Title')
+    how_to_shop_background = fields.Char('Background Image URL')
+    how_to_shop_redirect_url = fields.Char('How To shop Redirect URL')
+    how_to_shop_button_text = fields.Char('How To Shop Button Text')
+    how_to_shop_background_image = fields.Char('Background Image',related='how_to_shop_background')
+    how_to_shop_ids = fields.One2many(
+        'kits.b2b.image.model',
+        'how_to_shop_page_id',
+        'How To Shop'
+    )

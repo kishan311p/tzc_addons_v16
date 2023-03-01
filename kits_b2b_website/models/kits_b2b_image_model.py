@@ -17,3 +17,7 @@ class kits_b2b_image_model(models.Model):
     main_banner_id = fields.Many2one('kits.b2b.pages', 'Pages')
     our_core_values_id = fields.Many2one('kits.b2b.pages', 'Our Core Values')
     parent_id = fields.Many2one('kits.b2b.image.model', string='Parent')
+    how_to_shop_page_id = fields.Many2one(
+        'kits.b2b.pages',
+        'How To shop Page'
+    )

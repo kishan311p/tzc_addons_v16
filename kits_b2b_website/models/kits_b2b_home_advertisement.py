@@ -14,6 +14,7 @@ class KitsB2BHomeAdvertisement(models.Model):
         store=True,
         compute_sudo=True
     )
+    redirect_url = fields.Char('Redirect URL')
     website_id = fields.Many2one('kits.b2b.website', 'website')
 
     @api.depends('icon_url')
