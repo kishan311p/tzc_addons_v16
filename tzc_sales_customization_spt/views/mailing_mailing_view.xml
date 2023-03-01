@@ -1,0 +1,85 @@
+<?xml version='1.0' encoding='utf-8'?>
+<odoo>
+    <data noupdate="0">
+        <record id="tzc_mailing_mailing_view_form_marketing_activity" model="ir.ui.view">
+            <field name="name">tzc.mailing.mailing.view.form.marketing.activity</field>
+            <field name="model">mailing.mailing</field>
+            <field name="priority">20</field>
+            <field name="arch" type="xml">
+            <form string="Mail Template" create="false" edit="false">
+                <sheet>
+                    <group>
+                        <label for="subject">Subject</label>
+                        <div class="o_mass_mailing_subject d-flex flex-row align-items-baseline">
+                            <field class="o_text_overflow" options="{'dynamic_placeholder': true}" name="subject" string="Subject"/>
+                        </div>
+                        <field class="o_text_overflow" options="{'dynamic_placeholder': true}" name="subject" string="Subject"/>
+                        <field name="email_from" readonly="1"/>
+                        <field name="mailing_type" invisible="1"/>
+                        <label for="mailing_model_id" string="Participants" invisible="1"/>
+                        <field name="mailing_model_id" invisible="1"/>
+                        <field name="mailing_model_real" invisible="1"/>
+                        <field name="use_in_marketing_automation" invisible="1"/>
+                        <field name="campaign_id" invisible="1"/>
+                        <field name="state" invisible="1"/>
+                    </group>
+                    <notebook>
+                        <page string="Mail Body" name="mail_body">
+                            <field name="body_html" class="oe_read_only" widget="html" options="{
+                                'cssReadonly': 'mass_mailing.iframe_css_assets_readonly',
+                            }"/>
+                            <field name="body_arch" class="oe_edit_only" widget="mass_mailing_html" options="{
+                                'snippets': 'mass_mailing.email_designer_snippets',
+                                'cssEdit': 'mass_mailing.iframe_css_assets_edit',
+                                'inline-field': 'body_html',
+                                'dynamic_placeholder': true,
+                                'filterTemplates': true,
+                            }"/>
+                        </page>
+                        <page string="Options" name="options">
+                            <group>
+                                <group string="Mailing" name="group_mailing">
+                                    <field name="attachment_ids" widget="many2many_binary" string="Attach a file" class="oe_inline"/>
+                                    <field name="mail_server_id" />
+                                    <field name="keep_archives"/>
+                                    <label for="reply_to"/>
+                                    <div>
+                                        <field name="reply_to_mode" widget="radio" readonly="1"/>
+                                        <field name="reply_to" readonly="1"/>
+                                    </div>
+                                </group>
+                            </group>
+                        </page>
+                    </notebook>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids" groups="base.group_user"/>
+                    <field name="message_ids"/>
+                    <field name="activity_ids"/>
+                </div>
+            </form>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="kits_view_mail_mass_mailing_tree">
+            <field name="name">mailing.mailing.tree</field>
+            <field name="model">mailing.mailing</field>
+            <field name="priority">10</field>
+            <field name="arch" type="xml">
+                <tree string="Mailings" sample="1" class="o_mass_mailing_mailing_tree" create='false' edit='false'>
+                    <field name="subject"/>
+                    <field name="campaign_id" string="Campaign"/>
+                </tree>
+            </field>
+        </record>
+        <record id="action_campaign_template" model="ir.actions.act_window">
+            <field name="name">Campaign Templates</field>
+            <field name="res_model">mailing.mailing</field>
+            <field name="view_mode">tree,form</field>
+            <field name="view_ids" eval="[(5,0,0),(0, 0, {'view_mode': 'tree', 'view_id': ref('kits_view_mail_mass_mailing_tree')}),
+                                                    (0, 0, {'view_mode': 'form', 'view_id': ref('tzc_mailing_mailing_view_form_marketing_activity')})]"/>
+        </record>
+        <menuitem id="campaign_templates_menu" name="Campaign Templates" action="action_campaign_template" parent="contacts.menu_contacts" sequence="6000"/>
+
+    </data>
+</odoo>

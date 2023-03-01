@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <data>
+        <record id="campaign_report_contacts_form_view" model="ir.ui.view">
+            <field name="name">campaign.report.contacts.form.view</field>
+            <field name="model">campaign.report.contacts</field>
+            <field name="arch" type="xml">
+                <form duplicate='false' create="false" edit="false">
+                    <header>
+                        <field name="state" widget="statusbar" statusbar_visible="draft,sent,opened,replied,bounced,failed,received"/>
+                    </header>
+                    <sheet>
+                        <div class="oe_title">
+                            <field name="name" invisible='1'/>
+                            <label for="name" class="oe_edit_only"/>
+                            <h1>
+                                <field name="mailing_odoo_contact_id" placeholder="e.g. John Smith"/>
+                            </h1>
+                        </div>
+                        <group>
+                            <group>
+                                <field name="email" />
+                                <field name="mailing_internal_id" />
+                                <field name="mailing_salesperson_id" readonly="1" />
+                                <field name="mailing_territory" />
+                                <field name="mailing_orders" />
+                                <field name="mailing_status_type" />
+                            </group>
+                        </group>
+                        <notebook>
+                            <page name="trace_status" string="Trace Status">
+                                <group>
+                                    <group>
+                                        <field name="sent" />
+                                        <field name="opened" />
+                                        <field name="clicked" />
+                                        <field name="received" />
+                                    </group>
+                                    <group>
+                                        <!-- <field name="replied" />
+                                        <field name="bounced" /> -->
+                                        <!-- <field name="ignored" /> -->
+                                        <!-- <field name="exception" /> -->
+                                        <field name="failed_by_mailgun" />
+                                    </group>
+                                </group>
+                            </page>
+                        </notebook>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="campaign_report_contacts_tree_view" model="ir.ui.view">
+            <field name="name">campaign.report.contacts.tree.view</field>
+            <field name="model">campaign.report.contacts</field>
+            <field name="arch" type="xml">
+                <tree create="false" edit="false">
+                    <field name="set_state" invisible="1" />
+                    <field name="name" />
+                    <field name="email" />
+                    <field name="mailing_country" />
+                    <field name="mailing_territory" />
+                    <field name="mailing_salesperson_id" />
+                    <field name="sent" />
+                    <field name="opened" />
+                    <field name="clicked" />
+                    <field name="received" />
+                    <!-- <field name="replied" />
+                    <field name="bounced" /> -->
+                    <!-- <field name="ignored" /> -->
+                    <!-- <field name="exception" /> -->
+                    <field name="failed_by_mailgun" />
+
+                    <!-- <field name="mailing_tag_ids" widget="many2many_tags" />
+                    <field name="mailing_source" />
+                    <field name="mailing_prospect_level" />
+                    <field name="mailing_status_type" />
+                    <field name="mailing_action_type" />
+                    <field name="mailing_write_date" />
+                    <field name="mailing_orders" />
+                    <field name="mailing_internal_id" />
+                    <field name="mailing_odoo_contact_id" />
+                    <field name="marketing_activity_ids" />
+                    <field name="mailing_promo_code_ids" widget="many2many_tags" />
+                    <field name="state" /> -->
+                </tree>
+            </field>
+        </record>
+
+        <record id="campaign_report_contacts_search_view" model="ir.ui.view">
+            <field name="name">campaign.report.contacts.search.view</field>
+            <field name="model">campaign.report.contacts</field>
+            <field name="arch" type="xml">
+                <search>
+                    <filter name="filter_sent" string="Sent" domain="[('state','=','sent')]" />
+                    <filter name="filter_opened" string="Opened" domain="[('state','=','opened')]" />
+                    <filter name="filter_replied" string="Replied" domain="[('state','=','replied')]" />
+                    <filter name="filter_bounced" string="Bounced" domain="[('state','=','bounced')]" />
+                    <group>
+                        <filter name="group_salesperson" string="Salesperson" context="{'group_by':'mailing_salesperson_id'}" />
+                        <filter name="group_marketing_activities" string="Marketing Activities" context="{'group_by':'marketing_activity_ids'}" />
+                    </group>
+                </search>
+            </field>
+        </record>
+    </data>
+</odoo>

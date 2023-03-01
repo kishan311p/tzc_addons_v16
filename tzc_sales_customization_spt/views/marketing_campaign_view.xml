@@ -1,0 +1,292 @@
+<?xml version='1.0' encoding='utf-8'?>
+<odoo>
+    <data noupdate="0">
+        <record id="marketing_campaing_form_view" model="ir.ui.view">
+            <field name="name">marketing.campaing.form.view</field>
+            <field name="model">marketing.campaign</field>
+            <!-- <field name="">10</field> -->
+            <field name="arch" type="xml">
+                <form>
+                    <field name="active" invisible='1'/>
+                    <header attrs="{'invisible': [('active', '=', False)]}">
+                        <button string="Resend Campaign" name="action_resend_campaign" type="object" class="oe_highlight"/>
+                        <field name="state" widget="statusbar" statusbar_visible="draft,running,stopped" />
+                    </header>
+                    <sheet>
+                        <div name="button_box" class="oe_button_box" modifiers="{}">
+                            <button name="action_view_sale_report_spt" type="object" icon="fa-usd" class="oe_stat_button" modifiers="{}" options="{}">
+                                <field name="sale_order_count" widget="statinfo" string="Sales" modifiers="{'readonly':true}"/>
+                            </button>
+                            <button name="action_show_sent_contacts" type="object" icon="fa-paper-plane" class="oe_stat_button" modifiers="{}" options="{}">
+                                <field name="count_sent" widget="statinfo" string="Sent" modifiers="{}"/>
+                            </button>
+                            <button name="action_show_received_contacts" type="object" icon="fa-inbox" class="oe_stat_button" modifiers="{}" options="{}">
+                                <field name="count_received" widget="statinfo" string="Received" modifiers="{'readonly':true}"/>
+                            </button>
+                            <button name="action_show_failed_contacts" type="object" icon="fa-exclamation" class="oe_stat_button" modifiers="{}" options="{}">
+                                <field name="count_failed" widget="statinfo" string="Failed By Odoo" modifiers="{'readonly':true}"/>
+                            </button>
+                            <button name="action_show_mailgun_failed_contacts" type="object" icon="fa-exclamation" class="oe_stat_button" modifiers="{}" options="{}">
+                                <field name="mailgun_failed_count" widget="statinfo" string="Failed By Mailgun" modifiers="{'readonly':true}"/>
+                            </button>
+                            <button name="action_show_opened_contacts" type="object" icon="fa-envelope-open" class="oe_stat_button" modifiers="{}" options="{}">
+                                <field name="count_open" widget="statinfo" string="Opened" modifiers="{'readonly':true}"/>
+                            </button>
+                            <button name="action_show_clicked_contact" type="object" icon="fa-hand-pointer-o" class="oe_stat_button" modifiers="{}" options="{}">
+                                <field name="count_click" widget="statinfo" string="Clicked" modifiers="{'readonly':true}"/>
+                            </button>
+                            <button name="action_show_mail_previwe" type="object" icon="fa-search-plus" class="oe_stat_button" string="Preview" modifiers="{}" options="{}"/>
+                        </div>
+                        <field name="model_id" invisible="1"/>
+                        <field name="utm_campaign_id" required="0" invisible="1"/>
+
+                        <span class="oe_edit_1only">Name</span>
+                        <h1>
+                            <field class="text-break" name="name" required="1" placeholder="e.g. eCommerce Offers Plan" readonly="1"/>
+                        </h1>
+                        <group>
+                            <field name="execution_datetime" attrs="{'readonly':[('state','not in',['draft'])]}" class="oe_inline" readonly="1"/>
+                            <field name="user_id" string="Salesperson" readonly="1"/>
+                        </group>
+                        <div class="o_ma_hierarchy">
+                            <div class="o_ma_hierarchy_title" attrs="{'invisible': [('marketing_activity_ids', '=', [])]}">Workflow</div>
+                            <!-- <div class="o_ma_hierarchy_readonly oe_read_only" attrs="{'invisible': [('marketing_activity_ids', '!=', [])]}">
+                                <h3>No activity added</h3>
+                                <p>
+                                    Click on 'Edit' button to add new activity in workflow.
+                                </p>
+                            </div> -->
+                            <field name="marketing_activity_ids" widget="hierarchy_kanban" mode="kanban" nolabel="1" class="o_ma_hierarchy_container o_ma_campaign_hierarchy" options="{'create_text':'Add new activity','no_create':True}" context="{'default_campaign_id': active_id,'default_model_id': model_id,'default_utm_campaign_id': utm_campaign_id}" readonly="1">
+                                <kanban default_order="interval_standardized">
+                                    <field name="interval_standardized" invisible="1"/>
+                                    <field name="id"/>
+                                    <field name="model_name"/>
+                                    <field name="name"/>
+                                    <field name="domain"/>
+                                    <field name="activity_type"/>
+                                    <field name="parent_id"/>
+                                    <field name="trigger_type"/>
+                                    <field name="total_sent"/>
+                                    <field name="total_click"/>
+                                    <field name="total_open"/>
+                                    <field name="total_reply"/>
+                                    <field name="total_bounce"/>
+                                    <field name="processed"/>
+                                    <field name="total_received"/>
+                                    <field name="rejected"/>
+                                    <templates>
+                                        <div t-name="kanban-box">
+                                            <div class="o_ma_body">
+                                                <t t-call="timeline"/>
+                                                    <div class="o_ma_card">
+                                                        <div class="o_ma_title_bar">
+                                                            <div class="o_ma_icon">
+                                                                <span t-attf-class="fa fa-envelope" t-if="record.activity_type.raw_value == 'email'" title="Email" role="img" aria-label="Email"/>
+                                                                <span t-attf-class="fa fa-cogs" t-else="" title="Other activity" role="img" aria-label="Other activity"/>
+                                                            </div>
+                                                            <div class="o_ma_title">
+                                                                <h3 class="mb0 mt0"><a t-attf-class="oe_kanban_action oe_kanban_action_a #{read_only_mode and 'o_ma_full' or None}" t-att-title="record.name.raw_value"><field name="name"/></a></h3>
+                                                                <div class="o_ma_desc"><t t-esc="record.activity_type.value"/></div>
+                                                            </div>
+                                                            <div class="o_ma_switch">
+                                                                <span role="img" title="Graph" aria-label="Graph"
+                                                                     t-att-class="!state.activeTab || state.activeTab == 'graph' ? 'active' : ''"
+                                                                     t-on-click="(ev) => this.onMarketingActivityTabClick(ev, 'graph')">
+                                                                    <i class="fa fa-pie-chart" />
+                                                                </span>
+                                                            </div>
+                                                        </div>
+                                                        <div class="o_pane o_pane_graph">
+                                                            <div class="pb-3 row mt16">
+                                                                <div class="col-lg-9 col-9 o_ma_graph mb10">
+                                                                    <t t-if="record.statistics_graph_data.value">
+                                                                        <field name="statistics_graph_data" widget="marketing_activity_graph"/>
+                                                                    </t>
+                                                                </div>
+                                                                <div class="col-lg-3 col-3 text-center">
+                                                                    <div class="o_ma_text_processed mb16">
+                                                                        <h2 class="mt4 mb0"><t t-esc="record.processed.value or 0"/></h2>
+                                                                        <div>SUCCESS</div>
+                                                                    </div>
+                                                                    <div class="o_ma_text_rejected">
+                                                                        <h2 class="mt4 mb0"><t t-esc="record.rejected.value or 0"/></h2>
+                                                                        <div>REJECTED</div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div t-if="record.activity_type.raw_value == 'email'" name="mail_details" class="mt-4 row o_ma_email_details text-center">
+                                                                <div class="col" title="Mails sent and not bounced">
+                                                                    <a name="action_view_sent" type="object">
+                                                                        <strong><t t-esc="record.total_sent.raw_value or 0"/></strong> Sent
+                                                                    </a>
+                                                                </div>
+                                                                <div class="col">
+                                                                    <a name="action_view_received" type="object">
+                                                                        <strong><field name="total_received" /> Received</strong> 
+                                                                    </a>
+                                                                </div>
+                                                                <div class="col">
+                                                                    <a name="action_view_opened" type="object">
+                                                                        <strong><field name="total_open" /> Opened</strong> 
+                                                                    </a>
+                                                                </div>
+                                                                <div class="col">
+                                                                    <a name="action_view_clicked" type="object">
+                                                                        <strong><field name="total_click" /> Clicked</strong> 
+                                                                    </a>
+                                                                </div>
+                                                                <div class="col">
+                                                                    <a name="action_view_fialed_by_odoo" type="object">
+                                                                        <strong><field name="total_odoo_fail" /> Odoo Fail</strong> 
+                                                                    </a>
+                                                                </div>
+                                                                <div class="col">
+                                                                    <a name="action_view_fialed_by_mailgun" type="object">
+                                                                        <strong><field name="total_mailgun_failed" /> Mailgun Fail</strong>
+                                                                    </a>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                <div class="o_hierarchy_children"/>
+                                            </div>
+                                        </div>
+                                        <t t-name="timeline">
+                                            <div class="o_ma_timeline text-center">
+                                                <t t-if="record.trigger_type.raw_value == 'mail_open'">
+                                                    <div class="o_ma_text_processed">
+                                                        <i class="fa fa-envelope-open-o"/> Opened after
+                                                    </div>
+                                                </t>
+                                                <t t-if="record.trigger_type.raw_value == 'mail_reply'">
+                                                    <div class="o_ma_text_processed">
+                                                        <i class="fa fa-reply"/> Replied after
+                                                    </div>
+                                                </t>
+                                                <t t-if="record.trigger_type.raw_value == 'mail_click'">
+                                                    <div class="o_ma_text_processed">
+                                                        <i class="fa fa-hand-pointer-o"/> Clicked after
+                                                    </div>
+                                                </t>
+                                                <t t-if="record.trigger_type.raw_value == 'mail_not_open'">
+                                                    <div class="o_ma_text_rejected">
+                                                        <i class="fa fa-envelope-open-o"/> Not opened within
+                                                    </div>
+                                                </t>
+                                                <t t-if="record.trigger_type.raw_value == 'mail_not_reply'">
+                                                    <div class="o_ma_text_rejected">
+                                                        <i class="fa fa-reply"/> Not replied within
+                                                    </div>
+                                                </t>
+                                                <t t-if="record.trigger_type.raw_value == 'mail_not_click'">
+                                                    <div class="o_ma_text_rejected">
+                                                        <i class="fa fa-hand-pointer-o"/> Not clicked within
+                                                    </div>
+                                                </t>
+                                                <t t-if="record.trigger_type.raw_value == 'mail_bounce'">
+                                                    <div class="o_ma_text_rejected">
+                                                        <i class="fa fa-exclamation-circle"/> Mail bounced after
+                                                    </div>
+                                                </t>
+                                                <strong>
+                                                    <i class="fa fa-clock-o" role="img" aria-label="Select time" title="Select time"/> <field name="interval_number"/>
+                                                    <field name="interval_type"/>
+                                                </strong>
+                                            </div>
+                                        </t>
+                                    </templates>
+                                </kanban>
+                            </field>
+                        </div>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+        <record id="marketing_campaing_view_tree" model="ir.ui.view">
+            <field name="name">marketing.campaing.view.tree</field>
+            <field name="model">marketing.campaign</field>
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="name"/>
+                    <field name="model_id" string="Target" attrs="{'readonly' :[('state' , '!=', 'draft')]}"/>
+                    <field name="state" readonly="True"/>
+                    <field name="mass_mailing_count"/>
+                    <field name="link_tracker_click_count"/>
+                    <field name="total_participant_count"/>
+                </tree>
+            </field>
+        </record>
+        <record id="kits_marketing_campaign_view_kanban" model="ir.ui.view">
+            <field name="name">kits.marketing.campaign.view.kanban</field>
+            <field name="model">marketing.campaign</field>
+            <field name="arch" type="xml">
+                <kanban default_group_by="state" quick_create="false" sample="1" create="false" edit="false">
+                    <field name="name"/>
+                    <field name="state" readonly="1"/>
+                    <templates>
+                        <t t-name="kanban-box">
+                            <div class="oe_kanban_card oe_kanban_global_click o_marketing_automation_campaign_kanban">
+                                <div class="row g-0 o_ma_campaign_header">
+                                    <span t-att-title="record.name.raw_value" class="text-primary o_text_overflow">
+                                        <t t-esc="record.name.raw_value"/>
+                                    </span>
+                                </div>
+                                <div class="o_dropdown_kanban dropdown" modifiers="{}">
+                                    <a role="button" class="dropdown-toggle o-no-caret btn" data-toggle="dropdown" data-display="static" href="#" aria-label="Dropdown menu" title="Dropdown menu" modifiers="{}">
+                                        <span class="fa fa-ellipsis-v" modifiers="{}"/>
+                                    </a>
+                                    <div class="dropdown-menu" role="menu" modifiers="{}">
+                                        <a t-if="widget.deletable" role="menuitem" class="dropdown-item oe_kanban_action oe_kanban_action_a" modifiers="{}" data-type="delete" href="#">
+                                            Delete
+                                        </a>
+                                    </div>
+                                </div>
+                                <div class="row text-uppercase text-center mt8">
+                                    <div class="col-4 text-muted o_ma_campaign_item">
+                                        <span>Total</span>
+                                        <h2 class="mt4"><strong><field name="total_participant_count"/></strong></h2>
+                                    </div>
+                                    <div class="col-4 text-primary o_ma_campaign_item">
+                                        <span>Running</span>
+                                        <h2 class="mt4"><strong><field name="running_participant_count"/></strong></h2>
+                                    </div>
+                                    <div class="col-4 text-primary o_ma_campaign_item o_text_brand">
+                                        <span>Completed</span>
+                                        <h2 class="mt4"><strong><field name="completed_participant_count"/></strong></h2>
+                                    </div>
+                                </div>
+                            </div>
+                        </t>
+                    </templates>
+                </kanban>
+            </field>
+        </record>
+        <record id="action_model_mail_campaign" model="ir.actions.act_window">
+            <field name="name">Marketing Campaign</field>
+            <field name="res_model">marketing.campaign</field>
+            <field name="view_ids" eval="[(5,0,0),(0, 0, {'view_mode': 'kanban', 'view_id': ref('kits_marketing_campaign_view_kanban')}),
+                                          (0, 0, {'view_mode': 'form', 'view_id': ref('marketing_campaing_form_view')}),
+                                          (0, 0, {'view_mode': 'tree', 'view_id': ref('marketing_campaing_view_tree')})]"/>
+        </record>
+
+        <record id="marketing_automation.marketing_campaign_action" model="ir.actions.act_window">
+            <field name="name">Campaigns</field>
+            <field name="res_model">marketing.campaign</field>
+            <field name="view_mode">kanban,tree,form</field>
+            <field name="view_ids" eval="[(5,0,0),(0, 0, {'view_mode': 'kanban', 'view_id': ref('marketing_automation.marketing_campaign_view_kanban')}),
+                                          (0, 0, {'view_mode': 'form', 'view_id': ref('marketing_automation.marketing_campaign_view_form')}),
+                                          (0, 0, {'view_mode': 'tree', 'view_id': ref('marketing_automation.marketing_campaign_view_tree')})]"/>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    Create a Marketing Automation Campaign
+                </p><p>
+                    Define workflows by chaining up activities and let Odoo handle the rest.
+                </p>
+            </field>
+        </record>
+        
+        <menuitem id="marketing_automation.marketing_automation_menu" name="Marketing Automation" web_icon="marketing_automation,static/description/icon.svg" groups="tzc_sales_customization_spt.group_marketing_user" sequence="110"/>
+        <menuitem name="Email Marketing" id="mass_mailing.mass_mailing_menu_root" sequence="115" web_icon="mass_mailing,static/description/icon.svg" groups="tzc_sales_customization_spt.group_marketing_user"/>
+        <!-- <menuitem id="marketing_campaign_menu" name="Marketing Campaign" action="action_model_mail_campaign" groups="base.group_system"/> -->
+    </data>
+</odoo>

@@ -212,19 +212,12 @@
             <field name="domain">[('customer_type','=','b2c'),('signup_from_website','=',True)]</field>
         </record> -->
 
-        <record id="action_campaign_template" model="ir.actions.act_window">
-            <field name="name">Campaign Templates</field>
-            <field name="res_model">mailing.mailing</field>
-            <field name="view_mode">tree,form</field>
-        </record>
-
         <menuitem id="reporting_menu" name="Reporting" parent="contacts.menu_contacts"/>
         <!-- <menuitem action="action_website_new_partners_spt" id="menu_website_new_partners_spt" name="New Signups" parent="reporting_menu" groups="base.group_system,tzc_sales_customization_spt.group_sales_manager_spt" sequence='2'/> -->
         <menuitem action="action_create_contact_report" id="menu_contact_report" name="Contact Detail" parent="reporting_menu" groups="base.group_system" />
         <menuitem id="contacts.res_partner_menu_config" name="Configuration" parent="contacts.menu_contacts" groups="base.group_system" sequence="200"/>
 
-        <menuitem id="mail_campaign_menu" name="Campaigns" action="marketing_automation.marketing_campaign_action" parent="contacts.menu_contacts" sequence="5000"/>
-        <menuitem id="campaign_templates_menu" name="Campaign Templates" action="action_campaign_template" parent="contacts.menu_contacts" sequence="6000"/>
+        <menuitem id="mail_campaign_menu" name="Campaigns" action="tzc_sales_customization_spt.action_model_mail_campaign" parent="contacts.menu_contacts" sequence="5000"/>
         <menuitem id="menu_mail_template" name="Manage Templates" action="action_contact_mail_template" parent="contacts.menu_contacts" sequence="6100"/>
         <menuitem id="res_partner_industry_menu" name="Sectors of Activity" action="base.res_partner_industry_action" parent="contacts.res_partner_menu_config" sequence="4"/>
 

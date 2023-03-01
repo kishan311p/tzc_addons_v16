@@ -99,8 +99,10 @@
         'views/sale_catalog.xml',
         'views/project_task_view.xml',
         'views/project_task_type_view.xml',
-        # 'views/marketing_campaign_view.xml',
-        # 'views/campaign_report_contacts.xml',
+        'views/marketing_campaign_view.xml',
+        'views/campaign_report_contacts.xml',
+        'views/campaign_monetization_view_spt.xml',
+        'views/mailing_mailing_view.xml',
 
         # Wizard
         'wizards/kits_warning_wizard_view.xml',
@@ -165,6 +167,8 @@
         'wizards/kits_task_report_of_users_view.xml',
         'wizards/kits_history_of_task_changes_view.xml',
         'wizards/time_shift_wizard_view.xml',
+        'wizards/mail_compose_message_wizard_view.xml',
+        'wizards/mass_mailing_message_wizard_view.xml',
 
         # Reports
         'reports/kits_commission_report.xml',

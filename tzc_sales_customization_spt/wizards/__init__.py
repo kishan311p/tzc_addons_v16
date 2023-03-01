@@ -65,3 +65,5 @@ from . import kits_history_of_task_changes
 from . import time_shift_wizard
 from . import product_edit_wizard_spt
 # from . import product_edit_wizard_line_spt
+from . import mail_compose_message_wizard
+from . import mass_mailing_message_wizard

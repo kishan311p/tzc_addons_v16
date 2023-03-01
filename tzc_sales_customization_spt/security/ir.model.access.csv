@@ -105,6 +105,10 @@ access_delivery_recovery_selection_wizard,access.delivery.recovery.selection.wiz
 access_kits_history_of_task_changes,access.kits.history.of.task.changes,model_kits_history_of_task_changes,,1,1,1,1
 access_kits_task_report_of_users,access.kits.task.report.of.users,model_kits_task_report_of_users,,1,1,1,1
 access_time_shift_wizard,access.time.shift.wizard,model_time_shift_wizard,,1,1,1,1
+access_campaign_report_contacts,access.campaign.report.contacts,model_campaign_report_contacts,,1,1,1,1
 access_sale_catalog_order,access.sale.catalog.order,model_sale_catalog_order,,1,1,1,1
 access_sale_catalog_order_line,access.sale.catalog.order.line,model_sale_catalog_order_line,,1,1,1,1
-
+access_campaign_monetization_spt,access.campaign.monetization.spt,model_campaign_monetization_spt,,1,1,1,1
+access_mass_mailing_message_wizard,access.mass.mailing.message.wizard,model_mass_mailing_message_wizard,,1,1,1,1
+mail.access_mail_compose_message,mail.access.mail.compose.message,mail.model_mail_compose_message,base.group_user,1,1,1,1
+mail.access_mail_compose_message_portal,mail.access.mail.compose.message.portal,mail.model_mail_compose_message,base.group_portal,1,1,1,1

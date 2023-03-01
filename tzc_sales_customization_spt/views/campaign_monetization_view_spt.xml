@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <data>
+        <record id="campaign_monetization_spt_form_view" model="ir.ui.view">
+            <field name="name">campaign.monetization.spt.form.view</field>
+            <field name="model">campaign.monetization.spt</field>
+            <field name="arch" type="xml">
+                <form>
+                    <sheet>
+                        <div class="oe_title">
+                            <label for="name" class="oe_edit_only" />
+                            <h1>
+                                <field name="name"/>
+                            </h1>
+                        </div>
+                        <group>
+                            <group>
+                                <field name="email"/>
+                                <field name="internal_id"/>
+                                <field name="salesperson_id" readonly="1"/>
+
+                            </group>
+                            <group>
+                                <field name="odoo_contact_id"/>
+                                <field name="campaign_id"/>
+                                <field name="marketing_activity_ids" readonly="1"/>
+                            </group>
+                        </group>
+                        <group>
+                            <group>
+                                <field name="before_source"/>
+                                <field name="before_prospect_level"/>
+                                <field name="before_status_type"/>
+                                <field name="before_action_type"/>
+                                <field name="before_orders"/>
+                                <!-- <field name="before_promo_code_ids" widget="many2many_tags" options="{'no_create_edit': True}"/> -->
+                            </group>
+                            <group>
+                                <field name="after_source"/>
+                                <field name="after_prospect_level"/>
+                                <field name="after_status_type"/>
+                                <field name="after_action_type"/>
+                                <field name="after_orders"/>
+
+                                <!-- <field name="after_promo_code_ids" widget="many2many_tags" options="{'no_create': True}"/> -->
+                            </group>
+                        </group>
+                        <field name="compute_salesperson" invisible="1" />
+                    </sheet>
+
+                </form>
+            </field>
+        </record>
+
+        <record id="campaign_monetization_spt_tree_view" model="ir.ui.view">
+            <field name="name">campaign.monetization.spt.tree.view</field>
+            <field name="model">campaign.monetization.spt</field>
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="name"/>
+                    <field name="email"/>
+                    <field name="internal_id"/>
+                    <field name="odoo_contact_id"/>
+                    <field name="before_source"/>
+                    <field name="after_source"/>
+                    <field name="before_prospect_level"/>
+                    <field name="after_prospect_level"/>
+                    <field name="before_status_type"/>
+                    <field name="after_status_type"/>
+                    <field name="before_action_type"/>
+                    <field name="after_action_type"/>
+                    <field name="before_orders"/>
+                    <field name="after_orders"/>
+                    <!-- <field name="before_promo_code_ids" widget="many2many_tags"/>
+                    <field name="after_promo_code_ids" widget="many2many_tags"/> -->
+                    <field name="salesperson_id"/>
+                    <field name="marketing_activity_ids"/>
+                    <field name="compute_salesperson" invisible="1" />
+                </tree>
+            </field>
+        </record>
+
+        <record id="campaign_monetization_spt_search_view" model="ir.ui.view">
+            <field name="name">campaign.monetization.spt.search.view</field>
+            <field name="model">campaign.monetization.spt</field>
+            <field name="arch" type="xml">
+                <search>
+                    <field name="name"/>
+                    <field name="email"/>
+                    <field name="internal_id"/>
+                    <field name="odoo_contact_id"/>
+                    <field name="campaign_id"/>
+                    <group expand="0" string="Group By">
+                        <filter name="group_campaign" string="Campaign" context="{'group_by': 'campaign_id'}"/>
+                        <filter name="group_salesperson" string="Salesperson" context="{'group_by': 'salesperson_id'}"/>
+                        <filter name="group_marketing_activity_ids" string="Marketing Activities" context="{'group_by': 'marketing_activity_ids'}"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+
+        <record id="action_campaign_monetization_spt" model="ir.actions.act_window">
+            <field name="name">Campaign Monetization</field>
+            <field name="res_model">campaign.monetization.spt</field>
+            <field name="view_mode">tree,form</field>
+            <field name="context">{'search_default_group_campaign': 1}</field>
+        </record>
+
+        <menuitem id="menu_campaign_monetization_spt" name="Campaign Monetization" action="action_campaign_monetization_spt" parent="marketing_automation.marketing_automation_menu" sequence="999"/>
+    </data>
+
+</odoo>
