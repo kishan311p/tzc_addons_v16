@@ -36,8 +36,8 @@
                                                             <t t-out="object.partner_id.name"/>
                                                         </span>
                                                     </td>
-                                                    <td valign="middle" style="width: 145px;" align="right">
-                                                        <img src="/web/image?model=res.company&amp;id=1&amp;field=logo" style="padding: 0px; margin: 0px; height: auto; width: 280px;" t-att-alt="object.user_id.company_id.name"/>
+                                                    <td valign="middle" style="width: 50%;" align="right">
+                                                        <img src="/web/image?model=res.company&amp;id=1&amp;field=logo" style="padding: 0px; margin: 0px; height: auto; width: 95%;" t-att-alt="object.user_id.company_id.name"/>
                                                     </td>
                                                 </tr>
                                                 <tr>
@@ -156,8 +156,8 @@
                                                             <t t-out="object.user_id.name"/>
                                                         </span>
                                                     </td>
-                                                    <td valign="middle" style="width: 145px;" align="right">
-                                                        <img src="/web/image?model=res.company&amp;id=1&amp;field=logo" style="padding: 0px; margin: 0px; height: auto; width: 280px;" t-att-alt="object.user_id.company_id.name"/>
+                                                    <td valign="middle" style="width: 50%;" align="right">
+                                                        <img src="/web/image?model=res.company&amp;id=1&amp;field=logo" style="padding: 0px; margin: 0px; width: 95%;" t-att-alt="object.user_id.company_id.name"/>
                                                     </td>
                                                 </tr>
                                                 <tr>

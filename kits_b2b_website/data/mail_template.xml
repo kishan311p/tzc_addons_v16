@@ -28,8 +28,8 @@
                                                             <t t-out="object.name"/>
                                                         </span>
                                                     </td>
-                                                    <td valign="middle" style="width: 145px;" align="right">
-                                                        <img src="/web/image?model=res.company&amp;id=1&amp;field=logo" style="padding: 0px; margin: 0px; height: auto; width: 280px;" t-att-alt="object.user_id.company_id.name"/>
+                                                    <td valign="middle" style="width: 50%;" align="right">
+                                                        <img src="/web/image?model=res.company&amp;id=1&amp;field=logo" style="padding: 0px; margin: 0px; width: 95%;" t-att-alt="object.user_id.company_id.name"/>
                                                     </td>
                                                 </tr>
                                                 <tr>
@@ -48,10 +48,7 @@
                                                     <tr>
                                                         <td valign="top">
                                                             <div>
-                                                                <p style="margin-top:0px;">Dear <t t-out="object.name"/>
-,</p>
-                                                                <!-- <br/> -->
-                                                                <!-- <br/> -->
+                                                                <p style="margin-top:0px;">Dear <t t-out="object.name"/>,</p>
                                                                 <p>You have successfully created your account at teameto.com.
                                                                
                                                                     <br/>
@@ -59,7 +56,7 @@
                                                                         We just need to verify your email address. Click on the <strong>Activate Account</strong> button below to verify your email.</p>
                                                                 <!-- <br/> -->
                                                                 <div style="font-size: 13px; margin: 16px 0px;">
-                                                                    <a t-attf-href=" {{object.env['kits.b2b.website'].search([('website_name','=','b2b1')]).url}}/login?details_code={{object.access_token}}&amp;login={{object.login}}" style="background-color:#00A09D !important;padding: 8px 16px 8px 16px; text-decoration: none; color: #fff; border-radius: 5px; font-size:13px;">
+                                                                    <a t-attf-href="{{object.env['kits.b2b.website'].search([('website_name','=','b2b1')]).url}}/login?details_code={{object.access_token}}&amp;login={{object.login}}" style="background-color:#00A09D !important;padding: 8px 16px 8px 16px; text-decoration: none; color: #fff; border-radius: 5px; font-size:13px;">
                                                                                     Activate Account
                                                                     </a>
                                                                 </div>

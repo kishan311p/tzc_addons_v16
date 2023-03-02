@@ -34,7 +34,7 @@
             <field name="target">new</field>
         </record>
 
-        <menuitem name="User/Customer" action="action_kits_customers_report" id="menu_action_kits_customers_report" parent="reporting_menu" groups="base.group_system,tzc_sales_customization_spt.group_sales_manager_spt,marketing_automation.group_marketing_automation_user"/>
+        <menuitem name="User/Customer" action="action_kits_customers_report" id="menu_action_kits_customers_report" parent="reporting_menu" groups="base.group_system,tzc_sales_customization_spt.group_sales_manager_spt,marketing_automation.group_marketing_automation_user" sequence='2' />
 
     </data>
 </odoo>

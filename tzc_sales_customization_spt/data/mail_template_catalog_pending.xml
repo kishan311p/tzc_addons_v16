@@ -393,8 +393,8 @@
                                                             <t t-out="object.user_id.name"/>
                                                         </span>
                                                     </td>
-                                                    <td valign="middle" style="width: 145px;" align="right">
-                                                        <img src="/web/image/res.company/1/logo" style="padding: 0px; margin: 0px; height: auto; width: 280px;" t-attf-alt="{{object.user_id.company_id.name}}"/>
+                                                    <td valign="middle" style="width: 50%;" align="right">
+                                                        <img src="/web/image/res.company/1/logo" style="padding: 0px; margin: 0px; width: 95%;" t-attf-alt="{{object.user_id.company_id.name}}"/>
                                                     </td>
                                                 </tr>
                                                 <tr>

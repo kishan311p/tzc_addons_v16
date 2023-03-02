@@ -15,71 +15,62 @@
             <field name="report_name">Catalog ${(object.name or '')}</field> -->
             <field name="lang">{{object.partner_id.lang}}</field>
             <field name="body_html" type="html">
-                <table border="0" cellpadding="0" cellspacing="0" style="font-family:Verdana, Arial,sans-serif; color: #454748; width: 100%; border-collapse:separate;">
-                    <tr>
-                        <td align="center">
-                            <table border="0" cellpadding="0" cellspacing="0" style="background-color: white; color: #454748; border-collapse:separate;width:100%;">
-                                <tbody>
-                                    <!-- CONTENT -->
-                                    <td align="center" style="min-width: 590px;">
-                                        <table border="0" cellpadding="0" cellspacing="0" style="min-width: 590px; background-color: white; padding: 0px 8px 0px 8px; border-collapse:separate;width:100%;">
-                                            <tr>
-                                                <td valign="top" style="font-size: 13px;">
-                                                    <p style="margin-top:0px;">Dear <t t-out="object.partner_id.name"/>
-                                                    </p>
-                                                    <!-- <br/> -->
-                                                    <p>
-                                                        <t t-set="company" t-value="object.company_id or object.user_id.company_id or user.company_id"/>
-                                                        <span style="font-size:14px;">Your Cart</span>
-                                                        <br/>
-                                                        <span style="color:black;font-size:14px;font-weight: bold;">
-                                                            <a t-attf-href="{{object.get_base_url()}}/my/orders/{{object.id}}?{{object.get_access_token_spt()}}" target="_blank" style="text-decoration: none;" class="o_default_snippet_text">
-                                                                <t t-out='object.name'/>
-                                                            </a>,
-                                                        </span>
-                                                    </p>
-                                                    <p>
-                                                        <span style="color:black;font-size:12px;font-weight: bold;">THERE'S SOMETHING IN YOUR CART.</span>
+                <table border="0" cellpadding="0" cellspacing="0" style="background-color: white; color: #454748; border-collapse:separate;width:100%;">
+                    <tbody>
+                        <!-- CONTENT -->
+                        <tr>
+                            <td align="center" style="min-width: 590px;">
+                                <table border="0" cellpadding="0" cellspacing="0" style="min-width: 590px; background-color: white; padding: 0px 8px 0px 8px; border-collapse:separate;width:100%;">
+                                    <tr>
+                                        <td valign="top" style="font-size: 13px;">
+                                            <p style="margin-top:0px;">Dear <t t-out="object.partner_id.name"/>
+                                            </p>
+                                            <!-- <br/> -->
+                                            <p>
+                                                <t t-set="company" t-value="object.company_id or object.user_id.company_id or user.company_id"/>
+                                                <span style="font-size:14px;">Your Cart</span>
+                                                <br/>
+                                                <span style="color:black;font-size:14px;font-weight: bold;">
+                                                    <a t-attf-href="{{object.get_base_url()}}/my/orders/{{object.id}}?{{object.get_access_token_spt()}}" target="_blank" style="text-decoration: none;" class="o_default_snippet_text">
+                                                        <t t-out='object.name'/>
+                                                    </a>,
+                                                </span>
+                                            </p>
+                                            <p>
+                                                <span style="color:black;font-size:12px;font-weight: bold;">THERE'S SOMETHING IN YOUR CART.</span>
                                                         Would you like to complete your purchase?<br/>
-                                                    </p>
-
-                                                    <table style="border: 1px solid #dbdde0;border-collapse: collapse;">
-                                                        <thead>
-                                                            <tr>
-                                                                <th style="padding: 10px;width: 20%;" colspan="2">
-                                                                    <img src="/web/image?model=res.company&amp;id=1&amp;field=logo" style="height: 30px;" alt="Logo"/>
-                                                                </th>
-                                                                <th style="padding: 10px;text-align: center;width: 20%;">Product</th>
-                                                                <!-- <th style="padding: 10px;text-align: center;width: 9%;">Cat</th> -->
-                                                                <th style="padding: 10px;text-align: center;width: 8%;">Qty</th>
-                                                                <!-- <th style="padding: 10px;text-align: center;width: 8%;">MSRP (<span>${object.partner_id.property_product_pricelist.currency_id.name}</span>)</th> -->
-                                                                <!-- <th style="padding: 10px;text-align: center;width: 9%;">Wholesale (<span>${object.partner_id.property_product_pricelist.currency_id.name}</span>)
-                                                                </th> -->
-                                                                <!-- <th style="padding: 10px;text-align: center;width: 9%;">Disc.%</th> -->
-                                                                <th style="padding: 10px;text-align: center;width: 8%;">Price <br/>
-(                                                                <span>
-                                                                    <t t-out='object.partner_id.property_product_pricelist.currency_id.name'/>
-                                                                </span>)
-                                                            </th>
-                                                            <!-- <th style="padding: 10px;text-align: center;width: 8%;">Discounted Price (<span>${object.partner_id.property_product_pricelist.currency_id.name}</span>)</th> -->
-                                                            <th style="padding: 10px;text-align: center;width: 8%;">Subtotal <br/>
-(                                                            <span>
-                                                                <t t-out='object.partner_id.property_product_pricelist.currency_id.name'/>
-                                                            </span>)
+                                            </p>
+                                            <table width='100%' style="border: 1px solid #dbdde0;">
+                                                <thead>
+                                                    <tr>
+                                                        <th style="padding: 10px;width: 55%;" colspan="2">
+                                                            <img src="/web/image?model=res.company&amp;id=1&amp;field=logo" style="height: 30px;" alt="Logo"/>
                                                         </th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody>
-                                                    <t t-foreach="object.get_sorted_lines(object.order_line)" t-as="line">
+                                                        <th style="padding: 10px;text-align: center;width: 20%;">Product</th>
+                                                        <th style="padding: 10px;text-align: center;width: 8%;">Qty</th>
+                                                        <th style="padding: 10px;text-align: center;width: 8%;">Price <br/>
+    (                                                        <span>
+                                                            <t t-out='object.partner_id.property_product_pricelist.currency_id.name'/>
+                                                        </span>)
+                                                    </th>
+                                                    <th style="padding: 10px;text-align: center;width: 8%;">Subtotal <br/>
+    (                                                    <span>
+                                                        <t t-out='object.partner_id.property_product_pricelist.currency_id.name'/>
+                                                    </span>)
+                                                </th>
+                                            </tr>
+                                        </thead>
+                                    </table>
 
+                                    <t t-foreach="object.order_line" t-as="line">
+                                        <table width="100%">
+                                            <tr>
+                                                <!-- Image -->
+                                                <td style="border: 1px solid #dbdde0; padding: 10px;width: 20%;">
+                                                    <t t-set="special_discount" t-value="line.product_id.get_black_special_friday_sale()"/>
+                                                    <t t-if="line.sale_type">
 
-                                                        <tr>
-                                                            <!-- Image -->
-                                                            <td style="border: 1px solid #dbdde0; padding: 10px;width: 20%;">
-                                                                <t t-set="special_discount" t-value="line.product_id.get_black_special_friday_sale()"/>
-                                                                <t t-if="line.sale_type">
-
-                                                                    <style>
+                                                        <style>
                                                                         .te_ribbon-wrapper kits_ribbon #style_3.label_div {
                                                                             display: inline-block;
                                                                             width: auto;
@@ -105,233 +96,191 @@
                                                                             margin-right: 5px;
                                                                             font-size: 8px;
                                                                         }
-                                                                    </style>
-                                                                    <t t-if="line.is_special_discount">
+                                                        </style>
+                                                        <t t-if="line.is_special_discount">
 
-                                                                        <img height="25px" src="data:image/*;base64,${special_discount.get('icon')}"/>
-                                                                    </t>
-                                                                    <t t-else="not line.is_special_discount">
-                                                                        <t t-if="line.sale_type  == 'clearance'">
-                                                                            <div class="te_ribb on-wrapper kits_ribbon" style="color:white">
-                                                                                <span class="style_3 label_div kits_label_div" id="style_3" style="background-color:#990000;font-weight: bold;top: auto !important;left: 24px !important;font-size: 12px;">
-                                                                                    <span class="p-1 te_label_name te_label_name_wish kits_label_name">Clearance</span>
-                                                                                </span>
-                                                                            </div>
-                                                                        </t>
-                                                                        <t t-if="line.sale_type  == 'on_sale'">
-
-                                                                            <div class="te_ribb on-wrapper kits_ribbon" style="color:white">
-                                                                                <span class="style_3 label_div kits_label_div" id="style_3" style="background-color:#e50000;font-weight: bold;top: auto !important;left: 24px !important;font-size: 12px;">
-                                                                                    <span class="p-1 te_label_name te_label_name_wish kits_label_name">Sale</span>
-                                                                                </span>
-                                                                            </div>
-                                                                        </t>
-
-                                                                    </t>
-
-                                                                </t>
-                                                                <img width="250px" t-attf-src="{{line.product_id.image_url}}"/>
-                                                            </td>
-                                                            <td style="border: 1px solid #dbdde0; padding: 10px;width: 20%;">
-                                                                <img width="250px" t-attf-src="{{line.product_id.image_secondary_url}}"/>
-                                                            </td>
-                                                            <!-- Product -->
-                                                            <td style="text-align: center; border: 1px solid #dbdde0; padding: 10px;text-transform: capitalize;">
-                                                                <p >
-                                                                    <t t-if="line.product_id.brand">
-                                                                        <t t-out="line.product_id.brand.name"/>
-                                                                    </t>
-                                                                    <t t-else="">
-                                                                        <p>N/A</p>
-                                                                    </t>
-                                                                    <br/>
-                                                                    <t t-if="line.product_id.model">
-                                                                        <t t-out="line.product_id.model.name"/>
-                                                                    </t>
-
-                                                                    <t t-else="">
-                                                                        <p>N/A</p>
-                                                                    </t>
-
-                                                                    <t t-if="line.product_id.color_code">
-                                                                        <t t-out="line.product_id.color_code.name.split('-')[0]"/>
-                                                                    </t>
-                                                                    <t t-else="">
-                                                                        <p>N/A</p>
-                                                                    </t>
-
-                                                                    <t t-if="line.product_id.eye_size">
-                                                                        <t t-out="line.product_id.eye_size.name"/>
-                                                                    </t>
-                                                                    <t t-else="">
-                                                                        <p>00</p>
-                                                                    </t>
-                                                                    <t t-if="line.product_id.bridge_size">
-                                                                        <t t-out="line.product_id.bridge_size.name"/>
-                                                                    </t>
-                                                                    <t t-else="">
-                                                                        <p>00</p>
-                                                                    </t>
-                                                                    <t t-if="line.product_id.temple_size">
-                                                                        <t t-out="line.product_id.temple_size.name"/>
-                                                                    </t>
-                                                                    <t t-else="">
-                                                                        <p>00</p>
-                                                                    </t>
-                                                                    <t t-if="line.product_id.categ_id">
-                                                                        <t t-out="line.product_id.categ_id.name"/>
-                                                                    </t>
-
-                                                                </p>
-                                                                <br/>
-                                                                <div>
-                                                                    <div>
-                                                                        <p style="font-size: 10px;">
-                                                                                Retail Price: <t t-out="line.product_id.price_msrp"/>
-                                                                        </p>
-                                                                        <p style="font-size: 10px;">
-                                                                                Wholesale Price: <t t-out="line.product_id.price_wholesale"/>
-                                                                        </p>
-                                                                    </div>
+                                                            <img height="25px" t-attf-src="data:image/*;base64,{{special_discount.get('icon')}}"/>
+                                                        </t>
+                                                        <t t-else="not line.is_special_discount">
+                                                            <t t-if="line.sale_type  == 'clearance'">
+                                                                <div class="te_ribb on-wrapper kits_ribbon" style="color:white">
+                                                                    <span class="style_3 label_div kits_label_div" id="style_3" style="background-color:#990000;font-weight: bold;top: auto !important;left: 24px !important;font-size: 12px;">
+                                                                        <span class="p-1 te_label_name te_label_name_wish kits_label_name">Clearance</span>
+                                                                    </span>
                                                                 </div>
-                                                            </td>
-                                                            <!-- CAT -->
-                                                            <!-- <td style="text-align: center; border: 1px solid #dbdde0; padding: 10px;">
-                                                                    <p>
-                                                                        % if line.product_categ_id:
-                                                                            ${line.product_categ_id.name}
-                                                                        % else:
-                                                                            -
-                                                                        % endif
-                                                                    </p>
-                                                                </td> -->
-                                                            <!-- QTY -->
-                                                            <td style="text-align: center; border: 1px solid #dbdde0; padding: 10px;">
-                                                                <p >
-                                                                    <t t-if="line.product_uom_qty">
-                                                                        <t t-out="int(line.product_uom_qty)"/>
-                                                                    </t>
-                                                                    <t t-else="">
-                                                                        <p>-</p>
-                                                                    </t>
-                                                                </p>
-                                                            </td>
-                                                            <!-- WHOLESALE -->
-                                                            <!-- <td style="text-align: center; border: 1px solid #dbdde0; padding: 10px;white-space: nowrap;color:#535556;text-decoration:line-through;">
-                                                                    <p>
-                                                                        ${object.partner_id.property_product_pricelist.currency_id.symbol}
-                                                                        %if object.partner_id.property_product_pricelist.currency_id.name == "USD":
-                                                                            %if line.product_id.price_wholesale_usd:
-                                                                                ${'%.2f'%line.product_id.price_wholesale_usd}
-                                                                            %else:
-                                                                                0.00
-                                                                            %endif
-                                                                        %else :
-                                                                            %if line.product_id.price_wholesale:
-                                                                                ${'%.2f'%line.product_id.price_wholesale}
-                                                                            %else:
-                                                                                0.00
-                                                                            % endif
-                                                                        %endif
+                                                            </t>
+                                                            <t t-if="line.sale_type  == 'on_sale'">
 
-                                                                    </p>
-                                                                </td> -->
-                                                            <!-- Disc % -->
-                                                            <!-- <td style="text-align: center; border: 1px solid #dbdde0; padding: 10px;">
-                                                                    <p>
-                                                                        % if line.discount:
-                                                                            ${'%.2f'%line.discount}
-                                                                        % endif
-                                                                        % if not line.discount:
-                                                                            0.00
-                                                                        % endif
-                                                                    </p>
-                                                                </td> -->
-                                                            <!-- PRICE UNIT -->
-                                                            <td style="text-align: center; border: 1px solid #dbdde0; padding: 2px;">
-                                                                <t t-if="line.price_unit != line.unit_discount_price">
+                                                                <div class="te_ribb on-wrapper kits_ribbon" style="color:white">
+                                                                    <span class="style_3 label_div kits_label_div" id="style_3" style="background-color:#e50000;font-weight: bold;top: auto !important;left: 24px !important;font-size: 12px;">
+                                                                        <span class="p-1 te_label_name te_label_name_wish kits_label_name">Sale</span>
+                                                                    </span>
+                                                                </div>
+                                                            </t>
 
-                                                                    <p style="color: #ff0000;text-decoration:line-through;">
-                                                                        <b style="color:#454748;">
-                                                                            <t t-out="object.partner_id.property_product_pricelist.currency_id.symbol"/>
-                                                                            <t t-if="line.price_unit">
-                                                                                <t t-out="line.price_unit"/>
-                                                                            </t>
-                                                                            <t t-else="">
-                                                                                0.00
-                                                                            </t>   
-                                                                        </b>
-                                                                    </p>
-                                                                    <p style="white-space: nowrap;color:#ff0000;">
-                                                                        <t t-out="object.partner_id.property_product_pricelist.currency_id.symbol"/>
-                                                                        <t t-if="line.unit_discount_price">
-                                                                            <t t-out="line.unit_discount_price"/>
-                                                                        </t>
-                                                                        <t t-else="">
-                                                                            0.00
-                                                                        </t>
-                                                                    </p>
-                                                                </t>
-                                                                <t t-else=" ">
-                                                                    <p style="color: #454748;">
-                                                                        <b>
-                                                                            <t t-out="object.partner_id.property_product_pricelist.currency_id.symbol"/>
-                                                                            <t t-if="condition">
-                                                                                <t t-out="line.price_unit"/>
-                                                                            </t>
+                                                        </t>
 
-                                                                            <t t-else="">
-                                                                                0.00
-                                                                            </t>
-
-                                                                        </b>
-                                                                    </p>
-                                                                </t>
-                                                            </td>
-                                                            <!-- SUBTOTAL -->
-                                                            <td style="text-align: center; border: 1px solid #dbdde0; padding: 10px;">
-                                                                <t t-out="object.partner_id.property_product_pricelist.currency_id.symbol"/>
-                                                                <t t-out="line.picked_qty_subtotal"/>
-                                                            </td>
-                                                        </tr>
                                                     </t>
-                                                </tbody>
-                                            </table>
+                                                    <img width="215px" t-attf-src="{{line.product_id.image_url}}"/>
+                                                </td>
 
-                                            <br/>
-                                            <br/>
-                                            <center>
-                                                <!-- <t t-out="object.get_base_url()"/> -->
-                                                <a t-attf-href="{{object.get_base_url()}}/my/orders/{{object.id}}?{{object.get_access_token_spt()}}" target="_blank" style="background-color:#7693f8 !important; padding: 20px; text-decoration: none; color: #fff; border-radius: 5px; font-size: 16px;" class="o_default_snippet_text">
+                                                <td style="border: 1px solid #dbdde0; padding: 10px;width: 20%;">
+                                                    <img width="215px" t-attf-src="{{line.product_id.image_secondary_url}}"/>
+                                                </td>
+                                                <td style="text-align: center; border: 1px solid #dbdde0; padding: 10px;text-transform: capitalize;width:15%;">
+                                                    <p >
+                                                        <t t-if="line.product_id.brand">
+                                                            <t t-out="line.product_id.brand.name"/>
+                                                        </t>
+                                                        <t t-else="">
+                                                            <p>N/A</p>
+                                                        </t>
+                                                        <br/>
+                                                        <t t-if="line.product_id.model">
+                                                            <t t-out="line.product_id.model.name"/>
+                                                        </t>
+
+                                                        <t t-else="">
+                                                            <p>N/A</p>
+                                                        </t>
+
+                                                        <t t-if="line.product_id.color_code">
+                                                            <t t-out="line.product_id.color_code.name.split('-')[0]"/>
+                                                        </t>
+                                                        <t t-else="">
+                                                            <p>N/A</p>
+                                                        </t>
+
+                                                        <t t-if="line.product_id.eye_size">
+                                                            <t t-out="line.product_id.eye_size.name"/>
+                                                        </t>
+                                                        <t t-else="">
+                                                            <p>00</p>
+                                                        </t>
+                                                        <t t-if="line.product_id.bridge_size">
+                                                            <t t-out="line.product_id.bridge_size.name"/>
+                                                        </t>
+                                                        <t t-else="">
+                                                            <p>00</p>
+                                                        </t>
+                                                        <t t-if="line.product_id.temple_size">
+                                                            <t t-out="line.product_id.temple_size.name"/>
+                                                        </t>
+                                                        <t t-else="">
+                                                            <p>00</p>
+                                                        </t>
+                                                        <t t-if="line.product_id.categ_id">
+                                                            <t t-out="line.product_id.categ_id.name"/>
+                                                        </t>
+
+                                                    </p>
+                                                    <br/>
+                                                    <div>
+                                                        <div>
+                                                            <p style="font-size: 10px;">
+                                                                                Retail Price: <t t-out="line.product_id.price_msrp"/>
+                                                            </p>
+                                                            <p style="font-size: 10px;">
+                                                                                Wholesale Price: <t t-out="line.product_id.price_wholesale"/>
+                                                            </p>
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                                <!-- QTY -->
+                                                <td style="text-align: center; border: 1px solid #dbdde0; padding: 10px;width:8%;">
+                                                    <p >
+                                                        <t t-if="line.product_uom_qty">
+                                                            <t t-out="int(line.product_uom_qty)"/>
+                                                        </t>
+                                                        <t t-else="">
+                                                            <p>-</p>
+                                                        </t>
+                                                    </p>
+                                                </td>
+                                                <!-- PRICE UNIT -->
+                                                <td style="text-align: center; border: 1px solid #dbdde0; padding: 2px;width:8%;">
+                                                    <t t-if="line.price_unit != line.unit_discount_price">
+
+                                                        <p style="color: #ff0000;text-decoration:line-through;">
+                                                            <b style="color:#454748;">
+                                                                <t t-out="object.partner_id.property_product_pricelist.currency_id.symbol"/>
+                                                                <t t-if="line.price_unit">
+                                                                    <t t-out="line.price_unit"/>
+                                                                </t>
+                                                                <t t-else="">
+                                                                                0.00
+                                                                </t>
+                                                            </b>
+                                                        </p>
+                                                        <p style="white-space: nowrap;color:#ff0000;">
+                                                            <t t-out="object.partner_id.property_product_pricelist.currency_id.symbol"/>
+                                                            <t t-if="line.unit_discount_price">
+                                                                <t t-out="line.unit_discount_price"/>
+                                                            </t>
+                                                            <t t-else="">
+                                                                            0.00
+                                                            </t>
+                                                        </p>
+                                                    </t>
+                                                    <t t-else="">
+                                                        <p style="color: #454748;">
+                                                            <b>
+                                                                <t t-out="object.partner_id.property_product_pricelist.currency_id.symbol"/>
+                                                                <t t-if="line.price_unit">
+                                                                    <t t-out="line.price_unit"/>
+                                                                </t>
+
+                                                                <t t-else="">
+                                                                                0.00
+                                                                </t>
+
+                                                            </b>
+                                                        </p>
+                                                    </t>
+                                                </td>
+                                                <!-- SUBTOTAL -->
+                                                <td style="text-align: center; border: 1px solid #dbdde0; padding: 10px;width:8%;">
+                                                    <t t-out="object.partner_id.property_product_pricelist.currency_id.symbol"/>
+                                                    <t t-out="line.picked_qty_subtotal"/>
+                                                </td>
+                                            </tr>
+                                        </table>
+
+                                    </t>
+                                    <hr/>
+
+                                    <br/>
+                                    <br/>
+                                    <center>
+                                        <!-- <t t-out="object.get_base_url()"/> -->
+                                        <a t-attf-href="{{object.get_base_url()}}/my/orders/{{object.id}}?{{object.get_access_token_spt()}}" target="_blank" style="background-color:#7693f8 !important; padding: 20px; text-decoration: none; color: #fff; border-radius: 5px; font-size: 16px;" class="o_default_snippet_text">
         Resume order
-                                                </a>
-                                                <br/>
-                                                <br/>
-                                                <br/>
-                                            </center>
-                                            <br/>
+                                        </a>
+                                        <br/>
+                                        <br/>
+                                        <br/>
+                                    </center>
+                                    <br/>
 
 
-                                            <p>You can reply to this email if you have any questions.</p>
-                                            <!-- <br/> -->
-                                            <p style="margin-bottom:0px;">Thank you,</p>
-                                            <p style="margin-bottom:0px; color:#888888;">
+                                    <p>You can reply to this email if you have any questions.</p>
+                                    <!-- <br/> -->
+                                    <p style="margin-bottom:0px;">Thank you,</p>
+                                    <p style="margin-bottom:0px; color:#888888;">
                                                         ETO Support
-                                            </p>
-                                            <p>
-                                                <t t-if="object.user_id.signature">
-                                                    <t t-out="object.user_id.signature"/>
-                                                </t>
+                                    </p>
+                                    <p>
+                                        <t t-if="object.user_id.signature">
+                                            <t t-out="object.user_id.signature"/>
+                                        </t>
 
-                                            </p>
-                                        </td>
-                                    </tr>
-                                </table>
-                            </td>
-                        </tbody>
-                    </table>
-                </td>
-            </tr>
+                                    </p>
+                                </td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+            </tbody>
         </table>
 
 

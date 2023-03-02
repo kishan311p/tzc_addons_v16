@@ -232,7 +232,7 @@ class res_users(models.Model):
             rec.is_sales_manager = rec.has_group('tzc_sales_customization_spt.group_sales_manager_spt')
 
     def kits_b2b_user_verification_sent_email(self):
-        mail_template = self.env.ref('tzc_sales_customization_spt.mail_template_user_signup_confirmation')
+        mail_template = self.env.ref('kits_b2b_website.mail_template_user_signup_confirmation')
         mail_template.sudo().send_mail(res_id= self.id,force_send=True)
         return{}
 
