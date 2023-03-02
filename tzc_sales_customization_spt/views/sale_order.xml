@@ -18,6 +18,26 @@
         </field>
     </record>
 
+    <record id="sale.action_quotations_with_onboarding" model="ir.actions.act_window">
+        <field name="name">Quotations</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">sale.order</field>
+        <field name="view_id" ref="sale.view_quotation_tree_with_onboarding"/>
+        <field name="view_mode">tree,kanban,form,calendar,pivot,graph,activity</field>
+        <field name="search_view_id" ref="sale.sale_order_view_search_inherit_quotation"/>
+        <field name="context">{'search_default_draft': 1,'search_default_filter_quotation_sent': 1,'search_default_filter_quotation_recived':1}</field>
+        <field name="domain">[('state','in',['draft','sent','received','cancel'])]</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+            Create a new quotation, the first step of a new sale!
+            </p>
+            <p>
+            Once the quotation is confirmed by the customer, it becomes a sales order.<br/>
+            You will be able to create an invoice and collect the payment.
+            </p>
+        </field>
+    </record>
+
     <record id="view_sale_view_order_form_inherit_tzc" model="ir.ui.view">
         <field name="name">sale_view_order_form_inherit_tzc</field>
         <field name="model">sale.order</field>
@@ -662,12 +682,7 @@
                 <attribute name="invisible">0</attribute>
                 <attribute name="readonly">1</attribute>
                 <attribute name="required">1</attribute>
-            </xpath>
-            <!-- kits_b2b_website -->
-            <xpath expr="//field[@name='currency_id']" position="replace">
-                <field name="currency_id" invisible="1" />
-                <!-- <field name="b2b_currency_id" options="{'no_open': True, 'no_create': True}" /> -->
-            </xpath>
+            </xpath>            
 
             <!-- kits_picking_return -->
             <xpath expr="//sheet/div[hasclass('oe_button_box')]" position="inside">
@@ -878,6 +893,83 @@
 
         </field>
     </record>
+
+    <record id="view_sale_order_tree_inherit_tzc" model="ir.ui.view">
+        <field name="name">view.sale.order.tree.inherit.tzc</field>
+        <field name="model">sale.order</field>
+        <field name="inherit_id" ref="sale.view_order_tree"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='invoice_status']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+            <field name="name" position="attributes">
+                <attribute name="optional">show</attribute>
+            </field>
+            <field name="team_id" position="attributes">
+                <attribute name="optional">show</attribute>
+            </field>
+            <field name="amount_untaxed" position="attributes">
+                <attribute name="optional">show</attribute>
+                <attribute name="invisible">1</attribute>
+            </field>
+            <field name="amount_tax" position="attributes">
+                <attribute name="optional">show</attribute>
+            </field>
+            <field name="tag_ids" position="attributes">
+                <attribute name="optional">show</attribute>
+                <attribute name="invisible">1</attribute>
+            </field>
+            <field name='user_id' position="attributes">
+                <attribute name="invisible">1</attribute>
+            </field>
+
+            <field name='commitment_date' position="attributes">
+                <attribute name="invisible">1</attribute>
+            </field>
+            <field name='expected_date' position="attributes">
+                <attribute name="invisible">1</attribute>
+            </field>
+            <field name='partner_id' position="attributes">
+                <attribute name="invisible">1</attribute>
+            </field>
+            <!-- <field name='website_id' position="attributes">
+                <attribute name="invisible">1</attribute>
+            </field> -->
+            <field name='invoice_status' position="attributes">
+                <attribute name="invisible">1</attribute>
+            </field>
+            <field name='amount_total' position="attributes">
+                <attribute name="invisible">1</attribute>
+            </field>
+
+            <field name='name' position="after">
+                <field name='partner_id' optional="show"/>
+                <field name='create_date' optional="show"/>
+                <field name='updated_on' optional="show" string="Last Updated On"/>
+                <field name='create_uid' optional="show"/>
+                <field name='updated_by' optional="show" string="Last Updated By"/>
+                <field name='shipped_date' optional="show"/>
+                <field name='user_id' optional="show"/>
+                <field name='source_spt' string="Source" optional="show"/>
+                <field name='picked_qty' optional="show"/>
+                <field name='amount_total' string="Order Total" optional="show"/>
+                <field name='picked_qty_order_total' string="Invoice Total" optional="show"/>
+                <field name="country_id" optional="hide"/>
+                <field name="is_picking_set" invisible="1"/>
+            </field>
+            <field name='invoice_status' position="after">
+                <!-- <field name='picked_qty_order_total'/> -->
+                <field name="currency_id" optional="show"/>
+                <field name='invoice_name' optional="show" invisible="1"/>
+                <field name='state' optional="show"/>
+            </field>
+            <field name='date_order' position="attributes">
+                <attribute name="invisible">1</attribute>
+            </field>
+
+        </field>
+    </record>
+
     <record id="view_sale_order_inherit_delivery_view" model="ir.ui.view">
         <field name="name">view.sale.order.inherit.delivery.view</field>
         <field name="model">sale.order</field>
@@ -903,5 +995,52 @@
     <record id="sale_loyalty.menu_gift_ewallet_type_config" model="ir.ui.menu">
         <field name="active" eval="False" />
     </record>
+    <record id="sale_order_filter_replace" model="ir.ui.view">
+        <field name="name">sale.order.filter.replace</field>
+        <field name="model">sale.order</field>
+        <field name="inherit_id" ref="sale.sale_order_view_search_inherit_quotation"/>
+        <field name="arch" type="xml">
+            <xpath expr="//filter[@name='filter_create_date']" position="replace">
+                <filter string="Quotation Date" name="filter_quotation_date" date="create_date"/>
+            </xpath>
+            <xpath expr="//filter[@name='draft']" position="after">
+                <filter string="Quotation Sent" name="filter_quotation_sent" domain="[('state', '=', 'sent')]"/>
+                <filter string="Quotation Received" name="filter_quotation_recived" domain="[('state', '=', 'received')]"/>
+                <filter string="Cancel Quotation" name="cancel" domain="[('state', '=', 'cancel')]"/>
+            </xpath>
+        </field>
+    </record>
 
+    <record id="tzc_sales_customization_inherit_sale_order_search_view" model="ir.ui.view">
+        <field name="name">tzc.sales.customization.inherit.sale.order.search.view</field>
+        <field name="model">sale.order</field>
+        <field name="inherit_id" ref="sale.view_sales_order_filter"/>
+        <field name="arch" type="xml">
+            
+            <filter name="customer" position="after">
+                <filter name="groupby_order_source" string="Order Source" context="{'group_by':'source_spt'}"/>
+                <filter name="groupby_state" string="Order Status" context="{'group_by':'state'}"/>
+            </filter>
+            <filter name="salesperson" position="after">
+                <filter name="groupby_sale_manager" string="Sales Manager" context="{'group_by':'sale_manager_id'}"/>
+            </filter>
+            <filter name="my_sale_orders_filter" position="after">
+                <separator/>
+                <filter name="is_catalog" string="Is Catalog" domain="[('source_spt','=','Catalog')]"/>
+                <filter name="is_website" string="Is Website" domain="[('source_spt','=','Website')]"/>
+                <field name="payment_status" />
+                <filter name="is_payment_link" string="Has Payment Link" domain="[('is_payment_link','=',True)]"/>
+                <filter name="is_payment_link" string="No Payment Link" domain="[('is_payment_link','=',False)]"/>
+                <separator/>
+                <filter name="full_paid" string="Fully Paid" domain="[('payment_status', '=', 'full')]"/>
+                <filter name="partial_paid" string="Partial Paid" domain="[('payment_status', '=', 'partial')]"/>
+                <filter name="over_paid" string="Over Paid" domain="[('payment_status', '=', 'over')]"/>
+                <separator/>
+                <filter string="Payment Status" name="payment_status" context="{'group_by': 'payment_status'}"/>
+                <filter name="manually" string="Manually" domain="[('source_spt','=','Manually')]"/>
+            </filter>
+
+        </field>
+    </record>
+    
 </odoo>
