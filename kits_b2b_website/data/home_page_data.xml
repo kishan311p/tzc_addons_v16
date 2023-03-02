@@ -236,35 +236,35 @@ Sunglasses</field>
             <field name="website_id" eval="kits_team_eto_website" />
         </record>
 
+        <record id="kits_homepage_brand_slider" model="kits.b2b.website.slider">
+            <field name="name">Some of Our Brands</field>
+            <field name="slider_type">brands</field>
+            <field name="website_id" eval="kits_team_eto_website" />
+            <field name="page_id" eval="kits_home_page" />
+
+        </record>
         <!-- offers sliders -->
-        <!-- <record id="kits_homepage_offer_1_slider" model="kits.b2b.website.slider">
+        <record id="kits_homepage_offer_1_slider" model="kits.b2b.website.slider">
             <field name="name">Free Shipping on all orders over $1000</field>
             <field name="slider_type">offers</field>
             <field name="website_id" eval="kits_team_eto_website" />
-            <field name="offer_id" eval="kits_home_page" />
+            <field name="page_id" eval="kits_home_page" />
             <field name="image_id" eval="kits_homepage_offers_1_image" />
         </record>
         <record id="kits_homepage_offer_2_slider" model="kits.b2b.website.slider">
             <field name="name">70% off on OGI brands till stocks last</field>
             <field name="slider_type">offers</field>
             <field name="website_id" eval="kits_team_eto_website" />
-            <field name="offer_id" eval="kits_home_page" />
+            <field name="page_id" eval="kits_home_page" />
             <field name="image_id" eval="kits_homepage_offers_2_image" />
         </record>
         <record id="kits_homepage_offer_3_slider" model="kits.b2b.website.slider">
             <field name="name">Register today and receive 10% off first purchase</field>
             <field name="slider_type">offers</field>
             <field name="website_id" eval="kits_team_eto_website" />
-            <field name="offer_id" eval="kits_home_page" />
+            <field name="page_id" eval="kits_home_page" />
             <field name="image_id" eval="kits_homepage_offers_3_image" />
         </record>
-        <record id="kits_homepage_brand_slider" model="kits.b2b.website.slider">
-            <field name="name">Some of Our Brands</field>
-            <field name="slider_type">brands</field>
-            <field name="website_id" eval="kits_team_eto_website" />
-            <field name="offer_id" eval="kits_home_page" />
-
-        </record> -->
 
     </data>
 

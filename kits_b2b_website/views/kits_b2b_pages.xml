@@ -171,11 +171,12 @@
                         <page name="offers" string="Offers">
                             <field name="offer_ids">
                                 <tree editable="bottom">
-                                    <!-- <field name="image" widget="image" class="oe_avatar" options="{'zoom': true,'preview_image': 'image'}" size="[150,150]"/>
-                                    <field name="image_id" string="Image URL"/>
-                                    <field name="name" />
-                                    <field name="slider_type" />
-                                    <field name="parent_id" attrs="{'readony': [('slider_type','not in',['home','our_story',''])]}" domain="[('slider_type','=','contact_us')]"/> -->
+                                    <field name="image_icon" widget="image" class="oe_avatar" options="{'zoom': true,'preview_image': 'image_icon'}" size="[150,150]"/>
+                                    <field name="url" widget="url"/>
+                                    <field name="redirect_url" widget="url"/>
+                                    <field name="redirect_text"/>
+                                    <field name="header_description" />
+                                    <field name="description" />
                                 </tree>
                             </field>
                         </page>
