@@ -17,7 +17,7 @@
                     </group>
                     <notebook>
                         <page name="main_banner" string="Main Banner" attrs="{'invisible': [('page_type','not in',['home'])]}">
-                            <field name="main_banner_ids">
+                            <field name="homepage_main_banner_ids">
                                 <tree editable="bottom">
                                     <field name="image_icon" widget="image" class="oe_avatar" options="{'zoom': true,'preview_image': 'image_icon'}" size="[150,150]"/>
                                     <field name="url" widget="url"/>
@@ -26,6 +26,23 @@
                                     <field name="header_description" />
                                     <field name="description" />
                                 </tree>
+                                <form>
+                                    <sheet>
+                                        <field name="image_icon" widget="image" class="oe_avatar" options="{'zoom': true,'preview_image': 'image_icon'}"/>
+
+                                        <group>
+                                            <group>
+                                                <field name="url" widget="url" />
+                                                <field name="redirect_url" widget="url"/>
+                                                <field name="redirect_text" />
+                                            </group>
+                                            <group>
+                                                <field name="header_description" />
+                                                <field name="description" />
+                                            </group>
+                                        </group>
+                                    </sheet>
+                                </form>
                             </field>
                         </page>
                         <page name="general_info" attrs="{'invisible': [('page_type','not in',['home','our_story','contact_us'])]}" string="General Info">
@@ -150,6 +167,17 @@
                                 <field name="banner_1_id" options="{'no_create': True}"/>
                                 <field name="banner_1_image" widget="image" class="oe_avatar" options="{'zoom': true,'preview_image': 'banner_1_image'}" size="[150,150]" />
                             </group>
+                        </page>
+                        <page name="offers" string="Offers">
+                            <field name="offer_ids">
+                                <tree editable="bottom">
+                                    <!-- <field name="image" widget="image" class="oe_avatar" options="{'zoom': true,'preview_image': 'image'}" size="[150,150]"/>
+                                    <field name="image_id" string="Image URL"/>
+                                    <field name="name" />
+                                    <field name="slider_type" />
+                                    <field name="parent_id" attrs="{'readony': [('slider_type','not in',['home','our_story',''])]}" domain="[('slider_type','=','contact_us')]"/> -->
+                                </tree>
+                            </field>
                         </page>
                     </notebook>
                 </sheet>

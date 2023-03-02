@@ -51,9 +51,14 @@ class kits_b2b_pages(models.Model):
     how_to_shop_background = fields.Char('Background Image URL')
     how_to_shop_redirect_url = fields.Char('How To shop Redirect URL')
     how_to_shop_button_text = fields.Char('How To Shop Button Text')
-    how_to_shop_background_image = fields.Char('Background Image',related='how_to_shop_background')
+    how_to_shop_background_image = fields.Char(
+        'Background Image', related='how_to_shop_background')
     how_to_shop_ids = fields.One2many(
         'kits.b2b.image.model',
         'how_to_shop_page_id',
         'How To Shop'
     )
+    offer_ids = fields.One2many(
+        'kits.b2b.image.model', 'offer_id', string='Offers')
+    homepage_main_banner_ids = fields.One2many(
+        'kits.b2b.image.model', 'homepage_main_banner_id', 'Main Banner')

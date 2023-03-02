@@ -1,0 +1,272 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <data noupdate="0">
+        <!-- home page main record -->
+        <record id="kits_home_page" model="kits.b2b.pages">
+            <field name="page_type">home</field>
+            <field name="name">Home Page</field>
+            <field name="header_text_1">Everything Optical – Optical wholesalers</field>
+            <field name="text_1">Glasses suppliers since 1995, Everything Optical (ETO) are optical wholesalers distributing globally with a strong portfolio of branded designer glasses at exceptional prices. ETO offers amazing value with over 10,000 unique styles in designer sunglasses and eyeglasses. Now with an outstanding wholesaler web portal, you have access to all our designer frames at your fingertips. Register now and join our wholesale eyewear distribution network.
+The team at ETO thank you for your business and remain committed everyday to stand with you as your best wholesale designer glasses source.
+            </field>
+            <field name="how_to_shop_title">How To Shop</field>
+            <field name="how_to_shop_button_text">Shop Now</field>
+            <field name="how_to_shop_background">https://cdn.teameto.com/data/B2C1/new_tzc_b2b_images/roadmap/roadmap-bg.png</field>
+            <field name="how_to_shop_redirect_url">https://b2b.teameto.com/shop</field>
+            <field name="text_1_redirect_url">https://b2b.teameto.com/aboutus</field>
+            <field name="text_1_redirect_url_text">View Our Story</field>
+            <field name="banner_1_id" eval="kits_homepage_banner_image_1" />
+            <field name="website_id" eval="kits_team_eto_website" />
+            <field name="how_to_shop_background">https://cdn.teameto.com/data/B2C1/new_tzc_b2b_images/roadmap/roadmap-bg.png</field>
+            <field name="how_to_shop_redirect_url">https://b2b.teameto.com/shop</field>
+        </record>
+
+        <!-- main banners record  -->
+        <record id="kit_main_baner1" model="kits.b2b.image.model">
+            <field name="header_description">Your Partner in 
+Wholesale! </field>
+            <field name="description">Trusted distributors of designer eyeglass and sunglass frames worldwide for over 25 years.</field>
+            <field name="url">https://cdn.teameto.com/data/B2C1/new_tzc_b2b_images/hero/hero-slide-1.png</field>
+            <field name="redirect_url">https://b2b.teameto.com/signup</field>
+            <field name="redirect_text">Sign in</field>
+            <field name="website_id" eval="kits_team_eto_website" />
+            <field name="homepage_main_banner_id" eval="kits_home_page" />
+
+        </record>
+        <record id="kit_main_baner2" model="kits.b2b.image.model">
+            <field name="header_description">No Minimum Order 
+Same Day Shipping </field>
+            <field name="description">All our products are available to ship immediately with no minimum order quantities.</field>
+            <field name="url">https://cdn.teameto.com/data/B2C1/new_tzc_b2b_images/hero/hero-slide-2.png</field>
+            <field name="redirect_url">https://b2b.teameto.com/shop</field>
+            <field name="redirect_text">Shop Now</field>
+            <field name="website_id" eval="kits_team_eto_website" />
+            <field name="homepage_main_banner_id" eval="kits_home_page" />
+
+        </record>
+        <record id="kit_main_baner3" model="kits.b2b.image.model">
+            <field name="header_description">1,000+ Brands 
+Original Design Eyewear </field>
+            <field name="description">It is a long established fact that a reader will be distracted by the readable content.</field>
+            <field name="url">https://cdn.teameto.com/data/B2C1/new_tzc_b2b_images/hero/hero-slide-3.png</field>
+            <field name="redirect_url">https://b2b.teameto.com/shop</field>
+            <field name="redirect_text">Shop Now</field>
+            <field name="website_id" eval="kits_team_eto_website" />
+            <field name="homepage_main_banner_id" eval="kits_home_page" />
+
+        </record>
+        <!-- our core values -->
+        <record id="kits_homepage_our_core_values_1" model="kits.b2b.image.model">
+            <field name="header_description">Since 1995</field>
+            <field name="description">Trusted glasses distributors in the industry for over 25 years.</field>
+            <field name="url">https://cdn.teameto.com/data/B2C1/new_tzc_b2b_images/core/c-1.svg</field>
+            <field name="website_id" eval="kits_team_eto_website" />
+            <field name="our_core_values_id" eval="kits_home_page" />
+        </record>
+        <record id="kits_homepage_our_core_values_2" model="kits.b2b.image.model">
+            <field name="header_description">B2B Wholesaler Platform</field>
+            <field name="description">Every client is given access to our exclusive online platform to manage all orders.</field>
+            <field name="url">https://cdn.teameto.com/data/B2C1/new_tzc_b2b_images/core/c-2.svg</field>
+            <field name="website_id" eval="kits_team_eto_website" />
+            <field name="our_core_values_id" eval="kits_home_page" />
+        </record>
+        <record id="kits_homepage_our_core_values_3" model="kits.b2b.image.model">
+            <field name="header_description">Designer Eyewear Frames</field>
+            <field name="description">Our inventory of eyeglasses is of the highest quality and is direct from the manufacturers.</field>
+            <field name="url">https://cdn.teameto.com/data/B2C1/new_tzc_b2b_images/core/c-3.svg</field>
+            <field name="website_id" eval="kits_team_eto_website" />
+            <field name="our_core_values_id" eval="kits_home_page" />
+        </record>
+        <record id="kits_homepage_our_core_values_4" model="kits.b2b.image.model">
+            <field name="header_description">10,000+ Designer Styles</field>
+            <field name="description">The wide range of frames ETO carries will add value to your customers.</field>
+            <field name="url">https://cdn.teameto.com/data/B2C1/new_tzc_b2b_images/core/c-4.svg</field>
+            <field name="website_id" eval="kits_team_eto_website" />
+            <field name="our_core_values_id" eval="kits_home_page" />
+        </record>
+        <record id="kits_homepage_our_core_values_5" model="kits.b2b.image.model">
+            <field name="header_description">No Minimum</field>
+            <field name="description">There is no minimums when you order your eyewear with Team ETO.</field>
+            <field name="url">https://cdn.teameto.com/data/B2C1/new_tzc_b2b_images/core/c-5.svg</field>
+            <field name="website_id" eval="kits_team_eto_website" />
+            <field name="our_core_values_id" eval="kits_home_page" />
+        </record>
+        <record id="kits_homepage_our_core_values_6" model="kits.b2b.image.model">
+            <field name="header_description">Competitive Pricing</field>
+            <field name="description">Choosing ETO as your eyewear supplier, you can be confident you are receiving the most competitive price in the market.</field>
+            <field name="url">https://cdn.teameto.com/data/B2C1/new_tzc_b2b_images/core/c-6.svg</field>
+            <field name="website_id" eval="kits_team_eto_website" />
+            <field name="our_core_values_id" eval="kits_home_page" />
+        </record>
+        <record id="kits_homepage_our_core_values_7" model="kits.b2b.image.model">
+            <field name="header_description">Worldwide Distribution</field>
+            <field name="description">We distribute designer eyewear wholesale to any part of the world.</field>
+            <field name="url">https://cdn.teameto.com/data/B2C1/new_tzc_b2b_images/core/c-7.svg</field>
+            <field name="website_id" eval="kits_team_eto_website" />
+            <field name="our_core_values_id" eval="kits_home_page" />
+        </record>
+        <record id="kits_homepage_our_core_values_8" model="kits.b2b.image.model">
+            <field name="header_description">Global Sales Team</field>
+            <field name="description">For any assistance with your orders, reach out to any of our global offices located in Canada, Tanzania or UAE.</field>
+            <field name="url">https://cdn.teameto.com/data/B2C1/new_tzc_b2b_images/core/c-8.svg</field>
+            <field name="website_id" eval="kits_team_eto_website" />
+            <field name="our_core_values_id" eval="kits_home_page" />
+        </record>
+        <!-- how to shop -->
+        <record id="kits_homepage_banner_image_account" model="kits.b2b.image.model">
+            <field name="description">Sign In/Create an account</field>
+            <field name="sequence">1</field>
+            <field name="url">https://cdn.teameto.com/data/B2C1/new_tzc_b2b_images/roadmap/r-1.svg</field>
+            <field name="website_id" eval="kits_team_eto_website" />
+            <field name="how_to_shop_page_id" eval="kits_home_page" />
+            <field name="parent_id" eval="kits_homepage_banner_image_1" />
+        </record>
+        <record id="kits_homepage_banner_image_shop" model="kits.b2b.image.model">
+            <field name="description">Add to cart</field>
+            <field name="sequence">2</field>
+            <field name="url">https://cdn.teameto.com/data/B2C1/new_tzc_b2b_images/roadmap/r-2.svg</field>
+            <field name="website_id" eval="kits_team_eto_website" />
+            <field name="how_to_shop_page_id" eval="kits_home_page" />
+            <field name="parent_id" eval="kits_homepage_banner_image_1" />
+        </record>
+        <record id="kits_homepage_banner_image_shipping" model="kits.b2b.image.model">
+            <field name="description">Checkout</field>
+            <field name="sequence">3</field>
+            <field name="url">https://cdn.teameto.com/data/B2C1/new_tzc_b2b_images/roadmap/r-3.svg</field>
+            <field name="website_id" eval="kits_team_eto_website" />
+            <field name="how_to_shop_page_id" eval="kits_home_page" />
+            <field name="parent_id" eval="kits_homepage_banner_image_1" />
+        </record>
+        <record id="kits_homepage_banner_image_paynow" model="kits.b2b.image.model">
+            <field name="description">Pay After Order is ready</field>
+            <field name="sequence">4</field>
+            <field name="url">https://cdn.teameto.com/data/B2C1/new_tzc_b2b_images/roadmap/r-4.svg</field>
+            <field name="website_id" eval="kits_team_eto_website" />
+            <field name="how_to_shop_page_id" eval="kits_home_page" />
+            <field name="parent_id" eval="kits_homepage_banner_image_1" />
+        </record>
+        <!-- women sliders -->
+        <record id="kits_homepage_womans_eyeglasses_slider" model="kits.b2b.website.slider">
+            <field name="name">Women’s 
+Eyeglasses</field>
+            <field name="slider_type">eyeglasses</field>
+            <field name="website_id" eval="kits_team_eto_website" />
+            <field name="page_id" eval="kits_home_page" />
+            <field name="image_id" eval="kits_homepage_woman_image_slider" />
+            <field name="limit">6</field>
+        </record>
+        <record id="kits_homepage_womans_sunglasses_slider" model="kits.b2b.website.slider">
+            <field name="name">Women’s 
+Sunglasses</field>
+            <field name="slider_type">sunglasses</field>
+            <field name="website_id" eval="kits_team_eto_website" />
+            <field name="page_id" eval="kits_home_page" />
+            <field name="image_id" eval="kits_homepage_woman_image_slider" />
+            <field name="limit">6</field>
+        </record>
+        <!-- men sliders -->
+
+        <record id="kits_homepage_mans_eyeglasses_slider" model="kits.b2b.website.slider">
+            <field name="name">Men’s 
+Eyeglasses</field>
+            <field name="slider_type">eyeglasses</field>
+            <field name="website_id" eval="kits_team_eto_website" />
+            <field name="page_id" eval="kits_home_page" />
+            <field name="image_id" eval="kits_homepage_man_image_slider" />
+            <field name="limit">6</field>
+        </record>
+        <record id="kits_homepage_mans_sunglasses_slider" model="kits.b2b.website.slider">
+            <field name="name">Men’s 
+Sunglasses</field>
+            <field name="slider_type">sunglasses</field>
+            <field name="website_id" eval="kits_team_eto_website" />
+            <field name="page_id" eval="kits_home_page" />
+            <field name="image_id" eval="kits_homepage_man_image_slider" />
+            <field name="limit">6</field>
+        </record>
+
+        <!-- Kid’s sliders -->
+
+        <record id="kits_homepage_kids_eyeglasses_slider" model="kits.b2b.website.slider">
+            <field name="name">Kid’s 
+Eyeglasses</field>
+            <field name="slider_type">eyeglasses</field>
+            <field name="website_id" eval="kits_team_eto_website" />
+            <field name="page_id" eval="kits_home_page" />
+            <field name="image_id" eval="kits_homepage_kits_image_slider" />
+            <field name="limit">6</field>
+        </record>
+        <record id="kits_homepage_kids_sunglasses_slider" model="kits.b2b.website.slider">
+            <field name="name">Kid’s 
+Sunglasses</field>
+            <field name="slider_type">sunglasses</field>
+            <field name="website_id" eval="kits_team_eto_website" />
+            <field name="page_id" eval="kits_home_page" />
+            <field name="image_id" eval="kits_homepage_kits_image_slider" />
+            <field name="limit">6</field>
+        </record>
+
+        <!-- offers images -->
+        <record id="kits_homepage_offers_1_image" model="kits.b2b.image.model">
+            <field name="header_description">Offer 1</field>
+            <field name="redirect_text">Shop Now</field>
+            <field name="redirect_url">https://b2b.teameto.com/shop</field>
+            <field name="description">Free Shipping on all orders over $1000</field>
+            <field name="url">https://cdn.teameto.com/data/B2C1/new_tzc_b2b_images/offers/l-offers-1.png</field>
+            <field name="offer_id" eval="kits_home_page" />
+            <field name="website_id" eval="kits_team_eto_website" />
+        </record>
+        <record id="kits_homepage_offers_2_image" model="kits.b2b.image.model">
+            <field name="header_description">Offer 2</field>
+            <field name="description">70% off on OGI brands till stocks last</field>
+            <field name="redirect_text">Shop Now</field>
+            <field name="redirect_url">https://b2b.teameto.com/shop</field>
+            <field name="url">https://cdn.teameto.com/data/B2C1/new_tzc_b2b_images/offers/l-offers-2.png</field>
+            <field name="offer_id" eval="kits_home_page" />
+            <field name="website_id" eval="kits_team_eto_website" />
+        </record>
+        <record id="kits_homepage_offers_3_image" model="kits.b2b.image.model">
+            <field name="header_description">Offer 3</field>
+            <field name="description">Register today and receive 10% off first purchase</field>
+            <field name="redirect_text">Register Now</field>
+            <field name="redirect_url">https://b2b.teameto.com/signup</field>
+            <field name="url">https://cdn.teameto.com/data/B2C1/new_tzc_b2b_images/offers/l-offers-2.png</field>
+            <field name="offer_id" eval="kits_home_page" />
+            <field name="website_id" eval="kits_team_eto_website" />
+        </record>
+
+        <!-- offers sliders -->
+        <!-- <record id="kits_homepage_offer_1_slider" model="kits.b2b.website.slider">
+            <field name="name">Free Shipping on all orders over $1000</field>
+            <field name="slider_type">offers</field>
+            <field name="website_id" eval="kits_team_eto_website" />
+            <field name="offer_id" eval="kits_home_page" />
+            <field name="image_id" eval="kits_homepage_offers_1_image" />
+        </record>
+        <record id="kits_homepage_offer_2_slider" model="kits.b2b.website.slider">
+            <field name="name">70% off on OGI brands till stocks last</field>
+            <field name="slider_type">offers</field>
+            <field name="website_id" eval="kits_team_eto_website" />
+            <field name="offer_id" eval="kits_home_page" />
+            <field name="image_id" eval="kits_homepage_offers_2_image" />
+        </record>
+        <record id="kits_homepage_offer_3_slider" model="kits.b2b.website.slider">
+            <field name="name">Register today and receive 10% off first purchase</field>
+            <field name="slider_type">offers</field>
+            <field name="website_id" eval="kits_team_eto_website" />
+            <field name="offer_id" eval="kits_home_page" />
+            <field name="image_id" eval="kits_homepage_offers_3_image" />
+        </record>
+        <record id="kits_homepage_brand_slider" model="kits.b2b.website.slider">
+            <field name="name">Some of Our Brands</field>
+            <field name="slider_type">brands</field>
+            <field name="website_id" eval="kits_team_eto_website" />
+            <field name="offer_id" eval="kits_home_page" />
+
+        </record> -->
+
+    </data>
+
+
+</odoo>
