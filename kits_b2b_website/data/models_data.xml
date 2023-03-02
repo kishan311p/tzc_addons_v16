@@ -26,10 +26,10 @@
         <record id="kits_home_page" model="kits.b2b.pages">
             <field name="page_type">home</field>
             <field name="name">Home Page</field>
-            <field name="header_text_1">Everything Optical B2B</field>
-            <field name="text_1">Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.
-            
-            It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout.</field>
+            <field name="header_text_1">Everything Optical – Optical wholesalers</field>
+            <field name="text_1">Glasses suppliers since 1995, Everything Optical (ETO) are optical wholesalers distributing globally with a strong portfolio of branded designer glasses at exceptional prices. ETO offers amazing value with over 10,000 unique styles in designer sunglasses and eyeglasses. Now with an outstanding wholesaler web portal, you have access to all our designer frames at your fingertips. Register now and join our wholesale eyewear distribution network.
+The team at ETO thank you for your business and remain committed everyday to stand with you as your best wholesale designer glasses source.
+</field>
             <field name="how_to_shop_title">How To Shop</field>
             <field name="how_to_shop_button_text">Shop Now</field>
             <field name="how_to_shop_background">https://cdn.teameto.com/data/B2C1/new_tzc_b2b_images/roadmap/roadmap-bg.png</field>
@@ -45,10 +45,10 @@
         <record id="kit_main_baner1" model="kits.b2b.image.model">
             <field name="header_description">Your Partner in 
 Wholesale! </field>
-            <field name="description">It is a long established fact that a reader will be distracted by the readable content.</field>
+            <field name="description">Trusted distributors of designer eyeglass and sunglass frames worldwide for over 25 years.</field>
             <field name="url">https://cdn.teameto.com/data/B2C1/new_tzc_b2b_images/hero/hero-slide-1.png</field>
             <field name="redirect_url">https://b2b.teameto.com/signup</field>
-            <field name="redirect_text">Register Now</field>
+            <field name="redirect_text">Sign in</field>
             <field name="website_id" eval="kits_team_eto_website" />
             <field name="main_banner_id" eval="kits_home_page" />
 
@@ -56,7 +56,7 @@ Wholesale! </field>
         <record id="kit_main_baner2" model="kits.b2b.image.model">
             <field name="header_description">No Minimum Order 
 Same Day Shipping </field>
-            <field name="description">It is a long established fact that a reader will be distracted by the readable content.</field>
+            <field name="description">All our products are available to ship immediately with no minimum order quantities.</field>
             <field name="url">https://cdn.teameto.com/data/B2C1/new_tzc_b2b_images/hero/hero-slide-2.png</field>
             <field name="redirect_url">https://b2b.teameto.com/shop</field>
             <field name="redirect_text">Shop Now</field>
@@ -78,56 +78,56 @@ Original Design Eyewear </field>
 
         <record id="kits_homepage_our_core_values_1" model="kits.b2b.image.model">
             <field name="header_description">Since 1995</field>
-            <field name="description">Lorem Ipsum is simply dummy text of the printing and typesetting industry.</field>
+            <field name="description">Trusted glasses distributors in the industry for over 25 years.</field>
             <field name="url">https://cdn.teameto.com/data/B2C1/new_tzc_b2b_images/core/c-1.svg</field>
             <field name="website_id" eval="kits_team_eto_website" />
             <field name="our_core_values_id" eval="kits_home_page" />
         </record>
         <record id="kits_homepage_our_core_values_2" model="kits.b2b.image.model">
-            <field name="header_description">B2B Wholesale Online</field>
-            <field name="description">Lorem Ipsum is simply dummy text of the printing and typesetting industry.</field>
+            <field name="header_description">B2B Wholesaler Platform</field>
+            <field name="description">Every client is given access to our exclusive online platform to manage all orders.</field>
             <field name="url">https://cdn.teameto.com/data/B2C1/new_tzc_b2b_images/core/c-2.svg</field>
             <field name="website_id" eval="kits_team_eto_website" />
             <field name="our_core_values_id" eval="kits_home_page" />
         </record>
         <record id="kits_homepage_our_core_values_3" model="kits.b2b.image.model">
-            <field name="header_description">Original Designer Eyewear</field>
-            <field name="description">Lorem Ipsum is simply dummy text of the printing and typesetting industry.</field>
+            <field name="header_description">Designer Eyewear Frames</field>
+            <field name="description">Our inventory of eyeglasses is of the highest quality and is direct from the manufacturers.</field>
             <field name="url">https://cdn.teameto.com/data/B2C1/new_tzc_b2b_images/core/c-3.svg</field>
             <field name="website_id" eval="kits_team_eto_website" />
             <field name="our_core_values_id" eval="kits_home_page" />
         </record>
         <record id="kits_homepage_our_core_values_4" model="kits.b2b.image.model">
-            <field name="header_description">10,000+ Products</field>
-            <field name="description">Lorem Ipsum is simply dummy text of the printing and typesetting industry.</field>
+            <field name="header_description">10,000+ Designer Styles</field>
+            <field name="description">The wide range of frames ETO carries will add value to your customers.</field>
             <field name="url">https://cdn.teameto.com/data/B2C1/new_tzc_b2b_images/core/c-4.svg</field>
             <field name="website_id" eval="kits_team_eto_website" />
             <field name="our_core_values_id" eval="kits_home_page" />
         </record>
         <record id="kits_homepage_our_core_values_5" model="kits.b2b.image.model">
-            <field name="header_description">No Minimums</field>
-            <field name="description">Lorem Ipsum is simply dummy text of the printing and typesetting industry.</field>
+            <field name="header_description">No Minimum</field>
+            <field name="description">There is no minimums when you order your eyewear with Team ETO.</field>
             <field name="url">https://cdn.teameto.com/data/B2C1/new_tzc_b2b_images/core/c-5.svg</field>
             <field name="website_id" eval="kits_team_eto_website" />
             <field name="our_core_values_id" eval="kits_home_page" />
         </record>
         <record id="kits_homepage_our_core_values_6" model="kits.b2b.image.model">
             <field name="header_description">Competitive Pricing</field>
-            <field name="description">Lorem Ipsum is simply dummy text of the printing and typesetting industry.</field>
+            <field name="description">Choosing ETO as your eyewear supplier, you can be confident you are receiving the most competitive price in the market.</field>
             <field name="url">https://cdn.teameto.com/data/B2C1/new_tzc_b2b_images/core/c-6.svg</field>
             <field name="website_id" eval="kits_team_eto_website" />
             <field name="our_core_values_id" eval="kits_home_page" />
         </record>
         <record id="kits_homepage_our_core_values_7" model="kits.b2b.image.model">
-            <field name="header_description">Worldwide Shipping</field>
-            <field name="description">Lorem Ipsum is simply dummy text of the printing and typesetting industry.</field>
+            <field name="header_description">Worldwide Distribution</field>
+            <field name="description">We distribute designer eyewear wholesale to any part of the world.</field>
             <field name="url">https://cdn.teameto.com/data/B2C1/new_tzc_b2b_images/core/c-7.svg</field>
             <field name="website_id" eval="kits_team_eto_website" />
             <field name="our_core_values_id" eval="kits_home_page" />
         </record>
         <record id="kits_homepage_our_core_values_8" model="kits.b2b.image.model">
             <field name="header_description">Global Sales Team</field>
-            <field name="description">Lorem Ipsum is simply dummy text of the printing and typesetting industry.</field>
+            <field name="description">For any assistance with your orders, reach out to any of our global offices located in Canada, Tanzania or UAE.</field>
             <field name="url">https://cdn.teameto.com/data/B2C1/new_tzc_b2b_images/core/c-8.svg</field>
             <field name="website_id" eval="kits_team_eto_website" />
             <field name="our_core_values_id" eval="kits_home_page" />
@@ -214,7 +214,7 @@ Sunglasses</field>
             <field name="limit">6</field>
         </record>
         <record id="kits_homepage_kids_eyeglasses_slider" model="kits.b2b.website.slider">
-            <field name="name">Kids’s 
+            <field name="name">Kid’s 
 Eyeglasses</field>
             <field name="slider_type">eyeglasses</field>
             <field name="website_id" eval="kits_team_eto_website" />
@@ -223,7 +223,7 @@ Eyeglasses</field>
             <field name="limit">6</field>
         </record>
         <record id="kits_homepage_kids_sunglasses_slider" model="kits.b2b.website.slider">
-            <field name="name">Kids’s 
+            <field name="name">Kid’s 
 Sunglasses</field>
             <field name="slider_type">sunglasses</field>
             <field name="website_id" eval="kits_team_eto_website" />
@@ -232,46 +232,52 @@ Sunglasses</field>
             <field name="limit">6</field>
         </record>
         <record id="kits_homepage_offers_1_image" model="kits.b2b.image.model">
-            <field name="header_description">50% Off on Clearence Sale</field>
-            <field name="description">Clearence Sale</field>
+            <field name="header_description">Offer 1</field>
+            <field name="redirect_text">Shop Now</field>
+            <field name="redirect_url">https://b2b.teameto.com/shop</field>
+            <field name="description">Free Shipping on all orders over $1000</field>
             <field name="url">https://cdn.teameto.com/data/B2C1/new_tzc_b2b_images/offers/l-offers-1.png</field>
             <field name="website_id" eval="kits_team_eto_website" />
         </record>
         <record id="kits_homepage_offers_2_image" model="kits.b2b.image.model">
-            <field name="header_description">50% Off on Clearence Sale</field>
-            <field name="description">Clearence Sale</field>
+            <field name="header_description">Offer 2</field>
+            <field name="description">70% off on OGI brands till stocks last</field>
+            <field name="redirect_text">Shop Now</field>
+            <field name="redirect_url">https://b2b.teameto.com/shop</field>
             <field name="url">https://cdn.teameto.com/data/B2C1/new_tzc_b2b_images/offers/l-offers-2.png</field>
             <field name="website_id" eval="kits_team_eto_website" />
         </record>
         <record id="kits_homepage_offers_3_image" model="kits.b2b.image.model">
-            <field name="header_description">50% Off on Clearence Sale</field>
-            <field name="description">Clearence Sale</field>
+            <field name="header_description">Offer 3</field>
+            <field name="description">Register today and receive 10% off first purchase</field>
+            <field name="redirect_text">Register Now</field>
+            <field name="redirect_url">https://b2b.teameto.com/signup</field>
             <field name="url">https://cdn.teameto.com/data/B2C1/new_tzc_b2b_images/offers/l-offers-2.png</field>
             <field name="website_id" eval="kits_team_eto_website" />
         </record>
         <record id="kits_homepage_offer_1_slider" model="kits.b2b.website.slider">
-            <field name="name">50% Off on Clearence Sale</field>
+            <field name="name">Free Shipping on all orders over $1000</field>
             <field name="slider_type">offers</field>
             <field name="website_id" eval="kits_team_eto_website" />
             <field name="page_id" eval="kits_home_page" />
             <field name="image_id" eval="kits_homepage_offers_1_image" />
         </record>
         <record id="kits_homepage_offer_2_slider" model="kits.b2b.website.slider">
-            <field name="name">50% Off on Clearence Sale</field>
+            <field name="name">70% off on OGI brands till stocks last</field>
             <field name="slider_type">offers</field>
             <field name="website_id" eval="kits_team_eto_website" />
             <field name="page_id" eval="kits_home_page" />
             <field name="image_id" eval="kits_homepage_offers_2_image" />
         </record>
         <record id="kits_homepage_offer_3_slider" model="kits.b2b.website.slider">
-            <field name="name">50% Off on Clearence Sale</field>
+            <field name="name">Register today and receive 10% off first purchase</field>
             <field name="slider_type">offers</field>
             <field name="website_id" eval="kits_team_eto_website" />
             <field name="page_id" eval="kits_home_page" />
             <field name="image_id" eval="kits_homepage_offers_3_image" />
         </record>
         <record id="kits_homepage_brand_slider" model="kits.b2b.website.slider">
-            <field name="name">Our Brands</field>
+            <field name="name">Some of Our Brands</field>
             <field name="slider_type">brands</field>
             <field name="website_id" eval="kits_team_eto_website" />
             <field name="page_id" eval="kits_home_page" />
@@ -288,7 +294,7 @@ Sunglasses</field>
             <field name="text_1_redirect_url_text">No current vacancies</field>
             <field name="website_id" eval="kits_team_eto_website" />
             <field name="text_2">Are you an eyewear enthusiast that is energetic and looking to work in a dynamic environment. Team ETO is constantly looking to grow and attract talented individuals that are looking for a promising career.</field>
-            <field name="header_text_2">Our Team</field>
+            <field name="header_text_2">Meet Our Team</field>
             <field name="text_field">Everything Optical is focused on our customers. We understand that that our customer success is our success. We offer our clients only the best in quality eyewear frames direct from designers. Dedicated managers are assigned to our clients to provide unmatched customer service. All our customers are given access to our exclusive wholesale portal with visibility into our ready to ship inventory that is only a matter of clicks away from being shipped. Over the last two decades we have been suppling to clients internationally from our portfolio of 100+ designer brands. Our team works towards building trust and long-term partnerships with our clients by being transparent throughout our process and holding true to our value system.
             When you partner with us, your dedicated sales manager will work closely with you to provide customized offerings that meet your need and ensure your successes.
             </field>
@@ -299,7 +305,7 @@ Sunglasses</field>
         <record id="kits_aboutus_1_image" model="kits.b2b.image.model">
             <field name="header_description">Over 25 years of wholesale designer eyewear distribution worldwide.</field>
             <field name="description">Everything Optical have been suppling luxury branded optical frames and sunglasses to emerging markets across the world, which include Africa, South and Central America, Middle East and South Asia. Our office, located strategically across the globe have been serving these markets with the best quality eyewear, focusing on creating value for our customers.</field>
-            <field name="url">https://cdn.teameto.com/data/B2C1/new_tzc_b2b_images/aboout-gellery/01.png</field>
+            <field name="url">https://cdn.teameto.com/data/B2C1/new_tzc_b2b_images/aboout-gellery/A-1.jpg</field>
             <field name="redirect_url">https://b2b.teameto.com/aboutus</field>
             <field name="redirect_text">Join Our Team</field>
             <field name="website_id" eval="kits_team_eto_website" />
@@ -309,7 +315,7 @@ Sunglasses</field>
         <record id="kits_aboutus_1_image" model="kits.b2b.image.model">
             <field name="header_description">Over 25 years of wholesale designer eyewear distribution worldwide.</field>
             <field name="description">Everything Optical have been suppling luxury branded optical frames and sunglasses to emerging markets across the world, which include Africa, South and Central America, Middle East and South Asia. Our office, located strategically across the globe have been serving these markets with the best quality eyewear, focusing on creating value for our customers.</field>
-            <field name="url">https://cdn.teameto.com/data/B2C1/new_tzc_b2b_images/aboout-gellery/01.png</field>
+            <field name="url">https://cdn.teameto.com/data/B2C1/new_tzc_b2b_images/aboout-gellery/A-1.jpg</field>
             <field name="redirect_url">https://b2b.teameto.com/aboutus</field>
             <field name="redirect_text">Join Our Team</field>
             <field name="website_id" eval="kits_team_eto_website" />
@@ -320,7 +326,7 @@ Sunglasses</field>
         <record id="kits_aboutus_2_image" model="kits.b2b.image.model">
             <field name="header_description">Over 25 years of wholesale designer eyewear distribution worldwide.</field>
             <field name="description">Everything Optical have been suppling luxury branded optical frames and sunglasses to emerging markets across the world, which include Africa, South and Central America, Middle East and South Asia. Our office, located strategically across the globe have been serving these markets with the best quality eyewear, focusing on creating value for our customers.</field>
-            <field name="url">https://cdn.teameto.com/data/B2C1/new_tzc_b2b_images/aboout-gellery/02.png</field>
+            <field name="url">https://cdn.teameto.com/data/B2C1/new_tzc_b2b_images/aboout-gellery/A-4.jpg</field>
             <field name="redirect_url">https://b2b.teameto.com/aboutus</field>
             <field name="redirect_text">Join Our Team</field>
             <field name="website_id" eval="kits_team_eto_website" />
@@ -331,7 +337,7 @@ Sunglasses</field>
         <record id="kits_aboutus_3_image" model="kits.b2b.image.model">
             <field name="header_description">Over 25 years of wholesale designer eyewear distribution worldwide.</field>
             <field name="description">Everything Optical have been suppling luxury branded optical frames and sunglasses to emerging markets across the world, which include Africa, South and Central America, Middle East and South Asia. Our office, located strategically across the globe have been serving these markets with the best quality eyewear, focusing on creating value for our customers.</field>
-            <field name="url">https://cdn.teameto.com/data/B2C1/new_tzc_b2b_images/aboout-gellery/03.png</field>
+            <field name="url">https://cdn.teameto.com/data/B2C1/new_tzc_b2b_images/aboout-gellery/A3.jpg</field>
             <field name="redirect_url">https://b2b.teameto.com/aboutus</field>
             <field name="redirect_text">Join Our Team</field>
             <field name="website_id" eval="kits_team_eto_website" />
@@ -341,7 +347,7 @@ Sunglasses</field>
         <record id="kits_aboutus_4_image" model="kits.b2b.image.model">
             <field name="header_description">Over 25 years of wholesale designer eyewear distribution worldwide.</field>
             <field name="description">Everything Optical have been suppling luxury branded optical frames and sunglasses to emerging markets across the world, which include Africa, South and Central America, Middle East and South Asia. Our office, located strategically across the globe have been serving these markets with the best quality eyewear, focusing on creating value for our customers.</field>
-            <field name="url">https://cdn.teameto.com/data/B2C1/new_tzc_b2b_images/aboout-gellery/04.png</field>
+            <field name="url">https://cdn.teameto.com/data/B2C1/new_tzc_b2b_images/aboout-gellery/A-2.jpg</field>
             <field name="redirect_url">https://b2b.teameto.com/aboutus</field>
             <field name="redirect_text">Join Our Team</field>
             <field name="website_id" eval="kits_team_eto_website" />
@@ -406,25 +412,25 @@ Sunglasses</field>
             <field name="our_core_values_id" eval="kits_aboutus_page" />
         </record>
         <record id="kits_aboutus_brands" model="kits.b2b.key.value.model">
-            <field name="name">Brands</field>
+            <field name="name">brands</field>
             <field name="value">100+</field>
             <field name="page_id" eval="kits_aboutus_page" />
             <field name="website_id" eval="kits_team_eto_website" />
         </record>
         <record id="kits_aboutus_locations" model="kits.b2b.key.value.model">
-            <field name="name">Locations</field>
+            <field name="name">locations</field>
             <field name="value">3</field>
             <field name="page_id" eval="kits_aboutus_page" />
             <field name="website_id" eval="kits_team_eto_website" />
         </record>
         <record id="kits_aboutus_years_of_experience" model="kits.b2b.key.value.model">
-            <field name="name">Years Of Experience</field>
+            <field name="name">years of experience</field>
             <field name="value">25+</field>
             <field name="page_id" eval="kits_aboutus_page" />
             <field name="website_id" eval="kits_team_eto_website" />
         </record>
         <record id="kits_aboutus_markets" model="kits.b2b.key.value.model">
-            <field name="name">Markets</field>
+            <field name="name">markets</field>
             <field name="value">30+</field>
             <field name="page_id" eval="kits_aboutus_page" />
             <field name="website_id" eval="kits_team_eto_website" />
@@ -434,7 +440,7 @@ Sunglasses</field>
             <field name="header_description">Aliraza Rajani</field>
             <field name="description">Founder &amp; CEO</field>
             <field name="sequence">1</field>
-            <field name="url">https://cdn.teameto.com/data/B2C1/new_tzc_b2b_images/team/team-1.png</field>
+            <field name="url">https://cdn.teameto.com/data/B2C1/new_tzc_b2b_images/team/Aliraza Rajani.png</field>
             <field name="website_id" eval="kits_team_eto_website" />
         </record>
 
@@ -442,7 +448,7 @@ Sunglasses</field>
             <field name="header_description">Musadik Rajani</field>
             <field name="description">Senior Vice President</field>
             <field name="sequence">2</field>
-            <field name="url">https://cdn.teameto.com/data/B2C1/new_tzc_b2b_images/team/team-2.png</field>
+            <field name="url">https://cdn.teameto.com/data/B2C1/new_tzc_b2b_images/team/Musadik%20Rajani.png</field>
             <field name="website_id" eval="kits_team_eto_website" />
         </record>
 
@@ -450,7 +456,7 @@ Sunglasses</field>
             <field name="header_description">Mazaher Rajani</field>
             <field name="description">VP Operations – Middle East &amp; Africa</field>
             <field name="sequence">3</field>
-            <field name="url">https://cdn.teameto.com/data/B2C1/new_tzc_b2b_images/team/team-2.png</field>
+            <field name="url">https://cdn.teameto.com/data/B2C1/new_tzc_b2b_images/team/Mazaher%20Rajani.png</field>
             <field name="website_id" eval="kits_team_eto_website" />
         </record>
 
@@ -458,84 +464,84 @@ Sunglasses</field>
             <field name="header_description">Behrouz Rouhani</field>
             <field name="description">Project Manager</field>
             <field name="sequence">4</field>
-            <field name="url"></field>
+            <field name="url">https://cdn.teameto.com/data/B2C1/new_tzc_b2b_images/team/Behrouz%20Rouhani.png</field>
             <field name="website_id" eval="kits_team_eto_website" />
         </record>
         <record id="kits_aboutus_our_team_5_image" model="kits.b2b.image.model">
             <field name="header_description">Johanna Blanco Eidelman</field>
             <field name="description">Sales Manager</field>
             <field name="sequence">5</field>
-            <field name="url"></field>
+            <field name="url">https://cdn.teameto.com/data/B2C1/new_tzc_b2b_images/team/Johanna%20Blanco%20Eidelman.png</field>
             <field name="website_id" eval="kits_team_eto_website" />
         </record>
         <record id="kits_aboutus_our_team_6_image" model="kits.b2b.image.model">
             <field name="header_description">Anabelle Estrañero</field>
             <field name="description">Administration &amp; Office Manager – Dubai</field>
             <field name="sequence">6</field>
-            <field name="url"></field>
+            <field name="url">https://cdn.teameto.com/data/B2C1/new_tzc_b2b_images/team/Anabelle%20Estra%F1ero.png</field>
             <field name="website_id" eval="kits_team_eto_website" />
         </record>
         <record id="kits_aboutus_our_team_7_image" model="kits.b2b.image.model">
             <field name="header_description">Erica Hermoso</field>
             <field name="description">Sales Executive</field>
             <field name="sequence">7</field>
-            <field name="url"></field>
+            <field name="url">https://cdn.teameto.com/data/B2C1/new_tzc_b2b_images/team/Erica%20Hermoso.png</field>
             <field name="website_id" eval="kits_team_eto_website" />
         </record>
         <record id="kits_aboutus_our_team_8_image" model="kits.b2b.image.model">
             <field name="header_description">Haider Hassan Anwarulhaq Bukhari</field>
             <field name="description">Territorial Manager</field>
             <field name="sequence">8</field>
-            <field name="url"></field>
+            <field name="url">https://cdn.teameto.com/data/B2C1/new_tzc_b2b_images/team/Haider%20Hassan%20Anwarulhaq%20Bukhari.png</field>
             <field name="website_id" eval="kits_team_eto_website" />
         </record>
         <record id="kits_aboutus_our_team_9_image" model="kits.b2b.image.model">
             <field name="header_description">John Nasarine S. Lunod</field>
             <field name="description">Sales Executive</field>
             <field name="sequence">9</field>
-            <field name="url"></field>
+            <field name="url">https://cdn.teameto.com/data/B2C1/new_tzc_b2b_images/team/John%20Nasarine%20S.%20Lunod.png</field>
             <field name="website_id" eval="kits_team_eto_website" />
         </record>
         <record id="kits_aboutus_our_team_10_image" model="kits.b2b.image.model">
             <field name="header_description">Lyra Regina De Luzon</field>
             <field name="description">Country Manager</field>
             <field name="sequence">10</field>
-            <field name="url"></field>
+            <field name="url">https://cdn.teameto.com/data/B2C1/new_tzc_b2b_images/team/Lyra%20Regina%20De%20Luzon.png</field>
             <field name="website_id" eval="kits_team_eto_website" />
         </record>
         <record id="kits_aboutus_our_team_11_image" model="kits.b2b.image.model">
             <field name="header_description">Mouna Ben Aicha</field>
             <field name="description">Business Development Executive – French Market</field>
             <field name="sequence">11</field>
-            <field name="url"></field>
+            <field name="url">https://cdn.teameto.com/data/B2C1/new_tzc_b2b_images/team/Mouna%20Ben%20Aicha.png</field>
             <field name="website_id" eval="kits_team_eto_website" />
         </record>
         <record id="kits_aboutus_our_team_12_image" model="kits.b2b.image.model">
             <field name="header_description">Murielle Annie Makon</field>
             <field name="description">Sales Executive</field>
             <field name="sequence">12</field>
-            <field name="url"></field>
+            <field name="url">https://cdn.teameto.com/data/B2C1/new_tzc_b2b_images/team/Murielle%20Annie%20Makon.png</field>
             <field name="website_id" eval="kits_team_eto_website" />
         </record>
         <record id="kits_aboutus_our_team_13_image" model="kits.b2b.image.model">
             <field name="header_description">Aashiq Siddik</field>
             <field name="description">Digital Marketing Specialist</field>
             <field name="sequence">13</field>
-            <field name="url"></field>
+            <field name="url">https://cdn.teameto.com/data/B2C1/new_tzc_b2b_images/team/Aashiq%20Siddik.png</field>
             <field name="website_id" eval="kits_team_eto_website" />
         </record>
         <record id="kits_aboutus_our_team_14_image" model="kits.b2b.image.model">
             <field name="header_description">Awais Tariq</field>
             <field name="description">Sales Executive</field>
             <field name="sequence">14</field>
-            <field name="url"></field>
+            <field name="url">https://cdn.teameto.com/data/B2C1/new_tzc_b2b_images/team/Awais%20Tariq.png</field>
             <field name="website_id" eval="kits_team_eto_website" />
         </record>
         <record id="kits_aboutus_our_team_15_image" model="kits.b2b.image.model">
-            <field name="header_description">Country Manager</field>
-            <field name="description">Sabri Baaka</field>
+            <field name="header_description">Sabri Baaka</field>
+            <field name="description">Country Manager</field>
             <field name="sequence">15</field>
-            <field name="url"></field>
+            <field name="url">https://cdn.teameto.com/data/B2C1/new_tzc_b2b_images/team/Sabri%20Baaka.png</field>
             <field name="website_id" eval="kits_team_eto_website" />
         </record>
 
@@ -572,77 +578,77 @@ Sunglasses</field>
             <field name="slider_type">our_story</field>
             <field name="website_id" eval="kits_team_eto_website" />
             <field name="page_id" eval="kits_aboutus_page" />
-            <field name="image_id" eval="kits_aboutus_our_team_4_image" />
+            <field name="image_id" eval="kits_aboutus_our_team_5_image" />
         </record>
         <record id="kits_aboutus_our_team_6_slider" model="kits.b2b.website.slider">
             <field name="name">Anabelle Estrañero</field>
             <field name="slider_type">our_story</field>
             <field name="website_id" eval="kits_team_eto_website" />
             <field name="page_id" eval="kits_aboutus_page" />
-            <field name="image_id" eval="kits_aboutus_our_team_4_image" />
+            <field name="image_id" eval="kits_aboutus_our_team_6_image" />
         </record>
         <record id="kits_aboutus_our_team_7_slider" model="kits.b2b.website.slider">
             <field name="name">Erica Hermoso</field>
             <field name="slider_type">our_story</field>
             <field name="website_id" eval="kits_team_eto_website" />
             <field name="page_id" eval="kits_aboutus_page" />
-            <field name="image_id" eval="kits_aboutus_our_team_4_image" />
+            <field name="image_id" eval="kits_aboutus_our_team_7_image" />
         </record>
         <record id="kits_aboutus_our_team_8_slider" model="kits.b2b.website.slider">
             <field name="name">Haider Hassan Anwarulhaq Bukhari</field>
             <field name="slider_type">our_story</field>
             <field name="website_id" eval="kits_team_eto_website" />
             <field name="page_id" eval="kits_aboutus_page" />
-            <field name="image_id" eval="kits_aboutus_our_team_4_image" />
+            <field name="image_id" eval="kits_aboutus_our_team_8_image" />
         </record>
         <record id="kits_aboutus_our_team_9_slider" model="kits.b2b.website.slider">
             <field name="name">John Nasarine S. Lunod</field>
             <field name="slider_type">our_story</field>
             <field name="website_id" eval="kits_team_eto_website" />
             <field name="page_id" eval="kits_aboutus_page" />
-            <field name="image_id" eval="kits_aboutus_our_team_4_image" />
+            <field name="image_id" eval="kits_aboutus_our_team_9_image" />
         </record>
         <record id="kits_aboutus_our_team_10_slider" model="kits.b2b.website.slider">
             <field name="name">Lyra Regina De Luzon</field>
             <field name="slider_type">our_story</field>
             <field name="website_id" eval="kits_team_eto_website" />
             <field name="page_id" eval="kits_aboutus_page" />
-            <field name="image_id" eval="kits_aboutus_our_team_4_image" />
+            <field name="image_id" eval="kits_aboutus_our_team_10_image" />
         </record>
         <record id="kits_aboutus_our_team_11_slider" model="kits.b2b.website.slider">
             <field name="name">Mouna Ben Aicha</field>
             <field name="slider_type">our_story</field>
             <field name="website_id" eval="kits_team_eto_website" />
             <field name="page_id" eval="kits_aboutus_page" />
-            <field name="image_id" eval="kits_aboutus_our_team_4_image" />
+            <field name="image_id" eval="kits_aboutus_our_team_11_image" />
         </record>
         <record id="kits_aboutus_our_team_12_slider" model="kits.b2b.website.slider">
             <field name="name">Murielle Annie Makon</field>
             <field name="slider_type">our_story</field>
             <field name="website_id" eval="kits_team_eto_website" />
             <field name="page_id" eval="kits_aboutus_page" />
-            <field name="image_id" eval="kits_aboutus_our_team_4_image" />
+            <field name="image_id" eval="kits_aboutus_our_team_12_image" />
         </record>
         <record id="kits_aboutus_our_team_13_slider" model="kits.b2b.website.slider">
             <field name="name">Aashiq Siddik</field>
             <field name="slider_type">our_story</field>
             <field name="website_id" eval="kits_team_eto_website" />
             <field name="page_id" eval="kits_aboutus_page" />
-            <field name="image_id" eval="kits_aboutus_our_team_4_image" />
+            <field name="image_id" eval="kits_aboutus_our_team_13_image" />
         </record>
         <record id="kits_aboutus_our_team_14_slider" model="kits.b2b.website.slider">
             <field name="name">Awais Tariq</field>
             <field name="slider_type">our_story</field>
             <field name="website_id" eval="kits_team_eto_website" />
             <field name="page_id" eval="kits_aboutus_page" />
-            <field name="image_id" eval="kits_aboutus_our_team_4_image" />
+            <field name="image_id" eval="kits_aboutus_our_team_14_image" />
         </record>
         <record id="kits_aboutus_our_team_15_slider" model="kits.b2b.website.slider">
             <field name="name">Sabri Baaka</field>
             <field name="slider_type">our_story</field>
             <field name="website_id" eval="kits_team_eto_website" />
             <field name="page_id" eval="kits_aboutus_page" />
-            <field name="image_id" eval="kits_aboutus_our_team_4_image" />
+            <field name="image_id" eval="kits_aboutus_our_team_15_image" />
         </record>
 
         <record id="kitsour_core_values_image" model="kits.b2b.image.model">
@@ -693,24 +699,66 @@ Sunglasses</field>
 
         <record id="kits_faqs_page" model="kits.b2b.pages">
             <field name="page_type">faqs</field>
-            <field name="name">Frequently Asked Questions</field>
+            <field name="name">FAQ</field>
             <field name="website_id" eval="kits_team_eto_website" />
         </record>
         <record id="kits_faqs_page_key_value_1" model="kits.b2b.key.value.model">
-            <field name="name">What do I need to order?</field>
-            <field name="value">Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. 3 wolf moon officia aute, non cupidatat skateboard dolor brunch. Food truck quinoa nesciunt laborum eiusmod. Brunch 3 wolf moon tempor, sunt aliqua put a bird on it squid single-origin coffee nulla assumenda shoreditch et. Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt sapiente ea proident. Ad vegan excepteur butcher vice lomo. Leggings occaecat craft beer farm-to-table, raw denim aesthetic synth nesciunt you probably haven't heard of them accusamus labore sustainable VHS.</field>
+            <field name="name">Who is Everything Optical?</field>
+            <field name="value">Everything Optical are suppliers of wholesale designer eyewear based out of Toronto, Canada. We have offices across the global to cater to our international client base. Team ETO have been a trusted partner for over two decades, providing high quality branded optical frames in a wide range of styles.</field>
             <field name="page_id" eval="kits_faqs_page" />
             <field name="website_id" eval="kits_team_eto_website" />
         </record>
         <record id="kits_faqs_page_key_value_2" model="kits.b2b.key.value.model">
-            <field name="name"> What if I need to change my order?</field>
-            <field name="value">Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.</field>
+            <field name="name"> Which brands does Team ETO offer?</field>
+            <field name="value">We offer a wide range of designer brands from Carrera, Calvin Klein, Balenciaga, Dolce &amp; Gabbana, Guess, Adidas, Hugo Boss, Dunhill, Converse, Lacoste, Moschino, New Balance, Tom Ford and many more. All available brands are available to view on our B2B portal.</field>
             <field name="page_id" eval="kits_faqs_page" />
             <field name="website_id" eval="kits_team_eto_website" />
         </record>
         <record id="kits_faqs_page_key_value_3" model="kits.b2b.key.value.model">
-            <field name="name">What if I need to change my order?</field>
-            <field name="value">Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. 3 wolf moon officia aute, non cupidatat skateboard dolor brunch. Food truck quinoa nesciunt laborum eiusmod. Brunch 3 wolf moon tempor, sunt aliqua put a bird on it squid single-origin coffee nulla assumenda shoreditch et. Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt sapiente ea proident. Ad vegan excepteur butcher vice lomo. Leggings occaecat craft beer farm-to-table, raw denim aesthetic synth nesciunt you probably haven't heard of them accusamus labore sustainable VHS.</field>
+            <field name="name">How can I view pricing info?</field>
+            <field name="value">Our prices are competitive and exclusive to our clients. Simply register on our B2B portal and await approval from our management to view pricing and inventory information.</field>
+            <field name="page_id" eval="kits_faqs_page" />
+            <field name="website_id" eval="kits_team_eto_website" />
+        </record>
+        <record id="kits_faqs_page_key_value_4" model="kits.b2b.key.value.model">
+            <field name="name">Which countries can I get products delivered to?</field>
+            <field name="value">Everything Optical will ship to any part of the world and provide tracking details for all orders to ensure safe and secure delivery of your eyewear.</field>
+            <field name="page_id" eval="kits_faqs_page" />
+            <field name="website_id" eval="kits_team_eto_website" />
+        </record>
+        <record id="kits_faqs_page_key_value_5" model="kits.b2b.key.value.model">
+            <field name="name">How do I place an order?</field>
+            <field name="value">Once you register as a customer, you can add products to your cart and make the purchase and orders will be shipped out shortly after with details on your order sent to your registered email address.</field>
+            <field name="page_id" eval="kits_faqs_page" />
+            <field name="website_id" eval="kits_team_eto_website" />
+        </record>
+        <record id="kits_faqs_page_key_value_6" model="kits.b2b.key.value.model">
+            <field name="name">How much is the minimum order?</field>
+            <field name="value">At Everything Optical, our clients needs come first. That is why we DO NOT HAVE a minimum order number. Simply order what is needed for you!</field>
+            <field name="page_id" eval="kits_faqs_page" />
+            <field name="website_id" eval="kits_team_eto_website" />
+        </record>
+        <record id="kits_faqs_page_key_value_7" model="kits.b2b.key.value.model">
+            <field name="name">How can I make a return?</field>
+            <field name="value">Visit our terms and conditions for more details on returns. You can also contact your dedicated sales manager for additional information.</field>
+            <field name="page_id" eval="kits_faqs_page" />
+            <field name="website_id" eval="kits_team_eto_website" />
+        </record>
+        <record id="kits_faqs_page_key_value_8" model="kits.b2b.key.value.model">
+            <field name="name">How are payments made?</field>
+            <field name="value">Invoices are credited to your account. Payment can be made multiple options. Please reach out to sales manager for additional details.</field>
+            <field name="page_id" eval="kits_faqs_page" />
+            <field name="website_id" eval="kits_team_eto_website" />
+        </record>
+        <record id="kits_faqs_page_key_value_9" model="kits.b2b.key.value.model">
+            <field name="name">How long till my order is processed?</field>
+            <field name="value">Orders are processed and ready to ship within 2 business days.</field>
+            <field name="page_id" eval="kits_faqs_page" />
+            <field name="website_id" eval="kits_team_eto_website" />
+        </record>
+        <record id="kits_faqs_page_key_value_10" model="kits.b2b.key.value.model">
+            <field name="name">How are shipping chargers?</field>
+            <field name="value">Costs for shipping are dependent on destination and quantity, it may vary from order to order.</field>
             <field name="page_id" eval="kits_faqs_page" />
             <field name="website_id" eval="kits_team_eto_website" />
         </record>
@@ -722,7 +770,7 @@ Sunglasses</field>
 
 
         <record id="kits_contact_us_image_2" model="kits.b2b.image.model">
-            <field name="url">https://cdn.teameto.com/data/B2C1/new_tzc_b2b_images/shap-hero.png</field>
+            <field name="url">https://cdn.teameto.com/data/B2C1/new_tzc_b2b_images/contact-g/Contact%20page-top-banner.png</field>
             <field name="website_id" eval="kits_team_eto_website" />
         </record>
 
@@ -733,7 +781,7 @@ Sunglasses</field>
             <field name="header_text_2">Contact Us</field>
             <field name="text_2">Got a question for us? Fill in your details and message and we will get back to you shortly.</field>
             <field name="banner_2_id" eval="kits_contact_us_image_2" />
-            <field name="banner_1_id" eval="kits_contact_us_image_1" />
+            <!-- <field name="banner_1_id" eval="kits_contact_us_image_1" /> -->
             <field name="is_our_core_values">True</field>
         </record>
 
@@ -805,13 +853,22 @@ Sunglasses</field>
             <field name="cu_page_id" eval="kits_contact_us" />
             <field name="image_id" eval="kits_contact_us_image_5_slider" />
         </record>
+
+        <record id="kits_contact_us_image_6_slider" model="kits.b2b.image.model">
+            <field name="url">https://cdn.teameto.com/data/B2C1/new_tzc_b2b_images/contact-g/cg-6.jpg</field>
+            <field name="website_id" eval="kits_team_eto_website" />
+        </record>
         <record id="kits_contact_6_slider" model="kits.b2b.website.slider">
             <field name="name">6</field>
             <field name="slider_type">contact_us</field>
             <field name="website_id" eval="kits_team_eto_website" />
             <field name="page_id" eval="kits_contact_us" />
             <field name="cu_page_id" eval="kits_contact_us" />
-            <field name="image_id" eval="kits_contact_us_image_1_slider" />
+            <field name="image_id" eval="kits_contact_us_image_6_slider" />
+        </record>
+        <record id="kits_contact_us_image_7_slider" model="kits.b2b.image.model">
+            <field name="url">https://cdn.teameto.com/data/B2C1/new_tzc_b2b_images/contact-g/cg-7.jpg</field>
+            <field name="website_id" eval="kits_team_eto_website" />
         </record>
         <record id="kits_contact_7_slider" model="kits.b2b.website.slider">
             <field name="name">7</field>
@@ -819,17 +876,25 @@ Sunglasses</field>
             <field name="website_id" eval="kits_team_eto_website" />
             <field name="page_id" eval="kits_contact_us" />
             <field name="cu_page_id" eval="kits_contact_us" />
-            <field name="image_id" eval="kits_contact_us_image_2_slider" />
+            <field name="image_id" eval="kits_contact_us_image_7_slider" />
         </record>
 
+        <record id="kits_contact_us_image_8_slider" model="kits.b2b.image.model">
+            <field name="url">https://cdn.teameto.com/data/B2C1/new_tzc_b2b_images/contact-g/cg-8.jpg</field>
+            <field name="website_id" eval="kits_team_eto_website" />
+        </record>
         <record id="kits_contact_8_slider" model="kits.b2b.website.slider">
             <field name="name">8</field>
             <field name="slider_type">contact_us</field>
             <field name="website_id" eval="kits_team_eto_website" />
             <field name="page_id" eval="kits_contact_us" />
             <field name="cu_page_id" eval="kits_contact_us" />
-            <field name="image_id" eval="kits_contact_us_image_3_slider" />
+            <field name="image_id" eval="kits_contact_us_image_8_slider" />
             <field name="parent_id" eval="kits_contact_7_slider" />
+        </record>
+        <record id="kits_contact_us_image_9_slider" model="kits.b2b.image.model">
+            <field name="url">https://cdn.teameto.com/data/B2C1/new_tzc_b2b_images/contact-g/cg-9.png</field>
+            <field name="website_id" eval="kits_team_eto_website" />
         </record>
         <record id="kits_contact_9_slider" model="kits.b2b.website.slider">
             <field name="name">9</field>
@@ -837,16 +902,24 @@ Sunglasses</field>
             <field name="website_id" eval="kits_team_eto_website" />
             <field name="page_id" eval="kits_contact_us" />
             <field name="cu_page_id" eval="kits_contact_us" />
-            <field name="image_id" eval="kits_contact_us_image_4_slider" />
+            <field name="image_id" eval="kits_contact_us_image_9_slider" />
         </record>
 
+        <record id="kits_contact_us_image_10_slider" model="kits.b2b.image.model">
+            <field name="url">https://cdn.teameto.com/data/B2C1/new_tzc_b2b_images/contact-g/cg-10.jpg</field>
+            <field name="website_id" eval="kits_team_eto_website" />
+        </record>
         <record id="kits_contact_10_slider" model="kits.b2b.website.slider">
             <field name="name">10</field>
             <field name="slider_type">contact_us</field>
             <field name="website_id" eval="kits_team_eto_website" />
             <field name="page_id" eval="kits_contact_us" />
             <field name="cu_page_id" eval="kits_contact_us" />
-            <field name="image_id" eval="kits_contact_us_image_5_slider" />
+            <field name="image_id" eval="kits_contact_us_image_10_slider" />
+        </record>
+        <record id="kits_contact_us_image_11_slider" model="kits.b2b.image.model">
+            <field name="url">https://cdn.teameto.com/data/B2C1/new_tzc_b2b_images/contact-g/cg-11.jpg</field>
+            <field name="website_id" eval="kits_team_eto_website" />
         </record>
         <record id="kits_contact_11_slider" model="kits.b2b.website.slider">
             <field name="name">11</field>
@@ -854,7 +927,11 @@ Sunglasses</field>
             <field name="website_id" eval="kits_team_eto_website" />
             <field name="page_id" eval="kits_contact_us" />
             <field name="cu_page_id" eval="kits_contact_us" />
-            <field name="image_id" eval="kits_contact_us_image_1_slider" />
+            <field name="image_id" eval="kits_contact_us_image_11_slider" />
+        </record>
+        <record id="kits_contact_us_image_12_slider" model="kits.b2b.image.model">
+            <field name="url">https://cdn.teameto.com/data/B2C1/new_tzc_b2b_images/contact-g/cg-10.jpg</field>
+            <field name="website_id" eval="kits_team_eto_website" />
         </record>
         <record id="kits_contact_12_slider" model="kits.b2b.website.slider">
             <field name="name">12</field>
@@ -865,14 +942,22 @@ Sunglasses</field>
             <field name="image_id" eval="kits_contact_us_image_2_slider" />
         </record>
 
+        <record id="kits_contact_us_image_13_slider" model="kits.b2b.image.model">
+            <field name="url">https://cdn.teameto.com/data/B2C1/new_tzc_b2b_images/contact-g/cg-9.png</field>
+            <field name="website_id" eval="kits_team_eto_website" />
+        </record>
         <record id="kits_contact_13_slider" model="kits.b2b.website.slider">
             <field name="name">13</field>
             <field name="slider_type">contact_us</field>
             <field name="website_id" eval="kits_team_eto_website" />
             <field name="page_id" eval="kits_contact_us" />
             <field name="cu_page_id" eval="kits_contact_us" />
-            <field name="image_id" eval="kits_contact_us_image_3_slider" />
+            <field name="image_id" eval="kits_contact_us_image_13_slider" />
             <field name="parent_id" eval="kits_contact_12_slider" />
+        </record>
+        <record id="kits_contact_us_image_14_slider" model="kits.b2b.image.model">
+            <field name="url">https://cdn.teameto.com/data/B2C1/new_tzc_b2b_images/contact-g/cg-8.jpg</field>
+            <field name="website_id" eval="kits_team_eto_website" />
         </record>
         <record id="kits_contact_14_slider" model="kits.b2b.website.slider">
             <field name="name">14</field>
@@ -880,16 +965,19 @@ Sunglasses</field>
             <field name="website_id" eval="kits_team_eto_website" />
             <field name="page_id" eval="kits_contact_us" />
             <field name="cu_page_id" eval="kits_contact_us" />
-            <field name="image_id" eval="kits_contact_us_image_4_slider" />
+            <field name="image_id" eval="kits_contact_us_image_14_slider" />
         </record>
-
+        <record id="kits_contact_us_image_15_slider" model="kits.b2b.image.model">
+            <field name="url">https://cdn.teameto.com/data/B2C1/new_tzc_b2b_images/contact-g/cg-7.jpg</field>
+            <field name="website_id" eval="kits_team_eto_website" />
+        </record>
         <record id="kits_contact_15_slider" model="kits.b2b.website.slider">
             <field name="name">15</field>
             <field name="slider_type">contact_us</field>
             <field name="website_id" eval="kits_team_eto_website" />
             <field name="page_id" eval="kits_contact_us" />
             <field name="cu_page_id" eval="kits_contact_us" />
-            <field name="image_id" eval="kits_contact_us_image_5_slider" />
+            <field name="image_id" eval="kits_contact_us_image_15_slider" />
         </record>
         <record id="kits_b2b_eyeglasses_menus" model="kits.b2b.menus">
             <field name="name">Eyeglasses</field>
