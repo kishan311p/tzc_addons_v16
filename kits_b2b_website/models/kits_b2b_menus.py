@@ -31,3 +31,9 @@ class kits_b2b_menus(models.Model):
         """
     )
     in_more = fields.Boolean('In More?')
+    show_sliders = fields.Boolean('Show Sliders ?')
+    slider_ids = fields.One2many(
+        'kits.b2b.image.model',
+        'filter_menu_id',
+        string='Sliders'
+    )
