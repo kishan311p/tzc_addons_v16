@@ -1,5 +1,10 @@
 from odoo import fields, models, api, _
 
+FILTER_MENU_TYPE = [
+    ('filter', 'Filter'),
+    ('redirect', 'Redirect')
+]
+
 
 class kits_b2b_image_model(models.Model):
     _name = 'kits.b2b.image.model'
@@ -22,3 +27,13 @@ class kits_b2b_image_model(models.Model):
         'How To shop Page'
     )
     login_id = fields.Many2one('kits.b2b.website', 'Login')
+    filter_menu_id = fields.Many2one('kits.b2b.menus', 'Filter Menu')
+    filter_menu_type = fields.Selection(
+        selection=FILTER_MENU_TYPE,
+        string='Type',
+        default=FILTER_MENU_TYPE[0][0]
+    )
+    show_filter_menu_sliders = fields.Boolean(
+        'Show Filter Menu Sliders',
+        related='filter_menu_id.show_sliders'
+    )
