@@ -17,7 +17,8 @@ The team at ETO thank you for your business and remain committed everyday to sta
             <field name="how_to_shop_redirect_url">https://b2b.teameto.com/shop</field>
             <field name="text_1_redirect_url">https://b2b.teameto.com/aboutus</field>
             <field name="text_1_redirect_url_text">View Our Story</field>
-            <field name="banner_1_id" eval="kits_homepage_banner_image_1" />
+            <field name="banner_url">https://cdn.teameto.com/data/B2C1/new_tzc_b2b_images/roadmap/roadmap-bg.png</field>
+            <!-- <field name="banner_1_id" eval="kits_homepage_banner_image_1" /> -->
             <field name="website_id" eval="kits_team_eto_website" />
             <field name="how_to_shop_background">https://cdn.teameto.com/data/B2C1/new_tzc_b2b_images/roadmap/roadmap-bg.png</field>
             <field name="how_to_shop_redirect_url">https://b2b.teameto.com/shop</field>
@@ -154,7 +155,8 @@ Eyeglasses</field>
             <field name="slider_type">eyeglasses</field>
             <field name="website_id" eval="kits_team_eto_website" />
             <field name="page_id" eval="kits_home_page" />
-            <field name="image_id" eval="kits_homepage_woman_image_slider" />
+            <!-- <field name="image_id" eval="kits_homepage_woman_image_slider" /> -->
+            <field name="image_url">https://cdn.teameto.com/data/B2C1/new_tzc_b2b_images/cat/woman.png</field>
             <field name="limit">6</field>
         </record>
         <record id="kits_homepage_womans_sunglasses_slider" model="kits.b2b.website.slider">
@@ -163,7 +165,8 @@ Sunglasses</field>
             <field name="slider_type">sunglasses</field>
             <field name="website_id" eval="kits_team_eto_website" />
             <field name="page_id" eval="kits_home_page" />
-            <field name="image_id" eval="kits_homepage_woman_image_slider" />
+            <!-- <field name="image_id" eval="kits_homepage_woman_image_slider" /> -->
+            <field name="image_url">https://cdn.teameto.com/data/B2C1/new_tzc_b2b_images/cat/woman.png</field>
             <field name="limit">6</field>
         </record>
         <!-- men sliders -->
@@ -174,7 +177,8 @@ Eyeglasses</field>
             <field name="slider_type">eyeglasses</field>
             <field name="website_id" eval="kits_team_eto_website" />
             <field name="page_id" eval="kits_home_page" />
-            <field name="image_id" eval="kits_homepage_man_image_slider" />
+            <!-- <field name="image_id" eval="kits_homepage_man_image_slider" /> -->
+            <field name="image_url">https://cdn.teameto.com/data/B2C1/new_tzc_b2b_images/cat/men.png</field>
             <field name="limit">6</field>
         </record>
         <record id="kits_homepage_mans_sunglasses_slider" model="kits.b2b.website.slider">
@@ -183,7 +187,8 @@ Sunglasses</field>
             <field name="slider_type">sunglasses</field>
             <field name="website_id" eval="kits_team_eto_website" />
             <field name="page_id" eval="kits_home_page" />
-            <field name="image_id" eval="kits_homepage_man_image_slider" />
+            <!-- <field name="image_id" eval="kits_homepage_man_image_slider" /> -->
+            <field name="image_url">https://cdn.teameto.com/data/B2C1/new_tzc_b2b_images/cat/men.png</field>
             <field name="limit">6</field>
         </record>
 
@@ -195,7 +200,8 @@ Eyeglasses</field>
             <field name="slider_type">eyeglasses</field>
             <field name="website_id" eval="kits_team_eto_website" />
             <field name="page_id" eval="kits_home_page" />
-            <field name="image_id" eval="kits_homepage_kits_image_slider" />
+            <!-- <field name="image_id" eval="kits_homepage_kits_image_slider" /> -->
+            <field name="image_url">https://cdn.teameto.com/data/B2C1/new_tzc_b2b_images/cat/kids.png</field>
             <field name="limit">6</field>
         </record>
         <record id="kits_homepage_kids_sunglasses_slider" model="kits.b2b.website.slider">
@@ -204,7 +210,8 @@ Sunglasses</field>
             <field name="slider_type">sunglasses</field>
             <field name="website_id" eval="kits_team_eto_website" />
             <field name="page_id" eval="kits_home_page" />
-            <field name="image_id" eval="kits_homepage_kits_image_slider" />
+            <!-- <field name="image_id" eval="kits_homepage_kits_image_slider" /> -->
+            <field name="image_url">https://cdn.teameto.com/data/B2C1/new_tzc_b2b_images/cat/kids.png</field>
             <field name="limit">6</field>
         </record>
 

@@ -39,3 +39,4 @@ class kits_b2b_image_model(models.Model):
         related='filter_menu_id.show_sliders'
     )
     offer_id = fields.Many2one('kits.b2b.pages', 'Offres')
+    team_member_page_id = fields.Many2one('kits.b2b.pages', 'Team Member Page')

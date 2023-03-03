@@ -20,6 +20,8 @@ class kits_b2b_pages(models.Model):
     text_1_redirect_url = fields.Text('Redirect URL')
     text_1_redirect_url_text = fields.Char('Redirect URL Text')
     banner_1_id = fields.Many2one('kits.b2b.image.model', 'Banner URL')
+    banner_url = fields.Char('Banner URL')
+    banner_image = fields.Char('Banner Image', related="banner_url")
     banner_1_image = fields.Char(
         'Banner Image', related='banner_1_id.url', store=True)
     slider_ids = fields.One2many(
@@ -39,6 +41,8 @@ class kits_b2b_pages(models.Model):
     banner_2_id = fields.Many2one('kits.b2b.image.model', 'Banner 2')
     banner_2_image = fields.Char(
         'Banner 2 Image', related='banner_2_id.url', store=True)
+    banner_2_url = fields.Char('Banner 2 URL')
+    banner_2_image = fields.Char('Banner 2 Image', related='banner_2_url')
     is_our_core_values = fields.Boolean('Use For Our Core Values')
 
     # Contact Us Sliders
@@ -46,7 +50,7 @@ class kits_b2b_pages(models.Model):
         'kits.b2b.website.slider', 'cu_page_id', 'Sliders'
     )
     char_field = fields.Char('Char Field')
-    
+
     how_to_shop_title = fields.Char('How To Show Title')
     how_to_shop_background = fields.Char('Background Image URL')
     how_to_shop_redirect_url = fields.Char('How To shop Redirect URL')
@@ -62,3 +66,8 @@ class kits_b2b_pages(models.Model):
         'kits.b2b.image.model', 'offer_id', string='Offers')
     homepage_main_banner_ids = fields.One2many(
         'kits.b2b.image.model', 'homepage_main_banner_id', 'Main Banner')
+    team_member_ids = fields.One2many(
+        'kits.b2b.website.slider',
+        'team_member_page_id',
+        string='Team Members'
+    )
