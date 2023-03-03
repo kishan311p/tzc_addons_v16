@@ -617,6 +617,7 @@
             <field name="page_id" eval="kits_contact_us" />
             <field name="cu_page_id" eval="kits_contact_us" />
             <field name="image_id" eval="kits_contact_us_image_1_slider" />
+            <field name="image_url">https://cdn.teameto.com/data/B2C1/new_tzc_b2b_images/contact-g/cg-1.png</field>
         </record>
         <record id="kits_contact_2_slider" model="kits.b2b.website.slider">
             <field name="name">2</field>
@@ -625,6 +626,7 @@
             <field name="page_id" eval="kits_contact_us" />
             <field name="cu_page_id" eval="kits_contact_us" />
             <field name="image_id" eval="kits_contact_us_image_2_slider" />
+            <field name="image_url">https://cdn.teameto.com/data/B2C1/new_tzc_b2b_images/contact-g/cg-2.png</field>
         </record>
 
         <record id="kits_contact_3_slider" model="kits.b2b.website.slider">
@@ -635,6 +637,7 @@
             <field name="cu_page_id" eval="kits_contact_us" />
             <field name="image_id" eval="kits_contact_us_image_3_slider" />
             <field name="parent_id" eval="kits_contact_2_slider" />
+            <field name="image_url">https://cdn.teameto.com/data/B2C1/new_tzc_b2b_images/contact-g/cg-3.png</field>
         </record>
         <record id="kits_contact_4_slider" model="kits.b2b.website.slider">
             <field name="name">4</field>
@@ -643,6 +646,7 @@
             <field name="page_id" eval="kits_contact_us" />
             <field name="cu_page_id" eval="kits_contact_us" />
             <field name="image_id" eval="kits_contact_us_image_4_slider" />
+            <field name="image_url">https://cdn.teameto.com/data/B2C1/new_tzc_b2b_images/contact-g/cg-4.png</field>
         </record>
 
         <record id="kits_contact_5_slider" model="kits.b2b.website.slider">
@@ -652,6 +656,7 @@
             <field name="page_id" eval="kits_contact_us" />
             <field name="cu_page_id" eval="kits_contact_us" />
             <field name="image_id" eval="kits_contact_us_image_5_slider" />
+            <field name="image_url">https://cdn.teameto.com/data/B2C1/new_tzc_b2b_images/contact-g/cg-5.png</field>
         </record>
 
         <record id="kits_contact_us_image_6_slider" model="kits.b2b.image.model">
@@ -665,6 +670,7 @@
             <field name="page_id" eval="kits_contact_us" />
             <field name="cu_page_id" eval="kits_contact_us" />
             <field name="image_id" eval="kits_contact_us_image_6_slider" />
+            <field name="image_url">https://cdn.teameto.com/data/B2C1/new_tzc_b2b_images/contact-g/cg-6.jpg</field>
         </record>
         <record id="kits_contact_us_image_7_slider" model="kits.b2b.image.model">
             <field name="url">https://cdn.teameto.com/data/B2C1/new_tzc_b2b_images/contact-g/cg-7.jpg</field>
@@ -677,6 +683,7 @@
             <field name="page_id" eval="kits_contact_us" />
             <field name="cu_page_id" eval="kits_contact_us" />
             <field name="image_id" eval="kits_contact_us_image_7_slider" />
+            <field name="image_url">https://cdn.teameto.com/data/B2C1/new_tzc_b2b_images/contact-g/cg-7.jpg</field>
         </record>
 
         <record id="kits_contact_us_image_8_slider" model="kits.b2b.image.model">
@@ -691,6 +698,7 @@
             <field name="cu_page_id" eval="kits_contact_us" />
             <field name="image_id" eval="kits_contact_us_image_8_slider" />
             <field name="parent_id" eval="kits_contact_7_slider" />
+            <field name="image_url">https://cdn.teameto.com/data/B2C1/new_tzc_b2b_images/contact-g/cg-8.jpg</field>
         </record>
         <record id="kits_contact_us_image_9_slider" model="kits.b2b.image.model">
             <field name="url">https://cdn.teameto.com/data/B2C1/new_tzc_b2b_images/contact-g/cg-9.png</field>
@@ -703,6 +711,7 @@
             <field name="page_id" eval="kits_contact_us" />
             <field name="cu_page_id" eval="kits_contact_us" />
             <field name="image_id" eval="kits_contact_us_image_9_slider" />
+            <field name="image_url">https://cdn.teameto.com/data/B2C1/new_tzc_b2b_images/contact-g/cg-9.png</field>
         </record>
 
         <record id="kits_contact_us_image_10_slider" model="kits.b2b.image.model">
@@ -716,6 +725,7 @@
             <field name="page_id" eval="kits_contact_us" />
             <field name="cu_page_id" eval="kits_contact_us" />
             <field name="image_id" eval="kits_contact_us_image_10_slider" />
+            <field name="image_url">https://cdn.teameto.com/data/B2C1/new_tzc_b2b_images/contact-g/cg-10.jpg</field>
         </record>
         <record id="kits_contact_us_image_11_slider" model="kits.b2b.image.model">
             <field name="url">https://cdn.teameto.com/data/B2C1/new_tzc_b2b_images/contact-g/cg-11.jpg</field>
@@ -728,6 +738,7 @@
             <field name="page_id" eval="kits_contact_us" />
             <field name="cu_page_id" eval="kits_contact_us" />
             <field name="image_id" eval="kits_contact_us_image_11_slider" />
+            <field name="image_url">https://cdn.teameto.com/data/B2C1/new_tzc_b2b_images/contact-g/cg-11.jpg</field>
         </record>
         <record id="kits_contact_us_image_12_slider" model="kits.b2b.image.model">
             <field name="url">https://cdn.teameto.com/data/B2C1/new_tzc_b2b_images/contact-g/cg-10.jpg</field>
@@ -740,6 +751,7 @@
             <field name="page_id" eval="kits_contact_us" />
             <field name="cu_page_id" eval="kits_contact_us" />
             <field name="image_id" eval="kits_contact_us_image_2_slider" />
+            <field name="image_url">https://cdn.teameto.com/data/B2C1/new_tzc_b2b_images/contact-g/cg-2.png</field>
         </record>
 
         <record id="kits_contact_us_image_13_slider" model="kits.b2b.image.model">
@@ -754,6 +766,7 @@
             <field name="cu_page_id" eval="kits_contact_us" />
             <field name="image_id" eval="kits_contact_us_image_13_slider" />
             <field name="parent_id" eval="kits_contact_12_slider" />
+            <field name="image_url">https://cdn.teameto.com/data/B2C1/new_tzc_b2b_images/contact-g/cg-9.png</field>
         </record>
         <record id="kits_contact_us_image_14_slider" model="kits.b2b.image.model">
             <field name="url">https://cdn.teameto.com/data/B2C1/new_tzc_b2b_images/contact-g/cg-8.jpg</field>
@@ -766,6 +779,7 @@
             <field name="page_id" eval="kits_contact_us" />
             <field name="cu_page_id" eval="kits_contact_us" />
             <field name="image_id" eval="kits_contact_us_image_14_slider" />
+            <field name="image_url">https://cdn.teameto.com/data/B2C1/new_tzc_b2b_images/contact-g/cg-8.jpg</field>
         </record>
         <record id="kits_contact_us_image_15_slider" model="kits.b2b.image.model">
             <field name="url">https://cdn.teameto.com/data/B2C1/new_tzc_b2b_images/contact-g/cg-7.jpg</field>
@@ -778,6 +792,7 @@
             <field name="page_id" eval="kits_contact_us" />
             <field name="cu_page_id" eval="kits_contact_us" />
             <field name="image_id" eval="kits_contact_us_image_15_slider" />
+            <field name="image_url">https://cdn.teameto.com/data/B2C1/new_tzc_b2b_images/contact-g/cg-7.jpg</field>
         </record>
 
         <record id="kits_b2b_eyeglasses_menus" model="kits.b2b.menus">
