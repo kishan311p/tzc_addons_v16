@@ -37,3 +37,9 @@ class kits_b2b_menus(models.Model):
         'filter_menu_id',
         string='Sliders'
     )
+
+    def product_is_publish(self):
+        self.write({'is_published':True})
+    
+    def product_is_unpublish(self):
+        self.write({'is_published':False})

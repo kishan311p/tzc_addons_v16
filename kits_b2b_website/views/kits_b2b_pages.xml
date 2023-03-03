@@ -168,7 +168,7 @@
                                 <field name="banner_1_image" widget="image" class="oe_avatar" options="{'zoom': true,'preview_image': 'banner_1_image'}" size="[150,150]" />
                             </group>
                         </page>
-                        <page name="offers" string="Offers">
+                        <page name="offers" string="Offers" attrs="{'invisible': [('page_type','not in',['home'])]}">
                             <field name="offer_ids">
                                 <tree editable="bottom">
                                     <field name="image_icon" widget="image" class="oe_avatar" options="{'zoom': true,'preview_image': 'image_icon'}" size="[150,150]"/>

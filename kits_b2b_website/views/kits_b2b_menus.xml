@@ -6,6 +6,15 @@
         <field name="arch" type="xml">
             <form string="">
                 <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <field name="is_published" invisible="1" />
+                        <button type="object" name="product_is_publish" style="color:#f06767;" class="oe_stat_button" icon="fa-product-hunt" attrs="{'invisible':[('is_published','=',True)]}">
+                            <span>Unpublished</span>
+                        </button>
+                        <button type="object" name="product_is_unpublish" style="color:#00b115;" class="oe_stat_button" icon="fa-product-hunt" attrs="{'invisible':[('is_published','=',False)]}">
+                            <span>Published</span>
+                        </button>
+                    </div>
                     <div>
                         <h2>
                             <field name="name" />

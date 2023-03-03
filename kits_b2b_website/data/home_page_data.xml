@@ -2,6 +2,7 @@
 <odoo>
 
     <data noupdate="0">
+    <!-- kits.b2b.pages -->
         <!-- home page main record -->
         <record id="kits_home_page" model="kits.b2b.pages">
             <field name="page_type">home</field>
@@ -244,7 +245,7 @@ Sunglasses</field>
 
         </record>
         <!-- offers sliders -->
-        <record id="kits_homepage_offer_1_slider" model="kits.b2b.website.slider">
+        <!-- <record id="kits_homepage_offer_1_slider" model="kits.b2b.website.slider">
             <field name="name">Free Shipping on all orders over $1000</field>
             <field name="slider_type">offers</field>
             <field name="website_id" eval="kits_team_eto_website" />
@@ -264,7 +265,7 @@ Sunglasses</field>
             <field name="website_id" eval="kits_team_eto_website" />
             <field name="page_id" eval="kits_home_page" />
             <field name="image_id" eval="kits_homepage_offers_3_image" />
-        </record>
+        </record> -->
 
     </data>
 
