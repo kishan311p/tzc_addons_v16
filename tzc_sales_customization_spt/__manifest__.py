@@ -51,6 +51,10 @@
         'data/mail_template_warehouse_abandone_cart.xml',
         'data/mail_template_edi_sale.xml',
         'data/mail_template_catalog_quotation_spt.xml',
+        'data/mail_template_notify_salesperson_lead_generate.xml',
+        'data/mail_template_cancel_saleorder_notify.xml',
+        'data/mail_template_sale_confirmation.xml',
+        'data/mail_template_on_consignment.xml',
 
 
         # Views

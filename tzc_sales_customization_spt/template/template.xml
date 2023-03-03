@@ -161,9 +161,8 @@
                                                         </t>
                                                     </span>
                                                 </td>
-                                                <td valign="middle" align="right" style="width: 145px;">
-                                                    <img src="/logo.png?company=1" style="padding:0px;margin: 0px; height: auto;width: 280px;" t-att-alt="'%s' % company.name" class="padding-small"/>
-                                                    
+                                                <td valign="middle" align="right" style="width: 50%;">
+                                                    <img src="/logo.png?company=1" style="padding:0px;margin: 0px;width:95%;" t-att-alt="'%s' % company.name" class="padding-small"/>
                                                 </td>
                                             </tr>
                                             <tr>

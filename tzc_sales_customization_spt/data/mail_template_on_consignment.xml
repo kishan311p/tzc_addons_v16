@@ -1,0 +1,122 @@
+<?xml version='1.0' encoding='utf-8'?>
+<odoo>
+    <data>
+        <record id="mail_template_notify_admin_of_on_consigment_product_qty" model="mail.template">
+            <field name="name">Send On Consignment Notification To Admin</field>
+            <field name="subject">Product's on consignment</field>
+            <field name="email_from">"ETO-Support" &lt;{{object.company_id.catchall_email or user.email}}&gt;</field>
+            <field name="email_to">{{object.env.user.email}}</field>
+            <field name="model_id" ref="product.model_product_product" />
+            <field name="auto_delete" eval="False" />
+            <field name="lang">{{object.env.user.lang}}</field>
+            <field name="body_html" type="xml">
+                <table border="0" cellpadding="0" cellspacing="0" width="590" style="padding: 0px; background-color: white; color: #454748; border-collapse:separate;">
+                    <tbody>
+                        <!-- CONTENT -->
+                        <td align="center" style="min-width: 590px;">
+                            <table border="0" cellpadding="0" cellspacing="0" style="min-width: 590px; background-color: white; padding: 0px 8px 0px 8px; border-collapse:separate;width:100%;">
+                                <tr>
+                                    <td valign="top" style="font-size: 13px;">
+                                        <p style="margin-top:0px;">Hello <t t-out="object.env.user.name"/>
+                                        </p>
+                                        <p>
+                                            Below products available quantity is lower than that minimum quantity.
+                                        </p>
+
+                                        <table style="border: 1px solid #dbdde0;border-collapse: collapse;">
+                                            <thead>
+                                                <tr>
+                                                    <th style="padding: 10px;width: 20%;" colspan="2">
+                                                        <img src="/web/image?model=res.company&amp;id=1&amp;field=logo" style="height: 30px;" alt="Logo"/>
+                                                    </th>
+                                                    <th style="padding: 10px;text-align: center;width: 20%;border: 1px solid #dbdde0">Product</th>
+                                                    <th style="padding: 10px;text-align: center;width: 8%;border: 1px solid #dbdde0">Available Qty</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <t t-foreach="ctx['product_name']" t-as="product">
+                                                    <tr>
+                                                        <td style="border: 1px solid #dbdde0; padding: 10px;">
+                                                            <t t-set="special_discount" t-value="product.get_black_special_friday_sale()"/>
+                                                            <t t-if="product.sale_type">
+                                                                <style>
+                                                                    .te_ribbon-wrapper kits_ribbon #style_3.label_div {
+                                                                        display: inline-block;
+                                                                        width: auto;
+                                                                        font-size: 0.8125rem;
+                                                                        background-color: #353e47;
+                                                                        position: absolute;
+                                                                        top: 10px;
+                                                                        right: unset;
+                                                                        bottom: unset;
+                                                                        left: 0px;
+                                                                        z-index: 1;
+                                                                        overflow: hidden;
+                                                                        @media (max-width:767px){
+                                                                            font-size: 0.0125rem;
+                                                                        }
+                                                                    }
+                                                                    .te_ribbon-wrapper kits_ribbon #style_3.label_div .te_label_name.te_label_name_wish {
+                                                                        padding: 2px 4px !important;
+                                                                    }
+                                                                    .te_ribbon-wrapper kits_ribbon #style_3.label_div .te_label_name.te_label_name_wish:before {
+                                                                        //content: "\f02b";
+                                                                        font-family: FontAwesome;
+                                                                        margin-right: 5px;
+                                                                        font-size: 8px;
+                                                                    }
+                                                                </style>
+                                                                <t t-if="line.is_special_discount">
+                                                                    <img height="25px" t-attf-src="data:image/*;base64,{{special_discount.get('icon')}}"/>
+                                                                </t>
+                                                                <t t-else="">
+                                                                    <t t-if="product.sale_type  == 'clearance'">
+                                                                        <div class="te_ribb on-wrapper kits_ribbon" style="color:white">
+                                                                            <span class="style_3 label_div kits_label_div" id="style_3" style="background-color:#990000;font-weight: bold;top: auto !important;left: 24px !important;font-size: 12px;">
+                                                                                <span class="p-1 te_label_name te_label_name_wish kits_label_name">Clearance</span>
+                                                                            </span>
+                                                                        </div>
+                                                                    </t>
+                                                                    <t t-if="product.sale_type  == 'on_sale'">
+                                                                        <div class="te_ribb on-wrapper" style="color:white">
+                                                                            <span class="style_3 label_div" id="style_3" style="background-color:#e50000;font-weight: bold;top: auto !important;left: 24px !important;font-size: 12px;">
+                                                                                <span class="p-1 te_label_name te_label_name_wish">Sale</span>
+                                                                            </span>
+                                                                        </div>
+                                                                    </t>
+                                                                </t>
+                                                            </t>
+                                                            <img width="250px" t-attf-src="{{product.image_url}}"/>
+                                                        </td>
+                                                        <td style="border: 1px solid #dbdde0; padding: 10px;">
+                                                            <img width="250px" t-attf-src="{{product.image_secondary_url}}"/>
+                                                        </td>
+                                                        <td style="text-align: center; border: 1px solid #dbdde0; padding: 10px;text-transform: capitalize;">
+                                                            <p style="width: 105px;">
+                                                                <t t-out="product.display_name"/>
+                                                            </p>
+                                                        </td>
+                                                        <td style="text-align: center; border: 1px solid #dbdde0; padding: 10px;">
+                                                            <p>
+                                                                <t t-if="product.available_qty_spt">
+                                                                    <t t-out="'%.0f'%product.available_qty_spt"/>
+                                                                </t>
+                                                                <t t-if="not product.available_qty_spt">
+                                                                    0
+                                                                </t>
+                                                            </p>
+                                                        </td>
+                                                    </tr>
+                                                </t>
+                                            </tbody>
+                                        </table>
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tbody>
+                </table>
+            </field>
+        </record>
+    </data>
+</odoo>

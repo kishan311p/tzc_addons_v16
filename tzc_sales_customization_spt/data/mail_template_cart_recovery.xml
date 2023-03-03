@@ -43,10 +43,10 @@
                                             <table width='100%' style="border: 1px solid #dbdde0;">
                                                 <thead>
                                                     <tr>
-                                                        <th style="padding: 10px;width: 55%;" colspan="2">
-                                                            <img src="/web/image?model=res.company&amp;id=1&amp;field=logo" style="height: 30px;" alt="Logo"/>
+                                                        <th style="padding: 10px;width: 50%;" colspan="2">
+                                                            <img src="/web/image?model=res.company&amp;id=1&amp;field=logo" style="height: 30px;" alt="Everything Optical (ETO)"/>
                                                         </th>
-                                                        <th style="padding: 10px;text-align: center;width: 20%;">Product</th>
+                                                        <th style="padding: 10px;text-align: center;width: 15%;">Product</th>
                                                         <th style="padding: 10px;text-align: center;width: 8%;">Qty</th>
                                                         <th style="padding: 10px;text-align: center;width: 8%;">Price <br/>
     (                                                        <span>
@@ -66,7 +66,7 @@
                                         <table width="100%">
                                             <tr>
                                                 <!-- Image -->
-                                                <td style="border: 1px solid #dbdde0; padding: 10px;width: 20%;">
+                                                <td style="border: 1px solid #dbdde0; padding: 10px;width: 25%;">
                                                     <t t-set="special_discount" t-value="line.product_id.get_black_special_friday_sale()"/>
                                                     <t t-if="line.sale_type">
 
@@ -121,11 +121,11 @@
                                                         </t>
 
                                                     </t>
-                                                    <img width="215px" t-attf-src="{{line.product_id.image_url}}"/>
+                                                    <img width="100%" t-attf-src="{{line.product_id.image_url}}"/>
                                                 </td>
 
-                                                <td style="border: 1px solid #dbdde0; padding: 10px;width: 20%;">
-                                                    <img width="215px" t-attf-src="{{line.product_id.image_secondary_url}}"/>
+                                                <td style="border: 1px solid #dbdde0; padding: 10px;width: 25%;">
+                                                    <img width="100%" t-attf-src="{{line.product_id.image_secondary_url}}"/>
                                                 </td>
                                                 <td style="text-align: center; border: 1px solid #dbdde0; padding: 10px;text-transform: capitalize;width:15%;">
                                                     <p >

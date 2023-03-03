@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <data noupdate="0">
+    
+        <record id="kits_mail_cancel_saleorder_to_sales_person" model="mail.template">
+            <field name="name">Cancel sale order</field>
+            <field name="subject">Cancel sale order {{object.partner_id.name}}.</field>
+            <field name="email_from">"ETO-Support" &lt;{{(object.user_id.company_id.catchall_email or user.email)}}&gt;</field>
+            <field name="email_to">{{object.user_id.partner_id.email}}</field>
+            <field name="model_id" ref="sale.model_sale_order"/>
+            <field name="auto_delete" eval="False"/>
+            <field name="lang">{{object.env.context['lang'] or object.env.user.lang }}</field>
+            <field name="body_html" type="html">
+                <table border="0" cellpadding="0" cellspacing="0" width="590" style="min-width: 590px; background-color: white; padding: 0px 8px 0px 8px; border-collapse:separate;">
+                    <tr>
+                        <td valign="top" style="font-size: 13px;">
+                            <p>Hello <t t-out="object.user_id.name"/>,</p>
+                            <!-- <br/> -->
+                            <!-- <br/> -->
+                            <p><t t-out="object.partner_id.name"/> have cancelled order <t t-out="object.name"/>.</p>
+                            <!-- <br/> -->
+                            <p style="margin-bottom:0px;">Thank you,<br/>
+                            ETO Support
+                            </p>
+                        </td>
+                    </tr>
+                </table>
+            </field>
+        </record>
+
+        <record id="kits_mail_cancel_saleorder_to_customer" model="mail.template">
+            <field name="name">Cancel sale order</field>
+            <field name="subject">Cancel sale order {{object.partner_id.name}}.</field>
+            <field name="email_from">"ETO-Support" &lt;{{(object.user_id.company_id.catchall_email or user.email)}}&gt;</field>
+            <field name="email_to">{{object.partner_id.email}}</field>
+            <field name="model_id" ref="sale.model_sale_order"/>
+            <field name="auto_delete" eval="False"/>
+            <field name="lang">{{object.env.context['lang'] or object.env.user.lang }}</field>
+            <field name="body_html" type="html">
+                <table border="0" cellpadding="0" cellspacing="0" width="590" style="min-width: 590px; background-color: white; padding: 0px 8px 0px 8px; border-collapse:separate;">
+                    <tr>
+                        <td valign="top" style="font-size: 13px;">
+                            <p style="margin-top:0px;">Dear <t t-esc="object.partner_id.name"/>,</p>
+                            <!-- <br/> -->
+                            <!-- <br/> -->
+                            <p>Your order <t t-esc="object.name"/> is cancelled.</p>
+                            <!-- <br/> -->
+                            <p style="margin-bottom:0px;">Thank you,<br/>
+                                ETO Support
+                            </p>
+                        </td>
+                    </tr>
+                </table>
+            </field>
+        </record>
+    
+    </data>
+    
+
+</odoo>

@@ -4,7 +4,7 @@
         <!-- Email template -->
         <record id="tzc_email_template_sales_person_sale_order_confirm" model="mail.template">
             <field name="name">Order place info - Send by Email</field>
-            <field name="email_from">"ETO-Support" &lt;{{object.user_id.company_id.catchall_email or user.email}}}}&gt;</field>
+            <field name="email_from">"ETO-Support" &lt;{{object.user_id.company_id.catchall_email or user.email}}&gt;</field>
             <!-- <field name="email_from">{{(object.partner_id.email or '')|safe}}</field> -->
             <field name="subject">Order {{object.name}} has been placed by {{object.partner_id.name}} from website</field>
             <field name="email_to">{{object.partner_id.user_id.email or ''}}</field>
@@ -22,14 +22,14 @@
                             <p style="margin-top:0px;">Hello <t t-out="object.user_id.name"/> ,</p>
                             <!-- <br/> -->
                             <!-- <br/> -->
-                            <p>Sale Order <t t-out="object.name"/> for Customer <t t-out="object.partner_id.name"/> is created.</p>
+                            <p><t t-out="object.partner_id.name"/> has placed order <t t-out="object.name"/> from website.</p>
                             <!-- <br/> -->
                             <!-- <br/> -->
                             <p style="margin-bottom:0px;">Thank you,<br/>
                                 ETO Support</p>
-                            <!-- <a t-attf-href="{{object.get_base_url()}}/report/pdf/sale.report_saleorder/{{object.id}}">
+                            <a t-attf-href="{{object.get_base_url()}}/report/pdf/sale.report_saleorder/{{object.id}}">
                                 <img t-attf-src="/tzc_sales_customization_spt/static/src/img/pdf.png" style="height:60px;width:100px;" />
-                            </a> -->
+                            </a>
                         </td>
                     </tr>
                     </tbody>

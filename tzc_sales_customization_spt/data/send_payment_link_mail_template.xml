@@ -3,22 +3,22 @@
     <data>
         <record id="mail_template_customer_send_payment_link" model="mail.template">
             <field name="name">Send Payment Link Email</field>
-            <field name="subject">${object.mail_subject(object)}</field>
-            <field name="email_from">${object.user_id.email | safe}</field>
-            <field name="reply_to">${(object.user_id.company_id.catchall_email)|safe} ${(object.user_id.email) |safe}</field>
+            <field name="subject">{{object.mail_subject(object)}}</field>
+            <field name="email_from">{{object.user_id.email}}</field>
+            <field name="reply_to">{{(object.user_id.company_id.catchall_email)}} {{(object.user_id.email)}}</field>
             <field name="model_id" ref="sale.model_sale_order" />
             <field name="auto_delete" eval="False" />
-            <field name="lang">${object.partner_id.lang}</field>
+            <field name="lang">{{object.partner_id.lang}}</field>
             <field name="body_html" type="xml">
                 <table border="0" cellpadding="0" cellspacing="0" width="590" style="padding: 0px; background-color: white; color: #454748; border-collapse:separate;">
                     <tbody>
                         <!-- CONTENT -->
                         <tr>
                             <td valign="top" style="font-size:13px;">
-                                <p style="margin-top:0px;">Dear ${object.partner_id.name},</p>
+                                <p style="margin-top:0px;">Dear <t t-out="object.partner_id.name"/>,</p>
                                 <p>Your order is ready to ship.<br/>Kindly use the payment link below to make your payment. The link is completely secure and your credit card information is never stored.</p>
                                 <div style="text-align: left; margin: 16px 0px 16px 0px; font-size: 14px;">
-                                    <a href="${object.payment_link}" target="_blank" style="background-color: #7693f8; padding: 8px 16px 8px 16px; text-decoration: none; color: #fff; border-radius: 5px; font-size:13px;">
+                                    <a t-attf-href="{{object.payment_link}}" target="_blank" style="background-color: #7693f8; padding: 8px 16px 8px 16px; text-decoration: none; color: #fff; border-radius: 5px; font-size:13px;">
                                         PAYMENT LINK
                                     </a>
                                     <br/>
@@ -26,11 +26,6 @@
                                 </div>
                                 <p style="margin-bottom:0px;">Thank you,<br/>
                                 ETO Support</p>
-                                <p>
-                                    % if object.user_id.signature:
-                                        ${object.user_id.signature | safe}
-                                    % endif
-                                </p>
                             </td>
                         </tr>
                     </tbody>

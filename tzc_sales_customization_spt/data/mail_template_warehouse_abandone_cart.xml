@@ -19,13 +19,13 @@
                                 <!-- <br/> -->
                                 <!-- <br/> -->
                                 <p>This is reminder to process order <b>
-                                <!-- <a t-attf-href="{{object.get_base_url()}}/web#id={{object.id}}&amp;action={{object.env.ref('website_sale.action_orders_ecommerce').id}}&amp;model=sale.order&amp;view_type=form" target="_blank" style="text-decoration: none;"><t t-out="object.name"/>,</a> -->
+                                <a t-attf-href="{{object.get_base_url()}}/web#id={{object.id}}&amp;action={{object.env.ref('tzc_sales_customization_spt.action_orders_ecommerce').id}}&amp;model=sale.order&amp;view_type=form" target="_blank" style="text-decoration: none;"><t t-out="object.name"/>,</a>
                                 </b></p>
                                 <!-- <br/> -->
                                 <div style="text-align: left; margin: 16px 0px 16px 0px; font-size: 14px;">
-                                    <!-- <a t-attf-href="{{object.get_base_url()}}/web#id={{object.id}}&amp;action={{object.env.ref('website_sale.action_orders_ecommerce').id}}&amp;model=sale.order&amp;view_type=form" target="_blank" style="background-color: #7693f8; padding: 8px 16px 8px 16px; text-decoration: none; color: #fff; border-radius: 5px; font-size:13px;">
+                                    <a t-attf-href="{{object.get_base_url()}}/web#id={{object.id}}&amp;action={{object.env.ref('tzc_sales_customization_spt.action_orders_ecommerce').id}}&amp;model=sale.order&amp;view_type=form" target="_blank" style="background-color: #7693f8; padding: 8px 16px 8px 16px; text-decoration: none; color: #fff; border-radius: 5px; font-size:13px;">
                                         View order
-                                    </a> -->
+                                    </a>
                                 </div>
                                 <!-- <br/> -->
                                 <p style="margin-bottom:0px;">Thank you,<br/>
