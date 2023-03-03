@@ -808,7 +808,7 @@
         <record id="kits_b2b_eyeglasses_menus_eyeglasses_brands_slider" model="kits.b2b.image.model">
             <field name="header_description">Brands</field>
             <field name="url">https://cdn.teameto.com/data/B2C1/new_tzc_b2b_images/cat/cat-4.png</field>
-            <field name="description"></field>
+            <field name="redirect_url">/brands</field>
             <field name="filter_menu_type">filter</field>
 
             <field name="filter_menu_id" eval="kits_b2b_eyeglasses_menus" />
@@ -816,21 +816,21 @@
         <record id="kits_b2b_eyeglasses_menus_eyeglasses_women_slider" model="kits.b2b.image.model">
             <field name="header_description">Women</field>
             <field name="url">https://cdn.teameto.com/data/B2C1/new_tzc_b2b_images/cat/cat-1.png</field>
-            <field name="description"></field>
+            <field name="redirect_url">/eyeglass?category=5&amp;gender=female</field>
             <field name="filter_menu_type">filter</field>
             <field name="filter_menu_id" eval="kits_b2b_eyeglasses_menus" />
         </record>
         <record id="kits_b2b_eyeglasses_menus_eyeglasses_kids_slider" model="kits.b2b.image.model">
             <field name="header_description">Kids</field>
             <field name="url">https://cdn.teameto.com/data/B2C1/new_tzc_b2b_images/cat/cat-2.png</field>
-            <field name="description"></field>
+            <field name="redirect_url">/eyeglass?category=5&amp;min_eye=35&amp;max_eye=47</field>
             <field name="filter_menu_type">filter</field>
             <field name="filter_menu_id" eval="kits_b2b_eyeglasses_menus" />
         </record>
         <record id="kits_b2b_eyeglasses_menus_eyeglasses_clearence_sale_slider" model="kits.b2b.image.model">
             <field name="header_description">Clearence Sale</field>
             <field name="url">https://cdn.teameto.com/data/B2C1/new_tzc_b2b_images/cat/cat-3.png</field>
-            <field name="description"></field>
+            <field name="redirect_url">/eyeglass?category=5&amp;product%20group=clearance</field>
             <field name="filter_menu_type">filter</field>
             <field name="filter_menu_id" eval="kits_b2b_eyeglasses_menus" />
         </record>
@@ -850,7 +850,7 @@
         <record id="kits_b2b_sunglasses_menus_sunglasses_brands_slider" model="kits.b2b.image.model">
             <field name="header_description">Brands</field>
             <field name="url">https://cdn.teameto.com/data/B2C1/new_tzc_b2b_images/cat/cat-4.png</field>
-            <field name="description"></field>
+            <field name="redirect_url">/brands</field>
             <field name="filter_menu_type">filter</field>
 
             <field name="filter_menu_id" eval="kits_b2b_sunglasses_menus" />
@@ -858,21 +858,21 @@
         <record id="kits_b2b_sunglasses_menus_sunglasses_women_slider" model="kits.b2b.image.model">
             <field name="header_description">Women</field>
             <field name="url">https://cdn.teameto.com/data/B2C1/new_tzc_b2b_images/cat/cat-1.png</field>
-            <field name="description"></field>
+            <field name="redirect_url">/sunglass?category=6&amp;gender=female</field>
             <field name="filter_menu_type">filter</field>
             <field name="filter_menu_id" eval="kits_b2b_sunglasses_menus" />
         </record>
         <record id="kits_b2b_sunglasses_menus_sunglasses_kids_slider" model="kits.b2b.image.model">
             <field name="header_description">Kids</field>
             <field name="url">https://cdn.teameto.com/data/B2C1/new_tzc_b2b_images/cat/cat-2.png</field>
-            <field name="description"></field>
+            <field name="redirect_url">/sunglass?category=6&amp;min_eye=35&amp;max_eye=47</field>
             <field name="filter_menu_type">filter</field>
             <field name="filter_menu_id" eval="kits_b2b_sunglasses_menus" />
         </record>
         <record id="kits_b2b_sunglasses_menus_sunglasses_clearence_sale_slider" model="kits.b2b.image.model">
             <field name="header_description">Clearence Sale</field>
             <field name="url">https://cdn.teameto.com/data/B2C1/new_tzc_b2b_images/cat/cat-3.png</field>
-            <field name="description"></field>
+            <field name="redirect_url">/sunglass?category=6&amp;product%20group=clearance</field>
             <field name="filter_menu_type">filter</field>
             <field name="filter_menu_id" eval="kits_b2b_sunglasses_menus" />
         </record>
@@ -889,7 +889,7 @@
         <record id="kits_b2b_new_arrivals_menus_new_arrivals_brands_slider" model="kits.b2b.image.model">
             <field name="header_description">Brands</field>
             <field name="url">https://cdn.teameto.com/data/B2C1/new_tzc_b2b_images/cat/cat-4.png</field>
-            <field name="description"></field>
+            <field name="redirect_url">/brands</field>
             <field name="filter_menu_type">filter</field>
 
             <field name="filter_menu_id" eval="kits_b2b_new_arrivals_menus" />
@@ -897,21 +897,21 @@
         <record id="kits_b2b_new_arrivals_menus_new_arrivals_women_slider" model="kits.b2b.image.model">
             <field name="header_description">Women</field>
             <field name="url">https://cdn.teameto.com/data/B2C1/new_tzc_b2b_images/cat/cat-1.png</field>
-            <field name="description"></field>
+            <field name="redirect_url">/new-arrivals?new_arrivals=True&amp;gender=female</field>
             <field name="filter_menu_type">filter</field>
             <field name="filter_menu_id" eval="kits_b2b_new_arrivals_menus" />
         </record>
         <record id="kits_b2b_new_arrivals_menus_new_arrivals_kids_slider" model="kits.b2b.image.model">
             <field name="header_description">Kids</field>
             <field name="url">https://cdn.teameto.com/data/B2C1/new_tzc_b2b_images/cat/cat-2.png</field>
-            <field name="description"></field>
+            <field name="redirect_url">/new-arrivals?new_arrivals=True&amp;min_eye=35&amp;max_eye=47</field>
             <field name="filter_menu_type">filter</field>
             <field name="filter_menu_id" eval="kits_b2b_new_arrivals_menus" />
         </record>
         <record id="kits_b2b_new_arrivals_menus_new_arrivals_clearence_sale_slider" model="kits.b2b.image.model">
             <field name="header_description">Clearence Sale</field>
             <field name="url">https://cdn.teameto.com/data/B2C1/new_tzc_b2b_images/cat/cat-3.png</field>
-            <field name="description"></field>
+            <field name="redirect_url">/new-arrivals?new_arrivals=True&amp;product%20group=clearance</field>
             <field name="filter_menu_type">filter</field>
             <field name="filter_menu_id" eval="kits_b2b_new_arrivals_menus" />
         </record>
@@ -928,7 +928,7 @@
         <record id="kits_b2b_sale_menus_sale_brands_slider" model="kits.b2b.image.model">
             <field name="header_description">Brands</field>
             <field name="url">https://cdn.teameto.com/data/B2C1/new_tzc_b2b_images/cat/cat-4.png</field>
-            <field name="description"></field>
+            <field name="redirect_url">/brands</field>
             <field name="filter_menu_type">filter</field>
 
             <field name="filter_menu_id" eval="kits_b2b_sale_menus" />
@@ -936,21 +936,21 @@
         <record id="kits_b2b_sale_menus_sale_women_slider" model="kits.b2b.image.model">
             <field name="header_description">Women</field>
             <field name="url">https://cdn.teameto.com/data/B2C1/new_tzc_b2b_images/cat/cat-1.png</field>
-            <field name="description"></field>
+            <field name="redirect_url">/sale?product%20group=on_sale,clearance&amp;gender=female</field>
             <field name="filter_menu_type">filter</field>
             <field name="filter_menu_id" eval="kits_b2b_sale_menus" />
         </record>
         <record id="kits_b2b_sale_menus_sale_kids_slider" model="kits.b2b.image.model">
             <field name="header_description">Kids</field>
             <field name="url">https://cdn.teameto.com/data/B2C1/new_tzc_b2b_images/cat/cat-2.png</field>
-            <field name="description"></field>
+            <field name="redirect_url">/sale?product%20group=on_sale,clearance&amp;min_eye=35&amp;max_eye=47</field>
             <field name="filter_menu_type">filter</field>
             <field name="filter_menu_id" eval="kits_b2b_sale_menus" />
         </record>
         <record id="kits_b2b_sale_menus_sale_clearence_sale_slider" model="kits.b2b.image.model">
             <field name="header_description">Clearence Sale</field>
             <field name="url">https://cdn.teameto.com/data/B2C1/new_tzc_b2b_images/cat/cat-3.png</field>
-            <field name="description"></field>
+            <field name="redirect_url">/sale?product%20group=clearance</field>
             <field name="filter_menu_type">filter</field>
             <field name="filter_menu_id" eval="kits_b2b_sale_menus" />
         </record>

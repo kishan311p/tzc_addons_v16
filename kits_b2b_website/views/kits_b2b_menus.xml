@@ -35,10 +35,10 @@
                     <group attrs="{'invisible':['|',('menu_type','!=','filter'),('show_sliders','=', False)]}">
                         <field name="slider_ids">
                             <tree editable="bottom">
+                                <field name="sequence" widget="handle"/>
                                 <field name='show_filter_menu_sliders' invisible="1" />
                                 <field name='header_description' attrs="{'required':[('show_filter_menu_sliders','=',True)]}" />
-                                <field name='filter_menu_type' attrs="{'required':[('show_filter_menu_sliders','=',True)]}" />
-                                <field name='description' attrs="{'required':[('show_filter_menu_sliders','=',True),('filter_menu_type','=','filter')]}" string="Query Params" />
+                                <field name='redirect_url' attrs="{'required':[('show_filter_menu_sliders','=',True)]}" string="Redirect URL" />
                                 <field name="url" />
                                 <field name="image_icon" widget="image" options="{'zoom': true,'preview_image':'image_icon','size': [128, 128]}" />
                             </tree>
@@ -57,7 +57,6 @@
             <tree string="">
                 <field name="sequence" widget="handle"/>
                 <field name="name" />
-                <field name="redirect_url" readonly="1"/>
                 <field name="website_id" />
             </tree>
         </field>
