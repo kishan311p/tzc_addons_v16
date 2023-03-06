@@ -119,7 +119,7 @@ class mail_compose_message_wizard(models.TransientModel):
                 else:
                     ctx.update({'active_model':'res.partner','active_ids':self.env['res.users'].browse(self.env.context.get('active_ids')).mapped('partner_id').ids})
                 self.env.context = ctx
-            notif_layout = self._context.get('custom_layout')
+            notif_layout = self._context.get('default_email_layout_xmlid')
             model_description = self._context.get('model_description')
             for wizard in self:
                 if wizard.attachment_ids and wizard.composition_mode != 'mass_mail' and wizard.template_id:

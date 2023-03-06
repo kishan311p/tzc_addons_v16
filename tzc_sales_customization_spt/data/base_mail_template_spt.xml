@@ -417,7 +417,7 @@ The ${object.company_id.name} Team -->
             invoice
         </t>
         <t t-if="object.invoice_origin">
-            (from Sales order  <t t-out="object.invoice_origin"/>
+            (from Sales order  <t t-out="object.invoice_origin"/>)
         </t>
         is ready.
         <t t-if="object.payment_state == 'paid'">
@@ -435,15 +435,13 @@ The ${object.company_id.name} Team -->
                         <!-- Please remit payment at your earliest convenience. -->
                 <p>
                 <t t-if="object.invoice_user_id.signature">
-                <!-- <t t-if="not is_html_empty(object.invoice_user_id.signature)"> -->
-            <br /><br />
-            <t t-out="object.invoice_user_id.signature or ''"></t>
-        </t>
+                    <t t-out="object.invoice_user_id.signature or ''"></t>
+                </t>
             </p>
         </p>
-            <a t-attf-href="{{object.get_base_url()}}/report/pdf/account.report_invoice/{{object.id}}">
+            <!-- <a t-attf-href="{{object.get_base_url()}}/report/pdf/account.report_invoice/{{object.id}}">
                 <img src="/tzc_sales_customization_spt/static/src/img/pdf.png" style="height:60px;width:100px;"/>
-            </a>
+            </a> -->
         </div>
 
     </field>

@@ -217,7 +217,8 @@ class sale_order(models.Model):
     def action_quotation_send(self):
         ''' Opens a wizard to compose an email, with relevant mail template loaded by default '''
         self.ensure_one()
-        template_id = self.env.ref('tzc_sales_customization_spt.mail_template_notify_customer_order_completion') if self.state in ['draft_inv','open_inv','scan','shipped'] else self._find_mail_template()
+        template_id =self._find_mail_template()
+        # template_id = self.env.ref('tzc_sales_customization_spt.mail_template_notify_customer_order_completion') if self.state in ['draft_inv','open_inv','scan','shipped'] else self._find_mail_template()
         lang = self.env.context.get('lang')
         template_id = self.env['mail.template'].browse(template_id.id)
         if template_id.lang:
@@ -229,7 +230,7 @@ class sale_order(models.Model):
             'default_template_id': template_id.id if template_id else None,
             'default_composition_mode': 'comment',
             'mark_so_as_sent': True,
-            # 'default_email_layout_xmlid': 'mail.mail_notification_light',
+            'default_email_layout_xmlid': 'mail.mail_notification_light',
             'proforma': self.env.context.get('proforma', False),
             'force_email': True,
             'model_description': self.with_context(lang=lang).type_name,
