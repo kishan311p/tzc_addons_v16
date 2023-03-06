@@ -26,8 +26,7 @@ The team at ETO thank you for your business and remain committed everyday to sta
 
         <!-- main banners record  -->
         <record id="kit_main_baner1" model="kits.b2b.image.model">
-            <field name="header_description">Your Partner in 
-Wholesale! </field>
+            <field name="header_description">Your Wholesale Partner for Branded Glasses </field>
             <field name="description">Trusted distributors of designer eyeglass and sunglass frames worldwide for over 25 years.</field>
             <field name="url">https://cdn.teameto.com/data/B2C1/new_tzc_b2b_images/hero/hero-slide-1.png</field>
             <field name="redirect_url">https://b2b.teameto.com/signup</field>
@@ -37,8 +36,7 @@ Wholesale! </field>
 
         </record>
         <record id="kit_main_baner2" model="kits.b2b.image.model">
-            <field name="header_description">No Minimum Order 
-Same Day Shipping </field>
+            <field name="header_description">No Minimums Required </field>
             <field name="description">All our products are available to ship immediately with no minimum order quantities.</field>
             <field name="url">https://cdn.teameto.com/data/B2C1/new_tzc_b2b_images/hero/hero-slide-2.png</field>
             <field name="redirect_url">https://b2b.teameto.com/shop</field>
@@ -48,9 +46,9 @@ Same Day Shipping </field>
 
         </record>
         <record id="kit_main_baner3" model="kits.b2b.image.model">
-            <field name="header_description">1,000+ Brands 
-Original Design Eyewear </field>
-            <field name="description">It is a long established fact that a reader will be distracted by the readable content.</field>
+            <field name="header_description">100+ designer frames to choose from </field>
+            <field name="description">The best brands for eyeglasses are a few clicks away from being added to your inventory.
+</field>
             <field name="url">https://cdn.teameto.com/data/B2C1/new_tzc_b2b_images/hero/hero-slide-3.png</field>
             <field name="redirect_url">https://b2b.teameto.com/shop</field>
             <field name="redirect_text">Shop Now</field>

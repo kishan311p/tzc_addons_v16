@@ -1021,21 +1021,25 @@
             <field name="name">Contact info@teameto.com</field>
             <field name="website_id" eval="kits_team_eto_website" />
             <field name="sequence">4</field>
+            <field name="redirect_url">mailto:info@teameto.com</field>
         </record>
         <record id="kits_b2b_home_advertisement_register_to_view_prices" model="kits.b2b.home.advertisement">
             <field name="name">Register to View Prices</field>
             <field name="website_id" eval="kits_team_eto_website" />
             <field name="sequence">3</field>
+            <field name="redirect_url">https://b2b.teameto.com/signup</field>
         </record>
         <record id="kits_b2b_home_advertisement_no_minimums" model="kits.b2b.home.advertisement">
             <field name="name">No Minimums</field>
             <field name="website_id" eval="kits_team_eto_website" />
             <field name="sequence">2</field>
+            <!-- <field name="redirect_url">https://b2b.teameto.com/shop</field> -->
         </record>
         <record id="kits_b2b_home_advertisement_orders_over_1000" model="kits.b2b.home.advertisement">
             <field name="name">Free Shipping on Orders over $1000</field>
             <field name="website_id" eval="kits_team_eto_website" />
             <field name="sequence">1</field>
+            <!-- <field name="redirect_url">https://b2b.teameto.com/shop</field> -->
         </record>
     </data>
 </odoo>
