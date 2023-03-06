@@ -4,6 +4,7 @@ class kits_b2b_website_slider(models.Model):
     _name = 'kits.b2b.website.slider'
     _description = "B2B Sliders"
     
+    sequence = fields.Integer('Sequence',Index=True)
     name = fields.Text('Name')
     website_id = fields.Many2one('kits.b2b.website','Website')
     slider_type = fields.Selection([('products', 'products'),('eyeglasses', 'Eyeglasses'),('sunglasses', 'Sunglasses'),('new_arrivals', 'New Arrivals'),('sales', 'Sales'),('brands', 'Brands'),('our_story', 'Our Story'),('contact_us', 'Contact Us'),('offers', 'Offers')], string='Type')

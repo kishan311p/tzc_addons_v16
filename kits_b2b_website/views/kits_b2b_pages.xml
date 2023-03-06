@@ -121,6 +121,7 @@
                             <group>
                                 <field name="team_member_ids" context="{'website':'b2b1'}">
                                     <tree editable="bottom">
+                                        <field name="sequence" widget="handle" />
                                         <field name='image' widget="image" options="{'zoom': true,'preview_image': 'image_icon','size':[50,50]}" />
                                         <field name='image_url' />
                                         <field name='name'/>

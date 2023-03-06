@@ -50,7 +50,7 @@ class kits_b2b_pages(models.Model):
         'kits.b2b.website.slider', 'cu_page_id', 'Sliders'
     )
     char_field = fields.Char('Char Field')
-
+    
     how_to_shop_title = fields.Char('How To Show Title')
     how_to_shop_background = fields.Char('Background Image URL')
     how_to_shop_redirect_url = fields.Char('How To shop Redirect URL')

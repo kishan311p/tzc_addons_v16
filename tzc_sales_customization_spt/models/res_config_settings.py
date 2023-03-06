@@ -19,6 +19,8 @@ class res_config_settings(models.TransientModel):
     cart_abandoned_delay = fields.Float(string="Send After")
     cart_recovery_mail_template = fields.Many2one('mail.template', string='Cart Recovery Email', domain="[('model', '=', 'sale.order')]")
     kits_shipping_method = fields.Boolean('Display Shipping Method')
+    no_product_case_image_url = fields.Char('No product case image url')
+    
     @api.model
     def get_values(self):
         res = super(res_config_settings, self).get_values()
