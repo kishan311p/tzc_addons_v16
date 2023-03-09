@@ -22,6 +22,7 @@ The team at ETO thank you for your business and remain committed everyday to sta
             <field name="website_id" eval="kits_team_eto_website" />
             <field name="how_to_shop_background">https://cdn.teameto.com/data/B2C1/new_tzc_b2b_images/roadmap/roadmap-bg.png</field>
             <field name="how_to_shop_redirect_url">https://b2b.teameto.com/shop</field>
+            <field name="char_field">Some of Our Brands</field>
         </record>
 
         <!-- main banners record  -->
@@ -241,14 +242,14 @@ Sunglasses</field>
             <field name="offer_id" eval="kits_home_page" />
             <field name="website_id" eval="kits_team_eto_website" />
         </record>
-
+<!-- 
         <record id="kits_homepage_brand_slider" model="kits.b2b.website.slider">
             <field name="name">Some of Our Brands</field>
             <field name="slider_type">brands</field>
             <field name="website_id" eval="kits_team_eto_website" />
             <field name="page_id" eval="kits_home_page" />
 
-        </record>
+        </record> -->
         <!-- offers sliders -->
         <!-- <record id="kits_homepage_offer_1_slider" model="kits.b2b.website.slider">
             <field name="name">Free Shipping on all orders over $1000</field>

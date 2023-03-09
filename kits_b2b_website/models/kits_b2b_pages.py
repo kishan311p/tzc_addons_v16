@@ -71,3 +71,4 @@ class kits_b2b_pages(models.Model):
         'team_member_page_id',
         string='Team Members'
     )
+    brand_ids = fields.Many2many('product.brand.spt','b2b_pages_with_product_brand_rel','b2b_page_id','brand_id', string='Brand')

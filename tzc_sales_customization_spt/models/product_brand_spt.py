@@ -43,6 +43,11 @@ class ProductBrandSpt(models.Model):
     # website_published = fields.Boolean(string='Website Publish',default=True)
     # slider_image_ids = fields.One2many('product.brand.slider.image.spt', 'brand',string='Slider Images')
 
+    @api.onchange('brand_link')
+    def _onchange_brand_link(self):
+        for record in self:
+            record.logo = record.brand_link
+
     def _get_brand_data_spt(self):
         for record in self:
             product_ids = self.env['product.product'].search([('brand', '=', record.id)]).ids

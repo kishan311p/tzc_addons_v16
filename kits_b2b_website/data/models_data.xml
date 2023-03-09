@@ -379,7 +379,7 @@
             <field name="page_id" eval="kits_aboutus_page" />
             <field name="team_member_page_id" eval="kits_aboutus_page" />
             <field name="image_id" eval="kits_aboutus_our_team_8_image" />
-            <field name="image_url">https://cdn.teameto.com/data/B2C1/new_tzc_b2b_images/team/Haider%20Hassan%20Anwarulhaq%20Bukhari</field>
+            <field name="image_url">https://cdn.teameto.com/data/B2C1/new_tzc_b2b_images/team/Haider%20Hassan%20Anwarulhaq%20Bukhari.png</field>
             <field name="description">Territorial Manager</field>
         </record>
         <record id="kits_aboutus_our_team_9_slider" model="kits.b2b.website.slider">
