@@ -249,7 +249,8 @@ Sunglasses</field>
             <field name="website_id" eval="kits_team_eto_website" />
             <field name="page_id" eval="kits_home_page" />
 
-        </record> -->
+        </record> 
+-->
         <!-- offers sliders -->
         <!-- <record id="kits_homepage_offer_1_slider" model="kits.b2b.website.slider">
             <field name="name">Free Shipping on all orders over $1000</field>

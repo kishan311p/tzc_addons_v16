@@ -203,9 +203,9 @@
                             </group>
                             <field name="brand_ids" context="{'tree_view_ref' : 'kits_b2b_website.product_brand_spt_view_tree2'}">
                                 <tree create="0" editable="bottom">
-                                    <field name="logo" readonly="1" widget="image" class="oe_avatar" options="{'zoom': true,'preview_image': 'logo'}" size="[150,150]"/>
+                                    <field name="logo"  force_save="1" readonly="1" widget="image" class="oe_avatar" options="{'zoom': true,'preview_image': 'logo'}" size="[150,150]"/>
                                     <field name="name" readonly="1"/>
-                                    <field name="brand_link" />
+                                    <field name="brand_link" string="Image URL"/>
                                     <field name="is_logo_published" />
                                 </tree>
                             </field>
