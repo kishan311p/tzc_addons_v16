@@ -15,16 +15,19 @@
         'data/website_data.xml',
         'data/mail_template_b2b_reset_password_email.xml',
         'data/mail_template.xml',
+        'data/terms_and_conditions_data.xml',
+        'data/shipping_data.xml',
+        'data/privacy_policy_data.xml',
         
         #security
         'security/ir.model.access.csv',
 
         #views
         'views/kits_b2b_website.xml',
+        'views/kits_b2b_website_slider.xml',
         'views/kits_b2b_pages.xml',
         'views/kits_b2b_menus.xml',
         'views/kits_b2b_image_model.xml',
-        'views/kits_b2b_website_slider.xml',
         'views/kits_b2b_key_value_model.xml',
         'views/kits_b2b_user_token.xml',
         'views/kits_b2b_multi_currency_mapping.xml',

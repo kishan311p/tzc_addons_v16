@@ -29,7 +29,7 @@
         <field name="model">kits.b2b.website.slider</field>
         <field name="arch" type="xml">
             <tree>
-                <field name="image"  widget="image" options="{'zoom': true,'preview_image':'image_logo','size': [128, 128]}" />
+                <field name="image" widget="image" options="{'zoom': true,'preview_image':'image_logo','size': [128, 128]}" />
                 <field name="name" />
                 <field name="slider_type" />
             </tree>
@@ -42,6 +42,40 @@
         <field name="res_model">kits.b2b.website.slider</field>
         <field name="view_mode">tree,form</field>
     </record>
+    <record id="kits_b2b_website_contact_us_images_view_form" model="ir.ui.view">
+        <field name="name">kits.b2b.website.contact.us.images.view.form</field>
+        <field name="model">kits.b2b.website.slider</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="name" string="Sequence" />
+                            <field name="image_url" />
+                            <field name="parent_id" />
 
+                        </group>
+                        <group>
+                            <field name="image" widget="image" class="oe_avatar" options="{'zoom': true,'preview_image': 'image'}" size="[150,150]"/>
+                            <field name="slider_type" />
 
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+    <record id="kits_b2b_website_contact_us_images_view_tree" model="ir.ui.view">
+        <field name="name">kits.b2b.website.contact.us.images.view.tree</field>
+        <field name="model">kits.b2b.website.slider</field>
+        <field name="arch" type="xml">
+            <tree editable="bottom">
+                <field name="name" widget="handle" />
+                <field name="image" widget="image" class="oe_avatar" options="{'zoom': true,'preview_image': 'image'}" size="[150,150]"/>
+                <field name="image_url" />
+                <field name="slider_type" invisible="1"/>
+                <field name="parent_id" domain="[('slider_type','=','contact_us')]"/>
+            </tree>
+        </field>
+    </record>
 </odoo>

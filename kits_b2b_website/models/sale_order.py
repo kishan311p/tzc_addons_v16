@@ -1,5 +1,5 @@
 from odoo import _, api, fields, models
-
+import datetime
 class sale_order(models.Model):
     _inherit = 'sale.order'
     
@@ -17,3 +17,17 @@ class sale_order(models.Model):
                 for sol in so.order_line:
                     sol.b2b_currency_rate = currency_rate
         return res
+
+
+    def kits_bambora_payment_email_of_b_to_b_website(self,dictionary):
+        order_id = self.env['sale.order'].search([('name','=',dictionary.get('order'))],limit=1)
+        if dictionary.get('payment_status') == 'approved':
+            template_id = self.env.ref('tzc_sales_customization_spt.mail_template_for_approve_payment')
+            template_id = template_id.with_context(order = order_id.name,date=datetime.datetime.now().strftime("%d-%m-%Y %H:%M:%S"),amount = order_id.currency_id.name + ' ' + order_id.currency_id.symbol + str(dictionary.get('amount',0.00)))
+            template_id.sudo().send_mail(order_id.id,force_send=True,email_layout_xmlid="mail.mail_notification_light")
+            
+        if dictionary.get('payment_status') == 'declined':
+            template_id = self.env.ref('tzc_sales_customization_spt.mail_template_for_decline_payment')
+            template_id = template_id.with_context(order = order_id.name,date=datetime.datetime.now().strftime("%d-%m-%Y %H:%M:%S"),amount = order_id.currency_id.name + ' ' + order_id.currency_id.symbol + str(dictionary.get('amount',0.00)))
+            template_id.sudo().send_mail(order_id.id,force_send=True,email_layout_xmlid="mail.mail_notification_light")
+        return {}

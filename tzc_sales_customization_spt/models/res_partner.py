@@ -40,7 +40,7 @@ class res_partner(models.Model):
     business_type = fields.Char('Type of Business')
     contact_name_spt = fields.Char('Contact Name')
     
-    # last_logged_on = fields.Datetime('Last Logged On',compute="_get_partner_data")
+    last_logged_on = fields.Datetime('Last Logged On',compute="_get_partner_data")
 
     last_order_date = fields.Datetime('Last Order Date',compute="_compute_info_fields",store=True)
     last_order_id = fields.Many2one('sale.order','Last Order',compute="_compute_info_fields",store=True)
@@ -79,7 +79,7 @@ class res_partner(models.Model):
     is_internal_user = fields.Boolean(string="Is Internal User")
     signup_from_website = fields.Boolean(string='Sinup From Website')
     mailgun_verification_status = fields.Selection([('approved','Mg Approved'),('rejected','MG Rejected')],'MG Status')
-    is_default_shipping= fields.Boolean('Default Shipping Address')
+    is_default_shipping= fields.Boolean('Default Shipping Address',default=False)
     # wk_website_loyalty_points = fields.Float(
     #     string='Website Loyalty Points',
     #     help='The points are the points with which the user is awarded of being Loyal !',

@@ -37,7 +37,7 @@
                             <tree editable="bottom">
                                 <field name="sequence" widget="handle"/>
                                 <field name='show_filter_menu_sliders' invisible="1" />
-                                <field name='header_description' attrs="{'required':[('show_filter_menu_sliders','=',True)]}" />
+                                <field name='header_description' />
                                 <field name='redirect_url' attrs="{'required':[('show_filter_menu_sliders','=',True)]}" string="Redirect URL" />
                                 <field name="url" />
                                 <field name="image_icon" widget="image" options="{'zoom': true,'preview_image':'image_icon','size': [128, 128]}" />

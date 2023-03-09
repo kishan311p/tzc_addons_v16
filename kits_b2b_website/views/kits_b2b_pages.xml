@@ -118,17 +118,18 @@
                                 <field name="text_2" />
                             </group>
 
-                            <group>
-                                <field name="team_member_ids" context="{'website':'b2b1'}">
-                                    <tree editable="bottom">
-                                        <field name="sequence" widget="handle" />
-                                        <field name='image' widget="image" options="{'zoom': true,'preview_image': 'image_icon','size':[50,50]}" />
-                                        <field name='image_url' />
-                                        <field name='name'/>
-                                        <field name="description" string="Position" />
-                                    </tree>
-                                </field>
-                            </group>
+
+                            <field name="team_member_ids" context="{'website':'b2b1'}">
+                                <tree editable="bottom">
+                                    <field name="sequence" widget="handle" />
+                                    <field name='image' widget="image" options="{'zoom': true,'preview_image': 'image_icon','size':[50,50]}" />
+                                    <field name='image_url' />
+                                    <field name='name'/>
+                                    <field name="description" string="Position" />
+                                </tree>
+                            </field>
+
+
                         </page>
                         <page name="sliders" string="Sliders" attrs="{'invisible': [('page_type','not in',['home'])]}">
                             <field name="slider_ids" context="{'website':'b2b1'}" domain="[('slider_type','=','home')]">
@@ -141,17 +142,16 @@
                                 </tree>
                             </field>
                         </page>
-                        <page name="sliders" string="Sliders" attrs="{'invisible': [('page_type','not in',['contact_us'])]}">
-                            <field name="contact_us_slider_ids" context="{'website':'b2b1','slider_type':'contact_us'}" domain="[('slider_type','=','contact_us')]">
-                                <tree editable="bottom">
+                        <page name="sliders" string="Image" attrs="{'invisible': [('page_type','not in',['contact_us'])]}">
+                            <field name="contact_us_slider_ids" context="{'form_view_ref' : 'kits_b2b_website.kits_b2b_website_contact_us_images_view_form', 'tree_view_ref' : 'kits_b2b_website.kits_b2b_website_contact_us_images_view_tree','default_website':'b2b1','default_slider_type':'contact_us'}"  domain="[('slider_type','=','contact_us')]">
+                                <tree editable="bottom" context="{'default_website':'b2b1','default_slider_type':'contact_us'}" >
+                                    <field name="name" widget="handle" />
                                     <field name="image" widget="image" class="oe_avatar" options="{'zoom': true,'preview_image': 'image'}" size="[150,150]"/>
-                                    <field name="image_id" string="Image URL"/>
                                     <field name="image_url" />
-                                    <field name="image" widget="image" options="{'zoom': true,'preview_image': 'image','size': [150,150]}" />
-                                    <field name="name" />
-                                    <field name="slider_type" />
-                                    <field name="parent_id" attrs="{'readony': [('slider_type','not in',['home','our_story',''])]}" domain="[('slider_type','=','contact_us')]"/>
+                                    <field name="slider_type" invisible="1"/>
+                                    <field name="parent_id" domain="[('slider_type','=','contact_us')]"/>
                                 </tree>
+                               
                             </field>
                         </page>
                         <page name="our_network" string="FAQ'S" attrs="{'invisible': [('page_type','not in',['faqs'])]}">
