@@ -151,7 +151,6 @@
                                     <field name="slider_type" invisible="1"/>
                                     <field name="parent_id" domain="[('slider_type','=','contact_us')]"/>
                                 </tree>
-                               
                             </field>
                         </page>
                         <page name="our_network" string="FAQ'S" attrs="{'invisible': [('page_type','not in',['faqs'])]}">
