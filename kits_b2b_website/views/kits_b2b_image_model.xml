@@ -6,7 +6,7 @@
         <field name="arch" type="xml">
             <form string="">
                 <sheet>
-                    <field name="image_icon" widget="image" class="oe_avatar" options="{'zoom': true,'preview_image': 'image_icon'}"/>
+                    <field name="image_icon" widget="image" class="oe_avatar" options="{'zoom': true,'preview_image': 'image_icon','size': [128, 128]}"/>
 
                     <group>
                         <group>
@@ -31,7 +31,7 @@
         <field name="arch" type="xml">
             <tree editable="bottom">
                 <field name="sequence" widget="handle" />
-                <field name="image_icon" widget="image" class="oe_avatar" options="{'zoom': true,'preview_image': 'image_icon'}"/>
+                <field name="image_icon" widget="image" class="oe_avatar" options="{'zoom': true,'preview_image': 'image_icon','size': [128, 128]}"/>
                 <field name="url" widget="url"/>
                 <field name="redirect_url" widget="url"/>
                 <field name="redirect_text" />

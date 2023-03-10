@@ -20,7 +20,7 @@
                             <field name="homepage_main_banner_ids">
                                 <tree editable="bottom">
                                     <field name="sequence" widget="handle" />
-                                    <field name="image_icon" widget="image" class="oe_avatar" options="{'zoom': true,'preview_image': 'image_icon'}" size="[150,150]"/>
+                                    <field name="image_icon" widget="image" class="oe_avatar" options="{'zoom': true,'preview_image': 'image_icon' ,'size': [128, 128]}" />
                                     <field name="url" widget="url"/>
                                     <field name="redirect_url" widget="url"/>
                                     <field name="redirect_text"/>
@@ -29,7 +29,7 @@
                                 </tree>
                                 <form>
                                     <sheet>
-                                        <field name="image_icon" widget="image" class="oe_avatar" options="{'zoom': true,'preview_image': 'image_icon'}"/>
+                                        <field name="image_icon" widget="image" class="oe_avatar" options="{'zoom': true,'preview_image': 'image_icon','size': [128, 128]}"/>
 
                                         <group>
                                             <group>
@@ -59,13 +59,13 @@
                                     <field name="header_text_2" />
                                     <field name="text_2" />
                                     <!-- <field name="banner_1_id" attrs="{'invisible': [('page_type','not in',['contact_us'])]}" />
-                                    <field name="banner_1_image" widget="image" class="oe_avatar" options="{'zoom': true,'preview_image': 'banner_1_image'}" size="[150,150]" attrs="{'invisible': [('page_type','not in',['contact_us'])]}"/> -->
+                                    <field name="banner_1_image" widget="image" class="oe_avatar" options="{'zoom': true,'preview_image': 'banner_1_image','size': [128, 128]}" size="[150,150]" attrs="{'invisible': [('page_type','not in',['contact_us'])]}"/> -->
                                     <field name="banner_url" attrs="{'invisible': [('page_type','not in',['contact_us'])]}" />
                                     <field name='banner_image' widget='image' class='oe_avatar' options="{'zoom': true,'preview_image': 'banner_1_image','size':[150,150]}" />
                                     <!-- <field name="banner_2_id" string="Banner" attrs="{'invisible': [('page_type','not in',['contact_us'])]}"/>
-                                    <field name="banner_2_image" widget="image" string="Background Image" class="oe_avatar" options="{'zoom': true,'preview_image': 'banner_2_image'}" attrs="{'invisible': [('page_type','not in',['contact_us'])]}"/> -->
+                                    <field name="banner_2_image" widget="image" string="Background Image" class="oe_avatar" options="{'zoom': true,'preview_image': 'banner_2_image','size': [128, 128]}" attrs="{'invisible': [('page_type','not in',['contact_us'])]}"/> -->
                                     <field name='banner_2_url' invisible="1" />
-                                    <field name='banner_2_image' invisible="1" widget="image" string="Background Image" class="oe_avatar" options="{'zoom': true,'preview_image': 'banner_2_image'}" attrs="{'invisible': [('page_type','not in',['contact_us'])]}" />
+                                    <field name='banner_2_image' invisible="1" widget="image" string="Background Image" class="oe_avatar" options="{'zoom': true,'preview_image': 'banner_2_image','size': [128, 128]}" attrs="{'invisible': [('page_type','not in',['contact_us'])]}" />
                                 </group>
 
                             </group>
@@ -76,9 +76,9 @@
                             <group attrs="{'invisible': [('page_type','not in',['home'])]}">
                                 <group>
                                     <field name="banner_url" />
-                                    <field name="banner_image" widget="image" class="oe_avatar" options="{'zoom': true,'preview_image': 'banner_image'}" size="[150,150]" />
+                                    <field name="banner_image" widget="image" class="oe_avatar" options="{'zoom': true,'preview_image': 'banner_image','size': [128, 128]}" size="[150,150]" />
                                     <!-- <field name="banner_1_id" options="{'no_create': True}"/>
-                                    <field name="banner_1_image" widget="image" class="oe_avatar" options="{'zoom': true,'preview_image': 'banner_1_image'}" size="[150,150]" /> -->
+                                    <field name="banner_1_image" widget="image" class="oe_avatar" options="{'zoom': true,'preview_image': 'banner_1_image','size': [128, 128]}" size="[150,150]" /> -->
                                 </group>
                             </group>
 
@@ -106,7 +106,7 @@
                             <field name="our_core_values_ids">
                                 <tree editable="bottom">
                                     <field name="sequence" widget='handle' />
-                                    <field name="image_icon" widget="image" class="oe_avatar" options="{'zoom': true,'preview_image': 'image_icon'}" size="[50,50]"/>
+                                    <field name="image_icon" widget="image" class="oe_avatar" options="{'zoom': true,'preview_image': 'image_icon','size': [50, 50]}" size="[50,50]"/>
                                     <field name="url" widget="url"/>
                                     <field name="header_description" />
                                     <field name="description" />
@@ -135,7 +135,7 @@
                         <page name="sliders" string="Sliders" attrs="{'invisible': [('page_type','not in',['home'])]}">
                             <field name="slider_ids" context="{'website':'b2b1'}" domain="[('slider_type','=','home')]">
                                 <tree editable="bottom">
-                                    <field name="image" widget="image" class="oe_avatar" options="{'zoom': true,'preview_image': 'image'}" size="[150,150]"/>
+                                    <field name="image" widget="image" class="oe_avatar" options="{'zoom': true,'preview_image': 'image','size': [128, 128]}" size="[150,150]"/>
                                     <field name="image_url" />
                                     <field name="name" />
                                     <field name="slider_type" />
@@ -147,7 +147,7 @@
                                 <tree editable="bottom" context="{'default_website':'b2b1','default_slider_type':'contact_us'}">
                                     <field name="sequence" widget="handle" />
                                     <field name="name" />
-                                    <field name="image" widget="image" class="oe_avatar" options="{'zoom': true,'preview_image': 'image'}" size="[150,150]"/>
+                                    <field name="image" widget="image" class="oe_avatar" options="{'zoom': true,'preview_image': 'image','size': [128, 128]}" size="[150,150]"/>
                                     <field name="image_url" />
                                     <field name="slider_type" invisible="1"/>
                                     <field name="parent_id" domain="[('slider_type','=','contact_us')]"/>
@@ -190,7 +190,7 @@
                             <field name="offer_ids">
                                 <tree editable="bottom">
                                     <field name="sequence" widget="handle" />
-                                    <field name="image_icon" widget="image" class="oe_avatar" options="{'zoom': true,'preview_image': 'image_icon'}" size="[150,150]"/>
+                                    <field name="image_icon" widget="image" class="oe_avatar" options="{'zoom': true,'preview_image': 'image_icon',size:[150,150]}" />
                                     <field name="url" widget="url"/>
                                     <field name="redirect_url" widget="url"/>
                                     <field name="redirect_text"/>
@@ -207,7 +207,7 @@
                             </group>
                             <field name="brand_ids" context="{'tree_view_ref' : 'kits_b2b_website.product_brand_spt_view_tree2'}">
                                 <tree create="0" editable="bottom">
-                                    <field name="logo" force_save="1" readonly="1" widget="image" class="oe_avatar" options="{'zoom': true,'preview_image': 'logo'}" size="[150,150]"/>
+                                    <field name="logo" force_save="1" readonly="1" widget="image" class="oe_avatar" options="{'zoom': true,'preview_image': 'logo','size': [128, 128]}" size="[150,150]"/>
                                     <field name="name" readonly="1"/>
                                     <field name="brand_link" string="Image URL"/>
                                 </tree>
@@ -225,7 +225,7 @@
         <field name="model">product.brand.spt</field>
         <field name="arch" type="xml">
             <tree create="0" edit="0">
-                <field name="logo" readonly="1" widget="image" class="oe_avatar" options="{'zoom': true,'preview_image': 'logo'}" size="[50,50]"/>
+                <field name="logo" readonly="1" widget="image" class="oe_avatar" options="{'zoom': true,'preview_image': 'logo','size': [128, 128]}" size="[50,50]"/>
                 <field name="name" readonly="1"/>
                 <field name="brand_link" />
             </tree>
