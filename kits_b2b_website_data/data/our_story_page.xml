@@ -198,7 +198,7 @@
             <field name="description">Sales Executive</field>
         </record>
         <record id="kits_aboutus_our_team_10_slider" model="kits.b2b.website.slider">
-            <field name="sequence">1</field>
+            <field name="sequence">10</field>
             <field name="name">Lyra Regina De Luzon</field>
             <field name="slider_type">our_story</field>
             <field name="website_id" eval="kits_team_eto_website" />
