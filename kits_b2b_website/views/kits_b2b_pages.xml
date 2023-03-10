@@ -190,7 +190,7 @@
                             <field name="offer_ids">
                                 <tree editable="bottom">
                                     <field name="sequence" widget="handle" />
-                                    <field name="image_icon" widget="image" class="oe_avatar" options="{'zoom': true,'preview_image': 'image_icon',size:[150,150]}" />
+                                    <field name="image_icon" widget="image" class="oe_avatar" options="{'zoom': true,'preview_image': 'image_icon','size':[150,150]}" />
                                     <field name="url" widget="url"/>
                                     <field name="redirect_url" widget="url"/>
                                     <field name="redirect_text"/>
