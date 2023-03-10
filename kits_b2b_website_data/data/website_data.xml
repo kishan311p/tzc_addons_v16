@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-<!-- Keep noupdate = 0 Till Live -->
-    <data noupdate="0">
+    <data noupdate="1">
         <record id="login_slider_1" model="kits.b2b.image.model">
             <field name="sequence">1</field>
             <field name="header_description">Alexandre Dumas</field>

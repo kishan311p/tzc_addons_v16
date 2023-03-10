@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <data>
+    <data noupdate="1">
         <record id="kits_b2b_brands_menus" model="kits.b2b.menus">
             <field name="name">Brands</field>
             <field name="website_id" eval="kits_team_eto_website" />

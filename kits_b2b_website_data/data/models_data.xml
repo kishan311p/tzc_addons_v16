@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <data noupdate="0">
+    <data noupdate="1">
         <record id="kits_team_eto_website" model="kits.b2b.website">
             <field name="name">Teameto</field>
             <field name="website_name">b2b1</field>
@@ -141,7 +141,7 @@
 
         <record id="kits_our_core_values_page" model="kits.b2b.pages">
             <field name="page_type">our_core_values</field>
-            <field name="name">Our Core Values</field>
+            <field name="name">Find US</field>
             <field name="website_id" eval="kits_team_eto_website" />
             <field name="banner_url">https://cdn.teameto.com/data/B2C1/new_tzc_b2b_images/map.png</field>
             <field name="banner_1_id" eval="kitsour_core_values_image" />
