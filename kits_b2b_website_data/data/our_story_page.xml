@@ -1,0 +1,247 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <data noupdate="0">
+        <!-- page record -->
+        <record id="kits_aboutus_page" model="kits.b2b.pages">
+            <field name="page_type">our_story</field>
+            <field name="name">Our Story</field>
+            <field name="header_text_1">Join Our Team</field>
+            <field name="text_1">Everything Optical have been suppling luxury branded optical frames and sunglasses to emerging markets across the world, which include Africa, South and Central America, Middle East and South Asia. Our office, located strategically across the globe have been serving these markets with the best quality eyewear, focusing on creating value for our customers.</field>
+            <field name="text_1_redirect_url">https://b2b.teameto.com/aboutus</field>
+            <field name="text_1_redirect_url_text">No current vacancies</field>
+            <field name="website_id" eval="kits_team_eto_website" />
+            <field name="text_2">Are you an eyewear enthusiast that is energetic and looking to work in a dynamic environment. Team ETO is constantly looking to grow and attract talented individuals that are looking for a promising career.</field>
+            <field name="header_text_2">Meet Our Team</field>
+            <field name="text_field">Everything Optical is focused on our customers. We understand that that our customer success is our success. We offer our clients only the best in quality eyewear frames direct from designers. Dedicated managers are assigned to our clients to provide unmatched customer service. All our customers are given access to our exclusive wholesale portal with visibility into our ready to ship inventory that is only a matter of clicks away from being shipped. Over the last two decades we have been suppling to clients internationally from our portfolio of 100+ designer brands. Our team works towards building trust and long-term partnerships with our clients by being transparent throughout our process and holding true to our value system.
+            When you partner with us, your dedicated sales manager will work closely with you to provide customized offerings that meet your need and ensure your successes.
+            </field>
+            <field name="char_field">hr@teameto.com</field>
+
+        </record>
+        <!-- banners -->
+        <record id="kits_aboutus_1_image" model="kits.b2b.image.model">
+            <field name="header_description">Over 25 years of wholesale designer eyewear distribution worldwide.</field>
+            <field name="description">Everything Optical have been suppling luxury branded optical frames and sunglasses to emerging markets across the world, which include Africa, South and Central America, Middle East and South Asia. Our office, located strategically across the globe have been serving these markets with the best quality eyewear, focusing on creating value for our customers.</field>
+            <field name="url">https://cdn.teameto.com/data/B2C1/new_tzc_b2b_images/aboout-gellery/A-1.jpg</field>
+            <field name="redirect_url">https://b2b.teameto.com/aboutus</field>
+            <field name="redirect_text">Join Our Team</field>
+            <field name="website_id" eval="kits_team_eto_website" />
+            <field name="main_banner_id" eval="kits_aboutus_page" />
+            <field name="sequence">1</field>
+        </record>
+
+        <record id="kits_aboutus_1_image" model="kits.b2b.image.model">
+            <field name="header_description">Over 25 years of wholesale designer eyewear distribution worldwide.</field>
+            <field name="description">Everything Optical have been suppling luxury branded optical frames and sunglasses to emerging markets across the world, which include Africa, South and Central America, Middle East and South Asia. Our office, located strategically across the globe have been serving these markets with the best quality eyewear, focusing on creating value for our customers.</field>
+            <field name="url">https://cdn.teameto.com/data/B2C1/new_tzc_b2b_images/aboout-gellery/A-1.jpg</field>
+            <field name="redirect_url">https://b2b.teameto.com/aboutus</field>
+            <field name="redirect_text">Join Our Team</field>
+            <field name="website_id" eval="kits_team_eto_website" />
+            <field name="main_banner_id" eval="kits_aboutus_page" />
+            <field name="sequence">1</field>
+        </record>
+
+
+        <record id="kits_aboutus_2_image" model="kits.b2b.image.model">
+            <field name="header_description">Over 25 years of wholesale designer eyewear distribution worldwide.</field>
+            <field name="description">Everything Optical have been suppling luxury branded optical frames and sunglasses to emerging markets across the world, which include Africa, South and Central America, Middle East and South Asia. Our office, located strategically across the globe have been serving these markets with the best quality eyewear, focusing on creating value for our customers.</field>
+            <field name="url">https://cdn.teameto.com/data/B2C1/new_tzc_b2b_images/aboout-gellery/A-4.jpg</field>
+            <field name="redirect_url">https://b2b.teameto.com/aboutus</field>
+            <field name="redirect_text">Join Our Team</field>
+            <field name="website_id" eval="kits_team_eto_website" />
+            <field name="main_banner_id" eval="kits_aboutus_page" />
+            <field name="sequence">4</field>
+        </record>
+
+
+        <record id="kits_aboutus_3_image" model="kits.b2b.image.model">
+            <field name="header_description">Over 25 years of wholesale designer eyewear distribution worldwide.</field>
+            <field name="description">Everything Optical have been suppling luxury branded optical frames and sunglasses to emerging markets across the world, which include Africa, South and Central America, Middle East and South Asia. Our office, located strategically across the globe have been serving these markets with the best quality eyewear, focusing on creating value for our customers.</field>
+            <field name="url">https://cdn.teameto.com/data/B2C1/new_tzc_b2b_images/aboout-gellery/A3.jpg</field>
+            <field name="redirect_url">https://b2b.teameto.com/aboutus</field>
+            <field name="redirect_text">Join Our Team</field>
+            <field name="website_id" eval="kits_team_eto_website" />
+            <field name="main_banner_id" eval="kits_aboutus_page" />
+            <field name="sequence">3</field>
+        </record>
+
+        <record id="kits_aboutus_4_image" model="kits.b2b.image.model">
+            <field name="header_description">Over 25 years of wholesale designer eyewear distribution worldwide.</field>
+            <field name="description">Everything Optical have been suppling luxury branded optical frames and sunglasses to emerging markets across the world, which include Africa, South and Central America, Middle East and South Asia. Our office, located strategically across the globe have been serving these markets with the best quality eyewear, focusing on creating value for our customers.</field>
+            <field name="url">https://cdn.teameto.com/data/B2C1/new_tzc_b2b_images/aboout-gellery/A-2.jpg</field>
+            <field name="redirect_url">https://b2b.teameto.com/aboutus</field>
+            <field name="redirect_text">Join Our Team</field>
+            <field name="website_id" eval="kits_team_eto_website" />
+            <field name="main_banner_id" eval="kits_aboutus_page" />
+            <field name="sequence">2</field>
+        </record>
+        <!-- our network -->
+        <record id="kits_aboutus_brands" model="kits.b2b.key.value.model">
+            <field name="name">brands</field>
+            <field name="value">100+</field>
+            <field name="page_id" eval="kits_aboutus_page" />
+            <field name="website_id" eval="kits_team_eto_website" />
+            <field name="sequence">1</field>
+        </record>
+        <record id="kits_aboutus_locations" model="kits.b2b.key.value.model">
+            <field name="name">locations</field>
+            <field name="value">3</field>
+            <field name="page_id" eval="kits_aboutus_page" />
+            <field name="website_id" eval="kits_team_eto_website" />
+            <field name="sequence">2</field>
+        </record>
+        <record id="kits_aboutus_years_of_experience" model="kits.b2b.key.value.model">
+            <field name="name">years of experience</field>
+            <field name="value">25+</field>
+            <field name="page_id" eval="kits_aboutus_page" />
+            <field name="website_id" eval="kits_team_eto_website" />
+            <field name="sequence">3</field>
+        </record>
+        <record id="kits_aboutus_markets" model="kits.b2b.key.value.model">
+            <field name="name">markets</field>
+            <field name="value">30+</field>
+            <field name="page_id" eval="kits_aboutus_page" />
+            <field name="website_id" eval="kits_team_eto_website" />
+            <field name="sequence">4</field>
+        </record>
+        <!-- our team -->
+
+        <record id="kits_aboutus_our_team_1_slider" model="kits.b2b.website.slider">
+            <field name="name">Aliraza Rajani</field>
+            <field name="slider_type">our_story</field>
+            <field name="website_id" eval="kits_team_eto_website" />
+            <field name="page_id" eval="kits_aboutus_page" />
+            <field name="team_member_page_id" eval="kits_aboutus_page" />
+            <field name="image_url">https://cdn.teameto.com/data/B2C1/new_tzc_b2b_images/team/Aliraza Rajani.png</field>
+            <field name="description">Founder &amp; CEO</field>
+        </record>
+        <record id="kits_aboutus_our_team_2_slider" model="kits.b2b.website.slider">
+            <field name="name">Musadik Rajani</field>
+            <field name="slider_type">our_story</field>
+            <field name="website_id" eval="kits_team_eto_website" />
+            <field name="page_id" eval="kits_aboutus_page" />
+            <field name="team_member_page_id" eval="kits_aboutus_page" />
+            <field name="image_url">https://cdn.teameto.com/data/B2C1/new_tzc_b2b_images/team/Musadik%20Rajani.png</field>
+            <field name="description">Senior Vice President</field>
+        </record>
+        <record id="kits_aboutus_our_team_3_slider" model="kits.b2b.website.slider">
+            <field name="name">Mazaher Rajani</field>
+            <field name="slider_type">our_story</field>
+            <field name="website_id" eval="kits_team_eto_website" />
+            <field name="page_id" eval="kits_aboutus_page" />
+            <field name="team_member_page_id" eval="kits_aboutus_page" />
+            <field name="image_url">https://cdn.teameto.com/data/B2C1/new_tzc_b2b_images/team/Mazaher%20Rajani.png</field>
+            <field name="description">VP Operations – Middle East &amp; Africa</field>
+        </record>
+        <record id="kits_aboutus_our_team_4_slider" model="kits.b2b.website.slider">
+            <field name="name">Behrouz Rouhani</field>
+            <field name="slider_type">our_story</field>
+            <field name="website_id" eval="kits_team_eto_website" />
+            <field name="page_id" eval="kits_aboutus_page" />
+            <field name="team_member_page_id" eval="kits_aboutus_page" />
+            <field name="image_url">https://cdn.teameto.com/data/B2C1/new_tzc_b2b_images/team/Behrouz%20Rouhani.png</field>
+            <field name="description">Project Manager</field>
+        </record>
+        <record id="kits_aboutus_our_team_5_slider" model="kits.b2b.website.slider">
+            <field name="name">Johanna Blanco Eidelman</field>
+            <field name="slider_type">our_story</field>
+            <field name="website_id" eval="kits_team_eto_website" />
+            <field name="page_id" eval="kits_aboutus_page" />
+            <field name="team_member_page_id" eval="kits_aboutus_page" />
+            <field name="image_url">https://cdn.teameto.com/data/B2C1/new_tzc_b2b_images/team/Johanna%20Blanco%20Eidelman.png</field>
+            <field name="description">Sales Manager</field>
+        </record>
+        <record id="kits_aboutus_our_team_6_slider" model="kits.b2b.website.slider">
+            <field name="name">Anabelle Estrañero</field>
+            <field name="slider_type">our_story</field>
+            <field name="website_id" eval="kits_team_eto_website" />
+            <field name="page_id" eval="kits_aboutus_page" />
+            <field name="team_member_page_id" eval="kits_aboutus_page" />
+            <field name="image_url">https://cdn.teameto.com/data/B2C1/new_tzc_b2b_images/team/Anabelle%20Estra%F1ero.png</field>
+            <field name="description">Administration &amp; Office Manager – Dubai</field>
+        </record>
+        <record id="kits_aboutus_our_team_7_slider" model="kits.b2b.website.slider">
+            <field name="name">Erica Hermoso</field>
+            <field name="slider_type">our_story</field>
+            <field name="website_id" eval="kits_team_eto_website" />
+            <field name="page_id" eval="kits_aboutus_page" />
+            <field name="team_member_page_id" eval="kits_aboutus_page" />
+            <field name="image_url">https://cdn.teameto.com/data/B2C1/new_tzc_b2b_images/team/Erica%20Hermoso.png</field>
+            <field name="description">Sales Executive</field>
+        </record>
+        <record id="kits_aboutus_our_team_8_slider" model="kits.b2b.website.slider">
+            <field name="name">Haider Hassan Anwarulhaq Bukhari</field>
+            <field name="slider_type">our_story</field>
+            <field name="website_id" eval="kits_team_eto_website" />
+            <field name="page_id" eval="kits_aboutus_page" />
+            <field name="team_member_page_id" eval="kits_aboutus_page" />
+            <field name="image_url">https://cdn.teameto.com/data/B2C1/new_tzc_b2b_images/team/Haider%20Hassan%20Anwarulhaq%20Bukhari.png</field>
+            <field name="description">Territorial Manager</field>
+        </record>
+        <record id="kits_aboutus_our_team_9_slider" model="kits.b2b.website.slider">
+            <field name="name">John Nasarine S. Lunod</field>
+            <field name="slider_type">our_story</field>
+            <field name="website_id" eval="kits_team_eto_website" />
+            <field name="page_id" eval="kits_aboutus_page" />
+            <field name="team_member_page_id" eval="kits_aboutus_page" />
+            <field name="image_url">https://cdn.teameto.com/data/B2C1/new_tzc_b2b_images/team/John%20Nasarine%20S.%20Lunod.png</field>
+            <field name="description">Sales Executive</field>
+        </record>
+        <record id="kits_aboutus_our_team_10_slider" model="kits.b2b.website.slider">
+            <field name="name">Lyra Regina De Luzon</field>
+            <field name="slider_type">our_story</field>
+            <field name="website_id" eval="kits_team_eto_website" />
+            <field name="page_id" eval="kits_aboutus_page" />
+            <field name="team_member_page_id" eval="kits_aboutus_page" />
+            <field name="image_url">https://cdn.teameto.com/data/B2C1/new_tzc_b2b_images/team/Lyra%20Regina%20De%20Luzon.png</field>
+            <field name="description">Country Manager</field>
+        </record>
+        <record id="kits_aboutus_our_team_11_slider" model="kits.b2b.website.slider">
+            <field name="name">Mouna Ben Aicha</field>
+            <field name="slider_type">our_story</field>
+            <field name="website_id" eval="kits_team_eto_website" />
+            <field name="page_id" eval="kits_aboutus_page" />
+            <field name="team_member_page_id" eval="kits_aboutus_page" />
+            <field name="image_url">https://cdn.teameto.com/data/B2C1/new_tzc_b2b_images/team/Mouna%20Ben%20Aicha.png</field>
+            <field name="description">Business Development Executive – French Market</field>
+        </record>
+        <record id="kits_aboutus_our_team_12_slider" model="kits.b2b.website.slider">
+            <field name="name">Murielle Annie Makon</field>
+            <field name="slider_type">our_story</field>
+            <field name="website_id" eval="kits_team_eto_website" />
+            <field name="page_id" eval="kits_aboutus_page" />
+            <field name="team_member_page_id" eval="kits_aboutus_page" />
+            <field name="image_url">https://cdn.teameto.com/data/B2C1/new_tzc_b2b_images/team/Murielle%20Annie%20Makon.png</field>
+            <field name="description">Sales Executive</field>
+        </record>
+        <record id="kits_aboutus_our_team_13_slider" model="kits.b2b.website.slider">
+            <field name="name">Aashiq Siddik</field>
+            <field name="slider_type">our_story</field>
+            <field name="website_id" eval="kits_team_eto_website" />
+            <field name="page_id" eval="kits_aboutus_page" />
+            <field name="team_member_page_id" eval="kits_aboutus_page" />
+            <field name="image_url">https://cdn.teameto.com/data/B2C1/new_tzc_b2b_images/team/Aashiq%20Siddik.png</field>
+            <field name="description">Digital Marketing Specialist</field>
+        </record>
+        <record id="kits_aboutus_our_team_14_slider" model="kits.b2b.website.slider">
+            <field name="name">Awais Tariq</field>
+            <field name="slider_type">our_story</field>
+            <field name="website_id" eval="kits_team_eto_website" />
+            <field name="page_id" eval="kits_aboutus_page" />
+            <field name="team_member_page_id" eval="kits_aboutus_page" />
+            <field name="image_url">https://cdn.teameto.com/data/B2C1/new_tzc_b2b_images/team/Awais%20Tariq.png</field>
+            <field name="description">Sales Executive</field>
+        </record>
+        <record id="kits_aboutus_our_team_15_slider" model="kits.b2b.website.slider">
+            <field name="name">Sabri Baaka</field>
+            <field name="slider_type">our_story</field>
+            <field name="website_id" eval="kits_team_eto_website" />
+            <field name="page_id" eval="kits_aboutus_page" />
+            <field name="team_member_page_id" eval="kits_aboutus_page" />
+            <field name="image_url">https://cdn.teameto.com/data/B2C1/new_tzc_b2b_images/team/Sabri%20Baaka.png</field>
+            <field name="description">Country Manager</field>
+        </record>
+
+    </data>
+</odoo>

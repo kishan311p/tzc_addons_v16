@@ -1,0 +1,298 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="0">
+        <record id="kits_team_eto_website" model="kits.b2b.website">
+            <field name="name">Teameto</field>
+            <field name="website_name">b2b1</field>
+            <field name="url">https://b2b.teameto.com</field>
+            <field name="company_id" ref="base.main_company"/>
+            <field name="pricelist_id" ref="tzc_sales_customization_spt.usd_public_pricelist_spt"/>
+            <field name="login_validity_in_days">30</field>
+            <field name="reset_password_validity_in_hours">2</field>
+            <field name="portal_user_id" ref="base.group_portal"/>
+            <field name="logo">https://teameto.com/web/image/website/2/logo/My%20Website?unique=5dca547</field>
+            <field name="image_logo">https://teameto.com/web/image/website/2/logo/My%20Website?unique=5dca547</field>
+            <field name="location_icon_url">https://cdn.teameto.com/data/B2C1/new_tzc_b2b_images/cart-flow/location.png</field>
+            <field name="shipping_icon_url">https://cdn.teameto.com/data/B2C1/new_tzc_b2b_images/cart-flow/car.png</field>
+            <field name="location_text">Free Delivery Over $120</field>
+            <field name="shipping_text">Dubai: Next business bay, Shaikh zayed road.</field>
+        </record>
+        <record id="kits_homepage_banner_image_1" model="kits.b2b.image.model">
+            <field name="header_description">How to Shop</field>
+            <field name="url">https://cdn.teameto.com/data/B2C1/new_tzc_b2b_images/roadmap/roadmap-bg.png</field>
+            <field name="redirect_url">https://b2b.teameto.com/shop</field>
+            <field name="redirect_text">Shop Now</field>
+        </record>
+
+        <record id="kits_homepage_woman_image_slider" model="kits.b2b.image.model">
+            <field name="url">https://cdn.teameto.com/data/B2C1/new_tzc_b2b_images/cat/woman.png</field>
+            <field name="website_id" eval="kits_team_eto_website" />
+        </record>
+        <record id="kits_homepage_man_image_slider" model="kits.b2b.image.model">
+            <field name="url">https://cdn.teameto.com/data/B2C1/new_tzc_b2b_images/cat/men.png</field>
+            <field name="website_id" eval="kits_team_eto_website" />
+        </record>
+        <record id="kits_homepage_kits_image_slider" model="kits.b2b.image.model">
+            <field name="url">https://cdn.teameto.com/data/B2C1/new_tzc_b2b_images/cat/kids.png</field>
+            <field name="website_id" eval="kits_team_eto_website" />
+        </record>
+
+
+
+        <record id="kits_aboutus_our_team_1_image" model="kits.b2b.image.model">
+            <field name="header_description">Aliraza Rajani</field>
+            <field name="description">Founder &amp; CEO</field>
+            <field name="sequence">1</field>
+            <field name="url">https://cdn.teameto.com/data/B2C1/new_tzc_b2b_images/team/Aliraza Rajani.png</field>
+            <field name="website_id" eval="kits_team_eto_website" />
+        </record>
+
+        <record id="kits_aboutus_our_team_2_image" model="kits.b2b.image.model">
+            <field name="header_description">Musadik Rajani</field>
+            <field name="description">Senior Vice President</field>
+            <field name="sequence">2</field>
+            <field name="url">https://cdn.teameto.com/data/B2C1/new_tzc_b2b_images/team/Musadik%20Rajani.png</field>
+            <field name="website_id" eval="kits_team_eto_website" />
+        </record>
+
+        <record id="kits_aboutus_our_team_3_image" model="kits.b2b.image.model">
+            <field name="header_description">Mazaher Rajani</field>
+            <field name="description">VP Operations – Middle East &amp; Africa</field>
+            <field name="sequence">3</field>
+            <field name="url">https://cdn.teameto.com/data/B2C1/new_tzc_b2b_images/team/Mazaher%20Rajani.png</field>
+            <field name="website_id" eval="kits_team_eto_website" />
+        </record>
+
+        <record id="kits_aboutus_our_team_4_image" model="kits.b2b.image.model">
+            <field name="header_description">Behrouz Rouhani</field>
+            <field name="description">Project Manager</field>
+            <field name="sequence">4</field>
+            <field name="url">https://cdn.teameto.com/data/B2C1/new_tzc_b2b_images/team/Behrouz%20Rouhani.png</field>
+            <field name="website_id" eval="kits_team_eto_website" />
+        </record>
+        <record id="kits_aboutus_our_team_5_image" model="kits.b2b.image.model">
+            <field name="header_description">Johanna Blanco Eidelman</field>
+            <field name="description">Sales Manager</field>
+            <field name="sequence">5</field>
+            <field name="url">https://cdn.teameto.com/data/B2C1/new_tzc_b2b_images/team/Johanna%20Blanco%20Eidelman.png</field>
+            <field name="website_id" eval="kits_team_eto_website" />
+        </record>
+        <record id="kits_aboutus_our_team_6_image" model="kits.b2b.image.model">
+            <field name="header_description">Anabelle Estrañero</field>
+            <field name="description">Administration &amp; Office Manager – Dubai</field>
+            <field name="sequence">6</field>
+            <field name="url">https://cdn.teameto.com/data/B2C1/new_tzc_b2b_images/team/Anabelle%20Estra%F1ero.png</field>
+            <field name="website_id" eval="kits_team_eto_website" />
+        </record>
+        <record id="kits_aboutus_our_team_7_image" model="kits.b2b.image.model">
+            <field name="header_description">Erica Hermoso</field>
+            <field name="description">Sales Executive</field>
+            <field name="sequence">7</field>
+            <field name="url">https://cdn.teameto.com/data/B2C1/new_tzc_b2b_images/team/Erica%20Hermoso.png</field>
+            <field name="website_id" eval="kits_team_eto_website" />
+        </record>
+        <record id="kits_aboutus_our_team_8_image" model="kits.b2b.image.model">
+            <field name="header_description">Haider Hassan Anwarulhaq Bukhari</field>
+            <field name="description">Territorial Manager</field>
+            <field name="sequence">8</field>
+            <field name="url">https://cdn.teameto.com/data/B2C1/new_tzc_b2b_images/team/Haider%20Hassan%20Anwarulhaq%20Bukhari.png</field>
+            <field name="website_id" eval="kits_team_eto_website" />
+        </record>
+        <record id="kits_aboutus_our_team_9_image" model="kits.b2b.image.model">
+            <field name="header_description">John Nasarine S. Lunod</field>
+            <field name="description">Sales Executive</field>
+            <field name="sequence">9</field>
+            <field name="url">https://cdn.teameto.com/data/B2C1/new_tzc_b2b_images/team/John%20Nasarine%20S.%20Lunod.png</field>
+            <field name="website_id" eval="kits_team_eto_website" />
+        </record>
+        <record id="kits_aboutus_our_team_10_image" model="kits.b2b.image.model">
+            <field name="header_description">Lyra Regina De Luzon</field>
+            <field name="description">Country Manager</field>
+            <field name="sequence">10</field>
+            <field name="url">https://cdn.teameto.com/data/B2C1/new_tzc_b2b_images/team/Lyra%20Regina%20De%20Luzon.png</field>
+            <field name="website_id" eval="kits_team_eto_website" />
+        </record>
+        <record id="kits_aboutus_our_team_11_image" model="kits.b2b.image.model">
+            <field name="header_description">Mouna Ben Aicha</field>
+            <field name="description">Business Development Executive – French Market</field>
+            <field name="sequence">11</field>
+            <field name="url">https://cdn.teameto.com/data/B2C1/new_tzc_b2b_images/team/Mouna%20Ben%20Aicha.png</field>
+            <field name="website_id" eval="kits_team_eto_website" />
+        </record>
+        <record id="kits_aboutus_our_team_12_image" model="kits.b2b.image.model">
+            <field name="header_description">Murielle Annie Makon</field>
+            <field name="description">Sales Executive</field>
+            <field name="sequence">12</field>
+            <field name="url">https://cdn.teameto.com/data/B2C1/new_tzc_b2b_images/team/Murielle%20Annie%20Makon.png</field>
+            <field name="website_id" eval="kits_team_eto_website" />
+        </record>
+        <record id="kits_aboutus_our_team_13_image" model="kits.b2b.image.model">
+            <field name="header_description">Aashiq Siddik</field>
+            <field name="description">Digital Marketing Specialist</field>
+            <field name="sequence">13</field>
+            <field name="url">https://cdn.teameto.com/data/B2C1/new_tzc_b2b_images/team/Aashiq%20Siddik.png</field>
+            <field name="website_id" eval="kits_team_eto_website" />
+        </record>
+        <record id="kits_aboutus_our_team_14_image" model="kits.b2b.image.model">
+            <field name="header_description">Awais Tariq</field>
+            <field name="description">Sales Executive</field>
+            <field name="sequence">14</field>
+            <field name="url">https://cdn.teameto.com/data/B2C1/new_tzc_b2b_images/team/Awais%20Tariq.png</field>
+            <field name="website_id" eval="kits_team_eto_website" />
+        </record>
+        <record id="kits_aboutus_our_team_15_image" model="kits.b2b.image.model">
+            <field name="header_description">Sabri Baaka</field>
+            <field name="description">Country Manager</field>
+            <field name="sequence">15</field>
+            <field name="url">https://cdn.teameto.com/data/B2C1/new_tzc_b2b_images/team/Sabri%20Baaka.png</field>
+            <field name="website_id" eval="kits_team_eto_website" />
+        </record>
+
+
+        <record id="kitsour_core_values_image" model="kits.b2b.image.model">
+            <field name="url">https://cdn.teameto.com/data/B2C1/new_tzc_b2b_images/map.png</field>
+            <field name="website_id" eval="kits_team_eto_website" />
+        </record>
+
+        <record id="kits_our_core_values_page" model="kits.b2b.pages">
+            <field name="page_type">our_core_values</field>
+            <field name="name">Our Core Values</field>
+            <field name="website_id" eval="kits_team_eto_website" />
+            <field name="banner_url">https://cdn.teameto.com/data/B2C1/new_tzc_b2b_images/map.png</field>
+            <field name="banner_1_id" eval="kitsour_core_values_image" />
+        </record>
+        <record id="kits_our_core_values_canada" model="kits.b2b.key.value.model">
+            <field name="head_office">True</field>
+            <field name="name">Toronto, Canada</field>
+            <field name="value">366 Denison Street, Unit 4 Markham, Ontario, Canada.</field>
+            <field name="page_id" eval="kits_our_core_values_page" />
+            <field name="contact_us_page_id" eval="kits_our_core_values_page" />
+            <field name="website_id" eval="kits_team_eto_website" />
+        </record>
+        <!-- <record id="kits_our_core_values_pakistan" model="kits.b2b.key.value.model">
+        <field name="name">Karachi, Pakistan</field>
+        <field name="value">Suite # 9, 3rd Floor, Sasi Arcade Clifton Karachi, Pakistan</field>
+        <field name="page_id" eval="kits_our_core_values_page" />
+        <field name="website_id" eval="kits_team_eto_website" />
+    </record> -->
+        <record id="kits_our_core_values_tanzania" model="kits.b2b.key.value.model">
+            <field name="name">Dar Es Salaam, Tanzania</field>
+            <field name="value">123 Samora Ave Dar es Salaam, Tanzania</field>
+            <field name="page_id" eval="kits_our_core_values_page" />
+            <field name="contact_us_page_id" eval="kits_our_core_values_page" />
+            <field name="website_id" eval="kits_team_eto_website" />
+        </record>
+        <!-- <record id="kits_our_core_values_kenya" model="kits.b2b.key.value.model">
+        <field name="name">Nairobi, Kenya</field>
+        <field name="value">Suite D10, 2nd Floor, Krishna Centre, Woodvale Grove, Westlands Nairobi, Kenya</field>
+        <field name="page_id" eval="kits_our_core_values_page" />
+        <field name="website_id" eval="kits_team_eto_website" />
+    </record> -->
+        <record id="kits_our_core_values_uae" model="kits.b2b.key.value.model">
+            <field name="name">Dubai, UAE</field>
+            <field name="value">Oﬃce 508, Latifa Tower, Trade Center 1, Sheikh Zayed Road Dubai, UAE</field>
+            <field name="page_id" eval="kits_our_core_values_page" />
+            <field name="contact_us_page_id" eval="kits_our_core_values_page" />
+            <field name="website_id" eval="kits_team_eto_website" />
+        </record>
+
+        <record id="kits_faqs_page" model="kits.b2b.pages">
+            <field name="page_type">faqs</field>
+            <field name="name">FAQ</field>
+            <field name="website_id" eval="kits_team_eto_website" />
+        </record>
+        <record id="kits_faqs_page_key_value_1" model="kits.b2b.key.value.model">
+            <field name="name">Who is Everything Optical?</field>
+            <field name="value">Everything Optical are suppliers of wholesale designer eyewear based out of Toronto, Canada. We have offices across the global to cater to our international client base. Team ETO have been a trusted partner for over two decades, providing high quality branded optical frames in a wide range of styles.</field>
+            <field name="page_id" eval="kits_faqs_page" />
+            <field name="website_id" eval="kits_team_eto_website" />
+        </record>
+        <record id="kits_faqs_page_key_value_2" model="kits.b2b.key.value.model">
+            <field name="name"> Which brands does Team ETO offer?</field>
+            <field name="value">We offer a wide range of designer brands from Carrera, Calvin Klein, Balenciaga, Dolce &amp; Gabbana, Guess, Adidas, Hugo Boss, Dunhill, Converse, Lacoste, Moschino, New Balance, Tom Ford and many more. All available brands are available to view on our B2B portal.</field>
+            <field name="page_id" eval="kits_faqs_page" />
+            <field name="website_id" eval="kits_team_eto_website" />
+        </record>
+        <record id="kits_faqs_page_key_value_3" model="kits.b2b.key.value.model">
+            <field name="name">How can I view pricing info?</field>
+            <field name="value">Our prices are competitive and exclusive to our clients. Simply register on our B2B portal and await approval from our management to view pricing and inventory information.</field>
+            <field name="page_id" eval="kits_faqs_page" />
+            <field name="website_id" eval="kits_team_eto_website" />
+        </record>
+        <record id="kits_faqs_page_key_value_4" model="kits.b2b.key.value.model">
+            <field name="name">Which countries can I get products delivered to?</field>
+            <field name="value">Everything Optical will ship to any part of the world and provide tracking details for all orders to ensure safe and secure delivery of your eyewear.</field>
+            <field name="page_id" eval="kits_faqs_page" />
+            <field name="website_id" eval="kits_team_eto_website" />
+        </record>
+        <record id="kits_faqs_page_key_value_5" model="kits.b2b.key.value.model">
+            <field name="name">How do I place an order?</field>
+            <field name="value">Once you register as a customer, you can add products to your cart and make the purchase and orders will be shipped out shortly after with details on your order sent to your registered email address.</field>
+            <field name="page_id" eval="kits_faqs_page" />
+            <field name="website_id" eval="kits_team_eto_website" />
+        </record>
+        <record id="kits_faqs_page_key_value_6" model="kits.b2b.key.value.model">
+            <field name="name">How much is the minimum order?</field>
+            <field name="value">At Everything Optical, our clients needs come first. That is why we DO NOT HAVE a minimum order number. Simply order what is needed for you!</field>
+            <field name="page_id" eval="kits_faqs_page" />
+            <field name="website_id" eval="kits_team_eto_website" />
+        </record>
+        <record id="kits_faqs_page_key_value_7" model="kits.b2b.key.value.model">
+            <field name="name">How can I make a return?</field>
+            <field name="value">Visit our terms and conditions for more details on returns. You can also contact your dedicated sales manager for additional information.</field>
+            <field name="page_id" eval="kits_faqs_page" />
+            <field name="website_id" eval="kits_team_eto_website" />
+        </record>
+        <record id="kits_faqs_page_key_value_8" model="kits.b2b.key.value.model">
+            <field name="name">How are payments made?</field>
+            <field name="value">Invoices are credited to your account. Payment can be made multiple options. Please reach out to sales manager for additional details.</field>
+            <field name="page_id" eval="kits_faqs_page" />
+            <field name="website_id" eval="kits_team_eto_website" />
+        </record>
+        <record id="kits_faqs_page_key_value_9" model="kits.b2b.key.value.model">
+            <field name="name">How long till my order is processed?</field>
+            <field name="value">Orders are processed and ready to ship within 2 business days.</field>
+            <field name="page_id" eval="kits_faqs_page" />
+            <field name="website_id" eval="kits_team_eto_website" />
+        </record>
+        <record id="kits_faqs_page_key_value_10" model="kits.b2b.key.value.model">
+            <field name="name">How are shipping chargers?</field>
+            <field name="value">Costs for shipping are dependent on destination and quantity, it may vary from order to order.</field>
+            <field name="page_id" eval="kits_faqs_page" />
+            <field name="website_id" eval="kits_team_eto_website" />
+        </record>
+
+
+
+        <record id="kits_b2b_home_advertisement_contact_info_teameto_com" model="kits.b2b.home.advertisement">
+            <field name="name">Contact info@teameto.com</field>
+            <field name="website_id" eval="kits_team_eto_website" />
+            <field name="sequence">4</field>
+            <field name="redirect_url">mailto:info@teameto.com</field>
+        </record>
+        <record id="kits_b2b_home_advertisement_register_to_view_prices" model="kits.b2b.home.advertisement">
+            <field name="name">Register to View Prices</field>
+            <field name="website_id" eval="kits_team_eto_website" />
+            <field name="sequence">3</field>
+            <field name="redirect_url">https://b2b.teameto.com/signup</field>
+        </record>
+        <record id="kits_b2b_home_advertisement_no_minimums" model="kits.b2b.home.advertisement">
+            <field name="name">No Minimums</field>
+            <field name="website_id" eval="kits_team_eto_website" />
+            <field name="sequence">2</field>
+            <!-- <field name="redirect_url">https://b2b.teameto.com/shop</field> -->
+        </record>
+        <record id="kits_b2b_home_advertisement_orders_over_1000" model="kits.b2b.home.advertisement">
+            <field name="name">Free Shipping on Orders over $1000</field>
+            <field name="website_id" eval="kits_team_eto_website" />
+            <field name="sequence">1</field>
+            <!-- <field name="redirect_url">https://b2b.teameto.com/shop</field> -->
+        </record>
+
+
+        <record id="kits_b2b_website.kits_b2b_website_action" model="ir.actions.act_window">
+            <field name="res_id" ref="kits_team_eto_website" />
+        </record>
+    </data>
+</odoo>
+

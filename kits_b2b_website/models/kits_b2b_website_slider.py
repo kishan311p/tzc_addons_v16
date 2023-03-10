@@ -18,3 +18,9 @@ class kits_b2b_website_slider(models.Model):
     cu_page_id = fields.Many2one('kits.b2b.pages', 'Contact US')
     team_member_page_id = fields.Many2one('kits.b2b.pages','Team Member Page')
     description = fields.Char('Description')
+
+    @api.constrains('sequence')
+    def _constrains_sequence(self):
+        for record in self:
+            if record.slider_type == 'contact_us':
+                record.name = record.sequence

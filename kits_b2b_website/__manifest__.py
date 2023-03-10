@@ -10,14 +10,8 @@
     'depends':['tzc_sales_customization_spt'],
     'data': [
         # data
-        'data/models_data.xml',
-        'data/home_page_data.xml',
-        'data/website_data.xml',
         'data/mail_template_b2b_reset_password_email.xml',
         'data/mail_template.xml',
-        'data/terms_and_conditions_data.xml',
-        'data/shipping_data.xml',
-        'data/privacy_policy_data.xml',
         
         #security
         'security/ir.model.access.csv',

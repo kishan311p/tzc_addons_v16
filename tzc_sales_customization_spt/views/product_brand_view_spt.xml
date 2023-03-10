@@ -28,7 +28,7 @@
                                 <field name="products_count" widget="statinfo" string="Products" />
                             </button>
                         </div> -->
-                        <field name="logo" widget="image" class="oe_avatar" />
+                        <field name="logo" widget="image" class="oe_avatar" options="{'zoom': true,'preview_image': 'logo'}" size="[50,50]"/>
                         <div class="oe_title">
                             <label for="name" string="Brand Name" class="oe_edit_only" />
                             <h1>
@@ -36,10 +36,7 @@
                             </h1>
                         </div>
                         <group>
-                            <field name="sequence" />
                             <field name="brand_link" widget="url"/>
-                            <field name="collection_button_name"/>
-                            <field name="brand_seo_keyword" />
                         </group>
                         <!-- <div groups="website.group_multi_website">
                             <label for="website_id" string="Website" class="col-sm-1 p-0 pt-3" />
@@ -49,10 +46,6 @@
                             <label for="is_brand_page" string="Brand Page" class="col-sm-1 p-0 pt-3" />
                             <field name="is_brand_page" />
                         </div> -->
-                        <div>
-                            <label for="is_logo_published" string="Publish Logo" class="col-sm-1 p-0 pt-3" />
-                            <field name="is_logo_published" />
-                        </div>
                         <xpath>
                             <notebook>
                                 <page string="Products" readonly="1">
@@ -72,19 +65,6 @@
                                     <group>
                                         <field name="description"/>
                                     </group>
-                                    <group >
-                                        <field name="desc_heading" string="Heading"/>
-                                    </group>
-                                    <br/>
-                                    <div class="row o_website_sale_image_modal">
-                                        <div class="col-md-6 col-xl-7 text-center o_website_sale_image_modal_container">
-                                            <div class="row">
-                                                <div class="col">
-                                                    <field name="brand_image" widget="image" />
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
                                 </page>
                             </notebook>
                         </xpath>

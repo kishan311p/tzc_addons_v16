@@ -70,7 +70,8 @@
         <field name="model">kits.b2b.website.slider</field>
         <field name="arch" type="xml">
             <tree editable="bottom">
-                <field name="name" widget="handle" />
+                <field name="sequence" widget="handle"  />
+                <field name="name"/>
                 <field name="image" widget="image" class="oe_avatar" options="{'zoom': true,'preview_image': 'image'}" size="[150,150]"/>
                 <field name="image_url" />
                 <field name="slider_type" invisible="1"/>

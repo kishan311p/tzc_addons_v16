@@ -1,0 +1,248 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="kits_b2b_brands_menus" model="kits.b2b.menus">
+            <field name="name">Brands</field>
+            <field name="website_id" eval="kits_team_eto_website" />
+            <field name="is_published">True</field>
+            <field name="redirect_url">/brand-menu</field>
+            <field name="menu_type">redirect</field>
+            <field name="in_more">True</field>
+            <field name="sequence">6</field>
+        </record>
+        <record id="kits_b2b_our_story_menus" model="kits.b2b.menus">
+            <field name="name">Our Story</field>
+            <field name="website_id" eval="kits_team_eto_website" />
+            <field name="page_id" eval="kits_aboutus_page" />
+            <field name="is_published">True</field>
+            <field name="redirect_url">/aboutus</field>
+            <field name="menu_type">redirect</field>
+            <field name="in_more">True</field>
+            <field name="sequence">7</field>
+        </record>
+        <record id="kits_b2b_faqs_menus" model="kits.b2b.menus">
+            <field name="name">FAQ's</field>
+            <field name="website_id" eval="kits_team_eto_website" />
+            <field name="page_id" eval="kits_faqs_page" />
+            <field name="is_published">True</field>
+            <field name="redirect_url">/faqs</field>
+            <field name="menu_type">redirect</field>
+            <field name="in_more">True</field>
+            <field name="sequence">8</field>
+        </record>
+        <record id="kits_b2b_contact_us_menus" model="kits.b2b.menus">
+            <field name="name">Contact Us</field>
+            <field name="website_id" eval="kits_team_eto_website" />
+            <field name="page_id" eval="kits_contact_us" />
+            <field name="is_published">True</field>
+            <field name="redirect_url">/contact-us</field>
+            <field name="menu_type">redirect</field>
+            <field name="sequence">5</field>
+        </record>
+         <record id="kits_b2b_eyeglasses_menus" model="kits.b2b.menus">
+            <field name="name">Eyeglasses</field>
+            <field name="website_id" eval="kits_team_eto_website" />
+            <field name="is_published">True</field>
+            <field name="redirect_url">/shop</field>
+            <field name="query_params">7</field>
+            <field name="fileter_params">Category</field>
+            <field name="menu_type">filter</field>
+            <field name="show_sliders">True</field>
+            <field name="sequence">1</field>
+        </record>
+        <record id="kits_b2b_eyeglasses_menus_eyeglasses_brands_slider" model="kits.b2b.image.model">
+            <field name="header_description"></field>
+            <field name="url">https://cdn.teameto.com/data/B2C1/new_tzc_b2b_images/cat/cat-4.png</field>
+            <field name="redirect_url">https://b2b.teameto.com/shop?brand=758</field>
+            <field name="filter_menu_type">filter</field>
+            <field name="sequence">2</field>
+            <field name="filter_menu_id" eval="kits_b2b_eyeglasses_menus" />
+        </record>
+        <record id="kits_b2b_eyeglasses_menus_eyeglasses_luxury_slider" model="kits.b2b.image.model">
+            <field name="header_description">Luxury</field>
+            <field name="url">https://cdn.teameto.com/data/B2C1/new_tzc_b2b_images/cat/cat-1.png</field>
+            <field name="redirect_url">https://b2b.teameto.com/shop?brand=777</field>
+            <field name="filter_menu_type">filter</field>
+            <field name="filter_menu_id" eval="kits_b2b_eyeglasses_menus" />
+            <field name="sequence">1</field>
+        </record>
+        <record id="kits_b2b_eyeglasses_menus_eyeglasses_roundish_slider" model="kits.b2b.image.model">
+            <field name="header_description">Roundish</field>
+            <field name="url">https://cdn.teameto.com/data/B2C1/new_tzc_b2b_images/cat/cat-2.png</field>
+            <field name="redirect_url">https://b2b.teameto.com/shop?shape=2,4</field>
+            <field name="filter_menu_type">filter</field>
+            <field name="filter_menu_id" eval="kits_b2b_eyeglasses_menus" />
+            <field name="sequence">4</field>
+        </record>
+        <record id="kits_b2b_eyeglasses_menus_eyeglasses_under_25_slider" model="kits.b2b.image.model">
+            <field name="header_description">Under $25</field>
+            <field name="url">https://cdn.teameto.com/data/B2C1/new_tzc_b2b_images/cat/cat-3.png</field>
+            <field name="redirect_url">https://b2b.teameto.com/shop?min_price=1&amp;max_price=24</field>
+            <field name="filter_menu_type">filter</field>
+            <field name="filter_menu_id" eval="kits_b2b_eyeglasses_menus" />
+            <field name="sequence">3</field>
+        </record>
+
+
+        <record id="kits_b2b_sunglasses_menus" model="kits.b2b.menus">
+            <field name="name">Sunglasses</field>
+            <field name="website_id" eval="kits_team_eto_website" />
+            <field name="is_published">True</field>
+            <field name="redirect_url">/shop</field>
+            <field name="query_params">6</field>
+            <field name="fileter_params">Category</field>
+            <field name="menu_type">filter</field>
+            <field name="show_sliders">True</field>
+            <field name="sequence">2</field>
+        </record>
+
+        <record id="kits_b2b_sunglasses_menus_sunglasses_brands_slider" model="kits.b2b.image.model">
+            <field name="header_description"></field>
+            <field name="url">https://cdn.teameto.com/data/B2C1/new_tzc_b2b_images/cat/cat-4.png</field>
+            <field name="redirect_url">https://b2b.teameto.com/shop?brand=758</field>
+            <field name="filter_menu_type">filter</field>
+            <field name="sequence">2</field>
+            <field name="filter_menu_id" eval="kits_b2b_sunglasses_menus" />
+        </record>
+        <record id="kits_b2b_sunglasses_menus_sunglasses_luxury_slider" model="kits.b2b.image.model">
+            <field name="header_description">Luxury</field>
+            <field name="url">https://cdn.teameto.com/data/B2C1/new_tzc_b2b_images/cat/cat-1.png</field>
+            <field name="redirect_url">https://b2b.teameto.com/shop?brand=777</field>
+            <field name="filter_menu_type">filter</field>
+            <field name="filter_menu_id" eval="kits_b2b_sunglasses_menus" />
+            <field name="sequence">1</field>
+        </record>
+        <record id="kits_b2b_sunglasses_menus_sunglasses_roundish_slider" model="kits.b2b.image.model">
+            <field name="header_description">Roundish</field>
+            <field name="url">https://cdn.teameto.com/data/B2C1/new_tzc_b2b_images/cat/cat-2.png</field>
+            <field name="redirect_url">https://b2b.teameto.com/shop?shape=2,4</field>
+            <field name="filter_menu_type">filter</field>
+            <field name="filter_menu_id" eval="kits_b2b_sunglasses_menus" />
+            <field name="sequence">4</field>
+        </record>
+        <record id="kits_b2b_sunglasses_menus_sunglasses_under_25_slider" model="kits.b2b.image.model">
+            <field name="header_description">Under $25</field>
+            <field name="url">https://cdn.teameto.com/data/B2C1/new_tzc_b2b_images/cat/cat-3.png</field>
+            <field name="redirect_url">https://b2b.teameto.com/shop?min_price=1&amp;max_price=24</field>
+            <field name="filter_menu_type">filter</field>
+            <field name="filter_menu_id" eval="kits_b2b_sunglasses_menus" />
+            <field name="sequence">3</field>
+        </record>
+        <record id="kits_b2b_new_arrivals_menus" model="kits.b2b.menus">
+            <field name="name">New Arrivals</field>
+            <field name="website_id" eval="kits_team_eto_website" />
+            <field name="is_published">True</field>
+            <field name="redirect_url">/shop</field>
+            <field name="query_params">True</field>
+            <field name="menu_type">filter</field>
+            <field name="show_sliders">True</field>
+            <field name="sequence">4</field>
+        </record>
+
+        <record id="kits_b2b_new_arrivals_menus_new_arrivals_brands_slider" model="kits.b2b.image.model">
+            <field name="header_description"></field>
+            <field name="url">https://cdn.teameto.com/data/B2C1/new_tzc_b2b_images/cat/cat-4.png</field>
+            <field name="redirect_url">https://b2b.teameto.com/shop?brand=758</field>
+            <field name="filter_menu_type">filter</field>
+            <field name="sequence">2</field>
+            <field name="filter_menu_id" eval="kits_b2b_new_arrivals_menus" />
+        </record>
+        <record id="kits_b2b_new_arrivals_menus_new_arrivals_luxury_slider" model="kits.b2b.image.model">
+            <field name="header_description">Luxury</field>
+            <field name="url">https://cdn.teameto.com/data/B2C1/new_tzc_b2b_images/cat/cat-1.png</field>
+            <field name="redirect_url">https://b2b.teameto.com/shop?brand=777</field>
+            <field name="filter_menu_type">filter</field>
+            <field name="filter_menu_id" eval="kits_b2b_new_arrivals_menus" />
+            <field name="sequence">1</field>
+        </record>
+        <record id="kits_b2b_new_arrivals_menus_new_arrivals_roundish_slider" model="kits.b2b.image.model">
+            <field name="header_description">Roundish</field>
+            <field name="url">https://cdn.teameto.com/data/B2C1/new_tzc_b2b_images/cat/cat-2.png</field>
+            <field name="redirect_url">https://b2b.teameto.com/shop?shape=2,4_eye=47</field>
+            <field name="filter_menu_type">filter</field>
+            <field name="filter_menu_id" eval="kits_b2b_new_arrivals_menus" />
+            <field name="sequence">4</field>
+        </record>
+        <record id="kits_b2b_new_arrivals_menus_new_arrivals_under_25_slider" model="kits.b2b.image.model">
+            <field name="header_description">Under $25</field>
+            <field name="url">https://cdn.teameto.com/data/B2C1/new_tzc_b2b_images/cat/cat-3.png</field>
+            <field name="redirect_url">https://b2b.teameto.com/shop?min_price=1&amp;max_price=24</field>
+            <field name="filter_menu_type">filter</field>
+            <field name="filter_menu_id" eval="kits_b2b_new_arrivals_menus" />
+            <field name="sequence">3</field>
+        </record>
+        <record id="kits_b2b_sale_menus" model="kits.b2b.menus">
+            <field name="name">Sale</field>
+            <field name="website_id" eval="kits_team_eto_website" />
+            <field name="is_published">True</field>
+            <field name="redirect_url">/shop</field>
+            <field name="query_params">?male=male&amp;female=female&amp;kids=eye_size-35,47</field>
+            <field name="menu_type">filter</field>
+            <field name="show_sliders">True</field>
+            <field name="sequence">3</field>
+        </record>
+
+        <record id="kits_b2b_sale_menus_sale_brands_slider" model="kits.b2b.image.model">
+            <field name="header_description"></field>
+            <field name="url">https://cdn.teameto.com/data/B2C1/new_tzc_b2b_images/cat/cat-4.png</field>
+            <field name="redirect_url">https://b2b.teameto.com/shop?brand=758</field>
+            <field name="filter_menu_type">filter</field>
+            <field name="sequence">2</field>
+            <field name="filter_menu_id" eval="kits_b2b_sale_menus" />
+        </record>
+        <record id="kits_b2b_sale_menus_sale_luxury_slider" model="kits.b2b.image.model">
+            <field name="header_description">Luxury</field>
+            <field name="url">https://cdn.teameto.com/data/B2C1/new_tzc_b2b_images/cat/cat-1.png</field>
+            <field name="redirect_url">https://b2b.teameto.com/shop?brand=777</field>
+            <field name="filter_menu_type">filter</field>
+            <field name="filter_menu_id" eval="kits_b2b_sale_menus" />
+            <field name="sequence">1</field>
+        </record>
+        <record id="kits_b2b_sale_menus_sale_roundish_slider" model="kits.b2b.image.model">
+            <field name="header_description">Roundish</field>
+            <field name="url">https://cdn.teameto.com/data/B2C1/new_tzc_b2b_images/cat/cat-2.png</field>
+            <field name="redirect_url">https://b2b.teameto.com/shop?shape=2,4e&amp;min_eye=35&amp;max_eye=47</field>
+            <field name="filter_menu_type">filter</field>
+            <field name="filter_menu_id" eval="kits_b2b_sale_menus" />
+            <field name="sequence">4</field>
+        </record>
+        <record id="kits_b2b_sale_menus_sale_under_25_slider" model="kits.b2b.image.model">
+            <field name="header_description">Under $25</field>
+            <field name="url">https://cdn.teameto.com/data/B2C1/new_tzc_b2b_images/cat/cat-3.png</field>
+            <field name="redirect_url">https://b2b.teameto.com/shop?min_price=1&amp;max_price=24</field>
+            <field name="filter_menu_type">filter</field>
+            <field name="filter_menu_id" eval="kits_b2b_sale_menus" />
+            <field name="sequence">3</field>
+        </record>
+        
+        
+        <record id="kits_b2b_currency_mapping" model="kits.b2b.multi.currency.mapping">
+            <field name="currency_rate">2.00</field>
+            <field name="website_id" eval="kits_team_eto_website" />
+            <field name="currency_id" ref="base.CAD" />
+        </record>
+        <record id="kits_b2b_catalog_my_dashboard" model="kits.b2b.menus">
+            <field name="name">My Catalogs</field>
+            <field name="my_dashboard_model_id" eval="kits_team_eto_website" />
+            <field name="sequence">10001</field>
+            <field name="redirect_url">/catalog</field>
+            <field name="menu_type">dashboard</field>
+        </record>
+        <record id="kits_b2b_quotations_my_dashboard" model="kits.b2b.menus">
+            <field name="name">My Quotations</field>
+            <field name="my_dashboard_model_id" eval="kits_team_eto_website" />
+            <field name="sequence">10002</field>
+            <field name="redirect_url">/quotation</field>
+            <field name="menu_type">dashboard</field>
+        </record>
+        <record id="kits_b2b_order_us_my_dashboard" model="kits.b2b.menus">
+            <field name="name">My Orders</field>
+            <field name="my_dashboard_model_id" eval="kits_team_eto_website" />
+            <field name="sequence">10003</field>
+            <field name="redirect_url">/order</field>
+            <field name="menu_type">dashboard</field>
+        </record>
+
+    </data>
+
+</odoo>

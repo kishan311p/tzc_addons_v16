@@ -35,7 +35,7 @@
                                 </tree>
                             </field>
                         </page>
-                        <page name="my_dashboard" string="My Dashboard">
+                        <page name="my_dashboard" invisible="1" string="My Dashboard">
                             <field name="my_dashboard_ids">
                                 <tree>
                                     <field name="sequence" widget="handle"/>

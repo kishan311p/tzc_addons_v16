@@ -11,10 +11,8 @@ class ProductBrandSpt(models.Model):
     kits_product_ids = fields.One2many('product.product','brand',string="Brand ")
     description = fields.Text('   Description', translate=True)
     # website_id = fields.Many2one("website", string="Website")
-    logo = fields.Char('Logo File')
-    sequence = fields.Integer('Sequence', default=1, help="Gives the sequence order when displaying.")
-    brand_link = fields.Char('Brand website link')
-    collection_button_name = fields.Char('Collection Button Name')
+    logo = fields.Char('Image')
+    brand_link = fields.Char('Image URL')
     # slider_image_ids = fields.One2many('product.brand.slider.image.spt', 'brand',string='Slider Images')
     product_ids = fields.Many2many(
         'product.product',
@@ -30,11 +28,6 @@ class ProductBrandSpt(models.Model):
     
     # is_brand_page = fields.Boolean(string='Is Brand Page',help="It will set the separate landing page for this brand")
     # brand_page = fields.Many2one("website.page", string="Brand Page",help="Select the brand page which you want to set for this brand.")
-    brand_image = fields.Char('Brand Image')
-    brand_image = fields.Binary('Brand Image')
-    desc_heading = fields.Char('Description Heading')
-    brand_seo_keyword = fields.Char('Brand SEO Keyword',copy=False,help="Make sure that seo Keyword doesn't containt whitespace,slash(\,/).")
-    is_logo_published = fields.Boolean('Publish logo',help='Publish logo after set logo image to show in brands slider.')
     
     eyeglass_avl_brand = fields.Boolean(string='Available Eyeglass Brand')
     sunglass_avl_brand = fields.Boolean(string='Available Sunglass Brand')

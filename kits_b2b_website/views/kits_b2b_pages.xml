@@ -9,7 +9,7 @@
                     <group>
                         <group>
                             <field name="name" />
-                            <field name="is_our_core_values" attrs="{'invisible': [('page_type','not in',['contact_us','our_story'])]}" />
+                            <field name="is_our_core_values" attrs="{'invisible': [('page_type','not in',['contact_us'])]}" />
                         </group>
                         <group>
                             <field name="page_type" />
@@ -63,8 +63,8 @@
                                     <field name='banner_image' widget='image' class='oe_avatar' options="{'zoom': true,'preview_image': 'banner_1_image','size':[150,150]}" />
                                     <!-- <field name="banner_2_id" string="Banner" attrs="{'invisible': [('page_type','not in',['contact_us'])]}"/>
                                     <field name="banner_2_image" widget="image" string="Background Image" class="oe_avatar" options="{'zoom': true,'preview_image': 'banner_2_image'}" attrs="{'invisible': [('page_type','not in',['contact_us'])]}"/> -->
-                                    <field name='banner_2_url' />
-                                    <field name='banner_2_image' widget="image" string="Background Image" class="oe_avatar" options="{'zoom': true,'preview_image': 'banner_2_image'}" attrs="{'invisible': [('page_type','not in',['contact_us'])]}" />
+                                    <field name='banner_2_url' invisible="1" />
+                                    <field name='banner_2_image'  invisible="1"  widget="image" string="Background Image" class="oe_avatar" options="{'zoom': true,'preview_image': 'banner_2_image'}" attrs="{'invisible': [('page_type','not in',['contact_us'])]}" />
                                 </group>
 
                             </group>
@@ -101,7 +101,7 @@
                             </div>
                         </page>
 
-                        <page name="our_core_values" attrs="{'invisible': [('page_type','not in',['home','our_story'])]}" string="Our Core Values">
+                        <page name="our_core_values" attrs="{'invisible': [('page_type','not in',['home'])]}" string="Our Core Values">
                             <field name="our_core_values_ids">
                                 <tree editable="bottom">
                                     <field name="sequence" widget='handle' />
@@ -144,7 +144,8 @@
                         <page name="sliders" string="Image" attrs="{'invisible': [('page_type','not in',['contact_us'])]}">
                             <field name="contact_us_slider_ids" context="{'form_view_ref' : 'kits_b2b_website.kits_b2b_website_contact_us_images_view_form', 'tree_view_ref' : 'kits_b2b_website.kits_b2b_website_contact_us_images_view_tree','default_website':'b2b1','default_slider_type':'contact_us'}" domain="[('slider_type','=','contact_us')]">
                                 <tree editable="bottom" context="{'default_website':'b2b1','default_slider_type':'contact_us'}">
-                                    <field name="name" widget="handle" />
+                                    <field name="sequence" widget="handle" />
+                                    <field name="name" />
                                     <field name="image" widget="image" class="oe_avatar" options="{'zoom': true,'preview_image': 'image'}" size="[150,150]"/>
                                     <field name="image_url" />
                                     <field name="slider_type" invisible="1"/>
@@ -163,6 +164,7 @@
                         <page name="our_network" string="Our Network" attrs="{'invisible': [('page_type','not in',['our_story'])]}">
                             <field name="key_value_model_ids" attrs="{'invisible': [('page_type','not in',['our_story'])]}">
                                 <tree editable="bottom">
+                                    <field name="sequence" widget="handle" />
                                     <field name="name" />
                                     <field name="value" />
                                 </tree>
@@ -203,10 +205,9 @@
                             </group>
                             <field name="brand_ids" context="{'tree_view_ref' : 'kits_b2b_website.product_brand_spt_view_tree2'}">
                                 <tree create="0" editable="bottom">
-                                    <field name="logo"  force_save="1" readonly="1" widget="image" class="oe_avatar" options="{'zoom': true,'preview_image': 'logo'}" size="[150,150]"/>
+                                    <field name="logo" force_save="1" readonly="1" widget="image" class="oe_avatar" options="{'zoom': true,'preview_image': 'logo'}" size="[150,150]"/>
                                     <field name="name" readonly="1"/>
                                     <field name="brand_link" string="Image URL"/>
-                                    <field name="is_logo_published" />
                                 </tree>
                             </field>
                         </page>
@@ -225,7 +226,6 @@
                 <field name="logo" readonly="1" widget="image" class="oe_avatar" options="{'zoom': true,'preview_image': 'logo'}" size="[50,50]"/>
                 <field name="name" readonly="1"/>
                 <field name="brand_link" />
-                <field name="is_logo_published" />
             </tree>
         </field>
     </record>

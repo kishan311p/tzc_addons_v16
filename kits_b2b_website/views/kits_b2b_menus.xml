@@ -27,7 +27,7 @@
                             <field name="query_params" attrs="{'invisible':[('menu_type','!=','filter')]}" />
                         </group>
                         <group>
-                            <field name="website_id" />
+                            <field name="website_id" required="1"/>
                             <field name="in_more" attrs="{'invisible':[('menu_type','not in',['redirect','filter'])]}" />
                             <field name="show_sliders" attrs="{'invisible':[('menu_type','!=','filter')]}" />
                         </group>
@@ -67,6 +67,7 @@
         <field name="name">Action Name</field>
         <field name="res_model">kits.b2b.menus</field>
         <field name="view_mode">tree,form</field>
+        <field name="domain">[('website_id','!=',False)]</field>
     </record>
 
 
