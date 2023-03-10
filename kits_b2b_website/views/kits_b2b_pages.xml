@@ -19,6 +19,7 @@
                         <page name="main_banner" string="Main Banner" attrs="{'invisible': [('page_type','not in',['home'])]}">
                             <field name="homepage_main_banner_ids">
                                 <tree editable="bottom">
+                                    <field name="sequence" widget="handle" />
                                     <field name="image_icon" widget="image" class="oe_avatar" options="{'zoom': true,'preview_image': 'image_icon'}" size="[150,150]"/>
                                     <field name="url" widget="url"/>
                                     <field name="redirect_url" widget="url"/>
@@ -64,7 +65,7 @@
                                     <!-- <field name="banner_2_id" string="Banner" attrs="{'invisible': [('page_type','not in',['contact_us'])]}"/>
                                     <field name="banner_2_image" widget="image" string="Background Image" class="oe_avatar" options="{'zoom': true,'preview_image': 'banner_2_image'}" attrs="{'invisible': [('page_type','not in',['contact_us'])]}"/> -->
                                     <field name='banner_2_url' invisible="1" />
-                                    <field name='banner_2_image'  invisible="1"  widget="image" string="Background Image" class="oe_avatar" options="{'zoom': true,'preview_image': 'banner_2_image'}" attrs="{'invisible': [('page_type','not in',['contact_us'])]}" />
+                                    <field name='banner_2_image' invisible="1" widget="image" string="Background Image" class="oe_avatar" options="{'zoom': true,'preview_image': 'banner_2_image'}" attrs="{'invisible': [('page_type','not in',['contact_us'])]}" />
                                 </group>
 
                             </group>
@@ -188,6 +189,7 @@
                         <page name="offers" string="Offers" attrs="{'invisible': [('page_type','not in',['home'])]}">
                             <field name="offer_ids">
                                 <tree editable="bottom">
+                                    <field name="sequence" widget="handle" />
                                     <field name="image_icon" widget="image" class="oe_avatar" options="{'zoom': true,'preview_image': 'image_icon'}" size="[150,150]"/>
                                     <field name="url" widget="url"/>
                                     <field name="redirect_url" widget="url"/>
