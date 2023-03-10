@@ -108,6 +108,7 @@
         <!-- our team -->
 
         <record id="kits_aboutus_our_team_1_slider" model="kits.b2b.website.slider">
+            <field name="sequence">1</field>
             <field name="name">Aliraza Rajani</field>
             <field name="slider_type">our_story</field>
             <field name="website_id" eval="kits_team_eto_website" />
@@ -117,6 +118,7 @@
             <field name="description">Founder &amp; CEO</field>
         </record>
         <record id="kits_aboutus_our_team_2_slider" model="kits.b2b.website.slider">
+            <field name="sequence">2</field>
             <field name="name">Musadik Rajani</field>
             <field name="slider_type">our_story</field>
             <field name="website_id" eval="kits_team_eto_website" />
@@ -126,6 +128,7 @@
             <field name="description">Senior Vice President</field>
         </record>
         <record id="kits_aboutus_our_team_3_slider" model="kits.b2b.website.slider">
+            <field name="sequence">3</field>
             <field name="name">Mazaher Rajani</field>
             <field name="slider_type">our_story</field>
             <field name="website_id" eval="kits_team_eto_website" />
@@ -135,6 +138,7 @@
             <field name="description">VP Operations – Middle East &amp; Africa</field>
         </record>
         <record id="kits_aboutus_our_team_4_slider" model="kits.b2b.website.slider">
+            <field name="sequence">4</field>
             <field name="name">Behrouz Rouhani</field>
             <field name="slider_type">our_story</field>
             <field name="website_id" eval="kits_team_eto_website" />
@@ -144,6 +148,7 @@
             <field name="description">Project Manager</field>
         </record>
         <record id="kits_aboutus_our_team_5_slider" model="kits.b2b.website.slider">
+            <field name="sequence">5</field>
             <field name="name">Johanna Blanco Eidelman</field>
             <field name="slider_type">our_story</field>
             <field name="website_id" eval="kits_team_eto_website" />
@@ -153,6 +158,7 @@
             <field name="description">Sales Manager</field>
         </record>
         <record id="kits_aboutus_our_team_6_slider" model="kits.b2b.website.slider">
+            <field name="sequence">6</field>
             <field name="name">Anabelle Estrañero</field>
             <field name="slider_type">our_story</field>
             <field name="website_id" eval="kits_team_eto_website" />
@@ -162,6 +168,7 @@
             <field name="description">Administration &amp; Office Manager – Dubai</field>
         </record>
         <record id="kits_aboutus_our_team_7_slider" model="kits.b2b.website.slider">
+            <field name="sequence">7</field>
             <field name="name">Erica Hermoso</field>
             <field name="slider_type">our_story</field>
             <field name="website_id" eval="kits_team_eto_website" />
@@ -171,6 +178,7 @@
             <field name="description">Sales Executive</field>
         </record>
         <record id="kits_aboutus_our_team_8_slider" model="kits.b2b.website.slider">
+            <field name="sequence">8</field>
             <field name="name">Haider Hassan Anwarulhaq Bukhari</field>
             <field name="slider_type">our_story</field>
             <field name="website_id" eval="kits_team_eto_website" />
@@ -180,6 +188,7 @@
             <field name="description">Territorial Manager</field>
         </record>
         <record id="kits_aboutus_our_team_9_slider" model="kits.b2b.website.slider">
+            <field name="sequence">9</field>
             <field name="name">John Nasarine S. Lunod</field>
             <field name="slider_type">our_story</field>
             <field name="website_id" eval="kits_team_eto_website" />
@@ -189,6 +198,7 @@
             <field name="description">Sales Executive</field>
         </record>
         <record id="kits_aboutus_our_team_10_slider" model="kits.b2b.website.slider">
+            <field name="sequence">1</field>
             <field name="name">Lyra Regina De Luzon</field>
             <field name="slider_type">our_story</field>
             <field name="website_id" eval="kits_team_eto_website" />
@@ -198,6 +208,7 @@
             <field name="description">Country Manager</field>
         </record>
         <record id="kits_aboutus_our_team_11_slider" model="kits.b2b.website.slider">
+            <field name="sequence">11</field>
             <field name="name">Mouna Ben Aicha</field>
             <field name="slider_type">our_story</field>
             <field name="website_id" eval="kits_team_eto_website" />
@@ -207,6 +218,7 @@
             <field name="description">Business Development Executive – French Market</field>
         </record>
         <record id="kits_aboutus_our_team_12_slider" model="kits.b2b.website.slider">
+            <field name="sequence">12</field>
             <field name="name">Murielle Annie Makon</field>
             <field name="slider_type">our_story</field>
             <field name="website_id" eval="kits_team_eto_website" />
@@ -216,6 +228,7 @@
             <field name="description">Sales Executive</field>
         </record>
         <record id="kits_aboutus_our_team_13_slider" model="kits.b2b.website.slider">
+            <field name="sequence">13</field>
             <field name="name">Aashiq Siddik</field>
             <field name="slider_type">our_story</field>
             <field name="website_id" eval="kits_team_eto_website" />
@@ -225,6 +238,7 @@
             <field name="description">Digital Marketing Specialist</field>
         </record>
         <record id="kits_aboutus_our_team_14_slider" model="kits.b2b.website.slider">
+            <field name="sequence">14</field>
             <field name="name">Awais Tariq</field>
             <field name="slider_type">our_story</field>
             <field name="website_id" eval="kits_team_eto_website" />
@@ -234,6 +248,7 @@
             <field name="description">Sales Executive</field>
         </record>
         <record id="kits_aboutus_our_team_15_slider" model="kits.b2b.website.slider">
+            <field name="sequence">15</field>
             <field name="name">Sabri Baaka</field>
             <field name="slider_type">our_story</field>
             <field name="website_id" eval="kits_team_eto_website" />
