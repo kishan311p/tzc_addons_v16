@@ -15,6 +15,12 @@
             <field name="name">Pick Up</field>
             <field name="provider">fixed</field>
         </record>
+
+        <record id="base.main_company" model="res.company">
+            <field name="social_facebook">https://www.facebook.com/everything.optical.eto</field>
+            <field name="social_instagram">https://www.instagram.com/everythingoptical</field>
+            <field name="social_linkedin">https://www.linkedin.com/company/everything-optical-team-eto</field>
+        </record>
     </data>
     <data noupdate="0">
 

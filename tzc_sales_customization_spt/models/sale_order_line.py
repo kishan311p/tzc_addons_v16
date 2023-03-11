@@ -160,6 +160,8 @@ class SaleOrderLine(models.Model):
         # res = super(SaleOrderLine, self).product_id_change()
         for record in range(len(self)):
             record = self[record]
+            product_price_dict = (self.env['kits.b2b.multi.currency.mapping'].with_context(from_order_line=True).get_product_price(record.order_id.partner_id.id,record.product_id.ids,order_id=record.order_id) or {}).get(record.product_id.id,{})
+            product_price = product_price_dict.get('price')
             if record.product_id:
                 update_dict = {'price_unit':round(record.price_unit,2),
                                'unit_discount_price': round(record.unit_discount_price,2), 
