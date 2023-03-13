@@ -18,7 +18,7 @@
                                 <p style="margin-top:0px;">Dear <t t-out="object.partner_id.name"/>,</p>
                                 <p>Your order is ready to ship.<br/>Kindly use the payment link below to make your payment. The link is completely secure and your credit card information is never stored.</p>
                                 <div style="text-align: left; margin: 16px 0px 16px 0px; font-size: 14px;">
-                                    <a t-attf-href="{{object.payment_link}}" target="_blank" style="background-color: #7693f8; padding: 8px 16px 8px 16px; text-decoration: none; color: #fff; border-radius: 5px; font-size:13px;">
+                                    <a t-attf-href="{{object.payment_link}}" target="_blank" style="background-color: #1F7B6F; padding: 8px 16px 8px 16px; text-decoration: none; color: #fff; border-radius: 5px; font-size:13px;">
                                         PAYMENT LINK
                                     </a>
                                     <br/>

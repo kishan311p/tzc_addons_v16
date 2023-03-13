@@ -34,7 +34,7 @@
                                             Your Account Manager has sent you a quotation, which is awaiting your review. Click on the View Quotation button below.
                                             <br/>
                                             <br/>
-                                            <a t-attf-href="{{object.get_base_url()}}/my/orders/{{object.id}}?{{object.get_access_token_spt()}}" style="background-color:#7693f8 !important; padding: 10px; text-decoration: none; color: #fff; border-radius: 5px; font-size: 16px;" class="o_default_snippet_text">
+                                            <a t-attf-href="{{object.get_base_url()}}/my/orders/{{object.id}}?{{object.get_access_token_spt()}}" style="background-color:#1F7B6F !important; padding: 10px; text-decoration: none; color: #fff; border-radius: 5px; font-size: 16px;" class="o_default_snippet_text">
                                                                                     View Quotation
                                             </a>
                                             <br/>

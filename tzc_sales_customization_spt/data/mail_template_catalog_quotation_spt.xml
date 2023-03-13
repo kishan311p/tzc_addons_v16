@@ -112,7 +112,7 @@
                             <table border="0" cellpadding="0" cellspacing="0" width="590" style="min-width: 590px; background-color: #F1F1F1; color: #454748; padding: 8px; border-collapse:separate;">
                                 <tr>
                                     <td style="text-align: center; font-size: 13px;">
-                                    Powered by <a target="_blank" href="www.teameto.com" style="color: #7693f8;">ETO</a>
+                                    Powered by <a target="_blank" href="www.teameto.com" style="color: #1F7B6F;">ETO</a>
                                     </td>
                                 </tr>
                             </table>
@@ -176,11 +176,11 @@
                                                     <p style="margin-top:0px;">Hello <t t-out="object.user_id.name"/>,</p>
                                                     <!-- <br/> -->
                                                     <!-- <br/> -->
-                                                    <p>Customer <t t-out="object.partner_id.name"/> has confirmed a catalog. Qutation <a t-attf-href="{{object.get_base_url()}}/web#id={{object.id}}&amp;action={{object.env.ref('tzc_sales_customization_spt.action_orders_ecommerce').id}}&amp;model=sale.order&amp;view_type=form" style="text-decoration: none;" class="o_default_snippet_text"><t t-out="object.name"/></a> has been created and sent to the customer.</p>
+                                                    <p>Customer <t t-out="object.partner_id.name"/> has confirmed a catalog. Qutation <a t-attf-href="{{object.get_base_url()}}/web#id={{object.id}}&amp;action={{object.env.ref('tzc_sales_customization_spt.action_orders_ecommerce').id}}&amp;model=sale.order&amp;view_type=form" style="text-decoration: none;color:#1F7B6F;" class="o_default_snippet_text"><t t-out="object.name"/></a> has been created and sent to the customer.</p>
                                                     <!-- <br/> -->
                                                     <!-- <br/> -->
                                                     <!-- <a href="${object.get_base_url()}/my/orders/${object.id}?${object.get_access_token_spt()}" style="background-color:#7693f8 !important;padding: 10px; text-decoration: none; color: #fff; border-radius: 5px; font-size: 16px;" class="o_default_snippet_text"> -->
-                                                    <a t-attf-href="{{object.get_base_url()}}/web#id={{object.id}}&amp;action={{object.env.ref('tzc_sales_customization_spt.action_orders_ecommerce').id}}&amp;model=sale.order&amp;view_type=form" style="background-color:#7693f8 !important;padding: 10px; text-decoration: none; color: #fff; border-radius: 5px; font-size: 16px;" class="o_default_snippet_text">
+                                                    <a t-attf-href="{{object.get_base_url()}}/web#id={{object.id}}&amp;action={{object.env.ref('tzc_sales_customization_spt.action_orders_ecommerce').id}}&amp;model=sale.order&amp;view_type=form" style="background-color:#1F7B6F !important;padding: 10px; text-decoration: none; color: #fff; border-radius: 5px; font-size: 16px;" class="o_default_snippet_text">
                                                             View Quotation
                                                     </a>
                                                     <br/>
@@ -239,7 +239,7 @@
                             <table border="0" cellpadding="0" cellspacing="0" width="590" style="min-width: 590px; background-color: #F1F1F1; color: #454748; padding: 8px; border-collapse:separate;">
                                 <tr>
                                     <td style="text-align: center; font-size: 13px;">
-                                    Powered by <a target="_blank" href="www.teameto.com" style="color: #7693f8;">ETO</a>
+                                    Powered by <a target="_blank" href="www.teameto.com" style="color: #1F7B6F;">ETO</a>
                                     </td>
                                 </tr>
                             </table>

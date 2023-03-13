@@ -65,7 +65,7 @@ class res_users(models.Model):
     is_validate = fields.Boolean(string='Validate User')
     redirect_url = fields.Char('redirect_url')
     access_token = fields.Char('Security Token', copy=False, default=_get_default_access_token)
-    show_country_ids = fields.Boolean(compute="_compute_show_country_ids")
+    # show_country_ids = fields.Boolean(compute="_compute_show_country_ids")
     is_internal_user = fields.Boolean(string="Is Internal User")
     show_contact_allowed_countries = fields.Boolean(compute="_compute_show_allowed_countries")
     manager_country_ids = fields.Many2many('res.country','res_country_manager_country_rel','res_user_id','res_manager_country_id',compute="_compute_manager_country_ids",string="Manager's Countries")

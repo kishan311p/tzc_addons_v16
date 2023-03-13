@@ -253,7 +253,7 @@
                                     <br/>
                                     <center>
                                         <!-- <t t-out="object.get_base_url()"/> -->
-                                        <a t-attf-href="{{object.get_base_url()}}/my/orders/{{object.id}}?{{object.get_access_token_spt()}}" target="_blank" style="background-color:#7693f8 !important; padding: 20px; text-decoration: none; color: #fff; border-radius: 5px; font-size: 16px;" class="o_default_snippet_text">
+                                        <a t-attf-href="{{object.get_base_url()}}/my/orders/{{object.id}}?{{object.get_access_token_spt()}}" target="_blank" style="background-color:#1F7B6F !important; padding: 20px; text-decoration: none; color: #fff; border-radius: 5px; font-size: 16px;" class="o_default_snippet_text">
         Resume order
                                         </a>
                                         <br/>

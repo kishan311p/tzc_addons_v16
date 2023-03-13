@@ -76,10 +76,10 @@ class res_partner(models.Model):
     catalog_count = fields.Integer('Number of catalog',compute="_catalog_count",store=True)
     name_get_partner = fields.Boolean(compute='_get_partner_name',string='Flag')
     is_user_internal = fields.Boolean("Is User Internal",store=True,compute="_compute_is_user_internal")
-    is_internal_user = fields.Boolean(string="Is Internal User")
+    # is_internal_user = fields.Boolean(string="Is Internal User")
     signup_from_website = fields.Boolean(string='Sinup From Website')
     mailgun_verification_status = fields.Selection([('approved','Mg Approved'),('rejected','MG Rejected')],'MG Status')
-    is_default_shipping= fields.Boolean('Default Shipping Address',default=False)
+    # is_default_shipping= fields.Boolean('Default Shipping Address')
     # wk_website_loyalty_points = fields.Float(
     #     string='Website Loyalty Points',
     #     help='The points are the points with which the user is awarded of being Loyal !',

@@ -11,7 +11,7 @@ from . import add_shipping_cost_wizard
 from . import add_admin_fee_wizard
 from . import add_aditional_discount_wizard
 from . import kits_create_credit_note_wizard
-from . import kits_wizard_return_picking
+# from . import kits_wizard_return_picking
 from . import kits_message_wizard
 from . import kits_generate_payment_link_wizard
 from . import sale_order_report_wizard_spt
@@ -46,7 +46,6 @@ from . import paid_amount_wizard
 from . import discount_on_catalog_line_wizard_spt
 from . import kits_wizard_download_catalog_excel
 from . import create_catalog_quotation_wizard_spt
-from . import catalog_process_error_wizard_spt
 from . import product_report_on_date_wizard_spt
 from . import bank_inventory_report_wizard
 from . import brand_qty_report

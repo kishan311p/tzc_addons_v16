@@ -12,9 +12,7 @@ from . import product_temple_size_spt
 from . import product_aging_spt
 from . import product_category
 from . import res_config_settings
-from . import product_tab_line
 from . import product_template
-from . import product_label_line
 from . import kits_package_product
 from . import kits_package_product_line
 from . import sale_order_line

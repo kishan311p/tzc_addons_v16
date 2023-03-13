@@ -57,7 +57,7 @@
                 </xpath>
                 <xpath expr="//page[@name='sales']" position="after">
                     <page name="product_tabs" string="Product Tabs">
-                        <field name="tab_line_ids" mode="kanban">
+                        <!-- <field name="tab_line_ids" mode="kanban">
                             <kanban>
                                 <templates>
                                     <t t-name="kanban-box">
@@ -72,13 +72,11 @@
                                     <group>
                                         <field name="tab_name" />
                                         <field name="tab_content" />
-                                        <!-- <field name="website_ids" options="{'no_create': True}"
-                                            widget="many2many_tags"/> -->
                                         <field name="sequence" />
                                     </group>
                                 </sheet>
                             </form>
-                        </field>
+                        </field> -->
                     </page>
                 </xpath>
 

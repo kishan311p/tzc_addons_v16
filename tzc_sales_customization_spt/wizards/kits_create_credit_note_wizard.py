@@ -24,7 +24,7 @@ class kits_create_credit_note_wizard(models.TransientModel):
     def action_create_credit_note(self):
         if not self.credit_amount:
             raise UserError(_('Please provide credit amount.'))
-        if self.picking_id:
-            self.picking_id.credit_note_created = True
+        # if self.picking_id:
+        #     self.picking_id.credit_note_created = True
         credit_note = self.env['account.payment'].sudo().kits_create_credit_payment(self.sale_id.partner_id,self.sale_id,self.credit_amount)
         self.sale_id.kits_credit_payment_ids = [(6,0,self.sale_id.kits_credit_payment_ids.ids+credit_note.ids)]

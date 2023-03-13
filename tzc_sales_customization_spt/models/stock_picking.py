@@ -26,16 +26,16 @@ class stock_picking(models.Model):
             order = self.env['sale.order'].search([('picking_ids','in',self.ids)])
         return order.include_cases
     
-    def action_open_return_picking_wizard_kits(self):
-        return {
-            'name':_('Return Product'),
-            'type':'ir.actions.act_window',
-            'res_model':'kits.wizard.return.picking',
-            'view_mode':'form',
-            'view_id':self.env.ref('tzc_sales_customization_spt.kits_wizard_return_picking_form_view').id,
-            'context':{'default_picking_id':self.id,'default_total_qty':self.delivered_qty},
-            'target':'new',
-            }
+    # def action_open_return_picking_wizard_kits(self):
+    #     return {
+    #         'name':_('Return Product'),
+    #         'type':'ir.actions.act_window',
+    #         'res_model':'kits.wizard.return.picking',
+    #         'view_mode':'form',
+    #         'view_id':self.env.ref('tzc_sales_customization_spt.kits_wizard_return_picking_form_view').id,
+    #         'context':{'default_picking_id':self.id,'default_total_qty':self.delivered_qty},
+    #         'target':'new',
+    #         }
 
     def action_create_credit_note(self):
         if self.env.user.has_group('account.group_account_invoice'):
@@ -50,21 +50,21 @@ class stock_picking(models.Model):
         else:
             raise UserError('Only billing user can create credit note.')
 
-    def action_show_return_pickings_kits(self):
-        pickings = self.sale_id.picking_ids.filtered(lambda x: x.kits_return_picking)
-        action = {
-            'name':_("Return Ordes"),
-            'type':'ir.actions.act_window',
-            'res_model':"stock.picking",
-            'view_mode':'form',
-            'target':'self',
-        }
-        if len(pickings) == 1:
-            action['res_id']=pickings.id
-        else:
-            action['view_mode']='tree,form'
-            action['domain'] = [('id','in',pickings.ids)]
-        return action
+    # def action_show_return_pickings_kits(self):
+    #     pickings = self.sale_id.picking_ids.filtered(lambda x: x.kits_return_picking)
+    #     action = {
+    #         'name':_("Return Ordes"),
+    #         'type':'ir.actions.act_window',
+    #         'res_model':"stock.picking",
+    #         'view_mode':'form',
+    #         'target':'self',
+    #     }
+    #     if len(pickings) == 1:
+    #         action['res_id']=pickings.id
+    #     else:
+    #         action['view_mode']='tree,form'
+    #         action['domain'] = [('id','in',pickings.ids)]
+    #     return action
 
     def _get_rec_name(self):
         for rec in self:
@@ -121,11 +121,11 @@ class stock_picking(models.Model):
     package_order = fields.Boolean('Package Order',compute="_compute_show_package_scan")
     package_order_status = fields.Selection([('available','Available'),('out_of_stock','Out of stock')],string="Package Status",compute="_compute_show_package_scan")
 
-    product_returned = fields.Boolean('Product Returned ?')
-    product_scraped = fields.Boolean('Product Scrapped ?')
-    credit_note_created  = fields.Boolean('Credit note ?')
-    count_return_order = fields.Integer('Return Orders',compute="_count_return_pickings")
-    kits_return_picking = fields.Boolean(compute="_compute_kits_return_picking",store=True,compute_sudo=True)
+    # product_returned = fields.Boolean('Product Returned ?')
+    # product_scraped = fields.Boolean('Product Scrapped ?')
+    # credit_note_created  = fields.Boolean('Credit note ?')
+    # count_return_order = fields.Integer('Return Orders',compute="_count_return_pickings")
+    # kits_return_picking = fields.Boolean(compute="_compute_kits_return_picking",store=True,compute_sudo=True)
     move_lines = fields.One2many('stock.move', 'picking_id', string="Stock Moves", copy=True)
 
     actual_weight = fields.Float('Actual Weight (kg)',related="weight")
@@ -268,15 +268,15 @@ class stock_picking(models.Model):
             record.weight_of_cases = weight_of_cases
             record.weight_total_kg = round(round(record.shipping_weight,2)+weight_of_cases,2)
 
-    @api.depends('name','is_return_picking','sale_id','sale_id.picking_ids')
-    def _compute_kits_return_picking(self):
-        for record in self:
-            record.kits_return_picking = record.is_return_picking or 'IN' in record.name
+    # @api.depends('name','is_return_picking','sale_id','sale_id.picking_ids')
+    # def _compute_kits_return_picking(self):
+    #     for record in self:
+    #         record.kits_return_picking = record.is_return_picking or 'IN' in record.name
 
-    @api.depends('state','sale_id','sale_id.count_kits_return_order')
-    def _count_return_pickings(self):
-        for record in self:
-            record.count_return_order = record.sale_id.count_kits_return_order
+    # @api.depends('state','sale_id','sale_id.count_kits_return_order')
+    # def _count_return_pickings(self):
+    #     for record in self:
+    #         record.count_return_order = record.sale_id.count_kits_return_order
 
             
     @api.depends('move_ids_without_package','move_ids_without_package.package_id')

@@ -54,7 +54,7 @@
                     <button name="excel_report_line_stock" type="object" string="CASE REPORT" class="oe_highlight" attrs="{'invisible': [('state', 'not in', ('in_scanning','assigned','done','scanned'))]}"/>
                     <button string="Recover Delivery" name="action_delivery_restore" type="object" class="oe_highlight" attrs="{'invisible':['|',('is_multiple_delivery','=',False),('state','not in',['confirmed','in_scanning'])]}"/>
                     <button name="picking_cancel_spt" string="Cancel Delivery" class="oe_highlight" attrs="{'invisible': [('state', 'in',['draft','cancel'])]}" groups="tzc_sales_customization_spt.group_cancel_picking_rule_spt" type="object" confirm="This delivery will be cancel." context="{'cancel_delivery': True }"/>
-                    <button name="action_open_return_picking_wizard_kits" string="Return" class="oe_highlight" attrs="{'invisible': ['|','|',('kits_return_picking','=',True), ('state', '!=', 'done'), ('is_locked', '=', False)]}" type="object" groups="base.group_user" />
+                    <!-- <button name="action_open_return_picking_wizard_kits" string="Return" class="oe_highlight" attrs="{'invisible': ['|','|',('kits_return_picking','=',True), ('state', '!=', 'done'), ('is_locked', '=', False)]}" type="object" groups="base.group_user" /> -->
                 </xpath>
                 <xpath expr="//button[@name='%(stock.action_report_delivery)d']" position="attributes">
                     <attribute name="invisible">1</attribute>
@@ -255,19 +255,19 @@
 
 
             <xpath expr="//sheet/div[hasclass('oe_button_box')]" position="inside">
-                <button name="action_show_return_pickings_kits" class="oe_stat_button" icon="fa-undo" type="object" attrs="{'invisible': ['|',('count_return_order','=',0),('kits_return_picking','=',True)]}">
+                <!-- <button name="action_show_return_pickings_kits" class="oe_stat_button" icon="fa-undo" type="object" attrs="{'invisible': ['|',('count_return_order','=',0),('kits_return_picking','=',True)]}">
                     <field name="count_return_order" widget="statinfo" string="Receipts" readonly="1"/>
-                </button>
+                </button> -->
             </xpath>
             <xpath expr="//button[@name='%(stock.act_stock_return_picking)d']" position="attributes">
                 <attribute name="invisible">1</attribute>
             </xpath>
             <xpath expr="//button[@name='excel_picking_order_report']" position="after">
-                <button name="action_create_credit_note" type="object" string="Credit Note" class="oe_highlight" attrs="{'invisible':['|',('kits_return_picking','=',True),'&amp;',('kits_return_picking','=',False),('state','!=','done')]}"/>
+                <button name="action_create_credit_note" type="object" string="Credit Note" class="oe_highlight" attrs="{'invisible':[('state','!=','done')]}"/>
             </xpath>
-            <xpath expr="//sheet" position="inside">
+            <!-- <xpath expr="//sheet" position="inside">
                 <field name="kits_return_picking" invisible="1" />
-            </xpath>
+            </xpath> -->
             <!-- <xpath expr="//header/button[@name='set_qty_by_script']" position="attributes">
                     <attribute name="attrs">{'invisible':[('kits_return_picking','=',True)]}</attribute>
                 </xpath> -->

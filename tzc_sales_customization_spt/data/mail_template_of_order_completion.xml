@@ -20,7 +20,7 @@
                                 <p style="margin-top:0px;">Dear <t t-out="object.partner_id.name"/>,</p>
                                 <p>Here is your Order <t t-out="object.name"/></p>
                                 <br/>
-                                <a t-attf-href="{{object.get_base_url()}}/my/orders/{{object.id}}?access_token={{object.access_token}}" target="_blank" style="background-color:#7693f8 !important; padding:10px; text-decoration: none; color: #fff; border-radius: 5px; font-size: 16px;" class="o_default_snippet_text">
+                                <a t-attf-href="{{object.get_base_url()}}/my/orders/{{object.id}}?access_token={{object.access_token}}" target="_blank" style="background-color:#1F7B6F !important; padding:10px; text-decoration: none; color: #fff; border-radius: 5px; font-size: 16px;" class="o_default_snippet_text">
                                     View Order
                                 </a>
                                 <p style="margin-bottom:0px;">Thank you,<br/>

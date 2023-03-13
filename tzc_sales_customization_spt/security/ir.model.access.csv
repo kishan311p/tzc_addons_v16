@@ -9,14 +9,12 @@ access_product_rim_type_spt,access_product_rim_type_spt,model_product_rim_type_s
 access_product_bridge_size_spt,access_product_bridge_size_spt,model_product_bridge_size_spt,,1,1,1,0
 access_product_temple_size_spt,access_product_temple_size_spt,model_product_temple_size_spt,,1,1,1,0
 access_product_aging_spt,access_product_aging_spt,model_product_aging_spt,,1,1,1,0
-access_product_label_line,product.label.line,model_product_label_line,,1,0,0,0
 access_kits_warning_wizard,kits.warning.wizard,model_kits_warning_wizard,,1,1,1,0
 access_kits_package_product,access.kits.package.product,model_kits_package_product,,1,1,1,0
 access_kits_package_restriction,access.kits.package.restriction,model_kits_package_restriction,,1,1,1,0
 access_kits_package_product_lines,access.kits.package.product.lines,model_kits_package_product_lines,,1,1,1,1
 access_kits_bulk_discount_on_package_products,access.kits.bulk.discount.on.package.products,model_kits_bulk_discount_on_package_products,,1,1,1,1
 access_on_sale_price_wizard_spt,access.on.sale.price.wizard.spt,model_on_sale_price_wizard_spt,,1,1,1,1
-access_product_tab_line_admin,access.product.tab.line.admin,model_product_tab_line,base.group_system,1,1,1,1
 access_product_brand_spt,access.product.brand.spt,model_product_brand_spt,,1,1,1,0
 access_geo_restriction_spt,access.geo.restriction.spt,model_geo_restriction_spt,,1,1,1,0
 access_all_python_script_runner,access.all.python_.script.runner,model_python_script_runner,,1,1,1,1
@@ -47,7 +45,6 @@ access_add_aditional_discount_wizard,access.add.aditional.discount.wizard,model_
 access_add_admin_fee_wizard,access.add.admin.fee.wizard,model_add_admin_fee_wizard,,1,1,1,1
 access_add_shipping_cost_wizard,access.add.shipping.cost.wizard,model_add_shipping_cost_wizard,,1,1,1,1
 access_kits_package_order_line,access.kits.package.order.line,model_kits_package_order_line,,1,1,1,1
-access_kits_wizard_return_picking,access.kits.wizard.return.picking,model_kits_wizard_return_picking,,1,1,1,1
 access_kits_create_credit_note_wizard,access.kits.create.credit.note.wizard,model_kits_create_credit_note_wizard,,1,1,1,1
 access_kits_message_wizard,access.kits.messasge.wizard,model_kits_message_wizard,,1,1,1,1
 access_kits_generate_payment_link_wizard,access.kits.generate.payment.link.wizard,model_kits_generate_payment_link_wizard,,1,1,1,1

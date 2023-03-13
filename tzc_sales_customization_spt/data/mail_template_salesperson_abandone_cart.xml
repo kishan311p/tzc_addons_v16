@@ -22,7 +22,7 @@
                                 <p>Quotation <b><a t-attf-href="{{object.get_base_url()}}/web#id={{object.id}} &amp;action={{object.env.ref('tzc_sales_customization_spt.action_orders_ecommerce').id}} &amp;model=sale.order&amp;view_type=form" target="_blank" style="text-decoration: none;"><t t-out="object.name"/></a></b> is <b><t t-out="object.count_days()"/> Days</b> Old, Please do follow up with customer <b><t t-out="object.partner_id.name"/>.</b></p>
                                 <!-- <br/> -->
                                 <div style="text-align: left; margin: 16px 0px 16px 0px; font-size: 14px;">
-                                    <a t-attf-href="{{object.get_base_url()}}/web#id={{object.id}} &amp;action={{object.env.ref('tzc_sales_customization_spt.action_orders_ecommerce').id}} &amp;model=sale.order&amp;view_type=form" target="_blank" style="background-color: #7693f8; padding: 8px 16px 8px 16px; text-decoration: none; color: #fff; border-radius: 5px; font-size:13px;">
+                                    <a t-attf-href="{{object.get_base_url()}}/web#id={{object.id}} &amp;action={{object.env.ref('tzc_sales_customization_spt.action_orders_ecommerce').id}} &amp;model=sale.order&amp;view_type=form" target="_blank" style="background-color: #1F7B6F; padding: 8px 16px 8px 16px; text-decoration: none; color: #fff; border-radius: 5px; font-size:13px;">
                                         View order
                                     </a>
                                 </div>

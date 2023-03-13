@@ -686,17 +686,17 @@
 
             <!-- kits_picking_return -->
             <xpath expr="//sheet/div[hasclass('oe_button_box')]" position="inside">
-                <button name="action_get_kits_credit_notes" type="object" class="oe_stat_button"
+                <!-- <button name="action_get_kits_credit_notes" type="object" class="oe_stat_button"
                     icon="fa-credit-card"
                     attrs="{'invisible': [('count_kits_credit_notes', '=', 0)]}">
                     <field name="count_kits_credit_notes" widget="statinfo" string="Credit Notes"
                         readonly="1" />
-                </button>
-                <button name="action_get_kits_return_pickings" type="object" class="oe_stat_button"
+                </button> -->
+                <!-- <button name="action_get_kits_return_pickings" type="object" class="oe_stat_button"
                     icon="fa-undo" attrs="{'invisible': [('count_kits_return_order', '=', 0)]}">
                     <field name="count_kits_return_order" widget="statinfo" string="Receipts"
                         readonly="1" />
-                </button>
+                </button> -->
             </xpath>
             <xpath expr="//button[@name='action_cancel']" position="before">
                 <button name="action_create_credit_note_kits" type="object" string="Credit Note"
@@ -704,17 +704,17 @@
                     attrs="{'invisible':[('state','not in',['open_inv','paid'])]}" />
             </xpath>
             <xpath expr="//sheet/div[hasclass('oe_button_box')]" position="inside">
-                <button name="action_get_kits_credit_notes" type="object" class="oe_stat_button"
+                <!-- <button name="action_get_kits_credit_notes" type="object" class="oe_stat_button"
                     icon="fa-credit-card"
                     attrs="{'invisible': [('count_kits_credit_notes', '=', 0)]}">
                     <field name="count_kits_credit_notes" widget="statinfo" string="Credit Notes"
                         readonly="1" />
-                </button>
-                <button name="action_get_kits_return_pickings" type="object" class="oe_stat_button"
+                </button> -->
+                <!-- <button name="action_get_kits_return_pickings" type="object" class="oe_stat_button"
                     icon="fa-undo" attrs="{'invisible': [('count_kits_return_order', '=', 0)]}">
                     <field name="count_kits_return_order" widget="statinfo" string="Receipts"
                         readonly="1" />
-                </button>
+                </button> -->
             </xpath>
             <xpath expr="//button[@name='action_cancel']" position="before">
                 <button name="action_create_credit_note_kits" type="object" string="Credit Note"

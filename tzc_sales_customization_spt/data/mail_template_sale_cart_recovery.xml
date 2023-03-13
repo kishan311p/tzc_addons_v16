@@ -71,7 +71,7 @@
                                                     </t>
                                                     <hr/>
                                                     <div style="text-align: center; margin: 16px 0px 16px 0px; font-size: 14px;">
-                                                        <a t-attf-href="{{object.get_base_url()}}/shop/cart?access_token={{object.access_token}}" target="_blank" style="background-color: #875A7B; padding: 8px 16px 8px 16px; text-decoration: none; color: #fff; border-radius: 5px; font-size:13px;">
+                                                        <a t-attf-href="{{object.get_base_url()}}/shop/cart?access_token={{object.access_token}}" target="_blank" style="background-color: #1F7B6F; padding: 8px 16px 8px 16px; text-decoration: none; color: #fff; border-radius: 5px; font-size:13px;">
                             Resume order
                                                         </a>
                                                     </div>
@@ -130,7 +130,7 @@
                         <table border="0" cellpadding="0" cellspacing="0" width="590" style="min-width: 590px; background-color: #F1F1F1; color: #454748; padding: 8px; border-collapse:separate;">
                             <tr>
                                 <td style="text-align: center; font-size: 13px;">
-                                    Powered by <a target="_blank" href="www.teameto.com" style="color: #7693f8;">ETO</a>
+                                    Powered by <a target="_blank" href="www.teameto.com" style="color: #1F7B6F;">ETO</a>
                                 </td>
                             </tr>
                         </table>

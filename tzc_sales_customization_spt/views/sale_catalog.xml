@@ -19,10 +19,10 @@
                         <field name="state" widget="statusbar" statusbar_visible="draft,pending,done,cancel"/>
                         <button name="action_mapping_qty" string="Map Live QTY" type="object" class="oe_highlight" attrs="{'invisible': [('state','not in',['draft'])]}" />
                         <button name="action_discount_wizard" type="object" string="Bulk Discount" class="oe_highlight" attrs="{'invisible': [('state','in',('cancel','done'))]}"/>
-                        <button name="send_catalog" string="Send Catalog" type="object" class="oe_highlight" />
-                        <!-- <button name="send_catalog" string="Send Catalog" type="object" class="oe_highlight" attrs="{'invisible': [('state','in',('pending','done','cancel'))]}" /> -->
+                        <!-- <button name="send_catalog" string="Send Catalog" type="object" class="oe_highlight" /> -->
+                        <button name="send_catalog" string="Send Catalog" type="object" class="oe_highlight" attrs="{'invisible': [('state','in',('done','cancel'))]}" />
                         <button name="action_download_excel_report" class="oe_highlight" type="object" string="Download Catalog"/>
-                        <button name="action_order_quotation" string="Create Quotation" type="object" class="oe_highlight" attrs="{'invisible': [('state','in',('pending','done','cancel'))]}"/>
+                        <button name="action_order_quotation" string="Create Quotation" type="object" class="oe_highlight" attrs="{'invisible': [('state','in',('done','cancel'))]}"/>
                         <button name="cancel_catalog" class="oe_highlight" string="Cancel" type="object" attrs="{'invisible': [('state','in',('cancel'))]}" confirm="This catalog will be cancel."/>
                     </header>
                     <div class="alert alert-danger text-center o_form_header" role="status">
@@ -32,7 +32,7 @@
                             <strong>so a pending catalog record will not be created of that customer.</strong>
                         </div>
                     </div>
-                    <!-- <div class="alert alert-success text-center o_form_header" role="status" attrs="{'invisible':[('state','not in',['pending'])]}">
+                    <!-- <div class="alert alert-success text-center o_form_header" role="status" >
                         <div>
                             
                             <strong>Your catalog is scheduled to be sent after 
@@ -80,16 +80,16 @@
                                 <label for='description'/>
                                 <div>
                                     <div class="o_address_format">
-                                        <field name="description" attrs="{'readonly':[('state','not in',['draft','validate'])]}"/>
+                                        <field name="description" attrs="{'readonly':[('state','not in',['draft'])]}"/>
                                         <br/>
-                                        <field name="description_1" nolabel="1" attrs="{'readonly':[('state','not in',['draft','validate'])]}"/>
+                                        <field name="description_1" nolabel="1" attrs="{'readonly':[('state','not in',['draft'])]}"/>
                                         <br/>
-                                        <field name="description_2" nolabel="1" attrs="{'readonly':[('state','not in',['draft','validate'])]}"/>
+                                        <field name="description_2" nolabel="1" attrs="{'readonly':[('state','not in',['draft'])]}"/>
                                     </div>
                                 </div>
                                 <field name="create_uid" string="Created By" readonly="1"/>
                                 <field name="user_id" string="Salesperson" domain="[('is_salesperson','=',True)]" attrs="{'readonly':[('state','not in',['draft'])]}"/>
-                                <field name="pricelist_id" attrs="{'readonly':[('state','not in',['draft','validate'])],'required' : [('state','=','draft')]}"/>
+                                <field name="pricelist_id" attrs="{'readonly':[('state','not in',['draft'])],'required' : [('state','=','draft')]}"/>
                                 <field name="expiry_date" />
                             </group>
                             <group>
@@ -98,7 +98,7 @@
                         </group>
                         <notebook>
                             <page name="catalog_lines" string="Catalog Lines">
-                                <field name="line_ids" mode="tree" attrs="{'readonly':[('state','not in',['draft','validate'])]}">
+                                <field name="line_ids" mode="tree" attrs="{'readonly':[('state','not in',['draft'])]}">
                                     <tree editable="bottom" create="1" delete="1" string="Catalog Lines" default_order="product_pro_id">
                                         <field name="image_catalog_product_url" class="oe_avatar" string="Primary Image" widget="image" options="{'zoom': true,'thumb_image':'image_catalog_product_url','preview_image':'image_catalog_product_url','size': [300, 90]}"/>
                                         <field name="image_catalog_product_secondary_url" class="oe_avatar" string="Secondary Image" widget="image" style="margin-left:10px;" options="{'zoom': true,'thumb_image':'image_catalog_product_secondary_url','preview_image':'image_catalog_product_secondary_url','size': [300, 90]}"/>
@@ -122,7 +122,7 @@
                                 </field>
                             </page>
                             <page name="customer" string="Customers">
-                                <field name="partner_ids" attrs="{'readonly':[('state','not in',['draft','validate','manage_qtys'])]}" force_save="1">
+                                <field name="partner_ids" attrs="{'readonly':[('state','not in',['draft'])]}" force_save="1">
                                     <tree editable="bottom" create="1" delete="1" decoration-success="mailgun_verification_status == 'approved'" decoration-danger="mailgun_verification_status == 'rejected'">
                                         <field name="mailgun_verification_status" />
                                         <field name="internal_id" />
@@ -184,7 +184,7 @@
                     <field name="description" optional="show"/>
                     <field name="visitors" string="#Visits" optional="show"/>
                     <field name="customer_count" string="#Catalog Sent" optional="show"/>
-                    <field name="pending_catalog_count" string="#Pending Catalog" optional="show"/>
+                    <!-- <field name="pending_catalog_count" string="#Pending Catalog" optional="show"/> -->
                     <field name="sale_order_count" string="#Order Created" optional="show"/>
                     <field name="catalog_total" string="Total Amount"  optional="show"/>
                     <field name="partner_ids" string="Customers" widget="many2many_tags" optional="show"/>

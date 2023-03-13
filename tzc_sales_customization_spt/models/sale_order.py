@@ -7,18 +7,13 @@ from datetime import datetime
 from werkzeug.urls import url_encode
 from datetime import date,timedelta,datetime
 from dateutil import tz
-from openpyxl import Workbook,load_workbook
-from openpyxl.styles import PatternFill, Border, Side, Alignment, Protection, Font
+from openpyxl import load_workbook
+from openpyxl.styles import Border, Side, Alignment, Font
 import base64
-from io import BytesIO,StringIO
+from io import BytesIO
 from dateutil.relativedelta import relativedelta
 import os
-import shutil
-import openpyxl
-import xlsxwriter
-from openpyxl.writer.excel import ExcelWriter
 from lxml import etree
-from bs4 import BeautifulSoup
 import logging
 from odoo import api, fields, models, SUPERUSER_ID, _
 from odoo.http import request
@@ -3267,53 +3262,53 @@ class sale_order(models.Model):
 
     # kits_picking_return
     kits_credit_payment_ids = fields.Many2many('account.payment','sale_order_credit_payments_rel','sale_order_id','credit_payment_id','Credit Notes')
-    count_kits_credit_notes = fields.Integer(compute="_count_kits_credit_notes")
-    count_kits_return_order = fields.Integer(compute="_count_kits_return_picking")
+    # count_kits_credit_notes = fields.Integer(compute="_count_kits_credit_notes")
+    # count_kits_return_order = fields.Integer(compute="_count_kits_return_picking")
 
-    @api.depends('kits_credit_payment_ids','count_kits_return_order','picking_ids','picking_ids.is_return_picking')
-    def _count_kits_credit_notes(self):
-        for record in self:
-            record.count_kits_credit_notes = len(record.kits_credit_payment_ids)
-        # pass
+    # @api.depends('kits_credit_payment_ids','count_kits_return_order','picking_ids','picking_ids.is_return_picking')
+    # def _count_kits_credit_notes(self):
+    #     for record in self:
+    #         record.count_kits_credit_notes = len(record.kits_credit_payment_ids)
+    #     # pass
 
-    @api.depends('picking_ids','picking_ids.is_return_picking')
-    def _count_kits_return_picking(self):
-        for record in self:
-            record.count_kits_return_order = len(record.picking_ids.filtered(lambda x: not x.product_returned and x.kits_return_picking))
-        # pass
+    # @api.depends('picking_ids','picking_ids.is_return_picking')
+    # def _count_kits_return_picking(self):
+    #     for record in self:
+    #         record.count_kits_return_order = len(record.picking_ids.filtered(lambda x: not x.product_returned and x.kits_return_picking))
+    #     # pass
 
-    def action_get_kits_credit_notes(self):
-        notes = self.kits_credit_payment_ids
-        action =  {
-            'name':_('Credit Notes'),
-            'type':'ir.actions.act_window',
-            'res_model':'account.payment',
-            'view_mode':'form',
-            'context':{'default_is_return_credit':True},
-            'target':'self',
-        }
-        if len(notes) == 1:
-            action['res_id'] = notes.id
-        else:
-            action['view_mode'] = 'tree,form'
-            action['domain'] = [('id','in',notes.ids)]
-        return action
+    # def action_get_kits_credit_notes(self):
+    #     notes = self.kits_credit_payment_ids
+    #     action =  {
+    #         'name':_('Credit Notes'),
+    #         'type':'ir.actions.act_window',
+    #         'res_model':'account.payment',
+    #         'view_mode':'form',
+    #         'context':{'default_is_return_credit':True},
+    #         'target':'self',
+    #     }
+    #     if len(notes) == 1:
+    #         action['res_id'] = notes.id
+    #     else:
+    #         action['view_mode'] = 'tree,form'
+    #         action['domain'] = [('id','in',notes.ids)]
+    #     return action
 
-    def action_get_kits_return_pickings(self):
-        pickings = self.picking_ids.filtered(lambda x: not x.product_returned and x.kits_return_picking)
-        action = {
-            'name':_("Return Orders"),
-            'type':'ir.actions.act_window',
-            'res_model':"stock.picking",
-            'view_mode':'form',
-            'target':'self',
-        }
-        if len(pickings) == 1:
-            action['res_id']=pickings.id
-        else:
-            action['view_mode'] = 'tree,form'
-            action['domain'] = [('id','in',pickings.ids)]
-        return  action
+    # def action_get_kits_return_pickings(self):
+    #     pickings = self.picking_ids.filtered(lambda x: not x.product_returned and x.kits_return_picking)
+    #     action = {
+    #         'name':_("Return Orders"),
+    #         'type':'ir.actions.act_window',
+    #         'res_model':"stock.picking",
+    #         'view_mode':'form',
+    #         'target':'self',
+    #     }
+    #     if len(pickings) == 1:
+    #         action['res_id']=pickings.id
+    #     else:
+    #         action['view_mode'] = 'tree,form'
+    #         action['domain'] = [('id','in',pickings.ids)]
+    #     return  action
 
     def action_create_credit_note_kits(self):
         if self.env.user.has_group('account.group_account_invoice'):

@@ -23,7 +23,8 @@ class SaleCatalog(models.Model):
     order_ids = fields.One2many('sale.order', 'catalog_id',states={'draft': [('readonly', False)]},copy=False, string='Sale Orders')
     sale_order_count = fields.Integer(compute='_get_sale_order_count',store=True,compute_sudo=True)
     sale_order_ids = fields.One2many('sale.order','catalog_id',string="Orders")
-    pending_catalog_count = fields.Integer(compute='_get_pending_catalog_count',store=True,compute_sudo=True)
+    # pending_catalog_count = fields.Integer() # Remove this field 
+    # pending_catalog_count = fields.Integer(compute='_get_pending_catalog_count',store=True,compute_sudo=True)
     catalog_sent_count = fields.Integer(compute='_get_pending_catalog_count',store=True,compute_sudo=True)
     # pending_catalog_ids = fields.One2many('pending.catalog.spt','catalog_id','Pending Catalogs')
     customer_count = fields.Integer(compute='_get_customer_count',store=True)
@@ -32,9 +33,9 @@ class SaleCatalog(models.Model):
     active = fields.Boolean('Active', default=True,copy=True)
     state = fields.Selection(selection=[
             ('draft', 'Draft'),
-            ('validate', 'Validate'),
-            ('manage_qtys', 'Stock Validated'),
-            ('pending', 'Pending'),
+            # ('validate', 'Validate'),
+            # ('manage_qtys', 'Stock Validated'),
+            # ('pending', 'Pending'),
             ('done', 'Done'),
             ('cancel', 'Cancel'),
         ], string='Status', required=True, readonly=True, copy=False, tracking=True,
@@ -192,7 +193,7 @@ class SaleCatalog(models.Model):
                 'type': 'ir.actions.act_window',
             }
         else:
-            self.state = 'validate'
+            # self.state = 'validate'
             # added
             self._cr.commit()
             return self.catalog_manage_qty_with_available_qty()
@@ -219,7 +220,7 @@ class SaleCatalog(models.Model):
     def _get_pending_catalog_count(self):
         for record in self:
             order_ids = self.env['sale.catalog.order'].search([('catalog_id','=',record.id)])
-            record.pending_catalog_count = len(order_ids.filtered(lambda x:x.state == 'pending'))
+            # record.pending_catalog_count = len(order_ids.filtered(lambda x:x.state == 'pending'))
             record.catalog_sent_count = len(order_ids.filtered(lambda x:x.state == 'sent'))
 
     @api.depends('sale_order_ids')
@@ -293,30 +294,6 @@ class SaleCatalog(models.Model):
 
         return catalog_data
 
-
-    def send_catalogs_to_customers_spt(self):
-        # pending_catalog_obj = self.env['pending.catalog.spt']
-        for record in self:
-            #check customer is added or not
-            if not record.partner_ids:
-                raise UserError(_("Please Select Customer First, Under The Customers Tab"))
-            
-            #check stock
-            if not self._context.get('out_of_stock'):
-                record.check_catalog_stock_spt()
-            
-            # #create pending catalog
-            # for customer in record.partner_ids:
-            #     pending_catalog_obj.create({
-            #         'customer_id':customer.id,
-            #         'catalog_id':record.id,
-            #         'state':'draft',
-            #     })
-            record.send_out = datetime.now()
-            record.state = 'pending'
-    
-
-
     def catalog_manage_qty_with_available_qty(self):
         self.ensure_one()
         catalog_line_obj = self.env['sale.catalog.line']
@@ -340,7 +317,7 @@ class SaleCatalog(models.Model):
                 'type': 'ir.actions.act_window',
             }
         else:
-            self.state = 'manage_qtys'
+            # self.state = 'manage_qtys'
             self.send_catalogs_to_customers_spt()
 
     def action_state_in_process(self):
@@ -441,7 +418,7 @@ class SaleCatalog(models.Model):
                         record.execution_time = datetime.now()
 
 
-            record.state = 'pending'
+            record.state = 'done'
         
             record._get_pending_catalog_count()
 
@@ -565,3 +542,8 @@ class SaleCatalog(models.Model):
                 'domain': [('catalog_id','in',self.ids)]
         }
         
+
+    def get_portal_url(self):
+        website_id = self.env['kits.b2b.website'].search([],limit=1)
+        if website_id and website_id.url:
+            return website_id.url

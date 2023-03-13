@@ -3,8 +3,8 @@ from odoo import _, api, fields, models, tools
 class ProductTemplate(models.Model):
     _inherit = 'product.template'
 
-    tab_line_ids = fields.One2many('product.tab.line', 'product_id', 'Product Tabs',help="Set the product tabs")
-    label_line_ids = fields.One2many('product.label.line', 'product_tmpl_id', 'Product Labels',help="Set the number of product labels")
+    # tab_line_ids = fields.One2many('product.tab.line', 'product_id', 'Product Tabs',help="Set the product tabs")
+    # label_line_ids = fields.One2many('product.label.line', 'product_tmpl_id', 'Product Labels',help="Set the number of product labels")
     is_shipping_product = fields.Boolean("Is Shipping Product (Flag)")
     is_admin = fields.Boolean("Is Admin Fee (Flag)")
     is_global_discount = fields.Boolean('Is Additional Discount (Flag)')
@@ -20,10 +20,10 @@ class ProductTemplate(models.Model):
         for p in self:
             p.product_variant_id = p.product_variant_ids[:1].id
 
-    @api.constrains('tab_line_ids')
-    def check_tab_lines(self):
-        if len(self.tab_line_ids) > 4:
-            raise Warning("You can not create more then 4 tabs!!")
+    # @api.constrains('tab_line_ids')
+    # def check_tab_lines(self):
+    #     if len(self.tab_line_ids) > 4:
+    #         raise Warning("You can not create more then 4 tabs!!")
 
     def open_product_variant_spt(self):
         product_ids = self.env['product.product'].search([('product_tmpl_id','=',self.id)])
