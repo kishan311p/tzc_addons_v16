@@ -7,7 +7,7 @@ from odoo.http import request
 class PublicReport(http.Controller):
     @http.route(['/report/custom/<reportname>/<docid>'], type='http', auth='public', website=True, method=['GET'], csrf=False)
     def custom_public_report(self, reportname=None, docid=False, **data):
-        report = request.env.ref(reportname)
+        report = request.env.ref(reportname).sudo()
         context = dict(request.env.context)
         obj = request.env[report.model].sudo()
 
