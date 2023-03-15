@@ -46,6 +46,36 @@
                                 </form>
                             </field>
                         </page>
+                        <page name="mobile_main_banner" string="Mobile Main Banner" attrs="{'invisible': [('page_type','not in',['home'])]}">
+                            <field name="homepage_mobile_main_banner_ids">
+                                <tree editable="bottom">
+                                    <field name="sequence" widget="handle" />
+                                    <field name="image_icon" widget="image" class="oe_avatar" options="{'zoom': true,'preview_image': 'image_icon' ,'size': [128, 128]}" />
+                                    <field name="url" widget="url"/>
+                                    <field name="redirect_url" widget="url"/>
+                                    <field name="redirect_text"/>
+                                    <field name="header_description" />
+                                    <field name="description" />
+                                </tree>
+                                <form>
+                                    <sheet>
+                                        <field name="image_icon" widget="image" class="oe_avatar" options="{'zoom': true,'preview_image': 'image_icon','size': [128, 128]}"/>
+
+                                        <group>
+                                            <group>
+                                                <field name="url" widget="url" />
+                                                <field name="redirect_url" widget="url"/>
+                                                <field name="redirect_text" />
+                                            </group>
+                                            <group>
+                                                <field name="header_description" />
+                                                <field name="description" />
+                                            </group>
+                                        </group>
+                                    </sheet>
+                                </form>
+                            </field>
+                        </page>
                         <page name="general_info" attrs="{'invisible': [('page_type','not in',['home','our_story','contact_us'])]}" string="General Info">
                             <group name="eto_b2b" attrs="{'invisible': [('page_type','not in',['home','our_story'])]}" string="Everything Optical B2B">
                                 <field name="header_text_1" string="Button Title" />

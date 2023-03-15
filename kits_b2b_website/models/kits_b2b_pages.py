@@ -50,7 +50,7 @@ class kits_b2b_pages(models.Model):
         'kits.b2b.website.slider', 'cu_page_id', 'Sliders'
     )
     char_field = fields.Char('Char Field')
-    
+
     how_to_shop_title = fields.Char('How To Show Title')
     how_to_shop_background = fields.Char('Background Image URL')
     how_to_shop_redirect_url = fields.Char('How To shop Redirect URL')
@@ -71,4 +71,8 @@ class kits_b2b_pages(models.Model):
         'team_member_page_id',
         string='Team Members'
     )
-    brand_ids = fields.Many2many('product.brand.spt','b2b_pages_with_product_brand_rel','b2b_page_id','brand_id', string='Brand')
+    brand_ids = fields.Many2many(
+        'product.brand.spt', 'b2b_pages_with_product_brand_rel', 'b2b_page_id', 'brand_id', string='Brand')
+
+    homepage_mobile_main_banner_ids = fields.One2many(
+        'kits.b2b.image.model', 'homepage_mobile_main_banner_id', 'Main Banner For Mobile')

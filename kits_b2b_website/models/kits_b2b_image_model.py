@@ -40,3 +40,4 @@ class kits_b2b_image_model(models.Model):
     )
     offer_id = fields.Many2one('kits.b2b.pages', 'Offres')
     team_member_page_id = fields.Many2one('kits.b2b.pages', 'Team Member Page')
+    homepage_mobile_main_banner_id = fields.Many2one('kits.b2b.pages', 'Mobile View Pages') 
