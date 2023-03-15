@@ -76,6 +76,7 @@ class sale_order(models.Model):
     order_approved_by = fields.Many2one('res.partner','Order Approved By')
     is_abandoned_cart = fields.Boolean('Abandoned Cart', compute='_compute_abandoned_cart', search='_search_abandoned_cart')
     cart_recovery_email_sent = fields.Boolean('Cart recovery email already sent')
+    report_token = fields.Char('Report Access Token')
 
     @api.depends('case_weight_gm','no_of_cases','include_cases')
     def _calculate_case_weight_kg(self):
