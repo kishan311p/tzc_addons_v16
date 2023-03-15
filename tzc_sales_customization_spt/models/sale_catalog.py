@@ -58,6 +58,7 @@ class SaleCatalog(models.Model):
     accept_decline_flag = fields.Boolean('Accept/Decline Flag')
     execution_time = fields.Datetime('Execution Time')
     customer_id = fields.Many2one('res.partner')
+    report_token = fields.Char('Report Access Token')
 
     @api.onchange('user_id')
     def _onchange_get_manager(self):

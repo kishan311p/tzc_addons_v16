@@ -24,7 +24,7 @@ class ir_model(models.Model):
 
         return update
 
-    def generate_report_access_link(self, model_name, records, report_name, partner_id):
+    def generate_report_access_link(self, model_name, records, report_name, partner_id, report_type='pdf'):
         """
         Method check access rights of records for partner_id
         model_name : Model name
@@ -40,8 +40,9 @@ class ir_model(models.Model):
         try:
             assert all(
                 isinstance(r, int) for r in records), 'Records must be list of ids.'
-            assert self.env.ref(
-                report_name), "Specified report is not available!"
+            if report_type == 'pdf':
+                assert self.env.ref(report_name),\
+                    "Specified report is not available!"
 
             # Object of model_name
             model = self.env[model_name].sudo()
@@ -64,13 +65,19 @@ class ir_model(models.Model):
                         if not token:
                             token = secrets.token_hex(16)
                             model_record.report_token = token
-                        url = model_record.get_base_url()+'/report/custom/%(report_name)s/%(record_id)s?access_token=%(token)s' % ({
-                            'report_name': report_name,
+                        url = model_record.get_base_url()+'/report/%(report_type)s/%(report_name)s/%(record_id)s?access_token=%(token)s' % ({
+                            'report_type': 'excel' if report_type == 'excel' else 'custom',
+                            'report_name': model_name if report_type == 'excel' else report_name,
                             'record_id': rec_id,
-                            'token': token
+                            'token': token,
                         })
+                        if report_type == 'excel':
+                            url += '&cid={}'.format(partner_id)
                         result['links'].append((rec_id, url))
-
+            if len(records) == len(result['links']):
+                result.update({
+                    'success': True
+                })
         except Exception as e:
             result.update({
                 'error': str(e),
