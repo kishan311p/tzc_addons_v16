@@ -639,7 +639,6 @@ class res_partner(models.Model):
                         rec.mailgun_verification_status = 'approved'
                     rec.result = request.get('result')
                     rec.mail_risk = request.get('risk')
-            shipping_id = self.search([('parent_id','=',rec.id)])
 
         if 'customer_type' in vals.keys() and vals['customer_type'] in ['b2b_regular','b2b_regular']:
                 config_parameter = config_parameter_obj.sudo().get_param('user_ids_spt', False)
@@ -1566,9 +1565,9 @@ class res_partner(models.Model):
             if file_type == 'excel' and model == 'sale.catalog':
                 get_dict = self.env['ir.model'].generate_report_access_link('sale.catalog',[res_id],'',self.id,'excel')
             else:
-                get_dict = self.env['ir.model'].generate_report_access_link('sale.catalog',[res_id],'tzc_sales_customization_spt.action_catalog_report_spt',self.id,'pdf')
+                get_dict = self.env['ir.model'].generate_report_access_link('sale.catalog',[res_id],'tzc_sales_customization_spt.action_catalog_report_pdf',self.id,'pdf')
 
         if get_dict.get('links') and isinstance(get_dict.get('links'), list) and get_dict.get('links')[0]:
             url = get_dict.get('links')[0][-1]
         
-        return {'url' : url}
+        return {'url' : url,'error' : get_dict.get('error')}
