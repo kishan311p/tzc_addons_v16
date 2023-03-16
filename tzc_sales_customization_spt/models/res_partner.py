@@ -1556,26 +1556,19 @@ class res_partner(models.Model):
         return action
 
     def b2b_website_report_download(self,model,file_type,res_id):
-        base_url = self.env['ir.config_parameter'].sudo().get_param('web.base.url','')
-        res_model = self.env[model].browse(res_id)
-        url = ''
+        url =''
         if model in ['sale.order'] and res_id: 
             if file_type == 'excel' and model == 'sale.order':
-                report_id = self.env['order.report.with.image.wizard'].create({
-                    'with_img': True,
-                    'order_id': res_id,
-                })
-                url = report_id.action_process_report().get('url','')
+                get_dict = self.env['ir.model'].generate_report_access_link('sale.order',[res_id],'',self.id,'excel')
             else:
-                url ='my/orders/%s?access_token=%s&report_type=pdf&downlod=True'%(res_id,res_model.access_token)
+                get_dict = self.env['ir.model'].generate_report_access_link('sale.order',[res_id],'sale.report_saleorder',self.id,'pdf')
         elif model in ['sale.catalog'] and res_id: 
             if file_type == 'excel' and model == 'sale.catalog':
-                report_id = self.env['kits.wizard.download.catalog.excel'].create({
-                        'partner_id': self.id,
-                        'catalog_id' : res_model.id
-                    })
-                url = report_id.action_download_report().get('url','')
+                get_dict = self.env['ir.model'].generate_report_access_link('sale.catalog',[res_id],'',self.id,'excel')
             else:
-                self
+                get_dict = self.env['ir.model'].generate_report_access_link('sale.catalog',[res_id],'tzc_sales_customization_spt.action_catalog_report_spt',self.id,'pdf')
+
+        if get_dict.get('links') and isinstance(get_dict.get('links'), list) and get_dict.get('links')[0]:
+            url = get_dict.get('links')[0][-1]
         
-        return {'url' : base_url+'/'+url}
+        return {'url' : url}
