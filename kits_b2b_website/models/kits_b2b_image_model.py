@@ -16,6 +16,8 @@ class kits_b2b_image_model(models.Model):
     description = fields.Text('Description')
     redirect_url = fields.Char('Redirect URL')
     redirect_text = fields.Char('Button Text')
+    url_2 = fields.Char('Image 2 URL')
+    image_2_icon = fields.Char('Image 2', related="url_2")
     url = fields.Char('Image URL')
     image_icon = fields.Char('Image', related="url")
     website_id = fields.Many2one('kits.b2b.website', 'Website')

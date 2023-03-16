@@ -12,3 +12,4 @@ class kits_b2b_key_value_model(models.Model):
     head_office = fields.Boolean('Header Office?',default=False)
 
     contact_us_page_id = fields.Many2one('kits.b2b.pages','Contact Us Page')
+    faq_id = fields.Many2one('kits.b2b.pages','FAQ')

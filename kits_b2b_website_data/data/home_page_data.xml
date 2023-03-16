@@ -27,32 +27,34 @@ The team at ETO thank you for your business and remain committed everyday to sta
 
         <!-- main banners record  -->
         <record id="kit_main_baner1" model="kits.b2b.image.model">
-            <field name="header_description">Your Wholesale Partner for Branded Glasses </field>
-            <field name="description">Trusted distributors of designer eyeglass and sunglass frames worldwide for over 25 years.</field>
-            <field name="url">https://cdn.teameto.com/data/B2C1/new_tzc_b2b_images/hero/hero-slide-1.png</field>
+            <!-- <field name="header_description">Your Wholesale Partner for Branded Glasses </field> -->
+            <!-- <field name="description">Trusted distributors of designer eyeglass and sunglass frames worldwide for over 25 years.</field> -->
+            <field name="url">https://cdn.teameto.com/data/B2B/home/d-1.jpg</field>
             <field name="redirect_url">https://b2b.teameto.com/signup</field>
-            <field name="redirect_text">Sign in</field>
+            <field name="url_2">https://cdn.teameto.com/data/B2B/home/m-1.jpg</field>
+            <!-- <field name="redirect_text">Sign in</field> -->
             <field name="website_id" eval="kits_team_eto_website" />
             <field name="homepage_main_banner_id" eval="kits_home_page" />
 
         </record>
         <record id="kit_main_baner2" model="kits.b2b.image.model">
-            <field name="header_description">No Minimums Required </field>
-            <field name="description">All our products are available to ship immediately with no minimum order quantities.</field>
-            <field name="url">https://cdn.teameto.com/data/B2C1/new_tzc_b2b_images/hero/hero-slide-2.png</field>
+            <!-- <field name="header_description">No Minimums Required </field> -->
+            <!-- <field name="description">All our products are available to ship immediately with no minimum order quantities.</field> -->
+            <field name="url">https://cdn.teameto.com/data/B2B/home/d-2.jpg</field>
             <field name="redirect_url">https://b2b.teameto.com/shop</field>
-            <field name="redirect_text">Shop Now</field>
+            <field name="url_2">https://cdn.teameto.com/data/B2B/home/m-2.jpg</field>
+            <!-- <field name="redirect_text">Shop Now</field> -->
             <field name="website_id" eval="kits_team_eto_website" />
             <field name="homepage_main_banner_id" eval="kits_home_page" />
 
         </record>
         <record id="kit_main_baner3" model="kits.b2b.image.model">
-            <field name="header_description">100+ designer frames to choose from </field>
-            <field name="description">The best brands for eyeglasses are a few clicks away from being added to your inventory.
-</field>
-            <field name="url">https://cdn.teameto.com/data/B2C1/new_tzc_b2b_images/hero/hero-slide-3.png</field>
+            <!-- <field name="header_description">100+ designer frames to choose from </field> -->
+            <!-- <field name="description">The best brands for eyeglasses are a few clicks away from being added to your inventory.</field> -->
+            <field name="url">https://cdn.teameto.com/data/B2B/home/d-3.jpg</field>
             <field name="redirect_url">https://b2b.teameto.com/shop</field>
-            <field name="redirect_text">Shop Now</field>
+            <field name="url_2">https://cdn.teameto.com/data/B2B/home/m-3.jpg</field>
+            <!-- <field name="redirect_text">Shop Now</field> -->
             <field name="website_id" eval="kits_team_eto_website" />
             <field name="homepage_main_banner_id" eval="kits_home_page" />
 
@@ -275,7 +277,7 @@ Sunglasses</field>
         </record> -->
 
         <!-- mobile main banners record  -->
-        <record id="kit_mobile_main_baner1" model="kits.b2b.image.model">
+        <!-- <record id="kit_mobile_main_baner1" model="kits.b2b.image.model">
             <field name="header_description">Your Wholesale Partner for Branded Glasses </field>
             <field name="description">Trusted distributors of designer eyeglass and sunglass frames worldwide for over 25 years.</field>
             <field name="url">https://cdn.teameto.com/data/B2C1/new_tzc_b2b_images/hero/hero-slide-1.png</field>
@@ -284,8 +286,8 @@ Sunglasses</field>
             <field name="website_id" eval="kits_team_eto_website" />
             <field name="homepage_mobile_main_banner_id" eval="kits_home_page" />
 
-        </record>
-        <record id="kit_mobile_main_baner2" model="kits.b2b.image.model">
+        </record> -->
+        <!-- <record id="kit_mobile_main_baner2" model="kits.b2b.image.model">
             <field name="header_description">No Minimums Required </field>
             <field name="description">All our products are available to ship immediately with no minimum order quantities.</field>
             <field name="url">https://cdn.teameto.com/data/B2C1/new_tzc_b2b_images/hero/hero-slide-2.png</field>
@@ -294,8 +296,8 @@ Sunglasses</field>
             <field name="website_id" eval="kits_team_eto_website" />
             <field name="homepage_mobile_main_banner_id" eval="kits_home_page" />
 
-        </record>
-        <record id="kit_mobile_main_baner3" model="kits.b2b.image.model">
+        </record> -->
+        <!-- <record id="kit_mobile_main_baner3" model="kits.b2b.image.model">
             <field name="header_description">100+ designer frames to choose from </field>
             <field name="description">The best brands for eyeglasses are a few clicks away from being added to your inventory.
 </field>
@@ -305,7 +307,7 @@ Sunglasses</field>
             <field name="website_id" eval="kits_team_eto_website" />
             <field name="homepage_mobile_main_banner_id" eval="kits_home_page" />
 
-        </record>
+        </record> -->
 
     </data>
 

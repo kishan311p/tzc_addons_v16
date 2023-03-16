@@ -8,8 +8,8 @@
             <field name="website_id" eval="kits_team_eto_website" />
             <field name="header_text_2">Contact Us</field>
             <field name="text_2">Got a question for us? Fill in your details and message and we will get back to you shortly.</field>
-            <field name="banner_url">https://cdn.teameto.com/data/B2C1/new_tzc_b2b_images/contact-g/Contact%20page-top-banner.png</field>
-            <field name="banner_2_url">https://cdn.teameto.com/data/B2C1/new_tzc_b2b_images/contact-g/Contact%20page-top-banner.png</field>
+            <field name="banner_url">https://cdn.teameto.com/data/B2B/contact-us/d-contact.jpg</field>
+            <field name="banner_2_url">https://cdn.teameto.com/data/B2B/contact-us/m-contact.jpg</field>
             <field name="is_our_core_values">True</field>
         </record>
 

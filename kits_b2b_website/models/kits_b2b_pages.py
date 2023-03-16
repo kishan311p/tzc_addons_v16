@@ -26,6 +26,8 @@ class kits_b2b_pages(models.Model):
         'Banner Image', related='banner_1_id.url', store=True)
     slider_ids = fields.One2many(
         'kits.b2b.website.slider', 'page_id', 'Sliders')
+    faq_ids = fields.One2many(
+        'kits.b2b.key.value.model', 'faq_id', 'FAQs')
     key_value_model_ids = fields.One2many(
         'kits.b2b.key.value.model', 'page_id', 'Key Value')
     branch_data_ids = fields.One2many(
