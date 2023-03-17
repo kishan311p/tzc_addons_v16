@@ -31,3 +31,19 @@ class sale_order(models.Model):
             template_id = template_id.with_context(order = order_id.name,date=datetime.datetime.now().strftime("%d-%m-%Y %H:%M:%S"),amount = order_id.currency_id.name + ' ' + order_id.currency_id.symbol + str(dictionary.get('amount',0.00)))
             template_id.sudo().send_mail(order_id.id,force_send=True,email_layout_xmlid="mail.mail_notification_light")
         return {}
+    
+    
+    def kits_b2b_order_confrim_mail_send(self):
+        
+        salesman_mail_template = self.env.ref('tzc_sales_customization_spt.tzc_email_template_sales_person_sale_order_confirm')
+        salesman_mail_template.send_mail(self.id,force_send=True)
+        order_mail_template = self.env.ref('tzc_sales_customization_spt.tzc_email_template_sale_confirm_spt')
+        order_mail_template.send_mail(self.id,force_send=True)
+        return{}
+    
+    
+    def kits_b2b_order_catalog_mail_send(self):
+        self.env.ref('tzc_sales_customization_spt.kits_mail_cancel_saleorder_to_customer').send_mail(self.id, force_send=True)
+        self.env.ref('tzc_sales_customization_spt.kits_mail_cancel_saleorder_to_sales_person').send_mail(self.id, force_send=True)
+        return{}
+    

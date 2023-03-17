@@ -375,7 +375,9 @@ class kits_wizard_download_catalog_excel(models.TransientModel):
         if self.partner_id:
             partner_catalog_id = self.catalog_id.filtered(lambda x:x.partner_ids == self.partner_id)
             if partner_catalog_id:
-                return self.env.ref('tzc_sales_customization_spt.action_catalog_report_spt').report_action(partner_catalog_id)
+                # return self.env.ref('tzc_sales_customization_spt.action_catalog_report_spt').report_action(partner_catalog_id)
+                self.catalog_id.customer_id = self.partner_id.id
+                return self.env.ref('tzc_sales_customization_spt.action_catalog_report_pdf').with_context(partner_id=self.partner_id).report_action(partner_catalog_id)
         else:
             raise UserError ('No Customer Selected.')
 

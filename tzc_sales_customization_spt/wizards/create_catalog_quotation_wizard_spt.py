@@ -22,7 +22,7 @@ class create_catalog_quotation_wizard_spt(models.TransientModel):
                         'partner_id': customer_id.id,
                         'catalog_id': record.catalog_id.id,
                         'user_id':record.catalog_id.user_id.id,
-                        'fiscal_position_id':fiscal_position_id if fiscal_position_id else False,
+                        'fiscal_position_id':fiscal_position_id.id if fiscal_position_id else False,
                     })
                     self._cr.commit()
                     for line_id in record.catalog_id.line_ids.filtered(lambda x:x.product_qty != 0):

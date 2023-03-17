@@ -79,7 +79,7 @@ class res_partner(models.Model):
     # is_internal_user = fields.Boolean(string="Is Internal User")
     signup_from_website = fields.Boolean(string='Sinup From Website')
     mailgun_verification_status = fields.Selection([('approved','Mg Approved'),('rejected','MG Rejected')],'MG Status')
-    # is_default_shipping= fields.Boolean('Default Shipping Address')
+    is_default_shipping= fields.Boolean('Default Shipping Address')
     # wk_website_loyalty_points = fields.Float(
     #     string='Website Loyalty Points',
     #     help='The points are the points with which the user is awarded of being Loyal !',
@@ -1565,6 +1565,7 @@ class res_partner(models.Model):
             if file_type == 'excel' and model == 'sale.catalog':
                 get_dict = self.env['ir.model'].generate_report_access_link('sale.catalog',[res_id],'',self.id,'excel')
             else:
+               
                 get_dict = self.env['ir.model'].generate_report_access_link('sale.catalog',[res_id],'tzc_sales_customization_spt.action_catalog_report_pdf',self.id,'pdf')
 
         if get_dict.get('links') and isinstance(get_dict.get('links'), list) and get_dict.get('links')[0]:
