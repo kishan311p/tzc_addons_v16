@@ -2406,17 +2406,29 @@ class sale_order(models.Model):
             record.no_of_cases = record.ordered_qty
             if record.partner_id and record.partner_id.signup_from_website and record.partner_id.customer_type == 'b2c':
                 raise UserError(_('You cannot create order without Customer verification.'))
+            # PDF Links
+            pdf_links = self.env['ir.model'].sudo().generate_report_access_link(
+                'sale.order',
+                record.id,
+                'sale.action_report_saleorder',
+                record.partner_id.id,
+                'pdf'
+            )
+            url = ''
+            if pdf_links.get('success') and pdf_links.get('url'):
+                url = pdf_links.get('url')
+
             if record.state in ['draft','sent'] and record.catalog_id and not record.website_id:
                 mail_template_id = self.env.ref('tzc_sales_customization_spt.tzc_email_template_sales_person_sale_order_confirm_manully_spt').sudo()
-                mail_template_id.send_mail(res_id=record.id,force_send=True,email_layout_xmlid="mail.mail_notification_light")
+                mail_template_id.with_context(pdf_url=url).send_mail(res_id=record.id,force_send=True,email_layout_xmlid="mail.mail_notification_light")
                 if record.partner_id:
                     verified = record.partner_verification()
                     quotation_template_id = self.env.ref('sale.email_template_edi_sale')
-                    quotation_template_id.with_context(proforma=False).send_mail(record.id,force_send=True,email_layout_xmlid="mail.mail_notification_light") if verified else None
+                    quotation_template_id.with_context(proforma=False,pdf_url=url).send_mail(record.id,force_send=True,email_layout_xmlid="mail.mail_notification_light") if verified else None
             if record.state == 'draft' and not record.catalog_id and record.website_id:
                 mail_template_id = self.env.ref('tzc_sales_customization_spt.tzc_start_adding_into_cart_notification_to_salesperson_spt').sudo()
                 recipients = record.user_id.partner_id.ids if record.user_id and record.user_id.partner_id else []
-                mail_template_id.send_mail(res_id=record.id,force_send=True,email_values={'recipient_ids':[(6,0,recipients)]},email_layout_xmlid="mail.mail_notification_light")
+                mail_template_id.with_context.get(pdf_url=url).send_mail(res_id=record.id,force_send=True,email_values={'recipient_ids':[(6,0,recipients)]},email_layout_xmlid="mail.mail_notification_light")
         return res
 
     #kits_abadon_card_order

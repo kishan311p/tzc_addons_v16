@@ -405,10 +405,21 @@ class SaleCatalog(models.Model):
                         'customer_id': customer_id.id,
                         'state' : 'sent'
                     })
+                    # PDF Link
+                    pdf_links = self.env['ir.model'].sudo().generate_report_access_link(
+                        'sale.catalog',
+                        record.id,
+                        'tzc_sales_customization_spt.action_catalog_report_pdf',
+                        customer_id.id,
+                        'pdf'
+                    )
+                    url = ''
+                    if pdf_links.get('success') and pdf_links.get('url'):
+                        url = pdf_links.get('url')
                     customer_template_id = self.env.ref('tzc_sales_customization_spt.tzc_email_template_catalog_spt')
-                    customer_template_id.with_context(customer_id=customer_id).send_mail(record.id,email_values={'email_to': customer_id.email},force_send=True)
+                    customer_template_id.with_context(customer_id=customer_id,pdf_url=url).send_mail(record.id,email_values={'email_to': customer_id.email},force_send=True)
                     sales_person_template_id = self.env.ref('tzc_sales_customization_spt.tzc_email_template_catalog_confirmation_spt')
-                    sales_person_template_id.with_context(customer_id=customer_id).send_mail(record.id,force_send=True)
+                    sales_person_template_id.with_context(customer_id=customer_id,pdf_url=url).send_mail(record.id,force_send=True)
                 
             if not record.execution_time:
                 last_record = self.search([('state','=','done')],limit=1)
