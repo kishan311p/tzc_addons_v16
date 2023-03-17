@@ -155,21 +155,21 @@
             <field name="head_office">True</field>
             <field name="name">Toronto, Canada</field>
             <field name="value">366 Denison Street, Unit 4 Markham, Ontario, Canada.</field>
-            <field name="contact_us_page_id" eval="kits_contact_us" />
+            <field name="page_id" eval="kits_contact_us" />
             <field name="website_id" eval="kits_team_eto_website" />
         </record>
 
         <record id="kits_our_core_values_tanzania" model="kits.b2b.key.value.model">
             <field name="name">Dar Es Salaam, Tanzania</field>
             <field name="value">123 Samora Ave Dar es Salaam, Tanzania</field>
-            <field name="contact_us_page_id" eval="kits_contact_us" />
+            <field name="page_id" eval="kits_contact_us" />
             <field name="website_id" eval="kits_team_eto_website" />
         </record>
 
         <record id="kits_our_core_values_uae" model="kits.b2b.key.value.model">
             <field name="name">Dubai, UAE</field>
             <field name="value">Oﬃce 508, Latifa Tower, Trade Center 1, Sheikh Zayed Road Dubai, UAE</field>
-            <field name="contact_us_page_id" eval="kits_contact_us" />
+            <field name="page_id" eval="kits_contact_us" />
             <field name="website_id" eval="kits_team_eto_website" />
         </record>
 

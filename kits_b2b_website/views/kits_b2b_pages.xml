@@ -188,7 +188,7 @@
                             <field name="branch_data_ids" attrs="{'invisible': [('page_type','not in',['contact_us'])]}">
                                 <tree editable="bottom">
                                     <field name="head_office"/>
-                                    <field name="name" string="Locaion"/>
+                                    <field name="name" string="Location"/>
                                     <field name="value"  string="Address"/>
                                 </tree>
                             </field>
