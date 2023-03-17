@@ -3,7 +3,7 @@
 
     <record id="kits_sales_commission_notify_salesperson_commission_change" model="mail.template">
         <field name="name">Notify User about Commission Change</field>
-        <field name="subject">Commission rule changed by {{object.env.user.name}}.</field>
+        <field name="subject">{{object.env.user.name}} has updated your commission rule.</field>
         <field name="email_from">"ETO-Support" &lt;{{(object.company_id.catchall_email or user.email)}}&gt;</field>
         <!-- <field name="email_from">${object.env.user.email | safe}</field> -->
         <field name="email_to">{{object.partner_id.email}}</field>
@@ -16,25 +16,28 @@
                     <table border="0" cellpadding="0" cellspacing="0" width="590" style="min-width: 590px; background-color: white; padding: 0px 8px 0px 8px; border-collapse:separate;">
                         <tr>
                             <td valign="top" style="font-size: 13px;">
-                                <p style="margin-top:0px;">Hello <t t-out="object.name"/>,</p>
+                                <p style="margin-top:0px;">Hello <t t-out="object.name"/>
+,</p>
                                 <t t-set="rule" t-value="object.env.context.get('rule_name')"/>
                                 <!-- % set rule = object.env.context.get('rule_name') -->
                                 <t t-set="orders" t-value="object.env.context.get('updated_orders')"/>
                                 <!-- % set orders = object.env.context.get('updated_orders') -->
-                                <p>Your commission rule has been updated by <t t-out="object.env.user.name or 'Administrator'"/>.
-                                <t t-if="orders and rule">
+                                <p>{{object.env.user.name}} has changed your commission rule.</p>
+                                <!-- <t t-if="orders and rule">
                                     <br/>Your commission in following invoices are updated according to new rule <t t-out="rule"/>:
-                                <t t-out="orders"/>
-                            </t>
-                        </p>
-                        <p style="margin-bottom:0px;">Thank you,<br/>
-                                                    ETO Support</p>
-                    </td>
-                </tr>
-            </table>
-        </td>
-    </tr>
-</field>
-</record>
+                                <t t-out="orders"/> -->
+                                <!-- </t> -->
+                                <!-- </p> -->
+                                <p style="margin-bottom:0px;">
+                                    Thank you,<br/>
+                                    ETO Support
+                                </p>
+                            </td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+        </field>
+    </record>
 
 </odoo>

@@ -77,11 +77,11 @@ class kits_assign_salesperson_wizard(models.TransientModel):
             raise UserError(_('Select salesperson.'))
 
     def update_partner(self):
-        # old_salesperson = self.partner_id.user_id
+        old_salesperson = self.partner_id.user_id
         if self.sales_person_id:
             update_user = self.partner_id.sudo().write({'user_id':self.sales_person_id.id})
             if update_user:
-                self.notify_admin_salesperson_name()
+                self.with_context(old_salesperson=old_salesperson.name).notify_admin_salesperson_name()
             if self.new_manager_id:
                 self.sales_person_id.manager_id = self.new_manager_id.id
                 # manager = self.env['res.users'].search([('allow_user_ids','in',self.sales_person_id.ids),('id','!=',self.sales_person_id.manager_id.id)])

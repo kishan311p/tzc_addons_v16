@@ -5,8 +5,7 @@
         <record id="partner_country_change_notify_admin_mail_template" model="mail.template">
             <field name="name">Partner Country Change | Notify Admin</field>
             <field name="email_from">"ETO-Support" &lt;{{ (object.user_id.company_id.catchall_email or user.email) }}&gt;</field>
-            <!-- <field name="email_from">${ |safe}</field> -->
-            <field name="subject">Sales Manager {{ object.env.user.name }} has changed country.</field>
+            <field name="subject"> {{object.name}} has updated their country information to {{object.country_id.name}}!</field>
             <field name="model_id" ref="base.model_res_partner"/>
             <field name="auto_delete" eval="False"/>
             <field name="lang">{{ object.lang }}</field>
@@ -15,43 +14,83 @@
                 <table border="0" cellpadding="0" cellspacing="0" width="590" style="padding: 0px; background-color: white; color: #454748; border-collapse:separate;">
                     <tbody>
                         <!-- CONTENT -->
-
                         <tr>
                             <td valign="top" style="font-size: 13px;">
                                 <div>
                                     <t t-set="receiver" t-value="object.env.context.get('recipient')"/>
-                                    <t t-if="receiver">
-                                        <p style="margin-top:0px;">Hello <t t-out="receiver"/>
+                                    <p>
+                                        <t t-if="receiver">
+                                            <p style="margin-top:0px;">Hello <t t-out="receiver"/>
 ,</p>
-                                    </t>
-                                    <t t-else="">
-                                        <p style="margin-top:0px;">Hello ,</p>
-                                    </t>
-                                    <t t-if="object.country_id.id">
-                                        <p>
-                                            <t t-out="object.env.user.name"/>
- has changed the country to "<t t-out="object.country_id.name"/>"
- for the client "<t t-out="object.name"/>"
+                                        </t>
+                                        <t t-else="">
+                                            <p style="margin-top:0px;">Hello ,</p>
+                                        </t>
                                     </p>
-                                    <t t-set="order_names" t-value="object.give_required_sale_orders_names(object.sale_order_ids,['cancel','merged','draft_inv','open_inv','paid'])"/>
-                                    <t t-if="order_names">
-                                        <br/>
-                                        <p>Currency, Pricelist and Fiscal position of following orders will be changed.Please review following quotation for the pricing if needed:<br/>
-                                        <t t-out="','.join(order_names)"/>
-                                    </p>
-                                </t>
-                            </t>
-                            <t t-if="not object.country_id.id">
+                                    <p>
+                                        <t t-out="object.name"/>
+ has changed their country from <t t-out="ctx.get('from_country')"/>
+ to <t t-out="object.country_id.name"/>
+                                </p>
                                 <p>
-                                    <t t-out="object.env.user.name"/>
- removed the country of customer <t t-out="object.name"/>
-.</p>
-                            </t>
+                                    <a t-attf-href="{{object.get_base_url()}}/web#id={{object.id}}&amp;action={{object.env.ref('contacts.action_contacts').id}}&amp;model=res.partner&amp;view_type=form" target="_blank" style="background-color:#7693f8 !important; padding:10px; text-decoration: none; color: #fff; border-radius: 5px; font-size: 16px;" class="o_default_snippet_text">
+                                            View Customer Account
+                                    </a>
+                                </p>
 
-                            <p style="margin-bottom:0px;">Thank you,<br/>
- ETO Support
+                                <p style="margin-bottom:0px;">
+                                Thank you,<br/>
+                                Everything Optical Management
+                                </p>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+
+        </field>
+    </record>
+
+    <record id="partner_email_change_notify_admin_mail_template" model="mail.template">
+        <field name="name">Partner Email Change | Notify Admin</field>
+        <!-- <field name="email_from">${ |safe}</field> -->
+        <field name="email_from">"ETO-Support" &lt;{{ (object.user_id.company_id.catchall_email or user.email) }}&gt;</field>
+        <field name="subject"> {{object.name}} has updated their email!</field>
+        <field name="model_id" ref="base.model_res_partner"/>
+        <field name="auto_delete" eval="False"/>
+        <field name="lang">{{ object.lang }}</field>
+        <field name="body_html" type="html">
+            <table border="0" cellpadding="0" cellspacing="0" width="590" style="padding: 0px; background-color: white; color: #454748; border-collapse:separate;">
+                <tbody>
+                    <!-- CONTENT -->
+
+                    <tr>
+                        <td valign="top" style="font-size: 13px;">
+                            <t t-set="receiver" t-value="object.env.context.get('recipient')"/>
+                            <p>
+                                <t t-if="receiver">
+                                    <p style="margin-bottom:0px;margin-top:0px;">Hello <t t-out="receiver"/>
+,</p>
+                                </t>
+                                <t t-else="">
+                                    <p style="margin-bottom:0px;margin-top:0px;">Hello ,</p>
+                                </t>
                             </p>
-                        </div>
+                            <p>
+                                <t t-out="object.name"/>
+ email has been updated <t t-out="object.email"/>
+ by <t t-out="object.env.user.name"/>
+. Please ensure customer is aware of change.
+                        </p>
+                        <p>
+                            <a t-attf-href="{{object.get_base_url()}}/web#id={{object.id}}&amp;action={{object.env.ref('contacts.action_contacts').id}}&amp;model=res.partner&amp;view_type=form" target="_blank" style="background-color:#7693f8 !important; padding:10px; text-decoration: none; color: #fff; border-radius: 5px; font-size: 16px;" class="o_default_snippet_text">
+                                    View Customer Account
+                            </a>
+                        </p>
+                        <p style="margin-bottom:0px;">
+                                    Thank you,<br/>
+                                    Everything Optical Management
+                        </p>
                     </td>
                 </tr>
             </tbody>
@@ -60,11 +99,10 @@
     </field>
 </record>
 
-<record id="partner_email_change_notify_admin_mail_template" model="mail.template">
-    <field name="name">Partner Email Change | Notify Admin</field>
-    <!-- <field name="email_from">${ |safe}</field> -->
+<record id="partner_salesperson_change_notify_admin_mail_template" model="mail.template">
+    <field name="name">Partner Salesperson Change | Notify Admin</field>
     <field name="email_from">"ETO-Support" &lt;{{ (object.user_id.company_id.catchall_email or user.email) }}&gt;</field>
-    <field name="subject">Contact's email changed.</field>
+    <field name="subject">{{object.name}} has been assigned a new sales manager!</field>
     <field name="model_id" ref="base.model_res_partner"/>
     <field name="auto_delete" eval="False"/>
     <field name="lang">{{ object.lang }}</field>
@@ -72,90 +110,33 @@
         <table border="0" cellpadding="0" cellspacing="0" width="590" style="padding: 0px; background-color: white; color: #454748; border-collapse:separate;">
             <tbody>
                 <!-- CONTENT -->
-
                 <tr>
                     <td valign="top" style="font-size: 13px;">
                         <t t-set="receiver" t-value="object.env.context.get('recipient')"/>
-                        <t t-if="receiver">
-                            <p style="margin-bottom:0px;margin-top:0px;">Hello <t t-out="receiver"/>
-,</p>
-                        </t>
-                        <t t-else="">
-                            <p style="margin-bottom:0px;margin-top:0px;">Hello ,</p>
-                        </t>
-
-                        <!-- <br/> -->
                         <p>
-                            <t t-out="object.env.user.name"/>
- has changed email to "<t t-out="object.email"/>"
- of customer "<t t-out="object.name"/>"
- .
-                    <br/>
- So the old email address will not be valid for login. Please make sure <t t-out="object.env.user.name"/>
- have notified customer for the same.</p>
-                <!-- <br/> -->
-                <p style="margin-bottom:0px;">Thank you,<br/>
-ETO Support
-                </p>
-            </td>
-        </tr>
-    </tbody>
-</table>
-
-</field>
-</record>
-
-<record id="partner_salesperson_change_notify_admin_mail_template" model="mail.template">
-<field name="name">Partner Salesperson Change | Notify Admin</field>
-<field name="email_from">"ETO-Support" &lt;{{ (object.user_id.company_id.catchall_email or user.email) }}&gt;</field>
-<!-- <field name="email_from">${ |safe}</field> -->
-<field name="subject">Contact's salesperson change.</field>
-<field name="model_id" ref="base.model_res_partner"/>
-<field name="auto_delete" eval="False"/>
-<field name="lang">{{ object.lang }}</field>
-<field name="body_html" type="html">
-<table border="0" cellpadding="0" cellspacing="0" width="590" style="padding: 0px; background-color: white; color: #454748; border-collapse:separate;">
-    <tbody>
-        <!-- CONTENT -->
-        <tr>
-            <td valign="top" style="font-size: 13px;">
-                <t t-set="receiver" t-value="object.env.context.get('recipient')"/>
-                <t t-if="receiver">
-                    <p style="margin-top:0px;margin-top:0px;">Hello <t t-out="receiver"/>
-,</p>
-                </t>
-                <t t-else="">
-                    <p style="margin-top:0px;margin-top:0px;">Hello ,</p>
-                </t>
-                <!-- <br/> -->
-                <p>
-                    <t t-out="object.env.user.name"/> has changed the salesperson to "<t t-out="object.user_id.name"/>" of customer "<t t-out="object.name"/>".</p>
-
-            <t t-set="changed_orders" t-value="ctx.get('changed_orders')"/>
-            <!-- % set changed_orders = ctx.get('changed_orders') -->
-            <t t-if="changed_orders">
-                <p>Salesperson of following orders are changed to <t t-out="object.user_id.name"/>:-                <br />
-                <t t-out="','.join(changed_orders)"/>
-            </p>
-
-        </t>
-        <t t-else="">
-            <t t-set="order_names" t-value="object.give_required_sale_orders_names(object.sale_order_ids,['quotation','sent','received','order','scan','shipped'])"/>
-            <t t-if="order_names">
-                <p>Please review following orders if you want to change salesperson or any other details<br/>
-                <t t-out="','.join(order_names)"/>
-            </p>
-        </t>
-    </t>
-    <!-- <br/> -->
-    <p style="margin-bottom:0px;">Thank you,<br/>
-                                                       ETO Support
-    </p>
-</td>
-</tr>
-</tbody>
-</table>
-</field>
+                            <t t-if="receiver">
+                                <p style="margin-top:0px;margin-top:0px;">Hello <t t-out="receiver"/>,</p>
+                            </t>
+                            <t t-else="">
+                                <p style="margin-top:0px;margin-top:0px;">Hello ,</p>
+                            </t>
+                        </p>
+                        <p>
+                            <t t-out="object.name"/>has been reassigned sales managers from <t t-out="ctx.get('old_salesperson')"/> to <t t-out="object.user_id.name"/>.
+                        </p>
+                        <p>
+                            <a t-attf-href="{{object.get_base_url()}}/web#id={{object.id}}&amp;action={{object.env.ref('contacts.action_contacts').id}}&amp;model=res.partner&amp;view_type=form" target="_blank" style="background-color:#7693f8 !important; padding:10px; text-decoration: none; color: #fff; border-radius: 5px; font-size: 16px;" class="o_default_snippet_text">
+                                View Customer Account
+                            </a>
+                        </p>
+                        <p style="margin-bottom:0px;">Thank you,<br/>
+                            Everything Optical Management
+                        </p>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </field>
 </record>
 
 </data>

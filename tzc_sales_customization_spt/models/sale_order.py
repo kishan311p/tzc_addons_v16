@@ -2724,7 +2724,7 @@ class sale_order(models.Model):
                 'default_composition_mode': 'comment',
                 'mark_so_as_sent': True,
                 'force_email': True,
-                'custom_layout':'mail.mail_notification_light'
+                'default_email_layout_xmlid':'mail.mail_notification_light'
             }
             return {
                 'name': _('Send Mail'),
@@ -3715,3 +3715,15 @@ class sale_order(models.Model):
                 return self.env['mail.template']
         else:
             return template 
+
+    def get_order_portal_url(self):
+        website_id = self.env['kits.b2b.website'].search([],limit=1)
+        if website_id and website_id.url:
+            return website_id.url
+
+    def get_email_subject(self):
+        subject = 'Your pro-forma for order %s is ready!'%self.name
+        if not self._context.get('proforma'):
+            subject =  '%s has sent you a quotation!: %s'%(self.user_id.name,self.name)
+        
+        return subject

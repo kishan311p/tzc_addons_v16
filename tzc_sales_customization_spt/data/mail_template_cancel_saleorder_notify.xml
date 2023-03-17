@@ -5,7 +5,7 @@
     
         <record id="kits_mail_cancel_saleorder_to_sales_person" model="mail.template">
             <field name="name">Cancel sale order</field>
-            <field name="subject">Cancel sale order {{object.partner_id.name}}.</field>
+            <field name="subject"> Quotation {{object.name}} has been rejected by {{object.partner_id.name}}.</field>
             <field name="email_from">"ETO-Support" &lt;{{(object.user_id.company_id.catchall_email or user.email)}}&gt;</field>
             <field name="email_to">{{object.user_id.partner_id.email}}</field>
             <field name="model_id" ref="sale.model_sale_order"/>
@@ -16,10 +16,15 @@
                     <tr>
                         <td valign="top" style="font-size: 13px;">
                             <p>Hello <t t-out="object.user_id.name"/>,</p>
-                            <!-- <br/> -->
-                            <!-- <br/> -->
                             <p><t t-out="object.partner_id.name"/> have cancelled order <t t-out="object.name"/>.</p>
-                            <!-- <br/> -->
+                            <p>{{object.partner_id.name}} has rejected quotation {{object.name}}</p>
+                            <p>
+                                <div style="text-align: left; margin: 16px 0px 16px 0px; font-size: 14px;">
+                                    <a t-attf-href="{{object.get_base_url()}}/web#id={{object.id}} &amp;action={{object.env.ref('sale.action_orders').id}} &amp;model=sale.order&amp;view_type=form" target="_blank" style="background-color: #1F7B6F; padding: 8px 16px 8px 16px; text-decoration: none; color: #fff; border-radius: 5px; font-size:13px;">
+                                        View Quotation
+                                    </a>
+                                </div>
+                            </p>
                             <p style="margin-bottom:0px;">Thank you,<br/>
                             ETO Support
                             </p>
@@ -31,7 +36,8 @@
 
         <record id="kits_mail_cancel_saleorder_to_customer" model="mail.template">
             <field name="name">Cancel sale order</field>
-            <field name="subject">Cancel sale order {{object.partner_id.name}}.</field>
+            <!-- <field name="subject">Cancel sale order {{object.partner_id.name}}.</field> -->
+            <field name="subject">Quotation {{object.name}} was cancelled</field>
             <field name="email_from">"ETO-Support" &lt;{{(object.user_id.company_id.catchall_email or user.email)}}&gt;</field>
             <field name="email_to">{{object.partner_id.email}}</field>
             <field name="model_id" ref="sale.model_sale_order"/>
@@ -42,12 +48,20 @@
                     <tr>
                         <td valign="top" style="font-size: 13px;">
                             <p style="margin-top:0px;">Dear <t t-esc="object.partner_id.name"/>,</p>
-                            <!-- <br/> -->
-                            <!-- <br/> -->
-                            <p>Your order <t t-esc="object.name"/> is cancelled.</p>
-                            <!-- <br/> -->
-                            <p style="margin-bottom:0px;">Thank you,<br/>
-                                ETO Support
+                            <p>This is to notify you that your quotation {{object.name}} has been updated as cancelled as per your requested. </p>
+                            <p>
+                                <div style="text-align: left; margin: 16px 0px 16px 0px; font-size: 14px;">
+                                    <a t-attf-href="{{object.get_base_url()}}/web#id={{object.id}} &amp;action={{object.env.ref('sale.action_orders').id}} &amp;model=sale.order&amp;view_type=form" target="_blank" style="background-color: #1F7B6F; padding: 8px 16px 8px 16px; text-decoration: none; color: #fff; border-radius: 5px; font-size:13px;">
+                                        View Quotation
+                                    </a>
+                                </div>
+                            </p>
+                            <p>
+                                If you would like to update this or for further assistance, please reach out to <t t-out="object.user_id.name"/> by replying to this email.
+                            </p>
+                            <p style="margin-bottom:0px;">Best regards,
+                                <br/>
+                                Team Everything Optical
                             </p>
                         </td>
                     </tr>

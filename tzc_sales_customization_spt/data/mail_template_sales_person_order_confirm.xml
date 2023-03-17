@@ -39,13 +39,10 @@
         <record id="tzc_email_template_sales_person_sale_order_confirm_manully_spt" model="mail.template">
             <field name="name">Order place info - Send by Email</field>
             <field name="email_from">"ETO-Support" &lt;{{object.user_id.company_id.catchall_email or user.email}}&gt;</field>
-            <!-- <field name="email_from">{{(object.partner_id.email or '')|safe}}</field> -->
-            <field name="subject">Order {{object.name}} has been placed by {{object.partner_id.name}}.</field>
+            <field name="subject">Order {{object.name}} has been created for {{object.partner_id.name}}.</field>
             <field name="email_to">{{object.partner_id.user_id.email or ''}}</field>
             <field name="model_id" ref="sale.model_sale_order"/>
             <field name="auto_delete" eval="False"/>
-            <!-- <field name="report_template" ref="sale.action_report_saleorder"/> -->
-            <!-- <field name="report_name">Order {{(object.name or '')}}</field> -->
             <field name="lang">{{object.partner_id.lang}}</field>
             <field name="body_html" type="html">
             <!-- CONTENT -->
@@ -54,14 +51,22 @@
                         <tr>
                             <td valign="top" style="font-size: 13px;">
                                 <p style="margin-top:0px;"> Hello <t t-out="object.user_id.name"/>,</p>
+                                <p>An order for customer <t t-out="object.partner_id.name"/> has been created on their account. Order details below:
+                                    <br/>
+                                    <t t-out="object.name"/>
+                                    <br/>
+                                    <t t-out="object.create_date"/>                                
+                                </p>
+                                <p>
+                                    <a t-attf-href="{{object.get_base_url()}}/web#id={{object.id}}&amp;action={{object.env.ref('sale.action_orders').id}}&amp;model=sale.order&amp;view_type=form" target="_blank" style="background-color:#7693f8 !important; padding:10px; text-decoration: none; color: #fff; border-radius: 5px; font-size: 16px;" class="o_default_snippet_text">
+                                        View Order
+                                    </a>
+                                </p>
                                 <!-- <br/> -->
-                                <p>Sale Order <t t-out="object.name"/> for Customer <t t-out="object.partner_id.name"/> is created.</p>
-                                <!-- <a t-attf-href="{{object.get_base_url()}}/web#id={{object.id}}&amp;action={{object.env.ref('tzc_sales_customization_spt.action_orders_ecommerce').id}}&amp;model=sale.order&amp;view_type=form" target="_blank" style="background-color:#7693f8 !important; padding:10px; text-decoration: none; color: #fff; border-radius: 5px; font-size: 16px;" class="o_default_snippet_text">
-                                    View Quotation
-                                </a> -->
-                                <!-- <br/> -->
-                                <p style="margin-bottom:0px;"> Thank you,
-                                <br/>ETO Support
+                                <p style="margin-bottom:0px;"> 
+                                    Thank you,
+                                    <br/>
+                                    Everything Optical Management
                                 </p>
                                 <a t-attf-href="{{object.get_base_url()}}/report/pdf/sale.report_saleorder/{{object.id}}">
                                     <img src="/tzc_sales_customization_spt/static/src/img/pdf.png" style="height:60px;width:100px;"/>

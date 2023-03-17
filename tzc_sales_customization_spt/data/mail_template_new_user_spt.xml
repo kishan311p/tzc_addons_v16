@@ -5,7 +5,7 @@
         <record id="tzc_mail_template_new_user_spt" model="mail.template">
             <field name="name">New User Notification</field>
             <field name="email_from">"ETO-Support" &lt;{{(object.company_id.catchall_email or user.email)}}&gt;</field>
-            <field name="subject">A new customer has just registered on teameto.com</field>
+            <field name="subject">New User Registration: Everything Optical.</field>
             <!-- <field name="partner_to">${object.partner_id.id}</field> -->
             <!-- <field name="email_to">${(object.login and '%s &lt;%s&gt;' % (object.partner_id.name, object.login) or '')|safe}</field> -->
             <field name="model_id" ref="base.model_res_partner"/>
@@ -50,9 +50,7 @@
                                                 <td valign="top" style="font-size: 13px;">
 
 
-                                                    <p style="margin-top: 0px;">Hello,</p>
-                                                    <p>A new customer <t t-out="object.name"/> has just signed up on the teameto.com website. Please review the customer and follow up to grant them access.</p>
-                                                    <!-- <br/> -->
+                                                    <p>We wanted to inform you that a new user has registered for the B2B portal. The user's information is as follows:</p>
                                                     <table class="table table-bordered" style="border: 1px solid #black;border-collapse: collapse;">
 
                                                         <tbody>
@@ -134,9 +132,18 @@
 
                                                         </tbody>
                                                     </table>
-                                                    <!-- <br/> -->
-                                                    <p style="margin-bottom: 0px;">Thank you,<br/>
-                                                       ETO Support
+                                                    <p>Please review the user's account information and grant access if the user meets the criteria.</p>
+                                                    <p>
+                                                        <div style="font-size: 13px; margin: 16px 0px;">
+                                                            <a t-attf-href="{{object.get_base_url()}}/web#id={{object.id}} &amp;action={{object.env.ref('base.action_res_users').id}} &amp;model=res.users&amp;view_type=form" style="background-color:#00A09D !important;padding: 8px 16px 8px 16px; text-decoration: none; color: #fff; border-radius: 5px; font-size:13px;">
+                                                                Take Decision on Access
+                                                            </a>
+                                                        </div>
+                                                    </p>
+                                                    <p style="margin-bottom: 0px;">
+                                                        Best Regards,
+                                                        <br/>
+                                                        Team Everything Optical
                                                     </p>
                                                 </td>
                                             </tr>

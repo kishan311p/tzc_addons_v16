@@ -1,8 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-
     <data>
-
         <record id="tzc_order_shipped_notification_to_salesperson_spt" model="mail.template">
             <field name="name">Order Shipped Notification To Salesperson</field>
             <field name="email_from">"ETO-Support" &lt;{{(object.company_id.catchall_email or user.email)}}&gt;</field>
@@ -85,40 +83,38 @@
         <record id="stock.mail_template_data_delivery_confirmation" model="mail.template">
             <field name="name">Delivery: Send by Email</field>
             <field name="model_id" ref="model_stock_picking"/>
-            <field name="subject">Everything Optical (ETO) Delivery Order (Ref {{object.name}}) </field>
+            <field name="subject">Order {{object.name}} is on its way! </field>
             <!-- <field name="subject">Your Everything Optical (ETO) order has been shipped!</field> -->
             <field name="email_from">"ETO-Support" &lt;{{(object.user_id.company_id.catchall_email or user.email)}}&gt;</field>
             <field name="partner_to">{{object.partner_id.id}}</field>
             <field name="body_html" type="html">
                 <div style="margin: 0px; padding: 0px;">
-                    <p style="margin-top: 0px; padding: 0px; font-size: 13px;">
-                        Dear <t t-out="object.sale_id.partner_id.name"/>,</p>
-                        <!-- <br/> -->
-                        <p>Good news! Your order <b><t t-out="object.sale_id.name"/></b> has been shipped.<br/>
-                        The tracking details of the shipment is:<br/>
-                            <b>Shipping Provider: </b> <t t-esc="object.shipping_id.name or ''"/><br/>
-                            <b>Tracking Number: </b> <t t-esc="object.tracking_number_spt or ''"/></p>
-                        <p>You can reply to this email if you have any questions, or reach out to your Account Manager for more help.</p>
-                        <br/>
-        <p style="margin-bottom:0px;">Thank you,<br/>
-        <t t-if="user and user.signature">
-            <t t-out="user.signature"/>
-        </t>
-        <t t-else="">
-            ETO Support
-        </t>
-        </p>
-        <!-- <a href="${object.get_base_url()}/report/pdf/sale.report_saleorder/${object.sale_id.id}">
-            <img src="/tzc_sales_customization_spt/static/src/img/pdf.png" style="height:60px;width:100px;"/>
-        </a> -->
+                    <p style="margin-top: 0px; padding: 0px; font-size: 13px;">Dear <t t-out="object.sale_id.partner_id.name"/>,</p>
+                    <p>We wanted to let you know that your order #<t t-out="object.sale_id.name"/> has been shipped! </p>
+                    <p>
+                        Here are the details of your shipment:
+                            - Shipping Carrier: <t t-out="object.shipping_id.name"/><br/>
+                            - Tracking Number: <t t-out="object.tracking_number_spt"/>
+                    </p>
+                    <p>It may take up to 24 hours for the carriers to update their system with the shipping information.</p>
+                    <p>We hope you enjoy your purchase and thank you for your business!</p>
+                    <p>If you have any questions or concerns with your shipment, please don't hesitate to contact <t t-out="object.sale_id.user_id.name"/> by replying to this email.</p>
+                    <p style="margin-bottom:0px;">
+                        Best regards,<br/>
+                        <t t-if="user and user.signature">
+                            <t t-out="user.signature"/>
+                        </t>
+                        <t t-else="">
+                            Team Everything Optical
+                        </t>
+                    </p>
+                    <a href="${object.get_base_url()}/report/pdf/sale.report_saleorder/${object.sale_id.id}">
+                        <img src="/tzc_sales_customization_spt/static/src/img/pdf.png" style="height:60px;width:100px;"/>
+                    </a>
                 </div>
             </field>
             <field name="lang">{{object.partner_id.lang}}</field>
             <field name="auto_delete" eval="True"/>
-            <!-- <field name="user_signature" eval="False"/> -->
         </record>
-
-
-
 	</data>
 </odoo>

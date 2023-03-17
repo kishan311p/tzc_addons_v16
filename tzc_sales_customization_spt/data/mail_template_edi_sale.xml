@@ -5,10 +5,8 @@
         <record id="sale.email_template_edi_sale" model="mail.template">
             <field name="name">Sales Order: Send by email</field>
             <field name="model_id" ref="sale.model_sale_order"/>
-            <field name="subject">{{'Your proforma from Everything Optical (ETO) is ready' if ctx.get('proforma') else 'Your Account Manager has sent you a quotation to review'}}</field>
+            <field name="subject">{{object.get_email_subject()}}</field>
             <field name="email_from">"ETO-Support" &lt;{{(object.company_id.catchall_email or user.email)}}&gt;</field>
-            <!-- <field name="email_from">${(object.user_id.email) | safe}</field> -->
-            <!-- <field name="email_from">${(object.user_id.email_formatted or user.email_formatted) | safe}</field> -->
             <field name="partner_to">{{object.partner_id.id}}</field>
             <field name="body_html" type="html">
                 <table border="0" cellpadding="0" cellspacing="0" width="590" style="padding: 0px; background-color: white; color: #454748; border-collapse:separate;">
@@ -16,59 +14,54 @@
                         <tr>
                             <td>
                                 <div style="margin: 0px; padding: 0px;">
-                                    <p style="margin: 0px; padding: 0px; font-size: 13px;">
+                                    <p style="margin: 0px; padding: 0px; font-size: 13px;width: 590px !important;">
                                         <t t-set="doc_name" t-value="'quotation' if object.state in ('draft', 'sent') else 'order'"/>
                                         Dear <t t-out="object.partner_id.name"/>,
                                         <br/><br/>
                                         <t t-if="ctx.get('proforma')">
-                                            Your Pro forma invoice for order <a t-attf-href="{{object.get_base_url()}}/my/orders/{{object.id}}?{{object.get_access_token_spt()}}" style="text-decoration: none; color: black;" class="o_default_snippet_text"><span style="font-weight: bold;" t-out="object.name or ''"></span></a>
-                                            <!-- Pro forma invoice for <t t-out="doc_name or ''">quotation</t> <span style="font-weight: bold;"  t-out="object.name or ''">S00052</span> -->
-                                            <t t-if="object.origin">
-                                                (with reference: <t t-out="object.origin or ''"></t> )
-                                            </t> is now available.
-                                            <br/>
-                                            <br/>
-                                            You can reply to this email if you have any questions, or reach out to your Account Manager for more help.
+                                            <p>
+                                                <t t-out="object.user_id.name"/> has your pro-forma invoice ready for order <t t-out="object.name"/>.
+                                            </p>
+                                            <p>
+                                                <a t-attf-href="{{object.get_portal_url()}}/order-details?order_id={{object.id}}" style="background-color:#1F7B6F !important;padding: 10px; text-decoration: none; color: #fff; border-radius: 5px; font-size: 16px;" class="o_default_snippet_text">
+                                                    View Pro-forma Order
+                                                </a>
+                                            </p>
+                                            <p>For further assistance, please reach out to <t t-out="object.user_id.name"/> by replying to this email.</p>
                                         </t>
                                         <t t-else="">
-                                            Your Account Manager has sent you a quotation, which is awaiting your review. Click on the View Quotation button below.
+                                            <p>
+                                                <t t-out='object.user_id.name'/> is awaiting your review on a quotation sent to your account.
+                                            </p>
                                             <br/>
-                                            <br/>
-                                            <a t-attf-href="{{object.get_base_url()}}/my/orders/{{object.id}}?{{object.get_access_token_spt()}}" style="background-color:#1F7B6F !important; padding: 10px; text-decoration: none; color: #fff; border-radius: 5px; font-size: 16px;" class="o_default_snippet_text">
-                                                                                    View Quotation
+                                            <a t-attf-href="{{object.get_order_portal_url()}}/order-details?order_id={{object.id}}" style="background-color:#1F7B6F !important; padding: 10px; text-decoration: none; color: #fff; border-radius: 5px; font-size: 16px;" class="o_default_snippet_text">
+                                                View Quotation
                                             </a>
                                             <br/>
+                                            <p>
+                                                For further assistance or to update quotation, please reach out to <t t-out='object.user_id.name'/> by replying to this email.
+                                            </p>
                                         </t>
-                                    <br/><br/>
+                                        <br/><br/>
                                     </p>
                                     <p style="margin-bottom:0px;">                 
-                                        Thank you,<br/>
-                                        <t t-if="object.user_id and object.user_id.sudo().name">
-                                            <t t-out="object.user_id.sudo().name"></t>
-                                        </t>
-                                        <t t-else="">
-                                            ETO Support
-                                        </t>
+                                        Best regards,<br/>
+                                        Team Everything Optical
                                     </p>
-                                    
-                                    <!-- <a t-attf-href="{{object.get_base_url()}}/report/pdf/sale.report_saleorder/{{object.id}}">
-                                        <img src="/tzc_sales_customization_spt/static/src/img/pdf.png" style="height:60px;width:100px;"/>
-                                    </a> -->
-                                    <p>
-                                        <t t-if="not ctx.get('proforma') and object.user_id.signature">
+                                    <t t-if="not ctx.get('proforma') and object.user_id.signature">
+                                        <p>
                                             <t t-out="object.user_id.signature"/>
-                                        </t>
-                                    </p>
+                                        </p>
+                                    </t>
                                 </div>
                             </td>
                         </tr>
                     </tbody>
                 </table>
-    </field>
-    <field name="lang">{{object.partner_id.lang}}</field>
-    <!-- <field name="user_signature" eval="False"/> -->
-    <field name="auto_delete" eval="False"/>
-</record>
+            </field>
+            <field name="lang">{{object.partner_id.lang}}</field>
+            <field name="auto_delete" eval="False"/>
+        </record>
 
 
 </data>

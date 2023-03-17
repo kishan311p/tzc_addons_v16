@@ -4,15 +4,11 @@
 
         <record id="tzc_picking_ready_notification_to_salesperson_spt" model="mail.template">
             <field name="name">Picking Ready Notification To Salesperson</field>
-            <!-- <field name="email_from">${user.email_formatted | safe}</field> -->
             <field name="email_from">{{object.sale_id.user_id.email}}</field>
-            <field name="subject">Order is ready {{object.sale_id.name}}</field>
+            <field name="subject"> Prepare order {{object.sale_id.name}} for shipment.</field>
             <field name="email_to">{{object.get_wh_user()}}</field>
-            <!-- <field name="email_to">${(object.sale_id.user_id.email and '%s &lt;%s&gt;' % (object.sale_id.user_id.partner_id.name, object.sale_id.user_id.email) or '')|safe}</field> -->
             <field name="model_id" ref="stock.model_stock_picking"/>
             <field name="auto_delete" eval="False"/>
-            <!-- <field name="report_template" ref="sale.action_report_saleorder"/> -->
-            <!-- <field name="report_name">Sale Order ${(object.sale_id.name or '')}</field> -->
             <field name="lang">{{object.sale_id.user_id.partner_id.lang}}</field>
             <field name="body_html" type="html">
                 <!-- CONTENT -->
@@ -21,8 +17,18 @@
                         <tr>
                             <td valign="top" style="font-size: 13px;">
                                 <p style="margin-top:0px;">Hello <t t-out="object.env['res.users'].search([('is_warehouse','=',True)],limit=1).name"/> ,</p>
-                                <p>Client <strong><t t-out="object.sale_id.partner_id.name"/></strong> has confirm the order <strong><t t-out="object.sale_id.name"/></strong> now order is ready to ship.</p>
+                                <p>Order <t t-out="object.sale_id.name"/> has been confirmed by client <t t-out="object.partner_id.name"/>. Please proceed to prepare order for shipment.</p>
                                 <p style="margin-bottom:0px;">Thank you,<br/>ETO Support</p>
+                                <p>
+                                    <div style="text-align: left; margin: 16px 0px 16px 0px; font-size: 14px;">
+                                        <a t-attf-href="{{object.get_base_url()}}/web#id={{object.sale_id.id}} &amp;action={{object.env.ref('sale.action_orders').id}} &amp;model=sale.order&amp;view_type=form" target="_blank" style="background-color: #1F7B6F; padding: 8px 16px 8px 16px; text-decoration: none; color: #fff; border-radius: 5px; font-size:13px;">
+                                            View order
+                                        </a>
+                                    </div>
+                                </p>
+                                <p style="margin-bottom:0px;">Thank you,<br/>
+                                    Everything Optical Management
+                                </p>
                                 <a t-attf-href="/report/pdf/sale.report_saleorder/{{object.sale_id.id}}">
                                     <img t-attf-src="/tzc_sales_customization_spt/static/src/img/pdf.png" style="height:60px;width:100px;"/>
                                 </a>

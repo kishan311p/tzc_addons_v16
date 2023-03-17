@@ -162,7 +162,7 @@
                                                     </span>
                                                 </td>
                                                 <td valign="middle" align="right" style="width: 50%;">
-                                                    <img src="/logo.png?company=1" style="padding:0px;margin: 0px;width:95%;" t-att-alt="'%s' % company.name" class="padding-small"/>
+                                                    <img src="/web/image?model=res.company&amp;id=1&amp;field=logo" style="padding:0px;margin: 0px;height: auto;width:280px;" t-att-alt="'%s' % company.name" class="padding-small"/>
                                                 </td>
                                             </tr>
                                             <tr>
@@ -178,7 +178,7 @@
                                     <td style="min-width: 590px;">
                                         <t t-raw="message.body"/>
                                         <t t-if="message._context.get('from_chatter') and message._context.get('default_model') in ('sale.order','account.move','res.partner','stock.picking')">
-                                            <p style="margin-top: 24px; margin-bottom: 16px;">
+                                            <p style="margin-top: 24px; margin-bottom: 16px;width: 590px !important;">
                                                 <a t-att-href="'/mail/view?model=%s&amp;res_id=%s' % (message._context.get('default_model'), message._context.get('default_res_id'))" style="background-color:#7693f8; padding: 10px; text-decoration: none; color: #fff; border-radius: 5px;">
                                                     View <t t-esc="model_description or 'document'"/>
                                                 </a>

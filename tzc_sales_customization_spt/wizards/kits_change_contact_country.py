@@ -26,6 +26,7 @@ class kits_change_contact_country(models.TransientModel):
             self.state_id = self.env['res.country.state'].search([('country_id','=',self.country_id.id)],limit=1).id
 
     def action_process(self):
+        from_country=self.partner_id.country_id.name
         user_obj = self.env['res.users']
         notify_users = user_obj.browse(eval(self.env['ir.config_parameter'].sudo().get_param('user_ids_spt','[]')))
         notify_users += user_obj.search([('id','not in',self.partner_id.user_ids.ids),('is_salesperson','=',True),('country_ids','in',self.country_id.ids)])
@@ -46,4 +47,4 @@ class kits_change_contact_country(models.TransientModel):
         # Notify admin for country change
         if notify:
             for recipient in recipients:
-                self.with_context(recipient=recipient.name).env.ref('tzc_sales_customization_spt.partner_country_change_notify_admin_mail_template').sudo().send_mail(self.partner_id.id,force_send=True,email_values={'recipient_ids':[(6,0,recipient.ids)]},email_layout_xmlid="mail.mail_notification_light")
+                self.with_context(recipient=recipient.name,from_country=from_country).env.ref('tzc_sales_customization_spt.partner_country_change_notify_admin_mail_template').sudo().send_mail(self.partner_id.id,force_send=True,email_values={'recipient_ids':[(6,0,recipient.ids)]},email_layout_xmlid="mail.mail_notification_light")

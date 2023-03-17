@@ -661,7 +661,7 @@ class kits_multi_website_sale_order(models.Model):
         }
 
     def action_send_mail(self,json):
-        reply_to = self.user_id.email+','+self.env.company.catchall  if self.user_id and self.env.company.catchall else self.env.company.catchall  
+        reply_to = self.user_id.email+','+self.env.company.catchall_email  if self.user_id and self.env.company.catchall_email else self.env.company.catchall_email  
         attachment_ids = []
         if json.get('attachments'):
             for attachment in json.get('attachments'):

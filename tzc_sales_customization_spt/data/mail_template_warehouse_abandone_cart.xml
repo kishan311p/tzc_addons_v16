@@ -4,7 +4,7 @@
         <!-- Email template -->
         <record id="mail_template_for_warehouse_abandone_cart" model="mail.template">
             <field name="name">Order Reminder Email</field>
-            <field name="subject">Reminder To Process Order {{object.name}}.</field>
+            <field name="subject"> {{object.partner_id.name}} order {{object.name}} is waiting to be shipped.</field>
             <field name="email_from">"ETO-Support" &lt;{{object.user_id.company_id.catchall_email or user.email}}&gt;</field>
             <field name="model_id" ref="sale.model_sale_order" />
             <field name="auto_delete" eval="False" />
@@ -18,15 +18,17 @@
                                 <p style="margin-top:0px;">Hello <t t-out="ctx['name']"/>,</p>
                                 <!-- <br/> -->
                                 <!-- <br/> -->
-                                <p>This is reminder to process order <b>
-                                <a t-attf-href="{{object.get_base_url()}}/web#id={{object.id}}&amp;action={{object.env.ref('tzc_sales_customization_spt.action_orders_ecommerce').id}}&amp;model=sale.order&amp;view_type=form" target="_blank" style="text-decoration: none;"><t t-out="object.name"/>,</a>
+                                <p>This is a reminder to process order {{object.name}}. <b>
+                                <a t-attf-href="{{object.get_base_url()}}/web#id={{object.id}}&amp;action={{object.env.ref('sale.action_orders').id}}&amp;model=sale.order&amp;view_type=form" target="_blank" style="text-decoration: none;"><t t-out="object.name"/>,</a>
                                 </b></p>
                                 <!-- <br/> -->
-                                <div style="text-align: left; margin: 16px 0px 16px 0px; font-size: 14px;">
-                                    <a t-attf-href="{{object.get_base_url()}}/web#id={{object.id}}&amp;action={{object.env.ref('tzc_sales_customization_spt.action_orders_ecommerce').id}}&amp;model=sale.order&amp;view_type=form" target="_blank" style="background-color: #1F7B6F; padding: 8px 16px 8px 16px; text-decoration: none; color: #fff; border-radius: 5px; font-size:13px;">
-                                        View order
-                                    </a>
-                                </div>
+                                <p>
+                                    <div style="text-align: left; margin: 16px 0px 16px 0px; font-size: 14px;">
+                                        <a t-attf-href="{{object.get_base_url()}}/web#id={{object.id}}&amp;action={{object.env.ref('sale.action_orders').id}}&amp;model=sale.order&amp;view_type=form" target="_blank" style="background-color: #1F7B6F; padding: 8px 16px 8px 16px; text-decoration: none; color: #fff; border-radius: 5px; font-size:13px;">
+                                            View order
+                                        </a>
+                                    </div>
+                                </p>
                                 <!-- <br/> -->
                                 <p style="margin-bottom:0px;">Thank you,<br/>
                                 ETO Support</p>

@@ -98,9 +98,9 @@ class AccountMoveLine(models.Model):
         # price_unit_wo_discount = price_unit * (1 - (discount / 100.0))
         #compute unit_discount_price
 
-        unit_discount_price = round((discount *0.01) * price_unit,2)
-        price_unit_wo_discount = round(price_unit - unit_discount_price,2)
-        subtotal = round(quantity * price_unit_wo_discount,2)
+        unit_discount_price = (discount *0.01) * price_unit
+        price_unit_wo_discount = price_unit - unit_discount_price
+        subtotal = quantity * price_unit_wo_discount
         
         # price_unit_wo_discount = round(price_unit - ((discount *0.01) * price_unit),2)
         
@@ -112,7 +112,7 @@ class AccountMoveLine(models.Model):
             res['price_subtotal'] = taxes_res['total_excluded']
             res['price_total'] = taxes_res['total_included']
         else:
-            res['price_total'] = res['price_subtotal'] = subtotal
+            res['price_total'] = res['price_subtotal'] = round(subtotal,2)
         #In case of multi currency, round before it's use for computing debit credit
         if currency:
             res = {k: currency.round(v) for k, v in res.items()}

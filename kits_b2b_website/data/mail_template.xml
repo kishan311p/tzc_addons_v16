@@ -6,7 +6,7 @@
             <field name="model_id" ref="base.model_res_users"/>
             <field name="email_from">"ETO-Support" &lt;{{(object.company_id.catchall_email or user.email)}}&gt;</field>
             <field name="email_to">{{object.email}}</field>
-            <field name="subject">Please verify your email</field>
+            <field name="subject">Verify Your Email Address: Everything Optical.</field>
             <field name="body_html" type="html">
 
                 <table border="0" cellpadding="0" cellspacing="0" style="padding-top:16px;background-color: #F1F1F1; font-family:Verdana, Arial,sans-serif; color: #454748; width: 100%; border-collapse:separate;">
@@ -49,24 +49,26 @@
                                                         <td valign="top">
                                                             <div>
                                                                 <p style="margin-top:0px;">Dear <t t-out="object.name"/>,</p>
-                                                                <p>You have successfully created your account at teameto.com.
-                                                               
+                                                                <p>Thank you for registering to use our B2B portal. To complete your registration, please verify your email address.</p>
+                                                                <p>
+                                                                    <div style="font-size: 13px; margin: 16px 0px;">
+                                                                        <a t-attf-href="{{object.env['kits.b2b.website'].search([('website_name','=','b2b1')]).url}}/login?details_code={{object.access_token}}&amp;login={{object.login}}" style="background-color:#1F7B6F !important;padding: 8px 16px 8px 16px; text-decoration: none; color: #fff; border-radius: 5px; font-size:13px;">
+                                                                            Activate Account
+                                                                        </a>
+                                                                    </div>
+                                                                </p>
+                                                                <p>
+                                                                    Once you have verified your email, please give our team up to 2 business days to review your information before we provide approval. Please note, only businesses in the optical industry will be granted access to your portal. You will receive an email confirming your approval and further instructions.
+                                                                </p>
+                                                                <p>
+                                                                    If you have any questions or concerns, please don't hesitate to contact us at support@teameto.com.
+                                                                </p>
+                                                                <p style="margin-bottom:0px;">
+                                                                    Best regards,
                                                                     <br/>
-                                                                    <br/>
-                                                                        We just need to verify your email address. Click on the <strong>Activate Account</strong> button below to verify your email.</p>
-                                                                <!-- <br/> -->
-                                                                <div style="font-size: 13px; margin: 16px 0px;">
-                                                                    <a t-attf-href="{{object.env['kits.b2b.website'].search([('website_name','=','b2b1')]).url}}/login?details_code={{object.access_token}}&amp;login={{object.login}}" style="background-color:#00A09D !important;padding: 8px 16px 8px 16px; text-decoration: none; color: #fff; border-radius: 5px; font-size:13px;">
-                                                                                    Activate Account
-                                                                    </a>
-                                                                </div>
-                                                                <br/>
-                                                                <p style="margin-bottom:0px;">Thank you,
-                                                                    <br/>
-                                                                
-                                                                        ETO Support</p>
+                                                                    Team Everything Optical
+                                                                </p>
 
-                                                                <!-- <br/> -->
                                                             </div>
                                                         </td>
                                                     </tr>
@@ -121,7 +123,7 @@
                                 <tbody>
                                     <tr>
                                         <td style="text-align:center;font-size: 13px;">
-                                                Powered by <a target="_blank" href="www.teameto.com" style="color: #7693f8;">ETO</a>
+                                                Powered by <a target="_blank" href="www.teameto.com" style="color: #1F7B6F;">ETO</a>
                                         </td>
                                     </tr>
                                 </tbody>

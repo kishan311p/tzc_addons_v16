@@ -6,13 +6,10 @@
             <field name="name">New Sales Order: Cart Recovery Email</field>
             <field name="email_from">{{object.user_id.email and '%s &lt;%s&gt;' % (object.user_id.name, object.user_id.email) or ''}}</field>
             <field name="subject">You left items in your cart!</field>
-            <!-- <field name="partner_to">${object.partner_id.id}</field> -->
             <field name="email_to">{{object.partner_id.email and '%s &lt;%s&gt;' % (object.partner_id.name, object.partner_id.email) or ''}}</field>
             <field name="reply_to">{{object.user_id.company_id.catchall_email}},{{object.user_id.email}}</field>
             <field name="model_id" ref="sale.model_sale_order"/>
             <field name="auto_delete" eval="False"/>
-            <!-- <field name="report_template" ref="tzc_sales_customization_spt.action_report_saleorder_catalog_spt"/>
-            <field name="report_name">Catalog ${(object.name or '')}</field> -->
             <field name="lang">{{object.partner_id.lang}}</field>
             <field name="body_html" type="html">
                 <table border="0" cellpadding="0" cellspacing="0" style="background-color: white; color: #454748; border-collapse:separate;width:100%;">
@@ -23,22 +20,9 @@
                                 <table border="0" cellpadding="0" cellspacing="0" style="min-width: 590px; background-color: white; padding: 0px 8px 0px 8px; border-collapse:separate;width:100%;">
                                     <tr>
                                         <td valign="top" style="font-size: 13px;">
-                                            <p style="margin-top:0px;">Dear <t t-out="object.partner_id.name"/>
-                                            </p>
-                                            <!-- <br/> -->
+                                            <p style="margin-top:0px;">Dear <t t-out="object.partner_id.name"/></p>
                                             <p>
-                                                <t t-set="company" t-value="object.company_id or object.user_id.company_id or user.company_id"/>
-                                                <span style="font-size:14px;">Your Cart</span>
-                                                <br/>
-                                                <span style="color:black;font-size:14px;font-weight: bold;">
-                                                    <a t-attf-href="{{object.get_base_url()}}/my/orders/{{object.id}}?{{object.get_access_token_spt()}}" target="_blank" style="text-decoration: none;" class="o_default_snippet_text">
-                                                        <t t-out='object.name'/>
-                                                    </a>,
-                                                </span>
-                                            </p>
-                                            <p>
-                                                <span style="color:black;font-size:12px;font-weight: bold;">THERE'S SOMETHING IN YOUR CART.</span>
-                                                        Would you like to complete your purchase?<br/>
+                                                We see that you have left some items in your cart without checking out. 
                                             </p>
                                             <table width='100%' style="border: 1px solid #dbdde0;">
                                                 <thead>
@@ -252,9 +236,8 @@
                                     <br/>
                                     <br/>
                                     <center>
-                                        <!-- <t t-out="object.get_base_url()"/> -->
-                                        <a t-attf-href="{{object.get_base_url()}}/my/orders/{{object.id}}?{{object.get_access_token_spt()}}" target="_blank" style="background-color:#1F7B6F !important; padding: 20px; text-decoration: none; color: #fff; border-radius: 5px; font-size: 16px;" class="o_default_snippet_text">
-        Resume order
+                                        <a t-attf-href="{{object.get_order_portal_url()}}/cart" target="_blank" style="background-color:#1F7B6F !important; padding: 20px; text-decoration: none; color: #fff; border-radius: 5px; font-size: 16px;" class="o_default_snippet_text">
+        View Cart
                                         </a>
                                         <br/>
                                         <br/>
@@ -263,11 +246,11 @@
                                     <br/>
 
 
-                                    <p>You can reply to this email if you have any questions.</p>
+                                    <p>For further assistance, please reach out to *salesperson name* by replying to this email.</p>
                                     <!-- <br/> -->
-                                    <p style="margin-bottom:0px;">Thank you,</p>
-                                    <p style="margin-bottom:0px; color:#888888;">
-                                                        ETO Support
+                                    <p style="margin-bottom:0px;">Best regards,<br/>
+                                        Team Everything Optical
+
                                     </p>
                                     <p>
                                         <t t-if="object.user_id.signature">
