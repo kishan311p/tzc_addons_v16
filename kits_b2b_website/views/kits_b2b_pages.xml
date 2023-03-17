@@ -15,6 +15,16 @@
                         </group>
                     </group>
                     <notebook>
+                        <page name="our_story_image" string="Image" attrs="{'invisible': [('page_type','not in',['our_story'])]}">
+                            <field name="main_banner_ids">
+                                <tree editable="bottom">
+                                    <field name="sequence" widget="handle" />
+                                    <field name="image_icon" widget="image" class="oe_avatar" options="{'zoom': true,'preview_image': 'image_icon' ,'size': [128, 128]}" />
+                                    <field name="url" widget="url"/>
+                                </tree>
+                            </field>
+
+                        </page>
                         <page name="main_banner" string="Main Banner" attrs="{'invisible': [('page_type','not in',['home'])]}">
                             <field name="homepage_main_banner_ids">
                                 <tree editable="bottom">
@@ -23,7 +33,7 @@
                                     <field name="url" widget="url"/>
                                     <field name="redirect_url" widget="url"/>
                                     <field name="image_2_icon" string="Mobile Image" widget="image" class="oe_avatar" options="{'zoom': true,'preview_image': 'image_2_icon' ,'size': [128, 128]}" />
-                                    <field name="url_2" widget="url"  string="Mobile URL"/>
+                                    <field name="url_2" widget="url" string="Mobile URL"/>
 
                                 </tree>
                                 <form>
@@ -170,6 +180,7 @@
                         <page name="our_network" string="FAQ'S" attrs="{'invisible': [('page_type','not in',['faqs'])]}">
                             <field name="faq_ids" attrs="{'invisible': [('page_type','not in',['faqs'])]}">
                                 <tree editable="bottom">
+                                    <field name="sequence" widget="handle" />
                                     <field name="name" string="Question"/>
                                     <field name="value" string="Answer"/>
                                 </tree>
@@ -189,13 +200,13 @@
                                 <tree editable="bottom">
                                     <field name="head_office"/>
                                     <field name="name" string="Location"/>
-                                    <field name="value"  string="Address"/>
+                                    <field name="value" string="Address"/>
                                 </tree>
                             </field>
                             <group>
                                 <field name="image_url_text_3" string="Find Us Image URL"/>
                                 <field name="image_url_text_3_copy" string="Find Us Image" widget="image" class="oe_avatar" options="{'zoom': true,'preview_image': 'image_url_text_3_copy','size':[150,150]}" />
-                            
+
                             </group>
                         </page>
                         <page name="offers" string="Offers" attrs="{'invisible': [('page_type','not in',['home'])]}">
