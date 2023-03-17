@@ -1565,9 +1565,6 @@ class res_partner(models.Model):
             if file_type == 'excel' and model == 'sale.catalog':
                 get_dict = self.env['ir.model'].generate_report_access_link('sale.catalog',res_id,'',self.id,'excel')
             else:
+               
                 get_dict = self.env['ir.model'].generate_report_access_link('sale.catalog',res_id,'tzc_sales_customization_spt.action_catalog_report_pdf',self.id,'pdf')
-
-        if get_dict.get('url'):
-            url = get_dict.get('url')
-        
-        return {'url' : url,'error' : get_dict.get('error')}
+        return get_dict

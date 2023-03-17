@@ -55,6 +55,7 @@
         'data/mail_template_cancel_saleorder_notify.xml',
         'data/mail_template_sale_confirmation.xml',
         'data/mail_template_on_consignment.xml',
+        'data/kits_notify_reject_catalog.xml',
 
 
         # Views

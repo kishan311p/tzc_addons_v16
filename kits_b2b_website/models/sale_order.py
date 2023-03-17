@@ -47,3 +47,8 @@ class sale_order(models.Model):
         self.env.ref('tzc_sales_customization_spt.kits_mail_cancel_saleorder_to_sales_person').send_mail(self.id, force_send=True)
         return{}
     
+    def cart_notification_to_salesperson(self):
+        mail_template_id = self.env.ref('tzc_sales_customization_spt.tzc_start_adding_into_cart_notification_to_salesperson_spt').sudo()
+        recipients = record.user_id.partner_id.ids if record.user_id and record.user_id.partner_id else []
+        mail_template_id.with_context.get(pdf_url=url).send_mail(res_id=record.id,force_send=True,email_values={'recipient_ids':[(6,0,recipients)]},email_layout_xmlid="mail.mail_notification_light")
+        return{}

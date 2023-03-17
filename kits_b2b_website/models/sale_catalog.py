@@ -3,6 +3,9 @@ from odoo import _, api, fields, models
 class sale_catalog(models.Model):
     _inherit = 'sale.catalog'
     
+    def catalog_reject_mail(self,partner_id,message) :
+        self.env.ref('tzc_sales_customization_spt.kits_mail_reject_catalog_to_sales_person').with_context(message=message,customer=partner_id).send_mail(self.id, force_send=True,notif_layout="mail.mail_notification_light")
+        return {}
 
     def catalog_email(self,partner_id):
         for record in self:
