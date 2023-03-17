@@ -47,6 +47,13 @@ class kits_b2b_pages(models.Model):
     banner_2_image = fields.Char('Banner 2 Image', related='banner_2_url')
     is_our_core_values = fields.Boolean('Use For Our Core Values')
 
+    header_text_3 = fields.Char('Header Text')
+    text_3 = fields.Char('Text')
+    image_url_text_3 = fields.Char('Image URL')
+    image_url_text_3_copy = fields.Char('Image', related="image_url_text_3")
+    text_3_redirect_url = fields.Text('Redirect URL')
+    text_3_redirect_url_text = fields.Char('Redirect URL Text')
+
     # Contact Us Sliders
     contact_us_slider_ids = fields.One2many(
         'kits.b2b.website.slider', 'cu_page_id', 'Sliders'

@@ -20,16 +20,7 @@
             <field name="in_more">True</field>
             <field name="sequence">7</field>
         </record>
-        <record id="kits_b2b_faqs_menus" model="kits.b2b.menus">
-            <field name="name">FAQ's</field>
-            <field name="website_id" eval="kits_team_eto_website" />
-            <field name="page_id" eval="kits_faqs_page" />
-            <field name="is_published">True</field>
-            <field name="redirect_url">/faqs</field>
-            <field name="menu_type">redirect</field>
-            <field name="in_more">True</field>
-            <field name="sequence">8</field>
-        </record>
+
         <record id="kits_b2b_contact_us_menus" model="kits.b2b.menus">
             <field name="name">Contact Us</field>
             <field name="website_id" eval="kits_team_eto_website" />

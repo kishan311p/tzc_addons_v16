@@ -16,27 +16,25 @@
             <field name="text_field">Everything Optical is focused on our customers. We understand that that our customer success is our success. We offer our clients only the best in quality eyewear frames direct from designers. Dedicated managers are assigned to our clients to provide unmatched customer service. All our customers are given access to our exclusive wholesale portal with visibility into our ready to ship inventory that is only a matter of clicks away from being shipped. Over the last two decades we have been suppling to clients internationally from our portfolio of 100+ designer brands. Our team works towards building trust and long-term partnerships with our clients by being transparent throughout our process and holding true to our value system.
             When you partner with us, your dedicated sales manager will work closely with you to provide customized offerings that meet your need and ensure your successes.
             </field>
+            <field name="header_text_3">Over 25 years of wholesale designer eyewear distribution worldwide.</field>
+            <field name="text_3">Everything Optical have been suppling luxury branded optical frames and sunglasses to emerging markets across the world, which include Africa, South and Central America, Middle East and South Asia. Our office, located strategically across the globe have been serving these markets with the best quality eyewear, focusing on creating value for our customers.</field>
+            <field name="text_3_redirect_url">https://b2b.teameto.com/aboutus</field>
+            <field name="text_3_redirect_url_text">Join Our Team</field>
             <field name="char_field">hr@teameto.com</field>
 
         </record>
         <!-- banners -->
         <record id="kits_aboutus_1_image" model="kits.b2b.image.model">
-            <field name="header_description">Over 25 years of wholesale designer eyewear distribution worldwide.</field>
-            <field name="description">Everything Optical have been suppling luxury branded optical frames and sunglasses to emerging markets across the world, which include Africa, South and Central America, Middle East and South Asia. Our office, located strategically across the globe have been serving these markets with the best quality eyewear, focusing on creating value for our customers.</field>
             <field name="url">https://cdn.teameto.com/data/B2C1/new_tzc_b2b_images/aboout-gellery/A-1.jpg</field>
             <field name="redirect_url">https://b2b.teameto.com/aboutus</field>
-            <field name="redirect_text">Join Our Team</field>
             <field name="website_id" eval="kits_team_eto_website" />
             <field name="main_banner_id" eval="kits_aboutus_page" />
             <field name="sequence">1</field>
         </record>
 
         <record id="kits_aboutus_1_image" model="kits.b2b.image.model">
-            <field name="header_description">Over 25 years of wholesale designer eyewear distribution worldwide.</field>
-            <field name="description">Everything Optical have been suppling luxury branded optical frames and sunglasses to emerging markets across the world, which include Africa, South and Central America, Middle East and South Asia. Our office, located strategically across the globe have been serving these markets with the best quality eyewear, focusing on creating value for our customers.</field>
             <field name="url">https://cdn.teameto.com/data/B2C1/new_tzc_b2b_images/aboout-gellery/A-1.jpg</field>
             <field name="redirect_url">https://b2b.teameto.com/aboutus</field>
-            <field name="redirect_text">Join Our Team</field>
             <field name="website_id" eval="kits_team_eto_website" />
             <field name="main_banner_id" eval="kits_aboutus_page" />
             <field name="sequence">1</field>
@@ -44,11 +42,8 @@
 
 
         <record id="kits_aboutus_2_image" model="kits.b2b.image.model">
-            <field name="header_description">Over 25 years of wholesale designer eyewear distribution worldwide.</field>
-            <field name="description">Everything Optical have been suppling luxury branded optical frames and sunglasses to emerging markets across the world, which include Africa, South and Central America, Middle East and South Asia. Our office, located strategically across the globe have been serving these markets with the best quality eyewear, focusing on creating value for our customers.</field>
             <field name="url">https://cdn.teameto.com/data/B2C1/new_tzc_b2b_images/aboout-gellery/A-4.jpg</field>
             <field name="redirect_url">https://b2b.teameto.com/aboutus</field>
-            <field name="redirect_text">Join Our Team</field>
             <field name="website_id" eval="kits_team_eto_website" />
             <field name="main_banner_id" eval="kits_aboutus_page" />
             <field name="sequence">4</field>
@@ -56,22 +51,16 @@
 
 
         <record id="kits_aboutus_3_image" model="kits.b2b.image.model">
-            <field name="header_description">Over 25 years of wholesale designer eyewear distribution worldwide.</field>
-            <field name="description">Everything Optical have been suppling luxury branded optical frames and sunglasses to emerging markets across the world, which include Africa, South and Central America, Middle East and South Asia. Our office, located strategically across the globe have been serving these markets with the best quality eyewear, focusing on creating value for our customers.</field>
             <field name="url">https://cdn.teameto.com/data/B2C1/new_tzc_b2b_images/aboout-gellery/A3.jpg</field>
             <field name="redirect_url">https://b2b.teameto.com/aboutus</field>
-            <field name="redirect_text">Join Our Team</field>
             <field name="website_id" eval="kits_team_eto_website" />
             <field name="main_banner_id" eval="kits_aboutus_page" />
             <field name="sequence">3</field>
         </record>
 
         <record id="kits_aboutus_4_image" model="kits.b2b.image.model">
-            <field name="header_description">Over 25 years of wholesale designer eyewear distribution worldwide.</field>
-            <field name="description">Everything Optical have been suppling luxury branded optical frames and sunglasses to emerging markets across the world, which include Africa, South and Central America, Middle East and South Asia. Our office, located strategically across the globe have been serving these markets with the best quality eyewear, focusing on creating value for our customers.</field>
             <field name="url">https://cdn.teameto.com/data/B2C1/new_tzc_b2b_images/aboout-gellery/A-2.jpg</field>
             <field name="redirect_url">https://b2b.teameto.com/aboutus</field>
-            <field name="redirect_text">Join Our Team</field>
             <field name="website_id" eval="kits_team_eto_website" />
             <field name="main_banner_id" eval="kits_aboutus_page" />
             <field name="sequence">2</field>

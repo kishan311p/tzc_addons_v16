@@ -146,11 +146,8 @@
                             </field>
 
                         </page>
-                        <page name="shipping" string="Shipping">
+                        <page name="cart_icons" string="Cart Icons">
                             <group>
-                                <group>
-                                    <field name="shipping" />
-                                </group>
                                 <group>
 
                                     <field name="location_icon_url" />
@@ -162,20 +159,7 @@
                                 </group>
                             </group>
                         </page>
-                        <page name="privacy_policy" string="Privacy Policy">
-                            <group>
-                                <group>
-                                    <field name="privacy_policy" />
-                                </group>
-                            </group>
-                        </page>
-                        <page name="terms_and_conditions" string="Terms And Conditions">
-                            <group>
-                                <group>
-                                    <field name="terms_and_conditions" />
-                                </group>
-                            </group>
-                        </page>
+
                         <page name="sales_config" string="Other Settings" groups="base.group_no_one">
                             <group>
                                 <group>

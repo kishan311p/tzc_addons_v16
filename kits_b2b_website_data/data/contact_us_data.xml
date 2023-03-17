@@ -10,7 +10,7 @@
             <field name="text_2">Got a question for us? Fill in your details and message and we will get back to you shortly.</field>
             <field name="banner_url">https://cdn.teameto.com/data/B2B/contact-us/d-contact.jpg</field>
             <field name="banner_2_url">https://cdn.teameto.com/data/B2B/contact-us/m-contact.jpg</field>
-            <field name="is_our_core_values">True</field>
+            <field name="image_url_text_3">https://cdn.teameto.com/data/B2C1/new_tzc_b2b_images/map.png</field>
         </record>
 
         <record id="kits_contact_0_slider" model="kits.b2b.website.slider">
@@ -148,5 +148,30 @@
             <field name="cu_page_id" eval="kits_contact_us" />
             <field name="image_url">https://cdn.teameto.com/data/B2C1/new_tzc_b2b_images/contact-g/cg-7.jpg</field>
         </record>
+
+        <!-- find us -->
+
+        <record id="kits_our_core_values_canada" model="kits.b2b.key.value.model">
+            <field name="head_office">True</field>
+            <field name="name">Toronto, Canada</field>
+            <field name="value">366 Denison Street, Unit 4 Markham, Ontario, Canada.</field>
+            <field name="contact_us_page_id" eval="kits_contact_us" />
+            <field name="website_id" eval="kits_team_eto_website" />
+        </record>
+
+        <record id="kits_our_core_values_tanzania" model="kits.b2b.key.value.model">
+            <field name="name">Dar Es Salaam, Tanzania</field>
+            <field name="value">123 Samora Ave Dar es Salaam, Tanzania</field>
+            <field name="contact_us_page_id" eval="kits_contact_us" />
+            <field name="website_id" eval="kits_team_eto_website" />
+        </record>
+
+        <record id="kits_our_core_values_uae" model="kits.b2b.key.value.model">
+            <field name="name">Dubai, UAE</field>
+            <field name="value">Oﬃce 508, Latifa Tower, Trade Center 1, Sheikh Zayed Road Dubai, UAE</field>
+            <field name="contact_us_page_id" eval="kits_contact_us" />
+            <field name="website_id" eval="kits_team_eto_website" />
+        </record>
+
     </data>
 </odoo>
