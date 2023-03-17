@@ -24,22 +24,21 @@ class ir_model(models.Model):
 
         return update
 
-    def generate_report_access_link(self, model_name, records, report_name, partner_id, report_type='pdf'):
+    def generate_report_access_link(self, model_name, rec_id, report_name, partner_id, report_type='pdf'):
         """
         Method check access rights of records for partner_id
         model_name : Model name
-        records: List of record ids
+        rec_id: Record id
         report_name: External id of report
         partner_id: Customer id
         """
         result = {
             'success': False,
             'error': '',
-            'links': []
+            'url': ''
         }
         try:
-            assert all(
-                isinstance(r, int) for r in records), 'Records must be list of ids.'
+            assert isinstance(rec_id, int), 'Record id must be integer.'
             if report_type == 'pdf':
                 assert self.env.ref(report_name),\
                     "Specified report is not available!"
@@ -51,32 +50,30 @@ class ir_model(models.Model):
             if len(user_ids) > 1:
                 user_ids = user_ids[0]
 
-            for rec_id in records:
-                model_record = model.browse(rec_id)
-                if hasattr(model_record, 'report_token'):
-                    if model_record:
-                        model_record.with_user(
-                            user_ids).check_access_rights('read')
-                        model_record.with_user(
-                            user_ids).check_access_rule('read')
+            model_record = model.browse(rec_id)
+            if hasattr(model_record, 'report_token'):
+                if model_record:
+                    model_record.with_user(
+                        user_ids).check_access_rights('read')
+                    model_record.with_user(
+                        user_ids).check_access_rule('read')
 
-                        # Create Access Token and Set in Record.
-                        token = model_record.report_token
-                        if not token:
-                            token = secrets.token_hex(16)
-                            model_record.report_token = token
-                        url = model_record.get_base_url()+'/report/%(report_type)s/%(report_name)s/%(record_id)s?access_token=%(token)s' % ({
-                            'report_type': 'excel' if report_type == 'excel' else 'custom',
-                            'report_name': model_name if report_type == 'excel' else report_name,
-                            'record_id': rec_id,
-                            'token': token,
-                        })
-                        if report_type == 'excel':
-                            url += '&cid={}'.format(partner_id)
-                        result['links'].append((rec_id, url))
-            if len(records) == len(result['links']):
+                    # Create Access Token and Set in Record.
+                    token = model_record.report_token
+                    if not token:
+                        token = secrets.token_hex(16)
+                        model_record.report_token = token
+                    url = model_record.get_base_url()+'/report/%(report_type)s/%(report_name)s/%(record_id)s?access_token=%(token)s' % ({
+                        'report_type': 'excel' if report_type == 'excel' else 'custom',
+                        'report_name': model_name if report_type == 'excel' else report_name,
+                        'record_id': rec_id,
+                        'token': token,
+                    })
+                    if report_type == 'excel':
+                        url += '&cid={}'.format(partner_id)
                 result.update({
-                    'success': True
+                    'success': True,
+                    'url': url
                 })
         except Exception as e:
             result.update({

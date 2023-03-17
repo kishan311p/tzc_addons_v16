@@ -1558,17 +1558,13 @@ class res_partner(models.Model):
         url =''
         if model in ['sale.order'] and res_id: 
             if file_type == 'excel' and model == 'sale.order':
-                get_dict = self.env['ir.model'].generate_report_access_link('sale.order',[res_id],'',self.id,'excel')
+                get_dict = self.env['ir.model'].generate_report_access_link('sale.order',res_id,'',self.id,'excel')
             else:
-                get_dict = self.env['ir.model'].generate_report_access_link('sale.order',[res_id],'sale.report_saleorder',self.id,'pdf')
+                get_dict = self.env['ir.model'].generate_report_access_link('sale.order',res_id,'sale.report_saleorder',self.id,'pdf')
         elif model in ['sale.catalog'] and res_id: 
             if file_type == 'excel' and model == 'sale.catalog':
-                get_dict = self.env['ir.model'].generate_report_access_link('sale.catalog',[res_id],'',self.id,'excel')
+                get_dict = self.env['ir.model'].generate_report_access_link('sale.catalog',res_id,'',self.id,'excel')
             else:
                
-                get_dict = self.env['ir.model'].generate_report_access_link('sale.catalog',[res_id],'tzc_sales_customization_spt.action_catalog_report_pdf',self.id,'pdf')
-
-        if get_dict.get('links') and isinstance(get_dict.get('links'), list) and get_dict.get('links')[0]:
-            url = get_dict.get('links')[0][-1]
-        
-        return {'url' : url,'error' : get_dict.get('error')}
+                get_dict = self.env['ir.model'].generate_report_access_link('sale.catalog',res_id,'tzc_sales_customization_spt.action_catalog_report_pdf',self.id,'pdf')
+        return get_dict
