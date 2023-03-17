@@ -46,11 +46,11 @@
         <report 
             id="action_catalog_report_pdf"
             string="Catalog"
-            model="kits.wizard.download.catalog.excel" 
+            model="sale.catalog"
             report_type="qweb-pdf"
             file="tzc_sales_customization_spt.confirm_catalog_report_pdf_template" 
             name="tzc_sales_customization_spt.confirm_catalog_report_pdf_template"
-            print_report_name="'Catalog - %s' % (object.catalog_id.name)"
+            print_report_name="'Catalog - %s' % (object.name)"
             menu="False"
 
         />
