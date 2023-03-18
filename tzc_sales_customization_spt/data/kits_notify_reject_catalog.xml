@@ -3,23 +3,23 @@
     <data noupdate='0'>
         <record id="kits_mail_reject_catalog_to_sales_person" model="mail.template">
             <field name="name">Reject Catalog</field>
-            <field name="subject">${ctx['customer']} has rejected their {{object.name}} {{object.user_id.name}}.</field>
+            <field name="subject">{{object.env['res.partner'].browse(object.env.context.get('customer'))}} has rejected their {{object.name}} {{object.user_id.name}}.</field>
             <!-- <field name="subject">Catalog Rejected (${object.name}).</field> -->
-            <field name="email_from">"ETO-Support" &lt;{{(object.user_id.company_id.catchall or user.email)}}&gt;</field>
+            <field name="email_from">"ETO-Support" &lt;{{(object.user_id.company_id.catchall_email or user.email)}}&gt;</field>
             <field name="email_to">{{object.user_id.partner_id.email }}</field>
             <field name="model_id" ref="tzc_sales_customization_spt.model_sale_catalog"/>
             <field name="auto_delete" eval="False"/>
-            <field name="lang">{{object.env.context['lang'] or object.env.user.lang }}</field>
+            <field name="lang">{{object.env.user.lang }}</field>
             <field name="body_html" type="html">
                 <table border="0" cellpadding="0" cellspacing="0" width="590" style="min-width: 590px; background-color: white; padding: 0px 8px 0px 8px; border-collapse:separate;">
                     <tr>
                         <td valign="top" style="font-size: 13px;">
-                            <p>Hello {{object.user_id.name}},</p>
-                            <p>Customer {{ctx['customer']}} has rejected their <b>{{object.name}}</b> and has provided the following reason:<br/>
-                                {{message}}
+                            <p>Hello <t t-out="object.user_id.name"/>,</p>
+                            <p>Customer <t t-out="object.env['res.partner'].browse(object.env.context.get('customer')).name"/> has rejected their <b><t t-out="object.name"/></b> and has provided the following reason:<br/>
+                                <t t-out="object.env.context.get('message')"/>
                             </p>
                             <p>
-                                <a href="${object.get_base_url()}/web#id=${object.id}&amp;action=${object.env.ref('tzc_sales_customization_spt.sale_catalog_action').id}&amp;model=sale.catalog&amp;view_type=form" target="_blank" style="background-color: #7693f8; padding: 8px 16px 8px 16px; text-decoration: none; color: #fff; border-radius: 5px; font-size:13px;">
+                                <a t-attf-href="{{object.get_portal_url()}}//catalog-details?catalog_id={{object.id}}" target="_blank" style="background-color: #1F7B6F; padding: 8px 16px 8px 16px; text-decoration: none; color: #fff; border-radius: 5px; font-size:13px;">
                                     View Catalog
                                 </a>
                             </p>
