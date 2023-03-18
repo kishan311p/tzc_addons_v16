@@ -26,7 +26,7 @@
                                             <p style="margin-bottom:0px;">Thank you,<br/>
                                                 Everything Optical Management
                                             </p>
-                                            <a t-attf-href="{{object.get_base_url()}}/report/pdf/sale.report_saleorder/{{object.id}}">
+                                            <a t-attf-href="{{object._contenxt.get('pdf_url')}}">
                                                 <img src="/tzc_sales_customization_spt/static/src/img/pdf.png" style="height:60px;width:100px;" />
                                             </a>
                                         </td>

@@ -29,7 +29,9 @@
                                 <p style="margin-bottom:0px;">Thank you,<br/>
                                     Everything Optical Management
                                 </p>
-                                <a t-attf-href="/report/pdf/sale.report_saleorder/{{object.sale_id.id}}">
+                                <!-- <a t-attf-href="/report/pdf/sale.report_saleorder/{{object.sale_id.id}}"> -->
+                                <t t-set="pdf_url" t-value="object.env['ir.model'].generate_report_access_link('sale.order',object.sale_id.id,'sale.action_report_saleorder', object.partner_id.id)"/>
+                                <a t-attf-href="{{pdf_url.get('url') if pdf_url.get('success') and pdf_url.get('url') else '' }}">
                                     <img t-attf-src="/tzc_sales_customization_spt/static/src/img/pdf.png" style="height:60px;width:100px;"/>
                                 </a>
                             </td>

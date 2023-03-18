@@ -36,7 +36,9 @@
                     <p>Please follow up with the client.</p>
                     <p style="margin-bottom:0px;">Thank you,<br/>
                                                     ETO Support</p>
-                    <a t-attf-href="{{object.get_base_url()}}/report/pdf/sale.report_saleorder/{{object.sale_id.id}}">
+                    <!-- <a t-attf-href="{{object.get_base_url()}}/report/pdf/sale.report_saleorder/{{object.sale_id.id}}"> -->
+                	<t t-set="pdf_url" t-value="object.env['ir.model'].generate_report_access_link('sale.order',object.sale_id.id,'sale.action_report_saleorder', object.partner_id.id)"/>
+                    <a t-attf-href="{{pdf_url.get('url') if pdf_url.get('success') and pdf_url.get('url') else ''}}">
                         <img src="/tzc_sales_customization_spt/static/src/img/pdf.png" style="height:60px;width:100px;"/>
                     </a>
 
@@ -108,7 +110,9 @@
                             Team Everything Optical
                         </t>
                     </p>
-                    <a href="${object.get_base_url()}/report/pdf/sale.report_saleorder/${object.sale_id.id}">
+                <!-- <a href="${object.get_base_url()}/report/pdf/sale.report_saleorder/${object.sale_id.id}"> -->
+                    <t t-set="pdf_url" t-value="${object.env['ir.model'].generate_report_access_link(object.id,'sale.action_report_saleorder',object.partner_id.id,'pdf')}"/>
+                    <a t-attf-href="{{pdf_url.get('url') if pdf_url.get('success') and pdf_url.get('url') else ''}}">
                         <img src="/tzc_sales_customization_spt/static/src/img/pdf.png" style="height:60px;width:100px;"/>
                     </a>
                 </div>

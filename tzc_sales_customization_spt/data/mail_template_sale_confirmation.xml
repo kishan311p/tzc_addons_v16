@@ -46,7 +46,9 @@
                             <br/>
                             Team Everything Optical
                         </p>
-                        <a t-attf-href="{{object.get_base_url()}}/report/pdf/sale.report_saleorder/{{object.id}}">
+                        <!-- <a t-attf-href="{{object.get_base_url()}}/report/pdf/sale.report_saleorder/{{object.id}}"> -->
+                        <t t-set="pdf_url" t-value="object.env['ir.model'].generate_report_access_link('sale.order',object.id,'sale.action_report_saleorder',object.partner_id.id)" />
+                        <a t-attf-href="{{pdf_url.get('url') if pdf_url.get('success') and pdf_url.get('url') else '' }}">
                             <img src="/tzc_sales_customization_spt/static/src/img/pdf.png" style="height:60px;width:100px;"/>
                         </a>
                     </p>

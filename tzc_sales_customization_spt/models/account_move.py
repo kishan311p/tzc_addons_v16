@@ -61,6 +61,7 @@ class account_move(models.Model):
     inv_payment_status = fields.Selection([('full','Fully Paid'),('partial','Partial Paid'),('over','Over Paid')],'Payment Status',compute="_compute_inv_payment_status",copy=False)
     filtere_state = fields.Char(compute="_compute_payment_status",copy=False,store=True)
     is_admin = fields.Char(compute='_compute_is_admin', string='is_admin')
+    report_token = fields.Char('Report Access Token')
 
     def _compute_is_admin(self):
         for record in self:

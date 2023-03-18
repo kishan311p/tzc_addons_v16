@@ -1401,20 +1401,7 @@ class stock_picking(models.Model):
             res =  super(stock_picking, self).button_validate()
 
             template_id = self.env.ref('tzc_sales_customization_spt.tzc_order_shipped_notification_to_salesperson_spt')
-            # PDF LINK
-            url = ''
-            pdf_links = self.env['ir.model'].sudo().generate_report_accesss_link(
-                'sale.order',
-                self.id,
-                'sale.action_report_saleorder',
-                self.partner_id.id,
-                'pdf'
-            )
-
-            if pdf_links.get('success') and pdf_links.get('url'):
-                url = pdf_links.get('url')
-
-            template_id.with_context({'salesperson_notify':True,'pdf_url': url}).send_mail(self.id,force_send=True,email_layout_xmlid="mail.mail_notification_light")
+            template_id.with_context({'salesperson_notify':True}).send_mail(self.id,force_send=True,email_layout_xmlid="mail.mail_notification_light")
             # template_id.with_context({'default_attachment_ids':[(6,0,[attchment_id.id])]}).send_mail(self.id,force_send=True)
             # Check backorder should check for other barcodes
             immediate_transfer_view_id = self.env.ref('stock.view_immediate_transfer').id
