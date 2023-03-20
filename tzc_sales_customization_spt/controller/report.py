@@ -72,5 +72,5 @@ class PublicReport(http.Controller):
                 headers=[
                     ('Content-Type', 'application/vnd.ms-excel'),
                     ('Content-Disposition',
-                        content_disposition(wizard_id.display_name + '.xlsx'))
+                        content_disposition('Sales_catalog.xlsm'))
                 ])
