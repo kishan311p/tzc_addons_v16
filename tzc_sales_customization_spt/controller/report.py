@@ -35,9 +35,7 @@ class PublicReport(http.Controller):
             if order and (hasattr(order, 'report_token') and order.report_token != token):
                 return werkzeug.exceptions.HTTPException(description='Access Denied !')
 
-            vals = {'with_img': False, 'order_id': docid}
-            if order.download_image_sent:
-                vals.update({'with_img': True})
+            vals = {'with_img': True, 'order_id': docid}
             wiz = request.env['order.report.with.image.wizard'].sudo().create(
                 vals)
             wiz.action_process_report()
@@ -47,7 +45,7 @@ class PublicReport(http.Controller):
                 headers=[
                     ('Content-Type', 'application/vnd.ms-excel'),
                     ('Content-Disposition',
-                     content_disposition('Product Iamge.%s' % (file_ext)))
+                     content_disposition('Sales.%s' % (file_ext)))
                 ]
             )
         elif modalname == 'sale.catalog':
