@@ -14,7 +14,7 @@ class sale_catalog_order(models.Model):
     _description = 'Catalog Order'
 
     catalog_id = fields.Many2one('sale.catalog', string='catalog')
-    state = fields.Selection(selection=[('draft', 'Draft'),('sent', 'Sent'),('done', 'Done'),('reject', 'reject'),('cancel', 'Cancel'),], string='Status', required=True, readonly=True, copy=False, default='draft')
+    state = fields.Selection(selection=[('draft', 'Draft'),('sent', 'Sent'),('done', 'Done'),('reject', 'Reject'),('cancel', 'Cancel'),], string='Status', required=True, readonly=True, copy=False, default='draft')
     customer_id = fields.Many2one('res.partner')
     accept_decline_flag = fields.Boolean('Accept/Decline Flag')
     decline_description = fields.Text('Decline Description ',states={'reject': [('readonly', False)]})

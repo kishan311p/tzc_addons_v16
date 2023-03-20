@@ -346,7 +346,10 @@ class SaleCatalog(models.Model):
                 "type":"ir.actions.act_window",
                 "res_model":"sale.catalog.order",
                 "view_mode":"tree",
-                'domain': [('catalog_id','in',self.ids),('state','=','sent')]
+                'domain': [('catalog_id','in',self.ids)],
+                "context" : {
+                    'search_default_sent' : 1
+                }
         }
         
 

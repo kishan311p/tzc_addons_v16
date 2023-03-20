@@ -61,11 +61,11 @@
                                     <span class="o_stat_text"> Quotation(s) </span>
                                 </div>
                             </button> 
-                            <button class="oe_stat_button" type="object" name="action_customer_catalog_spt" icon="fa-book">
+                            <!-- <button class="oe_stat_button" type="object" name="action_customer_catalog_spt" icon="fa-book">
                                 <div class="o_stat_info">
                                   <span class="o_stat_text">Catalogs</span>
                                 </div>
-                            </button>
+                            </button> -->
                             <button class="oe_stat_button" type="object" name="toggle_active" icon="fa-archive">
                                 <field name="active" widget="boolean_button" options="{'terminology': 'archive'}"/>
                             </button>
@@ -222,6 +222,23 @@
                     <field name="decline_description" />
                     <field name="state" />
                 </tree>
+            </field>
+        </record>
+
+        <record id="sale_catalog_order_view_search" model="ir.ui.view">
+            <field name="name">sale.catalog.order.view.search</field>
+            <field name="model">sale.catalog.order</field>
+            <field name="arch" type="xml">
+                <search string="">
+                    <field name="customer_id" />
+                    <field name="catalog_id" />
+                    <field name="sale_order_id" />
+                    <field name="state" />
+                    <filter name="sent" string="Sent" domain="[('state','=','sent')]" />
+                    <filter name="reject" string="Reject" domain="[('state','=','reject')]" />
+                    <filter name="done" string="Done" domain="[('state','=','done')]" />
+
+                </search>
             </field>
         </record>
         <!-- Catalog Action -->
