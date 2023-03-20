@@ -22,7 +22,7 @@ class sale_catalog(models.Model):
             )
             if pdf_links.get('success') and pdf_links.get('url'):
                 url = pdf_links.get('url')
-            quotation_template_id.with_context(pdf_url=url).send_mail(so_id.id,force_send=True,email_layout_xmlid="mail.mail_notification_light") if verified else None
+            quotation_template_id.with_context(pdf_url=url).send_mail(so_id.id,force_send=True) if verified else None
             confirmation_template_id = self.env.ref('tzc_sales_customization_spt.tzc_email_template_saleperson_quotation_spt')
-            confirmation_template_id.send_mail(so_id.id,email_values={'email_to': so_id.user_id.partner_id.email},force_send=True,email_layout_xmlid="mail.mail_notification_light")
+            confirmation_template_id.with_context(pdf_url=url).send_mail(so_id.id,email_values={'email_to': so_id.user_id.partner_id.email},force_send=True)
         return {}

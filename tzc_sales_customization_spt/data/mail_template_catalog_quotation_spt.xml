@@ -75,7 +75,7 @@
                                                         Best regards,<br/>
                                                         Team Everything Optical
                                                     </p>
-                                                    <a t-attf-href="{{object.get_base_url()}}/report/pdf/sale.report_saleorder/{{object.id}}">
+                                                    <a t-attf-href="{{object.env.context.get('pdf_url')}}">
                                                         <img src="/tzc_sales_customization_spt/static/src/img/pdf.png" style="height:60px;width:100px;" />
                                                     </a>
                                                 </td>
@@ -188,7 +188,7 @@
                                                     <p style="margin-top:0px;">Hello <t t-out="object.user_id.name"/>,</p>
                                                     <p>The catalog <t t-out="object.catalog_id.name"/> sent to <t t-out="object.partner_id.name"/> was just confirmed by the customer.</p>
                                                     <p>
-                                                        <a t-attf-href="{{object.get_base_url()}}/web#id={{object.catalog_id.id}}&amp;action={{object.env.ref('tzc_sales_customization_spt.sale_catalog_action').id}}&amp;model=sale.catalog&amp;view_type=form" style="background-color:#1F7B6F !important;padding: 10px; text-decoration: none; color: #fff; border-radius: 5px; font-size: 16px;" class="o_default_snippet_text">
+                                                        <a t-attf-href="{{object.get_portal_url()}}//catalog-details?catalog_id={{object.id}}" style="background-color:#1F7B6F !important;padding: 10px; text-decoration: none; color: #fff; border-radius: 5px; font-size: 16px;" class="o_default_snippet_text">
                                                                 View Catalog
                                                         </a>
                                                     </p>
@@ -198,7 +198,7 @@
                                                         <br/>
                                                         Everything Optical Management
                                                     </p>
-                                                    <a t-attf-href="{{object.get_base_url()}}/report/pdf/sale.report_saleorder/{{object.id}}">
+                                                    <a t-attf-href="{{object.env.context.get('pdf_url')}}">
                                                         <img src="/tzc_sales_customization_spt/static/src/img/pdf.png" style="height:60px;width:100px;" />
                                                     </a>
                                                 </td>
