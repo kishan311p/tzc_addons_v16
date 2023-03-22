@@ -172,6 +172,58 @@
                                 </group>
                             </group>
                         </page>
+                        <page name="seo" string="SEO">
+                            <group>
+                                <group name="home_page" string="Home page">
+                                    <field name="homepage_meta_title" />
+                                    <field name="homepage_meta_description" />
+                                    <field name="homepage_meta_keyword" />
+                                </group>
+                                <group name="shop_page" string="Shop page">
+                                    <field name="shop_meta_title" />
+                                    <field name="shop_meta_description" />
+                                    <field name="shop_meta_keyword" />
+                                </group>
+                                <group name="Shipping" string="Shipping &amp; Delivery Policy">
+                                    <field name="shipping_meta_title" />
+                                    <field name="shipping_meta_description" />
+                                    <field name="shipping_meta_keyword" />
+                                </group>
+                                <group name="privacy_policy" string="Privacy Policy ">
+                                    <field name="pp_meta_title" />
+                                    <field name="pp_meta_description" />
+                                    <field name="pp_meta_keyword" />
+                                </group>
+                                <group name="terms_and_conditions" string="Terms &amp; Conditions">
+                                    <field name="tc_meta_title" />
+                                    <field name="tc_meta_description" />
+                                    <field name="tc_meta_keyword" />
+                                </group>
+                            </group>
+                            <group>
+                                <group name="robot" string="Robot">
+                                    <div class="o_row">
+
+                                        <button string="Update Robot File" name="action_update_text_file" type="object" class="oe_highlight"/>
+                                    </div>
+                                    <br/>
+                                    <field name="text_file_url" widget="url"/>
+                                    <field name="text_file_path" />
+                                    <field name="text_data" />
+                                </group>
+                                <group name="sitemap" string="Sitemap">
+                                    <div class="o_row">
+                                        <button string="Update Sitemap File" name="action_update_sitemap_file" type="object" class="oe_highlight"/>
+                                    </div>
+                                    <br/>
+                                    <field name="sitemap_url" widget="url"/>
+                                    <field name="sitemap_file_path" />
+                                    <field name="sitemap_file" filename="sitemap_name" />
+                                    <field name="sitemap_name" invisible="1" />
+                                </group>
+
+                            </group>
+                        </page>
                     </notebook>
                 </sheet>
             </form>

@@ -31,8 +31,8 @@ fields_dict = {
     'List Price In USD': 'lst_price_usd','Temporary Out Of Stock': 'temporary_out_of_stock',
     # 'On sale' : 'on_sale','On sale price' : 'on_sale_usd','On sale discount type': 'on_sale_usd_in_percentage'
     'Sale price': 'on_sale_usd','Sale type': 'sale_type','Sale discount type': 'on_sale_usd_in_percentage','New Arrivals' :'new_arrivals','Force Unpublished': 'is_forcefully_unpublished','B2C Published': 'is_b2c_published',
-    'Length': 'length','Width': 'width','Height': 'height','Product Brand Commission':'product_brand_commission','Case Image URL':'case_image_url','Case Type':'case_type','Minimum Qty':'minimum_qty','On Consignment':'on_consignment','New Price':'is_new_price','Eye Size':'eye_size','Qty': 'qty','Customer Taxes' : 'taxes_id','Application Type': 'application_type','Is 3D Model' : 'is_3d_model','B2C Keyword':'b2c_keyword',
-    'B2C Title':'b2c_title','B2C Description':'b2c_description'
+    'Length': 'length','Width': 'width','Height': 'height','Product Brand Commission':'product_brand_commission','Case Image URL':'case_image_url','Case Type':'case_type','Minimum Qty':'minimum_qty','On Consignment':'on_consignment','New Price':'is_new_price','Eye Size':'eye_size','Qty': 'qty','Customer Taxes' : 'taxes_id','Application Type': 'application_type','Is 3D Model' : 'is_3d_model','Meta Keyword':'meta_keyword',
+    'Meta Title':'meta_title','Meta Description':'meta_description'
     }
 class product_import_spt(models.Model):
     _name = 'product.import.spt'
@@ -217,7 +217,7 @@ class product_import_spt(models.Model):
                     continue
                 if product_pro_id and product_pro_id.default_code not in error_default_code_list:
                     if self.data_on == 'create':
-                        search_filed_list.extend(['b2c_keyword','b2c_title','b2c_description'])
+                        search_filed_list.extend(['meta_keyword','meta_title','meta_description'])
                     line_data = import_line_obj.search_read([('id','=',import_line.id),'|',('active','=',False),('active','=',True)],search_filed_list)[0]
                     product_pro_dict = self.convert_dict(fields_dict,line_data)
                     if 'Website Published' in heading:
@@ -939,12 +939,12 @@ class product_import_spt(models.Model):
             new_dict['type'] = 'product'
         new_dict.update({'updated_on':fields.Datetime.now(),'updated_by':self.env.uid })
         if self.data_on == 'create':
-            if 'B2C Keyword' not in field_dict and field_dict_value_dict.get('b2c_keyword'):
-                new_dict['b2c_keyword'] = field_dict_value_dict.get('b2c_keyword')
-            if 'B2C Title' not in field_dict and field_dict_value_dict.get('b2c_title'):
-                new_dict['b2c_title'] = field_dict_value_dict.get('b2c_title')
-            if 'B2C Description' not in field_dict and field_dict_value_dict.get('b2c_description'):
-                new_dict['b2c_description'] = field_dict_value_dict.get('b2c_description')
+            if 'Meta Keyword' not in field_dict and field_dict_value_dict.get('meta_keyword'):
+                new_dict['meta_keyword'] = field_dict_value_dict.get('meta_keyword')
+            if 'Meta Title' not in field_dict and field_dict_value_dict.get('meta_title'):
+                new_dict['meta_title'] = field_dict_value_dict.get('meta_title')
+            if 'Meta Description' not in field_dict and field_dict_value_dict.get('meta_description'):
+                new_dict['meta_description'] = field_dict_value_dict.get('meta_description')
         return new_dict
 
     def file_read_opration(self):
@@ -1596,31 +1596,31 @@ class product_import_spt(models.Model):
                             continue
 
 
-                    b2c_keyword = None
-                    file_column = wrong_lines[0][fields_dict.get('b2c_keyword')] if fields_dict.get('b2c_keyword') else None 
-                    get_b2c_keyword_index = fields_dict.get('b2c_keyword') if fields_dict.get('b2c_keyword') and int(fields_dict.get('b2c_keyword')) else False
-                    if get_b2c_keyword_index and line[get_b2c_keyword_index] not in ('','N/A','n/a',' ','#N/A'):
-                        b2c_keyword = str(line[get_b2c_keyword_index]).strip()
+                    meta_keyword = None
+                    file_column = wrong_lines[0][fields_dict.get('meta_keyword')] if fields_dict.get('meta_keyword') else None 
+                    get_meta_keyword_index = fields_dict.get('meta_keyword') if fields_dict.get('meta_keyword') and int(fields_dict.get('meta_keyword')) else False
+                    if get_meta_keyword_index and line[get_meta_keyword_index] not in ('','N/A','n/a',' ','#N/A'):
+                        meta_keyword = str(line[get_meta_keyword_index]).strip()
 
 
-                    b2c_title = None
-                    file_column = wrong_lines[0][fields_dict.get('b2c_title')] if fields_dict.get('b2c_title') else None 
-                    get_b2c_title_index = fields_dict.get('b2c_title') if fields_dict.get('b2c_title') and int(fields_dict.get('b2c_title')) else False
-                    if get_b2c_title_index and line[get_b2c_title_index] not in ('','N/A','n/a',' ','#N/A'):
-                        b2c_title = str(line[get_b2c_title_index]).strip()
+                    meta_title = None
+                    file_column = wrong_lines[0][fields_dict.get('meta_title')] if fields_dict.get('meta_title') else None 
+                    get_meta_title_index = fields_dict.get('meta_title') if fields_dict.get('meta_title') and int(fields_dict.get('meta_title')) else False
+                    if get_meta_title_index and line[get_meta_title_index] not in ('','N/A','n/a',' ','#N/A'):
+                        meta_title = str(line[get_meta_title_index]).strip()
 
 
-                    b2c_description = None
-                    file_column = wrong_lines[0][fields_dict.get('b2c_description')] if fields_dict.get('b2c_description') else None 
-                    get_b2c_description_index = fields_dict.get('b2c_description') if fields_dict.get('b2c_description') and int(fields_dict.get('b2c_description')) else False
-                    if get_b2c_description_index and line[get_b2c_description_index] not in ('','N/A','n/a',' ','#N/A'):
-                        b2c_description = str(line[get_b2c_description_index]).strip()    
+                    meta_description = None
+                    file_column = wrong_lines[0][fields_dict.get('meta_description')] if fields_dict.get('meta_description') else None 
+                    get_meta_description_index = fields_dict.get('meta_description') if fields_dict.get('meta_description') and int(fields_dict.get('meta_description')) else False
+                    if get_meta_description_index and line[get_meta_description_index] not in ('','N/A','n/a',' ','#N/A'):
+                        meta_description = str(line[get_meta_description_index]).strip()    
 
                     file_column = 'product creating'                                    
                     product_values_dict = {
-                            'b2c_description':b2c_description,
-                            'b2c_keyword':b2c_keyword,
-                            'b2c_title':b2c_title,
+                            'meta_description':meta_description,
+                            'meta_keyword':meta_keyword,
+                            'meta_title':meta_title,
                             'application_type':application_type,
                             'is_3d_model': is_3d_model,
                             'is_b2c_published': is_b2c_published,
@@ -1694,14 +1694,14 @@ class product_import_spt(models.Model):
                             'product_brand_commission' : product_brand_commission if product_brand_commission else None                     
                         }
                     if self.data_on == 'create':
-                        if not b2c_title:
-                           product_values_dict['b2c_title'] = product_values_dict.get('variant_name') 
+                        if not meta_title:
+                           product_values_dict['meta_title'] = product_values_dict.get('variant_name') 
 
-                        if not b2c_description:
-                            product_values_dict['b2c_description'] = product_values_dict.get('custom_message')
+                        if not meta_description:
+                            product_values_dict['meta_description'] = product_values_dict.get('custom_message')
 
-                        if not b2c_keyword:
-                            product_values_dict['b2c_keyword'] = self.genrate_keyword(product_values_dict['b2c_title'],brand_id.name or '',model_id.name or '',category_id.name or '',color_name or '',shape_id.name or '',material_id.name or '',rim_type_id.name or '')                            
+                        if not meta_keyword:
+                            product_values_dict['meta_keyword'] = self.genrate_keyword(product_values_dict['meta_title'],brand_id.name or '',model_id.name or '',category_id.name or '',color_name or '',shape_id.name or '',material_id.name or '',rim_type_id.name or '')                            
 
                     if 'Product categories' in fields_list or 'Brand' in fields_list or 'Model' in fields_list or'Color' in fields_list or'Eye Size' in fields_list:
                         msg = ''

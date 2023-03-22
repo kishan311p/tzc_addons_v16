@@ -16,11 +16,7 @@
                             <field name="website_ids" widget="many2many_tags" />
                             <field name="slider_category_ids" widget="many2many_tags" />
                         </group>
-                        <group>
-                            <field name="b2c_title" />
-                            <field name="b2c_description" />
-                            <field name="b2c_keyword" />
-                        </group>
+                       
                     </group>
                 </xpath>
             </field>

@@ -76,4 +76,3 @@ from . import marketing_activity
 from . import mailing_trace
 from . import campaign_report_contacts
 from . import campaign_monetization_spt
-

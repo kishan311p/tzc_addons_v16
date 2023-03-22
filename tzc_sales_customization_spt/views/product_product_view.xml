@@ -118,6 +118,15 @@
                     <field name="sec_image_url" widget="url" />
                 </xpath>
                 <xpath expr="//page[@name='sales']" position="before">
+                    <page name="seo" string="SEO">
+                        <group>
+                            <group>
+                                <field name="meta_title" />
+                                <field name="meta_description" />
+                                <field name="meta_keyword" />
+                            </group>
+                        </group>
+                    </page>
                     <page string="Sales" name="kits_sales">
                         <group>
                             <group string="Invoicing">

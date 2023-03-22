@@ -71,39 +71,7 @@ class kits_b2c_website(models.Model):
         for record in self:
             record.domain = record.url
 
-    @api.onchange('text_file_path')
-    def _onchange_text_file_path(self):
-        for rec in self:
-            if rec.text_file_path:
-                if os.path.isdir(rec.text_file_path):
-                    file_name = rec.text_file_path.strip()+'/robots.txt'
-                    if not os.path.isfile(file_name):
-                        f = open(file_name,'a')
-                        f.close()
-                    f = open(file_name,'rb')
-                    data = f.read()
-                    f.close()
-                    rec.text_data = data
-                else:
-                    raise UserError('File path not found.')
-
-    @api.onchange('sitemap_file_path')
-    def _onchange_sitemap_file_path(self):
-        for rec in self:
-            if rec.sitemap_file_path:
-                if os.path.isdir(rec.sitemap_file_path):
-                    file_name = rec.sitemap_file_path.strip()+'/sitemap.xml'
-                    if not os.path.isfile(file_name):
-                        f = open(file_name,'a')
-                        f.close()
-                    f = open(file_name,'rb')
-                    data = f.read()
-                    f.close()
-                    rec.sitemap_name = file_name.split('/')[-1]
-                    rec.sitemap_file = base64.b64encode(data)
-                else:
-                    raise UserError('File path not found.')
-
+   
     def action_update_text_file(self):
         for record in self:
             if os.path.isdir(record.text_file_path.strip()):

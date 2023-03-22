@@ -38,6 +38,10 @@ class kits_b2b_menus(models.Model):
         string='Sliders'
     )
 
+    meta_keyword = fields.Char('Meta Keyword')
+    meta_title = fields.Char('Meta Title')
+    meta_description = fields.Text('Meta Description')
+
     def product_is_publish(self):
         self.write({'is_published':True})
     

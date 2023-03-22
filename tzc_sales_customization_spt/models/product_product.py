@@ -161,9 +161,9 @@ class ProductProduct(models.Model):
     product_brand_commission = fields.Float('Product Brand Commission')
     application_type = fields.Selection([('0','B2B'),('1','Both'),('2','Only B2C')],'Application Type')
     is_3d_model = fields.Boolean('Is 3D Model')
-    b2c_keyword = fields.Char('B2C Meta Keyword')
-    b2c_title = fields.Char('B2C Meta Title')
-    b2c_description = fields.Text('B2C Meta Description')
+    meta_keyword = fields.Char('Meta Keyword')
+    meta_title = fields.Char('Meta Title')
+    meta_description = fields.Text('Meta Description')
     is_b2c_published = fields.Boolean('B2C1 Published')
     is_select_for_lenses = fields.Boolean('Is Allow For Add Lenses')
     hs_code = fields.Char(

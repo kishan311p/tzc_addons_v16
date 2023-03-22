@@ -4,6 +4,7 @@ class sale_catalog(models.Model):
     _inherit = 'sale.catalog'
     
     def catalog_reject_mail(self,partner_id,message) :
+        self.ensure_one()
         self.env.ref('tzc_sales_customization_spt.kits_mail_reject_catalog_to_sales_person').with_context(message=message,customer=partner_id).send_mail(self.id, force_send=True,email_layout_xmlid="mail.mail_notification_light")
         return {}
 

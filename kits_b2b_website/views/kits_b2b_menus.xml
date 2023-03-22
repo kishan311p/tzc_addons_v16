@@ -31,6 +31,7 @@
                             <field name="in_more" attrs="{'invisible':[('menu_type','not in',['redirect','filter'])]}" />
                             <field name="show_sliders" attrs="{'invisible':[('menu_type','!=','filter')]}" />
                         </group>
+                        
                     </group>
                     <group attrs="{'invisible':['|',('menu_type','!=','filter'),('show_sliders','=', False)]}">
                         <field name="slider_ids">
@@ -44,6 +45,17 @@
                             </tree>
                         </field>
                     </group>
+                    <notebook>
+                        <page name="seo" string="SEO">
+                             <group>
+                                <group name="seo">
+                                    <field name="meta_title" />
+                                    <field name="meta_description" />
+                                    <field name="meta_keyword" />
+                                </group>
+                            </group>
+                        </page>
+                    </notebook>
                 </sheet>
             </form>
         </field>
