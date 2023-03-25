@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <data noupdate="1">
+        <record id="kits_team_eto_website" model="kits.b2b.website">
+            <field name="name">Teameto</field>
+            <field name="website_name">b2b1</field>
+            <field name="portal_user_id" ref="base.group_portal"/>
+            <field name="company_id" ref="base.main_company"/>
+        </record>
+
+
+    </data>
+
+
+</odoo>

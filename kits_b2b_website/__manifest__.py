@@ -12,6 +12,7 @@
         # data
         'data/mail_template_b2b_reset_password_email.xml',
         'data/mail_template.xml',
+        'data/website_data.xml',
         
         #security
         'security/ir.model.access.csv',

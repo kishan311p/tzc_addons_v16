@@ -27,9 +27,9 @@ fields_dict = {
     'Color Name': 'product_color_name','Color': 'color', 'HTML Color Code': 'html_color',
     # 'eCommerce Category': 'kits_ecom_categ_id', ,'Material': 'material_ids'
     'Replenishable' : 'replenishable','Secondary Color Name' : 'secondary_color_name','Secondary HTML Color Code': 'secondary_html_color',
-    'Wholesale Price':'price_wholesale','MSRP Price':'price_msrp','Wholesale Price In USD':'price_wholesale_usd','MSRP Price In USD':'price_msrp_usd', 'Is Select For Lenses':'is_select_for_lenses',
-    'List Price In USD': 'lst_price_usd','Temporary Out Of Stock': 'temporary_out_of_stock',
-    # 'On sale' : 'on_sale','On sale price' : 'on_sale_usd','On sale discount type': 'on_sale_usd_in_percentage'
+    'Wholesale Price':'price_wholesale','MSRP Price':'price_msrp','Is Select For Lenses':'is_select_for_lenses',
+    'Temporary Out Of Stock': 'temporary_out_of_stock',
+    #'MSRP Price In USD':'price_msrp_usd', 'Wholesale Price In USD':'price_wholesale_usd','List Price In USD': 'lst_price_usd', 'On sale' : 'on_sale','On sale price' : 'on_sale_usd','On sale discount type': 'on_sale_usd_in_percentage'
     'Sale price': 'on_sale_usd','Sale type': 'sale_type','Sale discount type': 'on_sale_usd_in_percentage','New Arrivals' :'new_arrivals','Force Unpublished': 'is_forcefully_unpublished','B2C Published': 'is_b2c_published',
     'Length': 'length','Width': 'width','Height': 'height','Product Brand Commission':'product_brand_commission','Case Image URL':'case_image_url','Case Type':'case_type','Minimum Qty':'minimum_qty','On Consignment':'on_consignment','New Price':'is_new_price','Eye Size':'eye_size','Qty': 'qty','Customer Taxes' : 'taxes_id','Application Type': 'application_type','Is 3D Model' : 'is_3d_model','Meta Keyword':'meta_keyword',
     'Meta Title':'meta_title','Meta Description':'meta_description'
@@ -403,12 +403,13 @@ class product_import_spt(models.Model):
                         for pricelist in pricelist_name_list:
                             # Fenil
                             pricelist_name = ''
-                            if header_dict.get('list_price') and pricelist == self.env.ref('product.list0').name:
-                                pricelist_id  = self.env.ref('product.list0')
-                                pricelist_name = 'list_price'
-                            elif header_dict.get('lst_price_usd') and pricelist == self.env.ref('tzc_sales_customization_spt.usd_public_pricelist_spt').name:
+                            # if header_dict.get('list_price') and pricelist == self.env.ref('product.list0').name:
+                            #     pricelist_id  = self.env.ref('product.list0')
+                            #     pricelist_name = 'list_price'
+                            # elif header_dict.get('lst_price_usd') and pricelist == self.env.ref('tzc_sales_customization_spt.usd_public_pricelist_spt').name:
+                            if header_dict.get('list_price') and pricelist == self.env.ref('tzc_sales_customization_spt.usd_public_pricelist_spt').name:
                                 pricelist_id = self.env.ref('tzc_sales_customization_spt.usd_public_pricelist_spt')
-                                pricelist_name = 'lst_price_usd'
+                                pricelist_name = 'list_price'
                             else:
                                 pricelist_id = pricelist_obj.search([('name','=',pricelist.strip())])
                                 pricelist_name = pricelist_id.name
@@ -1014,11 +1015,11 @@ class product_import_spt(models.Model):
                                     else:
                                         application_type_error.append('List Price')
 
-                                if name == 'USD Price List': 
-                                    if 'List Price In USD' in heading:
-                                        continue
-                                    else:
-                                        application_type_error.append('List Price In USD')
+                                # if name == 'USD Price List': 
+                                #     if 'List Price In USD' in heading:
+                                #         continue
+                                #     else:
+                                #         application_type_error.append('List Price In USD')
 
                                 if name not in heading:
                                     application_type_error.append(name)
@@ -1218,11 +1219,11 @@ class product_import_spt(models.Model):
                             category_id = product_categ_obj.create({'name':line[get_categ_id_index].strip()})
                         categ_id = category_id.id
 
-                    file_column = wrong_lines[0][fields_dict.get('lst_price_usd')] if fields_dict.get('lst_price_usd') else None                         
-                    lst_price_usd = 0.0
-                    if line[fields_dict.get('lst_price_usd')] != str if fields_dict.get('lst_price_usd') else False:
-                        if line[fields_dict.get('lst_price_usd')] not in ('','N/A','n/a',' ','#N/A'):
-                            lst_price_usd = float(line[fields_dict.get('lst_price_usd')]) if fields_dict.get('lst_price_usd') else '0.0'
+                    # file_column = wrong_lines[0][fields_dict.get('lst_price_usd')] if fields_dict.get('lst_price_usd') else None                         
+                    # lst_price_usd = 0.0
+                    # if line[fields_dict.get('lst_price_usd')] != str if fields_dict.get('lst_price_usd') else False:
+                    #     if line[fields_dict.get('lst_price_usd')] not in ('','N/A','n/a',' ','#N/A'):
+                    #         lst_price_usd = float(line[fields_dict.get('lst_price_usd')]) if fields_dict.get('lst_price_usd') else '0.0'
 
                     file_column = wrong_lines[0][fields_dict.get('list_price')] if fields_dict.get('list_price') else None                         
                     list_price = 0.0
@@ -1248,11 +1249,11 @@ class product_import_spt(models.Model):
                         if line[fields_dict.get('price_wholesale')] not in ('','N/A','n/a',' ','#N/A   '):
                             price_wholesale = float(line[fields_dict.get('price_wholesale')]) if fields_dict.get('price_wholesale') else '0.0'
                     
-                    file_column = wrong_lines[0][fields_dict.get('price_wholesale_usd')] if fields_dict.get('price_wholesale_usd') else None                         
-                    price_wholesale_in_usd = 0.0
-                    if line[fields_dict.get('price_wholesale_usd')] != str if fields_dict.get('price_wholesale_usd') else False:
-                        if line[fields_dict.get('price_wholesale_usd')] not in ('','N/A','n/a',' ','#N/A   '):
-                            price_wholesale_in_usd = float(line[fields_dict.get('price_wholesale_usd')]) if fields_dict.get('price_wholesale_usd') else '0.0'
+                    # file_column = wrong_lines[0][fields_dict.get('price_wholesale_usd')] if fields_dict.get('price_wholesale_usd') else None                         
+                    # price_wholesale_in_usd = 0.0
+                    # if line[fields_dict.get('price_wholesale_usd')] != str if fields_dict.get('price_wholesale_usd') else False:
+                    #     if line[fields_dict.get('price_wholesale_usd')] not in ('','N/A','n/a',' ','#N/A   '):
+                    #         price_wholesale_in_usd = float(line[fields_dict.get('price_wholesale_usd')]) if fields_dict.get('price_wholesale_usd') else '0.0'
                     
                     file_column = wrong_lines[0][fields_dict.get('brand')] if fields_dict.get('brand') else None 
                     brand = 0
@@ -1307,11 +1308,11 @@ class product_import_spt(models.Model):
                                 material_id = material_obj.create({'name': material_name.strip()})
                             material.append(material_id.id)
 
-                    file_column = wrong_lines[0][fields_dict.get('price_msrp_usd')] if fields_dict.get('price_msrp_usd') else None                         
-                    price_msrp_in_usd = 0
-                    if line[fields_dict.get('price_msrp_usd')] != str if fields_dict.get('price_msrp_usd') else False:
-                        if line[fields_dict.get('price_msrp_usd')] not in ('','N/A','n/a',' ','#N/A   '):
-                            price_msrp_in_usd = float(line[fields_dict.get('price_msrp_usd')]) if fields_dict.get('price_msrp_usd') else '0.0'
+                    # file_column = wrong_lines[0][fields_dict.get('price_msrp_usd')] if fields_dict.get('price_msrp_usd') else None                         
+                    # price_msrp_in_usd = 0
+                    # if line[fields_dict.get('price_msrp_usd')] != str if fields_dict.get('price_msrp_usd') else False:
+                    #     if line[fields_dict.get('price_msrp_usd')] not in ('','N/A','n/a',' ','#N/A   '):
+                    #         price_msrp_in_usd = float(line[fields_dict.get('price_msrp_usd')]) if fields_dict.get('price_msrp_usd') else '0.0'
                     
                     file_column = wrong_lines[0][fields_dict.get('country_of_origin')] if fields_dict.get('country_of_origin') else None 
                     country_of_origin = 0
@@ -1679,9 +1680,9 @@ class product_import_spt(models.Model):
                             'product_color_name' : product_color_name if product_color_name else  None,
                             'secondary_color_name' : secondary_color_name if secondary_color_name else  None,
                             'secondary_html_color' : secondary_color_code if secondary_color_code else  None,
-                            'price_wholesale_usd' : price_wholesale_in_usd if price_wholesale_in_usd else None,
-                            'price_msrp_usd' : price_msrp_in_usd if price_msrp_in_usd else None,
-                            'lst_price_usd' : lst_price_usd if lst_price_usd else None,
+                            # 'price_wholesale_usd' : price_wholesale_in_usd if price_wholesale_in_usd else None,
+                            # 'price_msrp_usd' : price_msrp_in_usd if price_msrp_in_usd else None,
+                            # 'lst_price_usd' : lst_price_usd if lst_price_usd else None,
                             'temporary_out_of_stock' : temporary_out_of_stock if temporary_out_of_stock else None,
                             'sale_type' : sale_type if sale_type else None,                                
                             'on_sale_usd' : on_sale_usd if on_sale_usd else None,

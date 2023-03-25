@@ -12,6 +12,7 @@
                         </group>
                         <group>
                             <field name="page_type" />
+                            <field name="website_id" required="1" />
                         </group>
                     </group>
                     <notebook>
@@ -190,8 +191,8 @@
                             <field name="key_value_model_ids" attrs="{'invisible': [('page_type','not in',['our_story'])]}">
                                 <tree editable="bottom">
                                     <field name="sequence" widget="handle" />
-                                    <field name="name" />
-                                    <field name="value" />
+                                    <field name="name" string="Title"/>
+                                    <field name="value" string="Description" />
                                 </tree>
                             </field>
                         </page>
