@@ -81,8 +81,6 @@
             <field name="website_id" eval="kits_team_eto_website" />
         </record>
 
-
-
     </data>
 
 </odoo>

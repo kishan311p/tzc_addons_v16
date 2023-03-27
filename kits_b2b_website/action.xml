@@ -10,7 +10,7 @@
     <record id="kits_b2b_website_action" model="ir.actions.act_window">
         <field name="name">Website</field>
         <field name="res_model">kits.b2b.website</field>
-        <field name="view_mode">form</field>
+        <field name="view_mode">tree,form</field>
     </record>
     <record id="kits_b2b_menus_action" model="ir.actions.act_window">
         <field name="name">Menus</field>

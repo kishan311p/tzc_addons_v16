@@ -25,11 +25,10 @@
                 </t>
             </div>
         </xpath>
-        <!-- <xpath expr="//div[@t-if='o.shipping_weight']" position="replace"></xpath> -->
         <xpath expr="//t[@t-set='address']" position="replace">
-            <div class="row" style="margin-top:-50px">
-                <div style="" class="col-6">
-                    <t>
+            <div class="row">
+                <div style="margin-left:2.4%;">
+                    <t style="padding-top:5px">
                         <strong t-if="o.partner_id">Billing Address:</strong>
                         <div>
                             <span t-field="o.partner_id.name"/>
@@ -61,40 +60,38 @@
                         <br/>
                     </t>
                 </div>
-                <div class="col-6 d-flex justify-content-end">
-                    <div class="">
-                        <t style="padding-top:5px;">
-                            <strong t-if="o.sale_id.partner_shipping_id">Shipping Address:</strong>
-                            <div>
-                                <span t-field="o.sale_id.partner_shipping_id.name"/>
-                            </div>
-                            <div>
-                                <span t-field="o.sale_id.partner_shipping_id.street"/>
-                            </div>
-                            <div>
-                                <span t-field="o.sale_id.partner_shipping_id.street2"/>
-                            </div>
-                            <div>
-                                <span t-field="o.sale_id.partner_shipping_id.city"/>
-                                <span t-if="o.sale_id.partner_shipping_id.city and o.sale_id.partner_shipping_id.zip">,</span>
-                                <span t-field="o.sale_id.partner_shipping_id.zip"/>
-                            </div>
-                            <div>
-                                <span t-field="o.sale_id.partner_shipping_id.state_id.name"/>
-                                <span t-if="o.sale_id.partner_shipping_id.state_id.name and o.sale_id.partner_shipping_id.country_id.name">,</span>
-                                <span t-field="o.sale_id.partner_shipping_id.country_id.name"/>
-                            </div>
-                            <div>Tel:
+                <div style="margin-left:38%;">
+                    <t style="padding-top:5px;">
+                        <strong t-if="o.sale_id.partner_shipping_id">Shipping Address:</strong>
+                        <div>
+                            <span t-field="o.sale_id.partner_shipping_id.name"/>
+                        </div>
+                        <div>
+                            <span t-field="o.sale_id.partner_shipping_id.street"/>
+                        </div>
+                        <div>
+                            <span t-field="o.sale_id.partner_shipping_id.street2"/>
+                        </div>
+                        <div>
+                            <span t-field="o.sale_id.partner_shipping_id.city"/>
+                            <span t-if="o.sale_id.partner_shipping_id.city and o.sale_id.partner_shipping_id.zip">,</span>
+                            <span t-field="o.sale_id.partner_shipping_id.zip"/>
+                        </div>
+                        <div>
+                            <span t-field="o.sale_id.partner_shipping_id.state_id.name"/>
+                            <span t-if="o.sale_id.partner_shipping_id.state_id.name and o.sale_id.partner_shipping_id.country_id.name">,</span>
+                            <span t-field="o.sale_id.partner_shipping_id.country_id.name"/>
+                        </div>
+                        <div>Tel:
                                     
-                                <span t-field="o.sale_id.partner_shipping_id.phone" />
-                            </div>
-                            <div>Email:
+                            <span t-field="o.sale_id.partner_shipping_id.phone" />
+                        </div>
+                        <div>Email:
                                     
-                                <span t-field="o.sale_id.partner_shipping_id.email" />
-                            </div>
-                            <br/>
-                        </t>
-                    </div>
+                            <span t-field="o.sale_id.partner_shipping_id.email" />
+                        </div>
+                        <br/>
+                    </t>
                 </div>
             </div>
         </xpath>

@@ -163,6 +163,7 @@
                                     <field name="image_url" />
                                     <field name="name" />
                                     <field name="slider_type" />
+                                    <field name="limit" required="1" string="#Product Show" />
                                 </tree>
                             </field>
                         </page>

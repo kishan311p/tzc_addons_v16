@@ -105,10 +105,14 @@ class kits_b2b_multi_currency_mapping(models.Model):
                 
                 if product_price and product_price != sale_type_price:
                     discounted_unit_price = product_price - sale_type_price
+                    if product.sale_type:
+                        discounted_unit_price = sale_type_price
                     discount = (1-(sale_type_price/product_price))*100
                 else:
                     discounted_unit_price = product_price
                     discount = 0.0
+
+                fix_discount_price = (product_price*discount)/100 if product_price and discount else 0.0
 
                 products_prices[product.id] = {
                                                 'price':product_price,
@@ -117,7 +121,8 @@ class kits_b2b_multi_currency_mapping(models.Model):
                                                 'sale_type':product.sale_type,
                                                 'sale_type_price':sale_type_price,
                                                 'discount' : discount,
-                                                'discounted_unit_price' : discounted_unit_price
+                                                'discounted_unit_price' : discounted_unit_price,
+                                                'fix_discount_price':fix_discount_price,
                                             }
 
             return  products_prices

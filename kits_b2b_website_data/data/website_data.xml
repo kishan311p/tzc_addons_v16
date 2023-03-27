@@ -6,7 +6,7 @@
             <field name="header_description">Alexandre Dumas</field>
             <field name="description">Life is wonderful, sometimes you just need to see it through the right glasses</field>
             <field name="url">https://b2b.teameto.com/assets/img/login/login-slide-2.png</field>
-            <field name="login_id" ref="kits_b2b_website_data.kits_team_eto_website" />
+            <field name="login_id" ref="kits_b2b_website.kits_team_eto_website" />
         </record>
 
         <record id="login_slider_2" model="kits.b2b.image.model">
@@ -14,7 +14,7 @@
             <field name="header_description">Alexandre Dumas</field>
             <field name="description">Life is wonderful, sometimes you just need to see it through the right glasses</field>
             <field name="url">https://b2b.teameto.com/assets/img/login/login-slide-3.png</field>
-            <field name="login_id" ref="kits_b2b_website_data.kits_team_eto_website" />
+            <field name="login_id" ref="kits_b2b_website.kits_team_eto_website" />
         </record>
     </data>
 

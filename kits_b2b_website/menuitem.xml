@@ -5,7 +5,7 @@
             id="kits_b2b_main_menu"
             name="ETO"
             groups="base.group_system"
-            sequence="10" web_icon="kits_b2b_website,static/description/eto.jpg"/>
+            sequence="10" web_icon="kits_b2b_website,static/description/eto.png"/>
             
         <menuitem
             id="kits_b2b_main_configuration_menu"
