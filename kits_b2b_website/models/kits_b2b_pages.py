@@ -14,7 +14,7 @@ class kits_b2b_pages(models.Model):
     our_core_values_ids = fields.One2many(
         'kits.b2b.image.model', 'our_core_values_id', 'Our Core Values')
     header_text_1 = fields.Char('Header Text')
-    text_1 = fields.Char('Text')
+    text_1 = fields.Text('Text')
     image_url_text_1 = fields.Char('Image URL')
     image_url_text_1_copy = fields.Char('Image', related="image_url_text_1")
     text_1_redirect_url = fields.Text('Redirect URL')
