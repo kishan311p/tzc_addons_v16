@@ -9,7 +9,7 @@ class res_partner(models.Model):
     preferred_currency= fields.Many2one(comodel_name='res.currency',string="Preferred Currency")
     b2b_wishlist_count = fields.Integer('Wishlist Count',compute='_compute_b2b_wishlist_count')
     b2b_recent_view_count = fields.Integer('Recent View Count',compute='_compute_b2b_wishlist_count')
-    preferred_lang = fields.Selection(language_code, string='Preferred Language',default="en")
+    b2b_lang = fields.Selection(language_code, string='B2B Website Language',default="en")
     
     
     def _compute_b2b_wishlist_count(self):

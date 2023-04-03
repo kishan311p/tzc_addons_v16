@@ -12,7 +12,7 @@
                 <field name="b2b_pricelist_id"  options="{'no_create': True}"/>
             </field>
             <xpath expr="//field[@name='category_id']" position="before">
-                <field name="preferred_lang" />
+                <field name="b2b_lang" />
             </xpath>
             <xpath expr="//sheet/div[@name='button_box']" position="inside">
                     <button name="action_open_wishlist" type="object" class="oe_stat_button" icon="fa-heart">
