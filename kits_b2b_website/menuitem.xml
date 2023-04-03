@@ -4,7 +4,7 @@
         <menuitem
             id="kits_b2b_main_menu"
             name="ETO"
-            groups="base.group_system"
+            groups="base.group_system,tzc_sales_customization_spt.group_marketing_user"
             sequence="10" web_icon="kits_b2b_website,static/description/eto.png"/>
             
         <menuitem
@@ -15,9 +15,10 @@
 
         <menuitem
             id="kits_b2b_multi_currency_mapping_menu"
-            name="B2B Currency Mapping"
+            name="B2B Currency Rate"
             action="kits_b2b_website.kits_b2b_multi_currency_mapping_action"
             parent="kits_b2b_website.kits_b2b_main_menu"
+            groups="base.group_system"
             sequence="100"/>
             
         <menuitem

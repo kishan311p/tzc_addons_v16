@@ -1,7 +1,6 @@
 from odoo import fields, models, api, _
 
 MENU_TYPE = [
-    ('dashboard', 'Dashboard'),
     ('filter', 'Filter'),
     ('redirect', 'Redirect')
 ]

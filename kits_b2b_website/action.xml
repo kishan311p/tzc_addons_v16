@@ -2,7 +2,7 @@
 <odoo>
 
     <record id="kits_b2b_multi_currency_mapping_action" model="ir.actions.act_window">
-        <field name="name">Currency Mapping</field>
+        <field name="name">Currency Rate</field>
         <field name="res_model">kits.b2b.multi.currency.mapping</field>
         <field name="view_mode">tree,form</field>
     </record>
@@ -10,7 +10,8 @@
     <record id="kits_b2b_website_action" model="ir.actions.act_window">
         <field name="name">Website</field>
         <field name="res_model">kits.b2b.website</field>
-        <field name="view_mode">tree,form</field>
+        <field name="view_mode">form</field>
+        <field name="res_id" ref="kits_team_eto_website" />
     </record>
     <record id="kits_b2b_menus_action" model="ir.actions.act_window">
         <field name="name">Menus</field>

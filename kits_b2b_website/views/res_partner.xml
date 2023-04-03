@@ -5,11 +5,15 @@
         <field name="name">res.partner.view.form.inherit</field>
         <field name="model">res.partner</field>
         <field name="inherit_id" ref="base.view_partner_form"/>
+        <field name="priority">200</field>
         <field name="arch" type="xml">
             <field name="function" position="before">
                 <field name="preferred_currency"  options="{'no_create': True}"/>
                 <field name="b2b_pricelist_id"  options="{'no_create': True}"/>
             </field>
+            <xpath expr="//field[@name='category_id']" position="before">
+                <field name="preferred_lang" />
+            </xpath>
             <xpath expr="//sheet/div[@name='button_box']" position="inside">
                     <button name="action_open_wishlist" type="object" class="oe_stat_button" icon="fa-heart">
                         <field name="b2b_wishlist_count" string="Wishlist" widget="statinfo"/>

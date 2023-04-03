@@ -8,17 +8,17 @@
                 <sheet>
                     <group>
                         <group>
-                            <field name="name" />
+                            <field name="name" readonly="1"/>
                         </group>
                         <group>
-                            <field name="page_type" />
-                            <field name="website_id" required="1" />
+                            <field name="page_type" readonly="1" />
+                            <field name="website_id" required="1"  readonly="1"/>
                         </group>
                     </group>
                     <notebook>
                         <page name="our_story_image" string="Image" attrs="{'invisible': [('page_type','not in',['our_story'])]}">
                             <field name="main_banner_ids">
-                                <tree editable="bottom">
+                                <tree editable="bottom"  create="0" delete="0">
                                     <field name="sequence" widget="handle" />
                                     <field name="image_icon" widget="image" class="oe_avatar" options="{'zoom': true,'preview_image': 'image_icon' ,'size': [128, 128]}" />
                                     <field name="url" widget="url"/>
@@ -79,18 +79,12 @@
 
                             </group>
 
-                            <group attrs="{'invisible': [('page_type','not in',['home'])]}">
-                                <group>
-                                    <field name="banner_url" />
-                                    <field name="banner_image" widget="image" class="oe_avatar" options="{'zoom': true,'preview_image': 'banner_image','size': [128, 128]}" size="[150,150]" />
-                                    <!-- <field name="banner_1_id" options="{'no_create': True}"/>
-                                    <field name="banner_1_image" widget="image" class="oe_avatar" options="{'zoom': true,'preview_image': 'banner_1_image','size': [128, 128]}" size="[150,150]" /> -->
-                                </group>
-                            </group>
+                            
 
                         </page>
                         <page name="how_to_shop" string="How to Shop" attrs="{'invisible':[('page_type','!=','home')]}">
                             <group>
+                                <field name="how_to_shop_title" />
                                 <field name="how_to_shop_redirect_url" string="Redirect URL" widget="url" />
                                 <field name="how_to_shop_button_text" string="Button Text" />
                                 <field name="how_to_shop_background" widget="url" />
@@ -98,7 +92,7 @@
                             </group>
                             <div>
                                 <field name='how_to_shop_ids' options="{'no_create': True}">
-                                    <tree editable="bottom" default_order="sequence asc">
+                                    <tree editable="bottom" default_order="sequence asc" delete="0" create="0">
                                         <field name="sequence" widget="handle" />
                                         <field name="image_icon" widget="image" options="{'zoom': true,'preview_image':'image_logo','size': [50, 50]}" />
                                         <field name="url" widget="url" />
@@ -110,7 +104,7 @@
 
                         <page name="our_core_values" attrs="{'invisible': [('page_type','not in',['home'])]}" string="Our Core Values">
                             <field name="our_core_values_ids">
-                                <tree editable="bottom">
+                                <tree editable="bottom"  delete="0" create="0">
                                     <field name="sequence" widget='handle' />
                                     <field name="image_icon" widget="image" class="oe_avatar" options="{'zoom': true,'preview_image': 'image_icon','size': [50, 50]}" size="[50,50]"/>
                                     <field name="url" widget="url"/>
@@ -158,12 +152,12 @@
                         </page>
                         <page name="sliders" string="Sliders" attrs="{'invisible': [('page_type','not in',['home'])]}">
                             <field name="slider_ids" context="{'website':'b2b1'}" domain="[('slider_type','=','home')]">
-                                <tree editable="bottom">
+                                <tree editable="bottom"  delete="0" create="0">
                                     <field name="image" widget="image" class="oe_avatar" options="{'zoom': true,'preview_image': 'image','size': [128, 128]}" size="[150,150]"/>
                                     <field name="image_url" />
                                     <field name="name" />
-                                    <field name="slider_type" />
-                                    <field name="limit" required="1" string="#Product Show" />
+                                    <field name="slider_type" readonly="1"/>
+                                    <field name="limit" readonly="1" required="1" string="#Product Show" />
                                 </tree>
                             </field>
                         </page>
@@ -190,10 +184,10 @@
                         </page>
                         <page name="our_network" string="Our Network" attrs="{'invisible': [('page_type','not in',['our_story'])]}">
                             <field name="key_value_model_ids" attrs="{'invisible': [('page_type','not in',['our_story'])]}">
-                                <tree editable="bottom">
+                                <tree editable="bottom" delete="0" create="0">
                                     <field name="sequence" widget="handle" />
-                                    <field name="name" string="Title"/>
-                                    <field name="value" string="Description" />
+                                    <field name="name" string="Body"/>
+                                    <field name="value" string="Title" />
                                 </tree>
                             </field>
                         </page>

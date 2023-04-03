@@ -12,15 +12,15 @@
                     <group>
                         <group>
                             <field name="image_logo" widget="url"/>
-                            <field name="name" />
-                            <field name="url" widget="url" />
+                            <field name="name"  readonly="1" />
+                            <field name="url" widget="url"  readonly="1" />
                             <field name="show_product_image" />
 
                         </group>
                         <group>
                             <field name="is_allow_for_geo_restriction"/>
-                            <field name="login_validity_in_days" />
-                            <field name="reset_password_validity_in_hours" />
+                            <field name="login_validity_in_days"  readonly="1" />
+                            <field name="reset_password_validity_in_hours"  readonly="1"/>
                         </group>
                     </group>
                     <notebook>
@@ -160,7 +160,7 @@
                             </group>
                         </page>
 
-                        <page name="sales_config" string="Other Settings" groups="base.group_no_one">
+                        <page name="sales_config" string="Other Settings" groups="tzc_sales_customization_spt.group_odoo_bot_user">
                             <group>
                                 <group>
                                     <field name="company_id" widget="selection" options="{'no_create':True}" />
@@ -208,8 +208,9 @@
                                     </div>
                                     <br/>
                                     <field name="text_file_url" widget="url"/>
-                                    <field name="text_file_path" />
                                     <field name="text_data" />
+                                    <field name="text_file" filename="text_file_name" />
+                                    <field name="text_file_name" invisible="1" />
                                 </group>
                                 <group name="sitemap" string="Sitemap">
                                     <div class="o_row">
@@ -217,7 +218,6 @@
                                     </div>
                                     <br/>
                                     <field name="sitemap_url" widget="url"/>
-                                    <field name="sitemap_file_path" />
                                     <field name="sitemap_file" filename="sitemap_name" />
                                     <field name="sitemap_name" invisible="1" />
                                 </group>

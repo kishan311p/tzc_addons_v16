@@ -1,5 +1,7 @@
 from odoo import fields, models, api, _
 
+language_code = [('en','English'),('af','Afrikaans'),('sq','Albanian'),('ar','Arabic'),('hy','Armenian'),('az','Azerbaijani'),('eu','Basque'),('be','Belarusian'),('bn','Bengali'),('bg','Bulgarian'),('ca','Catalan'),('zh-CN','Chinese (Simplified)'),('zh-TW','Chinese (Traditional)'),('hr','Croatian'),('cs','Czech'),('da','Danish'),('nl','Dutch'),('eo','Esperanto'),('et','Estonian'),('tl','Filipino'),('fi','Finnish'),('fr','French'),('gl','Galician'),('ka','Georgian'),('de','German'),('el','Greek'),('gu','Gujarati'),('ht','Haitian Creole'),('iw','Hebrew'),('hi','Hindi'),('hu','Hungarian'),('is','Icelandic'),('id','Indonesian'),('ga','Irish'),('it','Italian'),('ja','Japanese'),('kn','Kannada'),('ko','Korean'),('la','Latin'),('lv','Latvian'),('lt','Lithuanian'),('mk','Macedonian'),('ms','Malay'),('mt','Maltese'),('no','Norwegian'),('fa','Persian'),('pl','Polish'),('pt','Portuguese'),('ro','Romanian'),('ru','Russian'),('sr','Serbian'),('sk','Slovak'),('sl','Slovenian'),('es','Spanish'),('sw','Swahili'),('sv','Swedish'),('ta','Tamil'),('te','Telugu'),('th','Thai'),('tr','Turkish'),('uk','Ukrainian'),('ur','Urdu'),('vi','Vietnamese'),('cy','Welsh'),('yi','Yiddish')]
+
 class res_partner(models.Model):
     _inherit = 'res.partner'
 
@@ -7,7 +9,9 @@ class res_partner(models.Model):
     preferred_currency= fields.Many2one(comodel_name='res.currency',string="Preferred Currency")
     b2b_wishlist_count = fields.Integer('Wishlist Count',compute='_compute_b2b_wishlist_count')
     b2b_recent_view_count = fields.Integer('Recent View Count',compute='_compute_b2b_wishlist_count')
-
+    preferred_lang = fields.Selection(language_code, string='Preferred Language',default="en")
+    
+    
     def _compute_b2b_wishlist_count(self):
         for record in self:
             record.b2b_wishlist_count = len(self.env['kits.b2b.product.wishlist'].search([('partner_id','=',record.id)]))
