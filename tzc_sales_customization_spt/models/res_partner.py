@@ -25,6 +25,9 @@ field_list = ['customer_type','company_type','name','parent_id','type','street',
               'team_id','property_payment_term_id','property_account_position_id','property_stock_customer','property_stock_supplier','property_supplier_payment_term_id',
               'ref','webiste_id','bank_ids','property_account_receivable_id','property_account_payable_id','comment','image_1920','is_email_verified']
 
+
+language_code = [('en','English'),('af','Afrikaans'),('sq','Albanian'),('ar','Arabic'),('hy','Armenian'),('az','Azerbaijani'),('eu','Basque'),('be','Belarusian'),('bn','Bengali'),('bg','Bulgarian'),('ca','Catalan'),('zh-CN','Chinese (Simplified)'),('zh-TW','Chinese (Traditional)'),('hr','Croatian'),('cs','Czech'),('da','Danish'),('nl','Dutch'),('eo','Esperanto'),('et','Estonian'),('tl','Filipino'),('fi','Finnish'),('fr','French'),('gl','Galician'),('ka','Georgian'),('de','German'),('el','Greek'),('gu','Gujarati'),('ht','Haitian Creole'),('iw','Hebrew'),('hi','Hindi'),('hu','Hungarian'),('is','Icelandic'),('id','Indonesian'),('ga','Irish'),('it','Italian'),('ja','Japanese'),('kn','Kannada'),('ko','Korean'),('la','Latin'),('lv','Latvian'),('lt','Lithuanian'),('mk','Macedonian'),('ms','Malay'),('mt','Maltese'),('no','Norwegian'),('fa','Persian'),('pl','Polish'),('pt','Portuguese'),('ro','Romanian'),('ru','Russian'),('sr','Serbian'),('sk','Slovak'),('sl','Slovenian'),('es','Spanish'),('sw','Swahili'),('sv','Swedish'),('ta','Tamil'),('te','Telugu'),('th','Thai'),('tr','Turkish'),('uk','Ukrainian'),('ur','Urdu'),('vi','Vietnamese'),('cy','Welsh'),('yi','Yiddish')]
+
 class res_partner(models.Model):
     _inherit = 'res.partner'
 
@@ -102,7 +105,9 @@ class res_partner(models.Model):
     def _get_all_data(self):
         return [[code, name] for code,_, name,active,image in self.env['res.lang'].get_available()]
 
-    kits_lang = fields.Selection(_get_all_data,string='Language',default=_get_default_lang)
+    # kits_lang = fields.Selection(_get_all_data,string='Language',default=_get_default_lang)
+    kits_lang = fields.Selection(language_code,string='Language',default='en')
+    internal_language = fields.Selection(language_code,string='Internal Language',default='en')
 
     def write(self,vals):
         user_obj = self.env['res.users']
