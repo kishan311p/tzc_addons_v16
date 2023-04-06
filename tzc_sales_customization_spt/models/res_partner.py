@@ -117,19 +117,19 @@ class res_partner(models.Model):
                 if self._context.get('params') and not self._context.get('params').get('model') == 'sale.catalog':
                     raise UserError(_('Due to security restrictions, you are not allowed to "%s" this record \n Contact your administrator to request access if necessary.'%('Unarchive' if vals['active'] else "Archive")))
 
-        if 'country_id' in vals.keys():
-            canada_country_id = self.env.ref('base.ca').id
-            usd_currency_id = self.env.ref('base.USD').id
-            cad_currency_id = self.env.ref('base.CAD').id
-            cad_public_pricelist = self.env.ref('product.list0')
-            usd_public_pricelist = self.env.ref('tzc_sales_customization_spt.usd_public_pricelist_spt')
-            for partner in self:
-                if vals['country_id']== canada_country_id:
-                    if partner.property_product_pricelist.currency_id.id != cad_currency_id:
-                        vals.update({'property_product_pricelist':cad_public_pricelist.id})
-                else:
-                    if partner.property_product_pricelist.currency_id.id != usd_currency_id:
-                        vals.update({'property_product_pricelist':usd_public_pricelist.id})
+        # if 'country_id' in vals.keys():
+        #     canada_country_id = self.env.ref('base.ca').id
+        #     usd_currency_id = self.env.ref('base.USD').id
+        #     cad_currency_id = self.env.ref('base.CAD').id
+        #     cad_public_pricelist = self.env.ref('product.list0')
+        #     usd_public_pricelist = self.env.ref('tzc_sales_customization_spt.usd_public_pricelist_spt')
+        #     for partner in self:
+        #         if vals['country_id']== canada_country_id:
+        #             if partner.property_product_pricelist.currency_id.id != cad_currency_id:
+        #                 vals.update({'property_product_pricelist':cad_public_pricelist.id})
+        #         else:
+        #             if partner.property_product_pricelist.currency_id.id != usd_currency_id:
+        #                 vals.update({'property_product_pricelist':usd_public_pricelist.id})
         if 'email' in vals.keys() and vals['email']:
             vals.update({'email':vals['email'].lower()})        
         
@@ -280,15 +280,15 @@ class res_partner(models.Model):
 
     @api.onchange('country_id')
     def _onchange_country_spt(self):
-        canada_country_id = self.env.ref('base.ca').id
-        cad_public_pricelist = self.env.ref('product.list0')
-        usd_public_pricelist = self.env.ref('tzc_sales_customization_spt.usd_public_pricelist_spt')
-        for record in self:
-            if record.country_id.id == canada_country_id:
-                record.property_product_pricelist = cad_public_pricelist.id
-            else:
-                record.property_product_pricelist = usd_public_pricelist.id
-        # Country Change Warning
+        # canada_country_id = self.env.ref('base.ca').id
+        # cad_public_pricelist = self.env.ref('product.list0')
+        # usd_public_pricelist = self.env.ref('tzc_sales_customization_spt.usd_public_pricelist_spt')
+        # for record in self:
+            # if record.country_id.id == canada_country_id:
+            #     record.property_product_pricelist = cad_public_pricelist.id
+            # else:
+                # record.property_product_pricelist = usd_public_pricelist.id
+        # Country Change Warning        
         if self._origin.id:
             orders = self.sale_order_ids.filtered(lambda x: x.state not in ('cancel','merged','draft_inv','open_inv','paid'))
             message = 'You have modified the country to "%s" for client "%s".%s'%(self.country_id.name,self.name,'\nCurrency, Pricelist and Fiscal position of following orders will be changed.   Please Review following #orders: %s'%(','.join(orders.mapped('name'))) if orders else '')
@@ -605,7 +605,7 @@ class res_partner(models.Model):
         user_obj = self.env['res.users']
         config_parameter_obj = self.env['ir.config_parameter'].sudo()
         self = self.with_context(bypass_validation_spt=True)
-        canada_country_id = self.env.ref('base.ca').id
+        # canada_country_id = self.env.ref('base.ca').id
         if 'internal_id' not in vals.keys() or 'internal_id' in vals.keys() and not vals['internal_id']:
             internal_id = self.env['ir.sequence'].next_by_code('tzc.partner.internal.id.seq.spt')
             vals.update({'internal_id':internal_id})
@@ -625,12 +625,12 @@ class res_partner(models.Model):
         res = super(res_partner,self).create(vals)
         if not self.env.user.has_group('base.group_user'):
             res.company_type = 'company'
-        if res.country_id and res.country_id.id != canada_country_id:
-            usd_public_pricelist = self.env.ref('tzc_sales_customization_spt.usd_public_pricelist_spt')
-            res.property_product_pricelist = usd_public_pricelist.id
-        else:
-            cad_public_pricelist = self.env.ref('product.list0')
-            res.property_product_pricelist = cad_public_pricelist.id
+        # if res.country_id and res.country_id.id != canada_country_id:
+        #     usd_public_pricelist = self.env.ref('tzc_sales_customization_spt.usd_public_pricelist_spt')
+        #     res.property_product_pricelist = usd_public_pricelist.id
+        # else:
+        #     cad_public_pricelist = self.env.ref('product.list0')
+        #     res.property_product_pricelist = cad_public_pricelist.id
         
         for rec in res:
             if rec.email:
