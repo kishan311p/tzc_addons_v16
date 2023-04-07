@@ -1,4 +1,4 @@
-from odoo import api, fields, models, SUPERUSER_ID, _
+from odoo import api, Command, fields, models, SUPERUSER_ID, _
 import hashlib
 import re
 from odoo.exceptions import UserError
@@ -27,12 +27,14 @@ from odoo.osv import expression
 
 _logger = logging.getLogger(__name__)
 
-field_list = ['partner_id','validity_date','date_order','payment_term_id','include_cases','no_of_cases','case_weight_gm','order_line',
+field_list = ['partner_id','date_order','payment_term_id','include_cases','no_of_cases','case_weight_gm','order_line',
               'note','sale_order_option_ids','user_id','sale_manager_id','team_id','client_order_ref','picking_policy','commitment_date',
               'fiscal_position_id','origin','opportunity_id','campaign_id','medium_id','source_id','next_execution_date','street','street2',
               'country_id','city','postal_code','state_id','mark_as_paid_by_user','payment_link_approved_by','order_approved_by','require_signature',
               'require_payment','signed_by','signed_on','signature','approve_by_salesperson','approve_by_salesmanager','approve_by_admin','payment_link',
               'amount_paid','due_amount','payment_status','state']
+
+NO_TRACKING_FIELDS = ['amount_total','amount_untaxed','amount_without_discount','amount_discount']
 
 class sale_order(models.Model):
     _inherit = 'sale.order'
@@ -66,7 +68,7 @@ class sale_order(models.Model):
     company_id = fields.Many2one('res.company')
 
     #kits_shipping_cost
-    shipping_id = fields.Many2one('shipping.provider.spt',compute='compute_shipping_id',store=True,compute_sudo=True,default=False)
+    shipping_id = fields.Many2one('shipping.provider.spt',default=False)
     estimate_shipping_cost = fields.Float('Shipping Cost ')
     actual_weight = fields.Float('Actual Weight (kg)')
     kits_carrier_tracking_ref = fields.Char('Tracking Reference',compute="_compute_carrier_tracking_ref",compute_sudo=True,store=True)
@@ -100,7 +102,7 @@ class sale_order(models.Model):
                 total_weight_kg += record.case_weight_kg
             lines = record.order_line.filtered(lambda x: x.picked_qty)
             weight = round(sum(list(map(lambda x: x.product_id.weight * x.picked_qty,lines))),2)
-            if record.state in ('draft','sent','received','sale','in_scanning'):
+            if record.state in ('draft','sent','salesperson_confirmation','received','sale','in_scanning'):
                 weight = round(sum(list(map(lambda x: x.product_id.weight * x.product_uom_qty,record.order_line))),2)
             record.glass_weight_kg = weight
             record.weight_total_kg  = round(total_weight_kg + weight,2)
@@ -111,11 +113,11 @@ class sale_order(models.Model):
             picking = record.picking_ids.filtered(lambda p: p.state != 'cancel' and p.picking_type_id.code == 'outgoing')[:1]
             record.kits_carrier_tracking_ref = picking.carrier_tracking_ref
 
-    @api.depends('picking_ids','picking_ids.shipping_id')
-    def compute_shipping_id(self):
-        for record in self:
-            picking = record.picking_ids.filtered(lambda x: x.state != 'cancel' and 'WH/OUT' in x.name)
-            record.shipping_id = picking.shipping_id.id
+    # @api.depends('picking_ids','picking_ids.shipping_id')
+    # def compute_shipping_id(self):
+    #     for record in self:
+    #         picking = record.picking_ids.filtered(lambda x: x.state != 'cancel' and 'WH/OUT' in x.name)
+    #         record.shipping_id = picking.shipping_id.id
 
     def action_check_shipping_cost(self):
         if self.state not in ['scan','shipped','draft_inv','open_inv','cancel','merged','done']:
@@ -251,7 +253,7 @@ class sale_order(models.Model):
         return weight
 
     state = fields.Selection(selection_add=[
-               ('draft', 'Quotation'),('sent', 'Quotation Sent'),('received', 'Quotation Received'),('sale', 'Order Confirmed'),('in_scanning','In Scanning'),('scanned','Scanning Completed'),('scan', 'Ready to Ship'),('shipped', 'Shipped'),('draft_inv', 'Draft Invoice'),('open_inv', 'Invoiced'),('cancel', 'Cancelled'),('merged', 'Merged'),('done', 'Locked')], string='Status', readonly=True, copy=False, index=True, tracking=3, default='draft')
+               ('draft', 'Quotation'),('sent', 'Quotation Sent'),('received', 'Quotation Received'),('salesperson_confirmation', 'Salesperson Confirmation'),('sale', 'Order Confirmed'),('in_scanning','In Scanning'),('scanned','Scanning Completed'),('scan', 'Ready to Ship'),('shipped', 'Shipped'),('draft_inv', 'Draft Invoice'),('open_inv', 'Invoiced'),('cancel', 'Cancelled'),('merged', 'Merged'),('done', 'Locked')], string='Status', readonly=True, copy=False, index=True, tracking=3, default='draft')
 
     catalog_id = fields.Many2one('sale.catalog', ondelete='set null', string='Corresponding Catalog')
     amount_is_shipping_total = fields.Monetary(string='Shipping Cost', store=True, readonly=True,compute_sudo=True, compute='_amount_all', tracking=4)
@@ -311,17 +313,16 @@ class sale_order(models.Model):
     cart_from_price = fields.Char()
     cart_discount = fields.Char()
     currency_name = fields.Char('Currency Name',related="currency_id.name")
-    website_id = fields.Many2one('website')
+    website_id = fields.Many2one('kits.b2b.website')
     merged_order= fields.Boolean()
     merge_reference = fields.Many2many("sale.order","merged_order_sale_order_rel","merge_order_id","order_id","Merge Order of")
-
+    customer_credit = fields.Char('Customer Credit')
     def _get_currency_id(self):
-        if self.pricelist_id:
-            return self.pricelist_id.currency_id.id
-        else:
-            return self.partner_id.preferred_currency.id
+        return self.partner_id.preferred_currency.id
     
     b2b_currency_id = fields.Many2one('res.currency',default=_get_currency_id ,string=' Currency')
+    currency_id = fields.Many2one(related='b2b_currency_id',depends=["b2b_currency_id"],store=True, precompute=True, ondelete="restrict")
+
 
     def compute_all(self):
         for record in self:
@@ -480,8 +481,8 @@ class sale_order(models.Model):
 
     def action_open_remove_product_wizard(self):
         self.ensure_one()
-        if self.state in ['draft','sent']:
-            wizard_id = self.env['remove.product.spt'].create({'partner_id':self.partner_id.id,'sale_id' : self.id})
+        if self.state in ['draft','sent','salesperson_confirmation']:
+            wizard_id = self.env['remove.product.spt'].create({'partner_id':self.partner_id.id,'sale_id' : self.id,'product_ids':[(6,0,self.order_line.mapped('product_id').ids)]})
             return {
                 'name': 'Remove Items',
                 'view_mode': 'form',
@@ -518,7 +519,7 @@ class sale_order(models.Model):
 
     def action_discount_wizard(self):
         self.ensure_one()
-        if self.state in ['draft','sent','received','in_scanning','sale','scan','scanned','shipped']:
+        if self.state in ['draft','sent','received','salesperson_confirmation','in_scanning','sale','scan','scanned','shipped']:
             if 'draft' not in self.mapped('invoice_ids.state') and  'posted' not in self.mapped('invoice_ids.state'):
                 return {
                     'name': 'Bulk Discount',
@@ -705,7 +706,7 @@ class sale_order(models.Model):
 
     def button_open_quick_scan(self):
         self.ensure_one()
-        if self.state in ['draft','sent','received']:
+        if self.state in ['draft','sent','received','salesperson_confirmation']:
             wizard_id = self.env['sale.barcode.order.spt'].create({'partner_id':self.partner_id.id,'sale_id' : self.id})
             return {
                 'name': 'Scan Order',
@@ -969,7 +970,8 @@ class sale_order(models.Model):
     def onchange_partner_shipping_id_kits(self):
         fiscal_position_obj = self.env['account.fiscal.position']
         for record in self:
-            record.pricelist_id = record.partner_id.property_product_pricelist if record.partner_id else False
+            record.pricelist_id = record.partner_id.b2b_pricelist_id if record.partner_id else False
+            record.b2b_currency_id = record.partner_id.preferred_currency.id
             if record.partner_id and record.partner_id.country_id:
                  record.fiscal_position_id = self.env['account.fiscal.position'].with_context(force_company=record.company_id.id or self.env.user.company_id.id)._get_fiscal_position(record.partner_id)
             else:
@@ -1078,7 +1080,7 @@ class sale_order(models.Model):
         addr = self.partner_id.address_get(['delivery', 'invoice'])
         partner_user = self.partner_id.user_id or self.partner_id.commercial_partner_id.user_id
         values = {
-            'pricelist_id': self.partner_id.property_product_pricelist and self.partner_id.property_product_pricelist.id or False,
+            'pricelist_id': self.partner_id.b2b_pricelist_id and self.partner_id.b2b_pricelist_id.id or False,
             'payment_term_id': self.partner_id.property_payment_term_id and self.partner_id.property_payment_term_id.id or False,
             'partner_invoice_id': addr['invoice'],
             'partner_shipping_id': addr['delivery'],
@@ -2965,10 +2967,10 @@ class sale_order(models.Model):
                                 'package_id': pack_line.product_id.id or False,
                                 'is_pack_order_line': True,
                                 'package_line_id': pack_line.id or False,
-                                'price_unit': record.partner_id.property_product_pricelist.get_product_price(product_line.product_id,product_line.qty * pack_line.qty,record.partner_id),
+                                'price_unit': record.partner_id.b2b_pricelist_id.get_product_price(product_line.product_id,product_line.qty * pack_line.qty,record.partner_id),
                                 'sale_type':product_line.product_id.sale_type,
                             })
-                            if record.partner_id.property_product_pricelist.currency_id.name == 'CAD':
+                            if record.partner_id.b2b_pricelist_id.currency_id.name == 'CAD':
                                 pack_sale_line.write({'unit_discount_price':product_line.cad_price or 0.00})
                             else:
                                 pack_sale_line.write({'unit_discount_price':product_line.usd_price or 0.00})
@@ -3450,7 +3452,7 @@ class sale_order(models.Model):
             product_with_context = self.env['product.product'].with_context(
                 product_context)
             product = product_with_context.browse(product_id)
-            partner_price_list = self.env.user.partner_id.property_product_pricelist
+            partner_price_list = self.env.user.partner_id.b2b_pricelist_id
             values['price_unit'] = partner_price_list.get_product_price(
                 product, quantity, self.env.user.partner_id)
             pricelist_price = partner_price_list.get_product_price(product,values.get('product_uom_qty'),self.env.user.partner_id)

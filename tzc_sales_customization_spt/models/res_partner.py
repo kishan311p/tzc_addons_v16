@@ -31,6 +31,7 @@ language_code = [('en','English'),('af','Afrikaans'),('sq','Albanian'),('ar','Ar
 class res_partner(models.Model):
     _inherit = 'res.partner'
 
+    b2b_pricelist_id = fields.Many2one(comodel_name='product.pricelist',string="Pricelist")
     internal_id = fields.Char('Internal ID ')
     previous_total_sales = fields.Float('Previous Total Sales')
     customer_sales_rank = fields.Float('Customer Sales Rank')
@@ -470,8 +471,8 @@ class res_partner(models.Model):
             if is_admin:
                 for email_node in  doc.xpath('//field[@name="email"]'):
                     email_node.attrib['readonly'] = '1' if not is_manager else '0'
-                for country_id_node in  doc.xpath('//field[@name="country_id"]'):
-                    country_id_node.attrib['readonly'] = '1' if not is_manager else '0'
+                # for country_id_node in  doc.xpath('//field[@name="country_id"]'):
+                #     country_id_node.attrib['readonly'] = '1' if not is_manager else '0'
                 for company_type_node in  doc.xpath('//field[@name="company_type"]'):
                     company_type_node.attrib['readonly'] = '1'
                 for is_vendor_node in  doc.xpath('//field[@name="is_vendor"]'):
@@ -480,10 +481,10 @@ class res_partner(models.Model):
                     is_customer_node.attrib['readonly'] = '1'
                 for user_id in doc.xpath('//field[@name="user_id"]'):
                     user_id.attrib['readonly'] = '1' if not is_admin or not is_manager else '0'
-            for country_id in doc.xpath('//field[@name="country_id"]'):
-                country_id.attrib['readonly'] = '1'
-            for state_id in doc.xpath('//field[@name="state_id"]'):
-                state_id.attrib['readonly'] = '1'
+            # for country_id in doc.xpath('//field[@name="country_id"]'):
+            #     country_id.attrib['readonly'] = '1'
+            # for state_id in doc.xpath('//field[@name="state_id"]'):
+            #     state_id.attrib['readonly'] = '1'
             str_xml = etree.tostring(doc, encoding='unicode')
             if not self._context.get('resend') or not self._context.get('campaign') or not self._context.get('raise_campaign'):
                 soup = BeautifulSoup(str_xml, "html.parser")
@@ -504,7 +505,11 @@ class res_partner(models.Model):
                 for label in soup.find_all('label'):
                     if label.attrs.get('name') == 'address_name':
                         label['attrs'] =  "{'invisible':[('access_field_flag','=',False)]}"
-                soup.find_all('group')[1]['attrs'] = "{'invisible':[('access_field_flag','=',False)]}"
+                try:
+                    soup.find_all('group')[1]['attrs'] = "{'invisible':[('access_field_flag','=',False)]}"
+                except:
+                    pass
+
                 arch = etree.fromstring(str(soup))
         return arch,view
     
@@ -519,16 +524,22 @@ class res_partner(models.Model):
                 partner_name.append(rec.country_id.name)
 
             name = ', '.join(partner_name)
-            rec.name_get_partner = True
-            rec.display_name = name if name else None
+            rec.sudo().name_get_partner = True
+            rec.sudo().display_name = name if name else None
 
     def _compute_signup_url(self):
         """ proxy for function field towards actual implementation """
-        result = self.with_context(signup_force_type_in_url='reset').sudo()._get_signup_url_for_action()
-        for partner in self:
-            if any(u.has_group('base.group_user') for u in partner.user_ids if u != self.env.user):
-                self.env['res.users'].sudo().check_access_rights('write')
-            partner.signup_url = result.get(partner.id, False)
+        for rec in self:
+            if rec.user_ids:
+                website = self.env['kits.b2b.website'].search([('website_name','=','b2b1')],limit=1)
+                url='%s/forget-password?code=%s&login=%s' % (website.url or '', rec.user_ids[0].access_token, rec.user_ids[0].login)
+                rec.signup_url = url
+            else:
+                rec.signup_url = None
+        # result = self.with_context(signup_force_type_in_url='reset').sudo()._get_signup_url_for_action()
+        # for partner in self:
+        #     if any(u.has_group('base.group_user') for u in partner.user_ids if u != self.env.user):
+        #         self.env['res.users'].sudo().check_access_rights('write')
 
     def _notify_salesperson(self):
         for rec in self:
@@ -562,20 +573,20 @@ class res_partner(models.Model):
                 if partner_count >1:
                     raise UserError(_('Internal id must be uniue'))
         
-    @api.constrains('property_product_pricelist', 'country_id')
-    def _check_pricelist(self):
-        canada_country_id = self.env.ref('base.ca').id
-        usd_currency_id = self.env.ref('base.USD').id
-        cad_currency_id = self.env.ref('base.CAD').id
-        for partner in self:
-            if 'bypass_validation_spt' in self.env.context.keys() and self.env.context['bypass_validation_spt'] or partner.parent_id:
-                pass
-            else:
-                if partner.country_id:
-                    if partner.country_id.id == canada_country_id and partner.property_product_pricelist.currency_id.id != cad_currency_id:
-                        raise UserError(_('Canadian customer must have pricelist having CAD as currency'))
-                    if partner.country_id.id != canada_country_id and partner.property_product_pricelist.currency_id.id != usd_currency_id:
-                        raise UserError(_('Non-Canadian customer must have pricelist having USD as currency'))
+    # @api.constrains('property_product_pricelist', 'country_id')
+    # def _check_pricelist(self):
+    #     canada_country_id = self.env.ref('base.ca').id
+    #     usd_currency_id = self.env.ref('base.USD').id
+    #     cad_currency_id = self.env.ref('base.CAD').id
+    #     for partner in self:
+    #         if 'bypass_validation_spt' in self.env.context.keys() and self.env.context['bypass_validation_spt'] or partner.parent_id:
+    #             pass
+    #         else:
+    #             if partner.country_id:
+    #                 if partner.country_id.id == canada_country_id and partner.property_product_pricelist.currency_id.id != cad_currency_id:
+    #                     raise UserError(_('Canadian customer must have pricelist having CAD as currency'))
+    #                 if partner.country_id.id != canada_country_id and partner.property_product_pricelist.currency_id.id != usd_currency_id:
+    #                     raise UserError(_('Non-Canadian customer must have pricelist having USD as currency'))
 
 
     @api.model
@@ -975,47 +986,6 @@ class res_partner(models.Model):
             raise UserError('You can\'t change your superior password.')
 
     def action_contact_mass_mailing(self):
-        # rejected_partner_ids = self.filtered(lambda x: x.mailgun_verification_status == 'rejected').ids
-        # if rejected_partner_ids:
-        #     return self.mailgun_varified()
-        # partner_ids = self.filtered(lambda x: not x.email).ids
-        # mail_context = self._context.copy()
-        # message = 'From the %s contacts %s contact%s have no email.'%(len(self),len(partner_ids),'s' if len(partner_ids) > 1 else '')
-        # if partner_ids:
-        #     mail_context.update({
-        #                 'default_partner_ids':partner_ids,
-        #                 'default_email_partner_ids':self.ids,
-        #                 'default_message':message,
-        #             })
-        #     return {
-        #             'name': _('Mass Mailing Message Wizard'),
-        #             'type': 'ir.actions.act_window',
-        #             'res_model': "mass.mailing.message.wizard",
-        #             'view_type': 'form',
-        #             'view_mode': 'form',
-        #             'target': 'new',
-        #             'context':mail_context,
-        #         }
-        # else:
-        #     mail_context.update({
-        #                     'default_composition_mode': 'mass_mail',
-        #                     'default_partner_to': ','.join(str(id.id) for id in self),
-        #                     'default_use_template': True,
-        #                     'default_template_id': self.env.ref('tzc_sales_customization_spt.email_template_partner').id,
-        #                     'default_no_auto_thread':False,
-        #                     'campaign' : True,
-        #                     'default_mail_server_id':eval(self.env['ir.config_parameter'].sudo().get_param('mass_mailing.mail_server_id')),
-        #                     'raise_campaign':True
-        #                 })
-        #     return {
-        #         'name': _('Send Mail'),
-        #         'type': 'ir.actions.act_window',
-        #         'res_model': 'mail.compose.message',
-        #         'binding_model':"res.partner",
-        #         'view_mode' : 'form',
-        #         'target': 'new',
-        #         'context':mail_context,
-        #     }
         partner_ids = self.filtered(lambda x: x.mailgun_verification_status == 'approved' and x.email).ids
         none_mails_partner_ids = self.filtered(lambda x: not x.email).ids
         # mail_context = self._context.copy()
@@ -1257,7 +1227,7 @@ class res_partner(models.Model):
     def get_product_price(self,product,partner):
         if partner and type(partner) == int:
             partner = self.browse(partner)
-            pricelist_id = partner.property_product_pricelist
+            pricelist_id = partner.b2b_pricelist_id
             query = f"""select
                         ppi.product_id as "product_id",
                         ppi.id as "ID",
@@ -1520,6 +1490,7 @@ class res_partner(models.Model):
         }
 
     def action_contact_mail_template(self):
+            partner_model_id = self.env.ref('base.model_res_partner').id
             templates_id = self.env['mail.template'].search([('model_id','=',self.env.ref('base.model_res_partner').id)]).filtered(lambda x:list(x.get_external_id().values()) == [''])
             list_view = self.env.ref('tzc_sales_customization_spt.manage_template_tree_view')
             form_view = self.env.ref('tzc_sales_customization_spt.manage_template_form_view')
@@ -1530,7 +1501,8 @@ class res_partner(models.Model):
                 'view_mode' : 'tree,form',
                 'views' : [(list_view.id,'tree'),(form_view.id,'form')],
                 'target' : 'current',
-                'domain':[('id','in',templates_id.ids)]
+                'domain':[('id','in',templates_id.ids)],
+                'context':{'default_model_id':partner_model_id}
                 # 'domain':[('model_id','=',self.env.ref('base.model_res_partner').id)]
             }
             return action
@@ -1567,6 +1539,8 @@ class res_partner(models.Model):
             else:
                 get_dict = self.env['ir.model'].generate_report_access_link('sale.order',res_id,'sale.action_report_saleorder',self.id,'pdf')
         elif model in ['sale.catalog'] and res_id: 
+            catalog_id = self.env['sale.catalog'].browse(res_id)
+            catalog_id.customer_id = self.id
             if file_type == 'excel' and model == 'sale.catalog':
                 get_dict = self.env['ir.model'].generate_report_access_link('sale.catalog',res_id,'',self.id,'excel')
             else:

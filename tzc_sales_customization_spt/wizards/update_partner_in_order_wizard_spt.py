@@ -18,12 +18,14 @@ class update_partner_in_order_wizard_spt(models.TransientModel):
                 if record.delivery_address_id:
                     record.sale_id.partner_shipping_id = record.delivery_address_id.id
                 record.sale_id.onchange_partner_shipping_id_kits()
-                for line in record.sale_id.order_line:
-                    if not line.product_id.is_shipping_product and not line.product_id.is_admin and not line.product_id.is_global_discount:
-                        if self.disc_options =='change_discount':
-                            line.with_context(partner_change=True).product_uom_change()
-                        else:
-                            line.product_uom_change()
+                if record.sale_id.pricelist_id.id != record.sale_id.partner_id.id :
+                    for line in record.sale_id.order_line:
+                        if not line.product_id.is_shipping_product and not line.product_id.is_admin and not line.product_id.is_global_discount:
+                            if self.disc_options =='change_discount':
+                                line.with_context(partner_change=True).product_uom_change()
+                            else:
+                                line.product_uom_change()
+                    
                 for picking in record.sale_id.picking_ids:
                     if picking.state != 'cancel':
                         if record.delivery_address_id:

@@ -299,8 +299,10 @@ class res_users(models.Model):
             'scheduled_date': False,
         }
         template.write(template_values)
-
+        website = self.env['kits.b2b.website'].search([('website_name','=','b2b1')],limit=1)
         for user in self:
+            url='%s/forget-password?code=%s&login=%s' % (
+                    website.url or '', user.access_token, user.login)
             if not user.email:
                 raise UserError(_("Cannot send email: user %s has no email address.") % user.name)
             with self.env.cr.savepoint():
@@ -308,7 +310,7 @@ class res_users(models.Model):
                 if create_mode:
                     wizard_id = self.env['portal.wizard'].create({"user_ids":[(6,0,self.ids)]})
                     portal_user = self.env['portal.wizard.user'].create({'user_id':user.id,'partner_id':user.partner_id.id,'wizard_id':wizard_id.id})
-                    template.with_context(lang=user.lang).send_mail(portal_user.id, force_send=True, raise_exception=True,email_values={'recipient_ids':[(6,0,user.partner_id.ids)]})
+                    template.with_context(lang=user.lang,url=url).send_mail(portal_user.id, force_send=True, raise_exception=True,email_values={'recipient_ids':[(6,0,user.partner_id.ids)]})
                     _logger.info("Invitation email sent for user <%s> to <%s>", user.login, user.email)
                 else:
                     template.with_context(lang=user.lang).send_mail(user.id, force_send=force_send, raise_exception=True)

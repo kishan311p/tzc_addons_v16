@@ -68,10 +68,14 @@ class kits_b2b_multi_currency_mapping(models.Model):
             products_prices = {}
             for product in product_ids:
                 sale_type_price = 0.0
-                is_currency_match = True if partner_id.property_product_pricelist.currency_id.id == partner_id.preferred_currency.id else False
+                is_currency_match = True if partner_id.b2b_pricelist_id.currency_id.id == partner_id.preferred_currency.id else False
 
                 product = self.env['product.product'].browse(product)
-                pricelist_price = self.env['product.pricelist.item'].search([('product_id','in',product.ids),('pricelist_id','=',partner_id.property_product_pricelist.id)],limit=1).fixed_price
+
+                # pricelist_price = self.env['product.pricelist.item'].search([('product_id','in',product.ids),('pricelist_id','=',partner_id.property_product_pricelist.id)],limit=1).fixed_price
+                pricelist_price = self.env.ref('tzc_sales_customization_spt.usd_public_pricelist_spt')
+                pricelist_price = self.env['product.pricelist.item'].search([('product_id','in',product.ids),('pricelist_id','=',pricelist_price.id)],limit=1).fixed_price
+
                 
                 if self._context.get('from_order_line') and order_id and not is_currency_match:
                     partner_currency_rate = multi_currency_obj.search([('currency_id','=',order_id.b2b_currency_id.id)],limit=1).currency_rate
@@ -109,7 +113,10 @@ class kits_b2b_multi_currency_mapping(models.Model):
                         discounted_unit_price = sale_type_price
                     discount = (1-(sale_type_price/product_price))*100
                 else:
-                    discounted_unit_price = product_price
+                    discounted_unit_price = self.env['product.pricelist.item'].search([('product_id','in',product.ids),('pricelist_id','=',partner_id.b2b_pricelist_id.id)],limit=1).fixed_price
+                    if partner_currency_rate:
+                        discounted_unit_price = discounted_unit_price * partner_currency_rate
+                    # discounted_unit_price = product_price
                     discount = 0.0
 
                 fix_discount_price = (product_price*discount)/100 if product_price and discount else 0.0
