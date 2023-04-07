@@ -26,25 +26,11 @@
                 <xpath expr="//field[@name='invoice_line_ids']" position="attributes">
                     <attribute name="readonly">1</attribute>
                 </xpath>
-                <xpath expr="//sheet/group/group[2]/div[1]/label[@for='invoice_date_due']" position="attributes">
-                    <attribute name="string">Payment Terms</attribute>
-                </xpath>
-                <!-- <xpath expr="//sheet/group/group[2]/div[2]/span[1]" position="attributes">
-                    <attribute name="attrs">{'invisible': [ '|', '|', '|', ('state', '!=', 'draft'), ('invoice_payment_term_id', '!=', False), ('move_type', 'not in', ('out_invoice', 'out_refund', 'in_invoice', 'in_refund', 'out_receipt', 'in_receipt'))]}</attribute>
-                </xpath> -->
-           
+
                 <xpath expr="//group[@id='header_right_group']/field[@name='payment_reference']" position="attributes">
-                    <attribute name="invisible">1</attribute>
+                    <attribute name="readonly">1</attribute>
                 </xpath>
-                <xpath expr="//div[@name='journal_div']" position="attributes">
-                    <attribute name="invisible">1</attribute>
-                </xpath>
-                <xpath expr="//label[@for='journal_id']" position="replace">
-                    <field name="journal_id" readonly="1"/>
-                    <field name="company_id" readonly="1" on_change="1" can_create="true" can_write="true" invisible="1" modifiers="{'invisible':true,'readonly':true}"/>
-                    <field name="currency_id" attrs="{'invisible': [('move_type', 'not in', ('out_invoice', 'out_refund', 'in_invoice', 'in_refund'))]}" readonly="1" on_change="1" can_create="true" can_write="true" />
-                </xpath>
-                
+
                 <xpath expr="//field[@name='invoice_line_ids']/tree" position="replace">
                     <tree editable="bottom" string="Journal Items" decoration-muted="is_shipping_product==True or is_admin == True or is_global_discount == True" default_order="product_id">
                         <control>
@@ -64,7 +50,7 @@
                         <field name="is_admin" invisible="1"/>
                         <field name="is_global_discount" invisible="1"/>
                         <field name="name" widget="section_and_note_text" optional="show"/>
-                        <!-- <field name="is_fs"/> -->
+                        <field name="is_fs"/>
                         <field name="sale_type"/>
                         <field name="is_promotion_applied"/>
                         <field name="product_categ_id" string="Category"/>
@@ -135,7 +121,7 @@
                     <!-- 'show_address': 1, 'default_is_company': True, 'show_vat': True,'default_name':True}</attribute> -->
                 </xpath>
                 <xpath expr="//field[@name='partner_id']" position="after">
-                    <label for="street" invisible="0" string="" class='d-none' />
+                    <label for="street" invisible="0" string=""/>
                     <div>
                         <div class="o_address_format">
                             <field name="street" placeholder="Street..." class="o_address_street" readonly="1"/>
@@ -254,13 +240,13 @@
                     <button name="excel_order_report" type="object" string="Invoice report" />
                 </button> -->
                 <!-- notebook/page[@id='other_tab']/group[@id='other_tab_group']/ -->
-                <!-- <xpath expr="//notebook/page[@id='other_tab']/group[@id='other_tab_group']/group[@name='extraction_info_group']" position="attributes">
+                <xpath expr="//notebook/page[@id='other_tab']/group[@id='other_tab_group']/group[@name='extraction_info_group']" position="attributes">
                     <attribute name="invisible">1</attribute>
-                </xpath> -->
+                </xpath>
                 <xpath expr="//notebook/page[@id='other_tab']/group[@id='other_tab_group']/group[@name='accounting_info_group']" position="after">
                     <group string="Payments" name="payments_info_group" attrs="{'invisible': [('move_type', 'not in', ('out_invoice', 'out_refund', 'in_invoice', 'in_refund'))]}">
                         <field name="payment_reference" readonly="1" />
-                        <field name="partner_bank_id" string="Bank Account" domain="[('partner_id', '=', bank_partner_id)]" readonly="1" />
+                        <field name="partner_bank_id" domain="[('partner_id', '=', bank_partner_id)]" readonly="1" />
                     </group>
                 </xpath>
 
@@ -416,29 +402,28 @@
                         <field name="name" optional="show"/>
                         <field name="partner_id" invisible="1" optional="show"/>
                         <field name="invoice_source_email" invisible="1" optional="show"/>
-                        <field name="invoice_partner_display_name" invisible="context.get('default_move_type') not in ('in_invoice', 'in_refund','in_receipt')" groups="base.group_user" string="Vendor" optional="show"/>
-                        <field name="invoice_partner_display_name" invisible="context.get('default_move_type') not in ('out_invoice', 'out_refund','out_receipt')" groups="base.group_user" string="Customer" optional="show"/>
-                        <field name="invoice_date" optional="show" invisible="context.get('default_move_type') not in ('in_invoice', 'in_refund','in_receipt')" string="Bill Date" />
-                        <field name="invoice_date" optional="show" invisible="context.get('default_move_type') not in ('out_invoice', 'out_refund','out_receipt')" string="Invoice Date"/>
+                        <field name="invoice_partner_display_name" invisible="context.get('default_type') not in ('in_invoice', 'in_refund','in_receipt')" groups="base.group_user" string="Vendor" optional="show"/>
+                        <field name="invoice_partner_display_name" invisible="context.get('default_type') not in ('out_invoice', 'out_refund','out_receipt')" groups="base.group_user" string="Customer" optional="show"/>
+                        <field name="invoice_date" optional="show" invisible="context.get('default_type') not in ('in_invoice', 'in_refund','in_receipt')" string="Bill Date" />
+                        <field name="invoice_date" optional="show" invisible="context.get('default_type') not in ('out_invoice', 'out_refund','out_receipt')" string="Invoice Date"/>
                         <field name="invoice_origin" optional="show" string="Source Document"/>
-                        <field name="payment_reference" readonly="1" optional="show" invisible="context.get('default_move_type') in ('out_invoice', 'out_refund','out_receipt')"/>
+                        <field name="payment_reference" readonly="1" optional="show" invisible="context.get('default_type') in ('out_invoice', 'out_refund','out_receipt')"/>
                         <field name="ref" optional="show" invisible="1"/>
-                        <field name="invoice_user_id" optional="show" invisible="context.get('default_move_type') not in ('out_invoice', 'out_refund','out_receipt')" string="Sales Person"/>
-                        <!-- <field name="team_id" invisible="context.get('default_move_type') not in ('out_invoice', 'out_refund','out_receipt')" optional="show"/> -->
+                        <field name="invoice_user_id" optional="show" invisible="context.get('default_type') not in ('out_invoice', 'out_refund','out_receipt')" string="Sales Person"/>
+                        <!-- <field name="team_id" invisible="context.get('default_type') not in ('out_invoice', 'out_refund','out_receipt')" optional="show"/> -->
                         <field name="team_id" invisible="1" optional="show"/>
                         <field name="company_id" groups="base.group_multi_company" options="{'no_create': True}" optional="show"/>
                         <field name="invoice_date_due" optional="show"/>
-                        <field name="amount_untaxed" string="Tax Excluded" sum="Total" optional="show"/>
                         <field name="amount_is_admin" string="Admin Fee" optional="show"/>
                         <field name="amount_tax" string="Tax" sum="Total" optional="show"/>
                         <field name="amount_residual" string="Amount Due" sum="Amount Due" optional="show"/>
                         <field name="amount_total" string="Total" sum="Total" optional="show"/>
-                        <field name="currency_id" string="Currency" optional="show"/>
+                        <field name="currency_id" optional="show"/>
                         <field name="country_id" optional="hide"/>
                         <field name="company_currency_id" invisible="1" optional="show"/>
                         <field name="state" optional="show"/>
                         <field name="inv_payment_status" optional="show"/>
-                        <field name="move_type" invisible="context.get('default_move_type', True)" optional="show"/>
+                        <field name="move_type" invisible="context.get('default_type', True)" optional="show"/>
                     </tree>
                 </xpath>
             </field>
@@ -493,9 +478,7 @@
                 <xpath expr="//group" position="inside">
                     <filter string="Payment Status" name="payment_status" context="{'group_by':'filtere_state'}"/>
                 </xpath>
-                <xpath expr="//filter[@name='edi_to_process']" position="attributes">
-                    <attribute name="invisible">1</attribute>
-                </xpath>
+
                 <xpath expr="//filter[@name='closed']" position="replace">
                     <filter name="fully_paid" string="Fully Paid" domain="[('filtere_state', '=','full')]"/>
                 </xpath>
