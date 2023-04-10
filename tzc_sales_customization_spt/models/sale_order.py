@@ -966,6 +966,7 @@ class sale_order(models.Model):
                 fiscal_position_id = fiscal_position_obj.sudo().search([('country_id','=',False)]).id
                 record.fiscal_position_id = fiscal_position_id
             record.order_line._compute_tax_id()
+        return []
 
     
     @api.onchange('partner_shipping_id', 'partner_id', 'company_id','partner_id.country_id','pricelist_id')
