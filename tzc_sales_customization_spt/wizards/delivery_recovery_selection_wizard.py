@@ -74,16 +74,16 @@ class delivery_recovery_selection_wizard(models.TransientModel):
                         price_unit = self.sale_id.pricelist_id._get_product_price(product_id, cancel_picking_data.get(delivery_data).get('demand'), product_id.uom_id)
                         
                         if product_id.sale_type == 'on_sale' and self.sale_id and self.sale_id.pricelist_id and self.sale_id.pricelist_id.currency_id:
-                            if self.sale_id.pricelist_id.currency_id.name == 'CAD':
-                                price_unit = product_id.on_sale_cad
-                            if self.sale_id.pricelist_id.currency_id.name == 'USD':
-                                price_unit = product_id.on_sale_usd
+                            # if self.sale_id.pricelist_id.currency_id.name == 'CAD':
+                            #     price_unit = product_id.on_sale_cad
+                            # if self.sale_id.pricelist_id.currency_id.name == 'USD':
+                            price_unit = product_id.on_sale_usd
                         
                         if product_id.sale_type == 'clearance' and self.sale_id and self.sale_id.pricelist_id and self.sale_id.pricelist_id.currency_id:
-                            if self.sale_id.pricelist_id.currency_id.name == 'CAD':
-                                price_unit = product_id.clearance_cad
-                            if self.sale_id.pricelist_id.currency_id.name == 'USD':
-                                price_unit = product_id.clearance_usd
+                            # if self.sale_id.pricelist_id.currency_id.name == 'CAD':
+                            #     price_unit = product_id.clearance_cad
+                            # if self.sale_id.pricelist_id.currency_id.name == 'USD':
+                            price_unit = product_id.clearance_usd
 
                         product_uom_qty = 0.0
                         if cancel_picking_data.get(delivery_data).get('done') != 0.0 and cancel_picking_data.get(delivery_data).get('demand') != 0.0:

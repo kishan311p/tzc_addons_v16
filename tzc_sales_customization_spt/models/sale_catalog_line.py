@@ -73,15 +73,15 @@ class sale_catalog_line(models.Model):
 
             if record.sale_type:
                 if record.sale_type == 'on_sale':
-                    if record.currency_id and record.currency_id.name == 'USD':
-                        product_price =  record.product_pro_id.on_sale_usd
-                    else:
-                        product_price = record.product_pro_id.on_sale_cad
+                    # if record.currency_id and record.currency_id.name == 'USD':
+                    product_price =  record.product_pro_id.on_sale_usd
+                    # else:
+                    #     product_price = record.product_pro_id.on_sale_cad
                 if record.sale_type == 'clearance':
-                    if record.currency_id and record.currency_id.name == 'CAD':
-                        product_price = record.product_pro_id.clearance_cad
-                    else:
-                        product_price =  record.product_pro_id.clearance_usd
+                    # if record.currency_id and record.currency_id.name == 'CAD':
+                    #     product_price = record.product_pro_id.clearance_cad
+                    # else:
+                    product_price =  record.product_pro_id.clearance_usd
             
             if record.product_pro_id:
                 record.update({

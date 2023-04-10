@@ -30,7 +30,7 @@ class SaleOrderLine(models.Model):
     is_shipping_product = fields.Boolean("Is Shipping Product",related="product_id.is_shipping_product", store=True)
     is_admin = fields.Boolean("Is Admin Product",related="product_id.is_admin", store=True)
     fix_discount_price = fields.Float('Discount')    
-    is_fs = fields.Boolean("Is FS?")
+    # is_fs = fields.Boolean("Is FS?")
     sale_type = fields.Selection([('clearance','Clearance'),('on_sale','On Sale')],'Sale Type')
     unit_discount_price = fields.Float('Our Price')
     product_categ_id = fields.Many2one('product.category',related="product_id.categ_id", string='Category ', readonly=True)
@@ -38,6 +38,7 @@ class SaleOrderLine(models.Model):
     picked_qty = fields.Integer('Delivered',compute='_compute_picked_qty',store=True)
     picked_qty_subtotal = fields.Float('Subtotal',compute="_compute_picked_qty",store=True)
     is_special_discount = fields.Boolean("Is Special Discount",help="This is flag for check product is in special discount or not.")
+    primary_image_url = fields.Char("Primary Image URL",related='product_id.primary_image_url')
 
     def _get_virtual_sources(self):
         return []
@@ -98,7 +99,10 @@ class SaleOrderLine(models.Model):
         for record in range(len(self)):
             record = self[record]
             if record.unit_discount_price:
-                record.price_subtotal = round(record.unit_discount_price * record.product_uom_qty,2)
+                if record.order_id.state not in record.order_id.draft_states():
+                    record.price_subtotal = round(record.unit_discount_price * record.picked_qty,2)
+                else:
+                    record.price_subtotal = round(record.unit_discount_price * record.product_uom_qty,2)
         return res
     
     @api.constrains('price_subtotal')
@@ -141,8 +145,11 @@ class SaleOrderLine(models.Model):
             except:
                 discount = 0.0
             
-            fix_discount_price = round((record.price_unit*discount/100),2)
-            
+            try:
+                fix_discount_price = float(str(record.price_unit*discount/100).split('.')[0]+'.'+str(record.price_unit*discount/100).split('.')[1][0:2])
+            except:
+                fix_discount_price = round((record.price_unit*discount/100),2)
+
             record.fix_discount_price = round(fix_discount_price,2)
             record.discount = round(discount,2)
 
@@ -162,14 +169,17 @@ class SaleOrderLine(models.Model):
             record = self[record]
             product_price_dict = (self.env['kits.b2b.multi.currency.mapping'].with_context(from_order_line=True).get_product_price(record.order_id.partner_id.id,record.product_id.ids,order_id=record.order_id) or {}).get(record.product_id.id,{})
             product_price = product_price_dict.get('price')
+            unit_discount_price = product_price_dict.get('discounted_unit_price')
+            fix_discount_price = product_price_dict.get('fix_discount_price')
             if record.product_id:
-                update_dict = {'price_unit':round(record.price_unit,2),
-                               'unit_discount_price': round(record.unit_discount_price,2), 
-                               'fix_discount_price':round(record.fix_discount_price,2),
+                update_dict = {'price_unit':round(product_price,2),
+                               'unit_discount_price': round(unit_discount_price,2), 
+                            #    'fix_discount_price':round(record.fix_discount_price,2),
+                               'fix_discount_price':round(fix_discount_price,2),
                                'sale_type':record.product_id.sale_type if record.product_id.sale_type else ''}
 
                 active_inflation = self.env['kits.inflation'].search([('is_active','=',True)])
-                inflation_rule_ids = self.env['kits.inflation.rule'].search([('country_id','in',self.env.user.country_id.ids),('brand_ids','in',record.product_id.brand.ids),('inflation_id','=',active_inflation.id)])
+                inflation_rule_ids = self.env['kits.inflation.rule'].search([('country_id','in',self.order_id.partner_id.country_id.ids),('brand_ids','in',record.product_id.brand.ids),('inflation_id','=',active_inflation.id)])
                 inflation_rule = inflation_rule_ids[-1] if inflation_rule_ids else False
                 if inflation_rule:
                     is_inflation = False
@@ -194,7 +204,7 @@ class SaleOrderLine(models.Model):
                         update_dict.update({'price_unit':product_price,'unit_discount_price':unit_discount_price})
 
                 active_fest_id = self.env['tzc.fest.discount'].search([('is_active','=',True)])
-                special_disocunt_id = self.env['kits.special.discount'].search([('country_id','in',self.env.user.partner_id.country_id.ids),('brand_ids','in',record.product_id.brand.ids)]) #,('tzc_fest_id','=',active_fest_id.id)
+                special_disocunt_id = self.env['kits.special.discount'].search([('country_id','in',self.order_id.partner_id.country_id.ids),('brand_ids','in',record.product_id.brand.ids),('tzc_fest_id','=',active_fest_id.id)])
                 price_rule_id = special_disocunt_id[-1] if special_disocunt_id else False
                 if price_rule_id:
                     applicable = False 
@@ -234,7 +244,7 @@ class SaleOrderLine(models.Model):
             record = self[record]
             if record.product_id:
                 unit_discount_price = 0.0
-                product_details = self.env['kits.b2b.multi.currency.mapping'].with_context(from_order_line=True).get_product_price(record.order_id.partner_id.id,record.product_id.ids,order_id=record.order_id)
+                product_details = self.env['kits.b2b.multi.currency.mapping'].with_context(from_order_line=True).get_product_price(record.order_id._origin.partner_id.id,record.product_id.ids,order_id=record.order_id)
                 product_pricing = product_details.get(record.product_id.id)
                 product_price = product_pricing.get('price')
                 

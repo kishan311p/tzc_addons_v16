@@ -68,7 +68,7 @@ class kits_b2b_multi_currency_mapping(models.Model):
             products_prices = {}
             for product in product_ids:
                 sale_type_price = 0.0
-                is_currency_match = True if partner_id.b2b_pricelist_id.currency_id.id == partner_id.preferred_currency.id else False
+                is_currency_match = True if partner_id.b2b_pricelist_id.currency_id.id == partner_id.b2b_pricelist_id.id else False
 
                 product = self.env['product.product'].browse(product)
 

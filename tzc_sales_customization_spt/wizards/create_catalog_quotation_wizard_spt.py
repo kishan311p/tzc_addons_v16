@@ -23,6 +23,7 @@ class create_catalog_quotation_wizard_spt(models.TransientModel):
                         'catalog_id': record.catalog_id.id,
                         'user_id':record.catalog_id.user_id.id,
                         'fiscal_position_id':fiscal_position_id.id if fiscal_position_id else False,
+                        'source_spt' : 'Catalog',
                     })
                     self._cr.commit()
                     for line_id in record.catalog_id.line_ids.filtered(lambda x:x.product_qty != 0):
@@ -36,15 +37,15 @@ class create_catalog_quotation_wizard_spt(models.TransientModel):
                             
                         product_price = price_unit
                         if line_id.sale_type == 'on_sale' and so_id.partner_id and so_id.partner_id.property_product_pricelist :
-                            if so_id.partner_id.property_product_pricelist.currency_id.name == 'CAD':
-                                price_unit = line_id.product_pro_id.on_sale_cad
-                            else:
-                                price_unit = line_id.product_pro_id.on_sale_usd
+                            # if so_id.partner_id.property_product_pricelist.currency_id.name == 'CAD':
+                            #     price_unit = line_id.product_pro_id.on_sale_cad
+                            # else:
+                            price_unit = line_id.product_pro_id.on_sale_usd
                         
                         if line_id.sale_type == 'clearance' and so_id.partner_id and so_id.partner_id.property_product_pricelist :
-                            if so_id.partner_id.property_product_pricelist.currency_id.name == 'CAD':
-                                price_unit = line_id.product_pro_id.clearance_cad
-                            else:
+                            # if so_id.partner_id.property_product_pricelist.currency_id.name == 'CAD':
+                            #     price_unit = line_id.product_pro_id.clearance_cad
+                            # else:
                                 price_unit = line_id.product_pro_id.clearance_usd
 
                         unit_discount_price = price_unit

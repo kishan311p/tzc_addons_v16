@@ -269,7 +269,7 @@ class sale_order(models.Model):
     # report_file = fields.Binary()
     applied_promo_code = fields.Char("Applied Promo Code")
     shipped_date = fields.Datetime(string="Shipped Date",compute="_compute_shipped_date",store=True,compute_sudo=True)
-    source_spt = fields.Char("Order Source ",compute="_compute_order_source",store=True,compute_sudo=True)
+    source_spt = fields.Char("Order Source ",store=True,compute_sudo=True,default= 'Manually',help="When order create from backend side then set 'Manually', when order create from website then set 'Website' and when order create from catalog then set 'Catalog' ")
     invoice_name = fields.Char("Invoice",compute="_compute_invoice_name",store=True,compute_sudo=True)
     partner_shipping_id = fields.Many2one('res.partner','Delivery Address')
 
@@ -843,7 +843,8 @@ class sale_order(models.Model):
                         amount_tax = amount_tax + line.picked_qty_subtotal*line.tax_id.amount/100
                         # amount_tax = amount_tax + round(unit_per_tax * line.product_uom_qty,2)
                     amount_untaxed += line.price_subtotal
-                    amount_discount +=  ((line.product_uom_qty * line.price_unit) - line.price_subtotal)
+                    amount_discount += line.product_uom_qty * line.fix_discount_price
+                    # amount_discount +=  ((line.product_uom_qty * line.price_unit) - line.price_subtotal)
                     amount_without_discount += line.product_uom_qty * line.price_unit
     
                 if line.product_id.id not in product_list:
@@ -923,16 +924,6 @@ class sale_order(models.Model):
         for record in self:
             if record.partner_id.id in partner_list:
                 raise UserError(_("Public type users can not be a customer."))
-
-    @api.depends('state','catalog_id','website_id')
-    def _compute_order_source(self):
-        for record in self:
-            source_spt = 'Manually'
-            if record.catalog_id:
-                source_spt = 'Catalog'
-            if record.website_id:
-                source_spt = 'Website'
-        record.write({'source_spt':source_spt})
 
     @api.depends('picked_qty','ordered_qty')
     def get_no_of_cases(self):
@@ -1084,6 +1075,9 @@ class sale_order(models.Model):
             'payment_term_id': self.partner_id.property_payment_term_id and self.partner_id.property_payment_term_id.id or False,
             'partner_invoice_id': addr['invoice'],
             'partner_shipping_id': addr['delivery'],
+            'pricelist_id' : self.partner_id.b2b_pricelist_id.id,
+            'b2b_currency_id' : self.partner_id.preferred_currency.id
+
         }
         user_id = partner_user.id
         if not self.env.context.get('not_self_saleperson'):
@@ -2852,7 +2846,7 @@ class sale_order(models.Model):
             return super(sale_order,self).action_draft()
 
     def action_revert_order_to_quotation(self):
-        if self.state not in ['sent','received','sale','in_scanning','scanned','scan']:
+        if self.state not in ['sent','received','sale','in_scanning','scanned','scan','salesperson_confirmation']:
             return {
                 'type': 'ir.actions.client',
                 'tag': 'display_notification',
@@ -2864,7 +2858,7 @@ class sale_order(models.Model):
                 }
         else:
             order_id = self.env['sale.order.backup.spt'].search([('order_id','=',self.id)],limit=1,order="id desc")
-            if self.state not in ['sent','received','sale','in_scanning','scanned','scan']:
+            if self.state not in ['sent','received','sale','in_scanning','scanned','scan','salesperson_confirmation']:
                 return {
                     'type': 'ir.actions.client',
                     'tag': 'display_notification',
@@ -2889,7 +2883,7 @@ class sale_order(models.Model):
                             'discount':line.discount,
                             'tax_id':line.tax_id,
                             'is_global_discount':line.is_global_discount,
-                            'is_fs':line.is_fs,
+                            # 'is_fs':line.is_fs,
                             'is_admin':line.is_admin,
                             'is_shipping_product':line.is_shipping_product,
                             'is_promotion_applied':line.is_promotion_applied,
@@ -2938,11 +2932,16 @@ class sale_order(models.Model):
     def action_confirm(self):
         sol_obj = self.env['sale.order.line']
         order_backup_obj = self.env['sale.order.backup.spt']
-        state_list = self.mapped(lambda so : so.state in ['draft','sent','received'])
+        state_list = self.mapped(lambda so : so.state in ['draft','sent','received','salesperson_confirmation'])
+        # state_list = self.mapped(lambda so : so.state in ['draft','sent','received'])
         if any(state_list):
             for record in self:
+                if not record.order_line:
+                    raise UserError(_("Before you confirm the order, kindly add an item."))
                 record._get_unavailable_package_ids()
                 restricted_package_lines = record.package_order_lines.filtered(lambda x: x.availability == 'out_of_stock')
+                #Merge same product lines
+                record.merge_order_lines()
                 pack_sale_lines = []
                 if restricted_package_lines and not self.env.context.get('package_allow'):
                     return {
@@ -3010,7 +3009,6 @@ class sale_order(models.Model):
                 if len(record.package_order_lines):
                     backup_order_id = order_backup_obj.search([('order_id','=',record.id)],order="id desc",limit=1)
                     record.action_sync_backup_order(backup_order_id)
-            if record.state in ['draft','sent','received']:
                 record = self.sudo()
                 order_backup_obj.create({
                     'name' : record.name,
@@ -3030,8 +3028,7 @@ class sale_order(models.Model):
                     record.write({'is_confirm_by_saleperson':True})
                     geo_restriction_list = []
                     backup_order_line_list =[]
-                    #Merge same product lines
-                    record.merge_order_lines()
+
                     #checked stock
                     for line in record.order_line:
                         backup_order_line_list.append((0,0,{
@@ -3083,22 +3080,24 @@ class sale_order(models.Model):
                 if picking_ids:
                     PickingObj = self.env['stock.picking']
                     for picking in  picking_ids:
-                        if picking not in ['cancel', 'done'] and picking.state == 'assigned':
+                        if picking.state=='confirmed':
+                            picking.shipping_id = self.shipping_id
+                        if picking.state not in ['cancel', 'done'] and picking.state == 'assigned':
                             PickingObj |= picking
                     if PickingObj.ids:
                         PickingObj.do_unreserve()
                         
                 return res
-            else:
-                return {
-                    'type': 'ir.actions.client',
-                    'tag': 'display_notification',
-                    'params': {
-                            'title': 'Something is wrong.',
-                            'message': 'Please reload your screen.',
-                            'sticky': True,
-                        }
+        else:
+            return {
+                'type': 'ir.actions.client',
+                'tag': 'display_notification',
+                'params': {
+                        'title': 'Something is wrong.',
+                        'message': 'Please reload your screen.',
+                        'sticky': True,
                     }
+                }
 
     def line_ordering_by_product(self):
         product_list = []
@@ -3150,14 +3149,16 @@ class sale_order(models.Model):
                         self = self-so_id
                         diff_price = []
                         for line in self.mapped('order_line'):
-                            sale_line_id = so_id.order_line.filtered(lambda x: x.product_id.id == line.product_id.id and x.is_fs == line.is_fs and x.is_promotion_applied == line.is_promotion_applied and x.sale_type == line.sale_type)
+                            sale_line_id = so_id.order_line.filtered(lambda x: x.product_id.id == line.product_id.id and x.is_promotion_applied == line.is_promotion_applied and x.sale_type == line.sale_type)
+                            # sale_line_id = so_id.order_line.filtered(lambda x: x.product_id.id == line.product_id.id and x.is_fs == line.is_fs and x.is_promotion_applied == line.is_promotion_applied and x.sale_type == line.sale_type)
                             if sale_line_id and round(sale_line_id.unit_discount_price,2) != round(line.unit_discount_price,2):
                                 if sale_line_id.product_id.name not in diff_price:
                                     diff_price.append(sale_line_id.product_id.name)
                         if not diff_price:
                             for sol in self.mapped('order_line'):
                                 if not sol.is_pack_order_line or not sol.package_id:
-                                    sale_line_id = so_id.order_line.filtered(lambda x: x.product_id.id == sol.product_id.id and x.is_fs == sol.is_fs and x.is_promotion_applied == sol.is_promotion_applied and x.sale_type == sol.sale_type)
+                                    sale_line_id = so_id.order_line.filtered(lambda x: x.product_id.id == sol.product_id.id and x.is_promotion_applied == sol.is_promotion_applied and x.sale_type == sol.sale_type)
+                                    # sale_line_id = so_id.order_line.filtered(lambda x: x.product_id.id == sol.product_id.id and x.is_fs == sol.is_fs and x.is_promotion_applied == sol.is_promotion_applied and x.sale_type == sol.sale_type)
                                     if sale_line_id and sale_line_id.id:
                                         sale_line_id.write({
                                             'product_uom_qty':(sale_line_id.product_uom_qty+sol.product_uom_qty),
@@ -3175,7 +3176,7 @@ class sale_order(models.Model):
                                             'unit_discount_price':sol.unit_discount_price,
                                             'discount':sol.discount,
                                             'product_uom':sol.product_uom.id,
-                                            'is_fs':sol.is_fs,
+                                            # 'is_fs':sol.is_fs,
                                             'sale_type':sol.sale_type,
                                             'is_promotion_applied':sol.is_promotion_applied
                                         })
@@ -3729,3 +3730,90 @@ class sale_order(models.Model):
             subject =  '%s has sent you a quotation!: %s'%(self.user_id.name,self.name)
         
         return subject
+
+    def order_quantity_btn(self):
+        pass
+
+    def get_tracked_fields(self, changes, tracking_value_ids, initial_value):
+
+        def get_field_name(f_name):
+            field_name = f_name
+            if self.state not in ('draft','sent','received','sale'):
+                if f_name  == 'amount_without_discount':
+                    field_name = 'picked_qty_order_subtotal'
+                elif f_name == 'amount_discount':
+                    field_name = 'picked_qty_order_discount'
+                elif f_name == 'amount_tax':
+                    field_name = 'picked_qty_order_tax'
+                elif f_name == 'amount_total':
+                    field_name = 'picked_qty_order_total'
+            return field_name
+
+        changes = set(list(changes) + NO_TRACKING_FIELDS)
+        tracking_value_ids = []
+        for i, changed_field in enumerate(changes):
+            field = self.env['ir.model.fields']._get(self._name, changed_field)
+            vals = {
+                'field': field.id,
+                'field_desc': field.field_description,
+                'field_type': field.ttype,
+                'tracking_sequence': field.tracking,
+            }
+
+            changed_field = get_field_name(changed_field)
+            if field.ttype in ['integer', 'float', 'char', 'text', 'datetime', 'monetary']:
+                vals.update({
+                    'old_value_%s' % field.ttype : initial_value[changed_field],
+                    'new_value_%s' % field.ttype : self[changed_field],
+                    'currency_id': self.currency_id.id
+                })
+            elif field.ttype == 'selection':
+                vals.update({
+                    'old_value_char': dict(self._fields[changed_field].selection).get(initial_value[changed_field]),
+                    'new_value_char': dict(self._fields[changed_field].selection).get(self[changed_field]),
+                })
+            tracking_value_ids.insert(i, Command.create(vals))
+        return changes, tracking_value_ids
+
+    def _mail_track(self, tracked_fields, initial_values):
+        changes, tracking_value_ids = super()._mail_track(tracked_fields, initial_values)
+        if 'state' in initial_values:
+            initial_value = initial_values['state']
+            new_value = self['state']
+
+            # OPTIMISE CODE LATER
+            if initial_value == 'draft' and new_value in ['sent','recieved','sale']:
+                changes, tracking_value_ids = self.get_tracked_fields(changes, tracking_value_ids, initial_values)
+            elif initial_value == 'in_scanning' and new_value == 'scanned':
+                changes, tracking_value_ids = self.get_tracked_fields(changes, tracking_value_ids, initial_values)
+            elif initial_value == 'scanned' and new_value == 'scan':
+                changes, tracking_value_ids = self.get_tracked_fields(changes, tracking_value_ids, initial_values)
+            elif initial_value == 'scan' and new_value == 'shipped':
+                changes, tracking_value_ids = self.get_tracked_fields(changes, tracking_value_ids, initial_values)
+            elif initial_value == 'shipped' and new_value == 'draft_inv':
+                changes, tracking_value_ids = self.get_tracked_fields(changes, tracking_value_ids, initial_values)
+
+        return changes, tracking_value_ids
+
+    def draft_states(self):
+        return ['draft','sent','received']
+
+    
+    def action_salesperson_confirmation(self):
+        for rec in self:
+            if rec.shipping_id:
+                rec.state='salesperson_confirmation'
+            else:
+                raise UserError('Select shipping provider before proceeding.')
+        
+    @api.onchange('shipping_id')
+    def onchange_shipping_id(self):
+        for rec in self:
+            picking_ids = self.mapped('picking_ids')
+            for picking_id in picking_ids:
+                if picking_id.state not in ['done','cancel']:
+                    picking_id._origin.shipping_id = rec.shipping_id
+
+    def _inverse_ups_carrier_account(self):
+        for order in self:
+            order.sudo().partner_shipping_id.with_company(order.company_id).property_ups_carrier_account = order.partner_ups_carrier_account

@@ -157,3 +157,25 @@ class kits_b2b_website(models.Model):
             f.close()
             record.sitemap_name = file_name.split('/')[-1]
             record.sitemap_file = base64.b64encode(data)
+
+    def write(self, vals):
+        res = super(kits_b2b_website,self).write(vals)
+        for record in self:
+            if record.is_allow_for_geo_restriction :
+                remove_order_line_obj = self.env['sale.order.line']
+                order_ids = self.env['sale.order'].search([('state','=','draft')])
+                for order_id in order_ids:
+                    for line in order_id.order_line:
+                        if order_id.country_id.id in line.product_id.geo_restriction.ids:
+                            remove_order_line_obj |= line
+                if remove_order_line_obj:
+                    remove_order_line_obj.unlink()
+                remove_wishlist = self.env['kits.b2b.product.wishlist']
+                wishlist_ids = remove_wishlist.search([])
+                for index in range(0,len(wishlist_ids.ids)):
+                    wishlist_id = wishlist_ids[index]
+                    if wishlist_id.partner_id.country_id.id in wishlist_id.product_id.geo_restriction.ids:
+                        remove_wishlist |= wishlist_id
+                if remove_wishlist:
+                    remove_wishlist.unlink()
+        return res

@@ -68,7 +68,7 @@ class res_partner(models.Model):
     is_granted_portal_access = fields.Boolean('Is Granted Portal Access',compute="_compute_info_fields",store=True)
     is_salesperson = fields.Boolean(compute="_get_partner_data",default=False,compute_sudo=True)
     mail_notification = fields.Boolean('Email Notification',default=True)
-    territory = fields.Many2one('res.country.group','Territory',store = True,compute="_get_partner_data")
+    territory = fields.Many2one('res.country.group','Territory',store = True,related='country_id.territory_id')
     access_field_flag = fields.Boolean("Access Field Flag",compute="_get_partner_data",default=True,compute_sudo=True)
     updated_on = fields.Datetime('Updated On')
     updated_by = fields.Many2one('res.users','Updated By')
@@ -200,7 +200,7 @@ class res_partner(models.Model):
             rec.designeted_country_ids = self.env['res.country'].browse(rec.user_ids.contact_allowed_countries.ids)
             rec.notify_salesperson_country_ids = self.env['res.country'].browse(rec.user_ids.country_ids.ids)
             rec.is_salesperson = rec.user_ids.is_salesperson
-            rec.territory = rec.user_ids.territory.id
+            # rec.territory = rec.user_ids.territory.id
             # visitor_id = self.env['website.visitor'].search([('partner_id','=',rec.id)],limit=1)
             # rec.last_logged_on = visitor_id.last_connection_datetime
             if rec.check_partner_access_right():
@@ -279,28 +279,28 @@ class res_partner(models.Model):
                 record.is_vendor = True
                 
 
-    @api.onchange('country_id')
-    def _onchange_country_spt(self):
-        # canada_country_id = self.env.ref('base.ca').id
-        # cad_public_pricelist = self.env.ref('product.list0')
-        # usd_public_pricelist = self.env.ref('tzc_sales_customization_spt.usd_public_pricelist_spt')
-        # for record in self:
-            # if record.country_id.id == canada_country_id:
-            #     record.property_product_pricelist = cad_public_pricelist.id
-            # else:
-                # record.property_product_pricelist = usd_public_pricelist.id
-        # Country Change Warning        
-        if self._origin.id:
-            orders = self.sale_order_ids.filtered(lambda x: x.state not in ('cancel','merged','draft_inv','open_inv','paid'))
-            message = 'You have modified the country to "%s" for client "%s".%s'%(self.country_id.name,self.name,'\nCurrency, Pricelist and Fiscal position of following orders will be changed.   Please Review following #orders: %s'%(','.join(orders.mapped('name'))) if orders else '')
-            if not self.country_id:
-                message = 'You removed the country of client "%s"'%(self.name)
-            return {
-                'warning':{
-                    "title":'Warning',
-                    "message":message
-                    }
-                }
+    # @api.onchange('country_id')
+    # def _onchange_country_spt(self):
+    #     # canada_country_id = self.env.ref('base.ca').id
+    #     # cad_public_pricelist = self.env.ref('product.list0')
+    #     # usd_public_pricelist = self.env.ref('tzc_sales_customization_spt.usd_public_pricelist_spt')
+    #     # for record in self:
+    #         # if record.country_id.id == canada_country_id:
+    #         #     record.property_product_pricelist = cad_public_pricelist.id
+    #         # else:
+    #             # record.property_product_pricelist = usd_public_pricelist.id
+    #     # Country Change Warning        
+    #     if self._origin.id:
+    #         orders = self.sale_order_ids.filtered(lambda x: x.state not in ('cancel','merged','draft_inv','open_inv','paid'))
+    #         message = 'You have modified the country to "%s" for client "%s".%s'%(self.country_id.name,self.name,'\nCurrency, Pricelist and Fiscal position of following orders will be changed.   Please Review following #orders: %s'%(','.join(orders.mapped('name'))) if orders else '')
+    #         if not self.country_id:
+    #             message = 'You removed the country of client "%s"'%(self.name)
+    #         return {
+    #             'warning':{
+    #                 "title":'Warning',
+    #                 "message":message
+    #                 }
+    #             }
     
     
     @api.onchange('email')
@@ -759,8 +759,8 @@ class res_partner(models.Model):
             if is_admin:
                 for email_node in  doc.xpath('//field[@name="email"]'):
                     email_node.attrib['readonly'] = '1' if not is_manager else '0'
-                for country_id_node in  doc.xpath('//field[@name="country_id"]'):
-                    country_id_node.attrib['readonly'] = '1' if not is_manager else '0'
+                # for country_id_node in  doc.xpath('//field[@name="country_id"]'):
+                #     country_id_node.attrib['readonly'] = '1' if not is_manager else '0'
                 for company_type_node in  doc.xpath('//field[@name="company_type"]'):
                     company_type_node.attrib['readonly'] = '1'
                 for is_vendor_node in  doc.xpath('//field[@name="is_vendor"]'):
@@ -769,10 +769,10 @@ class res_partner(models.Model):
                     is_customer_node.attrib['readonly'] = '1'
                 for user_id in doc.xpath('//field[@name="user_id"]'):
                     user_id.attrib['readonly'] = '1' if not is_admin or not is_manager else '0'
-            for country_id in doc.xpath('//field[@name="country_id"]'):
-                country_id.attrib['readonly'] = '1'
-            for state_id in doc.xpath('//field[@name="state_id"]'):
-                state_id.attrib['readonly'] = '1'
+            # for country_id in doc.xpath('//field[@name="country_id"]'):
+            #     country_id.attrib['readonly'] = '1'
+            # for state_id in doc.xpath('//field[@name="state_id"]'):
+            #     state_id.attrib['readonly'] = '1'
             res['arch'] = etree.tostring(doc, encoding='unicode')
             if not self._context.get('resend') or not self._context.get('campaign') or not self._context.get('raise_campaign'):
                 soup = BeautifulSoup(res['arch'], "html.parser")

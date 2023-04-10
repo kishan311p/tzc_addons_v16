@@ -240,9 +240,9 @@
                     <button name="excel_order_report" type="object" string="Invoice report" />
                 </button> -->
                 <!-- notebook/page[@id='other_tab']/group[@id='other_tab_group']/ -->
-                <xpath expr="//notebook/page[@id='other_tab']/group[@id='other_tab_group']/group[@name='extraction_info_group']" position="attributes">
+                <!-- <xpath expr="//notebook/page[@id='other_tab']/group[@id='other_tab_group']/group[@name='extraction_info_group']" position="attributes">
                     <attribute name="invisible">1</attribute>
-                </xpath>
+                </xpath> -->
                 <xpath expr="//notebook/page[@id='other_tab']/group[@id='other_tab_group']/group[@name='accounting_info_group']" position="after">
                     <group string="Payments" name="payments_info_group" attrs="{'invisible': [('move_type', 'not in', ('out_invoice', 'out_refund', 'in_invoice', 'in_refund'))]}">
                         <field name="payment_reference" readonly="1" />
