@@ -140,7 +140,7 @@
             <field name="name">Salesperson Quotation Sent Confirmation</field>
             <field name="email_from">"ETO-Support" &lt;{{(object.company_id.catchall_email or user.email)}}&gt;</field>
             <!-- <field name="email_from">${(user.email)|safe}</field> -->
-            <field name="subject">{{object.partner_id.name}} just confirmed catalog {{}}</field>
+            <field name="subject">{{object.partner_id.name}} just confirmed catalog {{object.name}}</field>
             <field name="email_to">{{(object.user_id.email)}}</field>
             <field name="model_id" ref="sale.model_sale_order"/>
             <field name="auto_delete" eval="False"/>

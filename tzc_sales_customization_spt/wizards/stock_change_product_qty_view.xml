@@ -1,0 +1,15 @@
+<?xml version='1.0' encoding='utf-8'?>
+<odoo>
+    <data>
+        <record id="inherit_stock_change_product_qty_form_view" model="ir.ui.view">
+            <field name="name">inherit.stock.change.product.qty.form.view</field>
+            <field name="model">stock.change.product.qty</field>
+            <field name="inherit_id" ref="stock.view_change_product_quantity"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='new_quantity']" position="attributes">
+                    <attribute name="string">Available qty</attribute>
+                </xpath>
+            </field>
+        </record>
+    </data>
+</odoo>

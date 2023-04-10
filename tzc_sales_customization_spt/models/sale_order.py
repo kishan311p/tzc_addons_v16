@@ -830,9 +830,9 @@ class sale_order(models.Model):
                     amount_is_shipping_total += line.unit_discount_price * line.product_uom_qty or 0.00
                     shipping_cost += line.price_unit * line.product_uom_qty or 0.00
                 elif line.is_global_discount:
-                    global_discount += line.price_subtotal
+                    global_discount += line.product_uom_qty * line.unit_discount_price
                 elif line.is_admin:
-                    amount_is_admin += line.price_subtotal
+                    amount_is_admin += line.product_uom_qty * line.unit_discount_price
                 
                 else:
                     if line.product_id.type != 'service':
@@ -1230,13 +1230,13 @@ class sale_order(models.Model):
         query = f'''SELECT	PP.VARIANT_NAME,
                             PC.NAME,
                             PP.MATERIAL,
-                            PP.HS_CODE,
+                            pp.HS_CODE,
                             SOL.PICKED_QTY,
                             SOL.UNIT_DISCOUNT_PRICE,
                             (SOL.UNIT_DISCOUNT_PRICE * SOL.PICKED_QTY) AS SUBTOTAL,
                             CASE
-                                            WHEN SOL.IS_SHIPPING_PRODUCT = TRUE THEN SOL.UNIT_DISCOUNT_PRICE * SOL.PRODUCT_UOM_QTY
-                                            ELSE 0
+								WHEN SOL.IS_SHIPPING_PRODUCT = TRUE THEN SOL.UNIT_DISCOUNT_PRICE * SOL.PRODUCT_UOM_QTY
+								ELSE 0
                             END AS SHIPPING_CHARGE,
                             CASE
                                             WHEN SOL.IS_ADMIN = TRUE THEN SOL.UNIT_DISCOUNT_PRICE * SOL.PRODUCT_UOM_QTY
@@ -1251,14 +1251,11 @@ class sale_order(models.Model):
                                                                 AND SOL.PRICE_TAX > 0 THEN SOL.PRICE_TAX / SOL.PRODUCT_UOM_QTY * SOL.PICKED_QTY
                                             ELSE 0
                             END AS PRICE_TAX
-                            FROM SALE_ORDER AS SO
-                            INNER JOIN SALE_ORDER_LINE AS SOL ON SOL.ORDER_ID = SO.ID
-                            INNER JOIN STOCK_PICKING AS SP ON SP.ORIGIN = SO.NAME
-                            INNER JOIN SHIPPING_PROVIDER_SPT AS SPS ON SP.SHIPPING_ID = SPS.ID
-                            INNER JOIN RES_CURRENCY AS RC ON RC.ID = SOL.CURRENCY_ID
-                            INNER JOIN PRODUCT_PRODUCT AS PP ON PP.ID = SOL.PRODUCT_ID
-                            INNER JOIN PRODUCT_CATEGORY AS PC ON PC.ID = PP.CATEG_ID
-                            WHERE SO.ID ={self.id}'''
+                            from SALE_ORDER_LINE AS SOL
+							LEFT JOIN PRODUCT_PRODUCT AS PP ON PP.ID = SOL.PRODUCT_ID
+                            LEFT JOIN RES_CURRENCY AS RC ON RC.ID = SOL.CURRENCY_ID
+                            LEFT JOIN PRODUCT_CATEGORY AS PC ON PC.ID = PP.CATEG_ID
+                            WHERE sol.order_id ={self.id} ORDER BY PP.VARIANT_NAME'''
         self.env.cr.execute(query)
         record_data = self.env.cr.fetchall()
         row_index = table_header+1
@@ -1609,243 +1606,239 @@ class sale_order(models.Model):
         table_header = date_person_row+2
 
         query = f'''SELECT SO.NAME,
-                        ROUND(SUM(SOL.PRICE_UNIT) / SUM(SOL.PRODUCT_UOM_QTY),2) AS TOTAL_AMOUNT,
-                        ROUND(SUM(SOL.FIX_DISCOUNT_PRICE) / SUM(SOL.PRODUCT_UOM_QTY)) AS TOTAL_DISCOUNT,
-                        SUM(SOL.UNIT_DISCOUNT_PRICE * SOL.PICKED_QTY) AS TOTAL_PRICE,
-                        SUM((SOL.PRICE_TAX / SOL.PRODUCT_UOM_QTY) * SOL.PICKED_QTY) AS TAX,
-                        SUM(SOL.PICKED_QTY) AS QTY,
-                        CASE
-                                        WHEN PC.NAME = 'E'
-                                                            AND PT.TYPE != 'service'
-                                                            AND SOL.PICKED_QTY > 0 THEN 'Assorted Eyeglasses'
-                                        WHEN PC.NAME = 'S'
-                                                            AND PT.TYPE != 'service'
-                                                            AND SOL.PICKED_QTY > 0 THEN 'Assorted Sunglasses'
-                                        WHEN PC.NAME not in ('E','S')
-                                                            AND PT.TYPE != 'service'
-                                                            AND SOL.PICKED_QTY > 0 THEN 'Assorted Other'
-                        END AS TYPE
-                    FROM SALE_ORDER AS SO
-                    INNER JOIN SALE_ORDER_LINE AS SOL ON SO.ID = SOL.ORDER_ID
-                    INNER JOIN PRODUCT_PRODUCT AS PP ON PP.ID = SOL.PRODUCT_ID
-                    INNER JOIN PRODUCT_TEMPLATE AS PT ON PT.ID = PP.PRODUCT_TMPL_ID
-                    INNER JOIN PRODUCT_CATEGORY AS PC ON PC.ID = PP.CATEG_ID
-                    WHERE SO.ID = {self.id}
-                    GROUP BY TYPE,
-                        SO.NAME,
-                        PC.NAME,
-                        SOL.PICKED_QTY,
-                        SOL.PRICE_UNIT'''
+                    SUM(SOL.UNIT_DISCOUNT_PRICE * SOL.PICKED_QTY) / SUM(SOL.PRODUCT_UOM_QTY) AS TOTAL_AMOUNT,
+                    ROUND(SUM(SOL.FIX_DISCOUNT_PRICE) / SUM(SOL.PRODUCT_UOM_QTY)) AS TOTAL_DISCOUNT,
+                    SUM(SOL.UNIT_DISCOUNT_PRICE * SOL.PICKED_QTY) AS TOTAL_PRICE,
+                    SUM((SOL.PRICE_TAX / SOL.PRODUCT_UOM_QTY) * SOL.PICKED_QTY) AS TAX,
+                    SUM(SOL.PICKED_QTY) AS QTY,
+                    CASE
+                                    WHEN PC.NAME = 'E'
+                                                        AND PT.TYPE != 'service' THEN 'Assorted Eyeglasses'
+                                    WHEN PC.NAME = 'S'
+                                                        AND PT.TYPE != 'service' THEN 'Assorted Sunglasses'
+                                    WHEN PC.NAME not in ('E','S')
+                                                        AND PT.TYPE != 'service' THEN 'Assorted Other'
+                    END AS TYPE
+                FROM SALE_ORDER AS SO
+                INNER JOIN SALE_ORDER_LINE AS SOL ON SO.ID = SOL.ORDER_ID
+                INNER JOIN PRODUCT_PRODUCT AS PP ON PP.ID = SOL.PRODUCT_ID
+                INNER JOIN PRODUCT_TEMPLATE AS PT ON PT.ID = PP.PRODUCT_TMPL_ID
+                INNER JOIN PRODUCT_CATEGORY AS PC ON PC.ID = PP.CATEG_ID
+                WHERE SO.ID = {self.id}
+                GROUP BY TYPE,
+                    SO.NAME,
+                    PC.NAME'''
         self.env.cr.execute(query)
         record_data = self.env.cr.fetchall()
-        row_index = table_header+1
-        sub_total = 0.00
-        tax = 0.00
-        total_quantity = 0
-        for data in record_data:
-            if (data[6] == None):
-                pass
-            else:
-                total_quantity += data[5]
-                height = int((3*len(data[6]))/2) if len(data) > 20 else 20
-                wrksht.row_dimensions[row_index].height = height
+        if record_data:
+            row_index = table_header+1
+            sub_total = 0.00
+            tax = 0.00
+            total_quantity = 0
+            for data in record_data:
+                if (data[6] == None):
+                    pass
+                else:
+                    total_quantity += data[5]
+                    height = int((3*len(data[6]))/2) if len(data) > 20 else 20
+                    wrksht.row_dimensions[row_index].height = height
 
-                wrksht.merge_cells("A"+str(row_index)+":E"+str(row_index))
-                wrksht.cell(row=row_index, column=1).value = data[6]
-                wrksht.cell(row=row_index, column=1).font = table_font
-                wrksht.cell(row=row_index, column=1).border = bottom_border
-                wrksht.cell(row=row_index, column=2).border = bottom_border
-                wrksht.cell(row=row_index, column=3).border = bottom_border
-                wrksht.cell(row=row_index, column=4).border = bottom_border
-                wrksht.cell(row=row_index, column=5).border = bottom_border
-                
-                wrksht.cell(row=row_index, column=6).value = data[5]
-                wrksht.cell(row=row_index, column=6).font = table_font
-                wrksht.cell(row=row_index, column=6).border = bottom_border
+                    wrksht.merge_cells("A"+str(row_index)+":E"+str(row_index))
+                    wrksht.cell(row=row_index, column=1).value = data[6]
+                    wrksht.cell(row=row_index, column=1).font = table_font
+                    wrksht.cell(row=row_index, column=1).border = bottom_border
+                    wrksht.cell(row=row_index, column=2).border = bottom_border
+                    wrksht.cell(row=row_index, column=3).border = bottom_border
+                    wrksht.cell(row=row_index, column=4).border = bottom_border
+                    wrksht.cell(row=row_index, column=5).border = bottom_border
+                    
+                    wrksht.cell(row=row_index, column=6).value = data[5]
+                    wrksht.cell(row=row_index, column=6).font = table_font
+                    wrksht.cell(row=row_index, column=6).border = bottom_border
 
-                
-                wrksht.merge_cells("G"+str(row_index)+":H"+str(row_index))
-                wrksht.cell(row=row_index, column=7).value = "$ {:,.2f}".format(round(data[1]/data[5],2))
-                wrksht.cell(row=row_index, column=7).font = table_font
-                wrksht.cell(row=row_index, column=7).border = bottom_border
-                wrksht.cell(row=row_index, column=8).border = bottom_border
+                    
+                    wrksht.merge_cells("G"+str(row_index)+":H"+str(row_index))
+                    wrksht.cell(row=row_index, column=7).value = "$ {:,.2f}".format(round(data[3]/data[5],2))
+                    wrksht.cell(row=row_index, column=7).font = table_font
+                    wrksht.cell(row=row_index, column=7).border = bottom_border
+                    wrksht.cell(row=row_index, column=8).border = bottom_border
 
-                wrksht.merge_cells("I"+str(row_index)+":J"+str(row_index))
-                wrksht.cell(row=row_index, column=9).value = "$ {:,.2f}".format(round(data[3] , 2))
-                wrksht.cell(row=row_index, column=9).font = table_font
-                wrksht.cell(row=row_index, column=9).border = bottom_border
-                wrksht.cell(row=row_index, column=10).border = bottom_border
-                
-                sub_total += round(data[3], 2)
-                tax = round(data[4], 2) + tax
+                    wrksht.merge_cells("I"+str(row_index)+":J"+str(row_index))
+                    wrksht.cell(row=row_index, column=9).value = "$ {:,.2f}".format(round(data[3] , 2))
+                    wrksht.cell(row=row_index, column=9).font = table_font
+                    wrksht.cell(row=row_index, column=9).border = bottom_border
+                    wrksht.cell(row=row_index, column=10).border = bottom_border
+                    
+                    sub_total += round(data[3], 2)
+                    tax = round(data[4], 2) + tax
 
-                wrksht.cell(row=row_index, column=1).alignment = alignment_left
-                wrksht.cell(row=row_index, column=6).alignment = alignment
-                wrksht.cell(row=row_index, column=7).alignment = alignment_right
-                wrksht.cell(row=row_index, column=8).alignment = alignment_right
-                wrksht.cell(row=row_index, column=9).alignment = alignment_right
+                    wrksht.cell(row=row_index, column=1).alignment = alignment_left
+                    wrksht.cell(row=row_index, column=6).alignment = alignment
+                    wrksht.cell(row=row_index, column=7).alignment = alignment_right
+                    wrksht.cell(row=row_index, column=8).alignment = alignment_right
+                    wrksht.cell(row=row_index, column=9).alignment = alignment_right
 
-                row_index += 1
+                    row_index += 1
 
-        # ========================= Table end =========================
-        # wrksht.merge_cells("D"+str(date_person_row)+":D"+str(date_person_row+1))
-        wrksht.cell(row=date_person_row, column=8).value = str(int(total_quantity))
-        # wrksht.cell(row=date_person_row, column=4).font = name_header_font
-        # wrksht.cell(row=date_person_row, column=4).alignment = Alignment(horizontal='left', vertical='center', text_rotation=0, wrap_text=True)
-        footer_row = row_index+1
-        
-        # ===================== Bank Details =========================
-        # if invoice and invoice.get_html_field_val(invoice.company_id.bank_details):
-        #     wrksht.merge_cells("A"+str(footer_row)+":E"+str(footer_row))
-        #     wrksht.cell(row=footer_row, column=1).value = "Bank Transfer Details"
-        #     wrksht.cell(row=footer_row, column=1).font = Font(name='Lato', size=10, bold=True)
-        #     wrksht.cell(row=footer_row, column=1).alignment = alignment_left
-        #     for i in range(1,6):
-        #         wrksht.cell(row=footer_row, column=i).border = Border(left=Side(style='thin', color="d2d4d4"),
-        #                                                               right=Side(style='thin', color="d2d4d4"), 
-        #                                                               top=Side(style='thin', color="d2d4d4"))
+            # ========================= Table end =========================
+            # wrksht.merge_cells("D"+str(date_person_row)+":D"+str(date_person_row+1))
+            wrksht.cell(row=date_person_row, column=8).value = str(int(total_quantity))
+            # wrksht.cell(row=date_person_row, column=4).font = name_header_font
+            # wrksht.cell(row=date_person_row, column=4).alignment = Alignment(horizontal='left', vertical='center', text_rotation=0, wrap_text=True)
+            footer_row = row_index+1
+            
+            # ===================== Bank Details =========================
+            # if invoice and invoice.get_html_field_val(invoice.company_id.bank_details):
+            #     wrksht.merge_cells("A"+str(footer_row)+":E"+str(footer_row))
+            #     wrksht.cell(row=footer_row, column=1).value = "Bank Transfer Details"
+            #     wrksht.cell(row=footer_row, column=1).font = Font(name='Lato', size=10, bold=True)
+            #     wrksht.cell(row=footer_row, column=1).alignment = alignment_left
+            #     for i in range(1,6):
+            #         wrksht.cell(row=footer_row, column=i).border = Border(left=Side(style='thin', color="d2d4d4"),
+            #                                                               right=Side(style='thin', color="d2d4d4"), 
+            #                                                               top=Side(style='thin', color="d2d4d4"))
 
-        #     wrksht.merge_cells("A"+str(footer_row+1)+":E"+str(footer_row+6))
-        #     wrksht.row_dimensions[footer_row+6].height = 67
-        #     bank_details = BeautifulSoup(invoice.company_id.bank_details,"html.parser")
-        #     wrksht.cell(row=footer_row+1, column=1).value = self.bank_details()
-        #     # wrksht.cell(row=footer_row+1, column=1).value = '\n'.join([i.strip() for i in bank_details.get_text().split('\n') if len(i.strip()) > 0])
-        #     wrksht.cell(row=footer_row+1, column=1).font = bank_detail_font
-        #     wrksht.cell(row=footer_row+1, column=1).alignment = address_alignment
-        #     bank_details_row = footer_row+1
-        #     for row in range(footer_row+1,footer_row+7):
-        #         for col in range(1,6):
-        #             wrksht.cell(row=row, column=col).border = Border(left=Side(style='thin', color="d2d4d4"),
-        #                                                               right=Side(style='thin', color="d2d4d4"), 
-        #                                                               bottom=Side(style='thin', color="d2d4d4"))
+            #     wrksht.merge_cells("A"+str(footer_row+1)+":E"+str(footer_row+6))
+            #     wrksht.row_dimensions[footer_row+6].height = 67
+            #     bank_details = BeautifulSoup(invoice.company_id.bank_details,"html.parser")
+            #     wrksht.cell(row=footer_row+1, column=1).value = self.bank_details()
+            #     # wrksht.cell(row=footer_row+1, column=1).value = '\n'.join([i.strip() for i in bank_details.get_text().split('\n') if len(i.strip()) > 0])
+            #     wrksht.cell(row=footer_row+1, column=1).font = bank_detail_font
+            #     wrksht.cell(row=footer_row+1, column=1).alignment = address_alignment
+            #     bank_details_row = footer_row+1
+            #     for row in range(footer_row+1,footer_row+7):
+            #         for col in range(1,6):
+            #             wrksht.cell(row=row, column=col).border = Border(left=Side(style='thin', color="d2d4d4"),
+            #                                                               right=Side(style='thin', color="d2d4d4"), 
+            #                                                               bottom=Side(style='thin', color="d2d4d4"))
 
-        #         bank_details_row += 1
-                
-        wrksht.merge_cells("G"+str(footer_row)+":H"+str(footer_row))
-        wrksht.merge_cells("I"+str(footer_row)+":J"+str(footer_row))
-
-        wrksht.cell(row=footer_row, column=7).value = 'Subtotal'
-        wrksht.cell(row=footer_row, column=7).font =  Font(size=9, bold=True, name="Lato")
-        wrksht.cell(row=footer_row, column=7).alignment = alignment_left
-        wrksht.cell(row=footer_row, column=7).border = top_border
-        wrksht.cell(row=footer_row, column=8).border = top_border
-        wrksht.cell(row=footer_row, column=9).value = "$ {:,.2f}".format(round(self.picked_qty_order_subtotal - self.picked_qty_order_discount,2))
-        wrksht.cell(row=footer_row, column=9).font = table_font
-        wrksht.cell(row=footer_row, column=9).alignment = alignment_right
-        wrksht.cell(row=footer_row, column=9).border = top_border
-        wrksht.cell(row=footer_row, column=10).border = top_border
-        wrksht.row_dimensions[footer_row].height = 20
-
-
-        footer_row += 1
-        wrksht.merge_cells("G"+str(footer_row)+":H"+str(footer_row))
-        wrksht.merge_cells("I"+str(footer_row)+":J"+str(footer_row))
-
-        wrksht.cell(row=footer_row, column=7).value = 'Shipping Cost'
-        wrksht.cell(row=footer_row, column=7).font = Font(size=9, bold=True, name="Lato")
-        wrksht.cell(row=footer_row, column=7).alignment = alignment_left
-        wrksht.cell(row=footer_row, column=7).border = top_border
-        wrksht.cell(row=footer_row, column=8).border = top_border
-        wrksht.cell(row=footer_row, column=9).value = "$ {:,.2f}".format(self.amount_is_shipping_total)
-        wrksht.cell(row=footer_row, column=9).alignment = alignment_right
-        wrksht.cell(row=footer_row, column=9).font = table_font
-        wrksht.cell(row=footer_row, column=9).border = top_border
-        wrksht.cell(row=footer_row, column=10).border = top_border
-        wrksht.row_dimensions[footer_row].height = 20
-        footer_row += 1
-
-        wrksht.merge_cells("G"+str(footer_row)+":H"+str(footer_row))
-        wrksht.merge_cells("I"+str(footer_row)+":J"+str(footer_row))
-
-        wrksht.cell(row=footer_row, column=7).value = 'Admin Fee'
-        wrksht.cell(row=footer_row, column=7).font = Font(size=9, bold=True, name="Lato")
-        wrksht.cell(row=footer_row, column=7).alignment = alignment_left
-        wrksht.cell(row=footer_row, column=7).border = top_border
-        wrksht.cell(row=footer_row, column=8).border = top_border
-        wrksht.cell(row=footer_row, column=9).value = "$ {:,.2f}".format(self.amount_is_admin)
-        wrksht.cell(row=footer_row, column=9).font = table_font
-        wrksht.cell(row=footer_row, column=9).alignment = alignment_right
-        wrksht.cell(row=footer_row, column=9).border = top_border
-        wrksht.cell(row=footer_row, column=10).border = top_border
-        wrksht.row_dimensions[footer_row].height = 20
-        footer_row += 1
-
-
-        if abs(self.global_discount):
+            #         bank_details_row += 1
+                    
             wrksht.merge_cells("G"+str(footer_row)+":H"+str(footer_row))
             wrksht.merge_cells("I"+str(footer_row)+":J"+str(footer_row))
-        
-            wrksht.cell(row=footer_row, column=7).value = "Discount"
+
+            wrksht.cell(row=footer_row, column=7).value = 'Subtotal'
+            wrksht.cell(row=footer_row, column=7).font =  Font(size=9, bold=True, name="Lato")
+            wrksht.cell(row=footer_row, column=7).alignment = alignment_left
+            wrksht.cell(row=footer_row, column=7).border = top_border
+            wrksht.cell(row=footer_row, column=8).border = top_border
+            wrksht.cell(row=footer_row, column=9).value = "$ {:,.2f}".format(round(self.picked_qty_order_subtotal - self.picked_qty_order_discount,2))
+            wrksht.cell(row=footer_row, column=9).font = table_font
+            wrksht.cell(row=footer_row, column=9).alignment = alignment_right
+            wrksht.cell(row=footer_row, column=9).border = top_border
+            wrksht.cell(row=footer_row, column=10).border = top_border
+            wrksht.row_dimensions[footer_row].height = 20
+
+
+            footer_row += 1
+            wrksht.merge_cells("G"+str(footer_row)+":H"+str(footer_row))
+            wrksht.merge_cells("I"+str(footer_row)+":J"+str(footer_row))
+
+            wrksht.cell(row=footer_row, column=7).value = 'Shipping Cost'
             wrksht.cell(row=footer_row, column=7).font = Font(size=9, bold=True, name="Lato")
             wrksht.cell(row=footer_row, column=7).alignment = alignment_left
             wrksht.cell(row=footer_row, column=7).border = top_border
             wrksht.cell(row=footer_row, column=8).border = top_border
-            wrksht.cell(row=footer_row, column=9).value = "$ {:,.2f}".format(self.picked_qty_order_discount)
+            wrksht.cell(row=footer_row, column=9).value = "$ {:,.2f}".format(self.amount_is_shipping_total)
+            wrksht.cell(row=footer_row, column=9).alignment = alignment_right
             wrksht.cell(row=footer_row, column=9).font = table_font
-            wrksht.cell(row=footer_row, column=9).alignment = alignment = alignment_right
             wrksht.cell(row=footer_row, column=9).border = top_border
             wrksht.cell(row=footer_row, column=10).border = top_border
             wrksht.row_dimensions[footer_row].height = 20
             footer_row += 1
 
-        wrksht.merge_cells("G"+str(footer_row)+":H"+str(footer_row))
-        wrksht.merge_cells("I"+str(footer_row)+":J"+str(footer_row))
+            wrksht.merge_cells("G"+str(footer_row)+":H"+str(footer_row))
+            wrksht.merge_cells("I"+str(footer_row)+":J"+str(footer_row))
 
-        wrksht.cell(row=footer_row, column=7).value = 'Tax'
-        wrksht.cell(row=footer_row, column=7).font = Font(size=9, bold=True, name="Lato")
-        wrksht.cell(row=footer_row, column=7).alignment = alignment_left
-        wrksht.cell(row=footer_row, column=7).border = top_border
-        wrksht.cell(row=footer_row, column=8).border = top_border
+            wrksht.cell(row=footer_row, column=7).value = 'Admin Fee'
+            wrksht.cell(row=footer_row, column=7).font = Font(size=9, bold=True, name="Lato")
+            wrksht.cell(row=footer_row, column=7).alignment = alignment_left
+            wrksht.cell(row=footer_row, column=7).border = top_border
+            wrksht.cell(row=footer_row, column=8).border = top_border
+            wrksht.cell(row=footer_row, column=9).value = "$ {:,.2f}".format(self.amount_is_admin)
+            wrksht.cell(row=footer_row, column=9).font = table_font
+            wrksht.cell(row=footer_row, column=9).alignment = alignment_right
+            wrksht.cell(row=footer_row, column=9).border = top_border
+            wrksht.cell(row=footer_row, column=10).border = top_border
+            wrksht.row_dimensions[footer_row].height = 20
+            footer_row += 1
 
-        wrksht.cell(row=footer_row, column=9).value = "$ {:,.2f}".format(self.picked_qty_order_tax)
-        wrksht.cell(row=footer_row, column=9).alignment = alignment_right
-        wrksht.cell(row=footer_row, column=9).font = table_font
-        wrksht.cell(row=footer_row, column=9).border = top_border
-        wrksht.cell(row=footer_row, column=10).border = top_border
-        wrksht.row_dimensions[footer_row].height = 20
-        footer_row += 1
 
-        wrksht.merge_cells("G"+str(footer_row)+":H"+str(footer_row))
-        wrksht.merge_cells("I"+str(footer_row)+":J"+str(footer_row))
+            if abs(self.global_discount):
+                wrksht.merge_cells("G"+str(footer_row)+":H"+str(footer_row))
+                wrksht.merge_cells("I"+str(footer_row)+":J"+str(footer_row))
+            
+                wrksht.cell(row=footer_row, column=7).value = "Discount"
+                wrksht.cell(row=footer_row, column=7).font = Font(size=9, bold=True, name="Lato")
+                wrksht.cell(row=footer_row, column=7).alignment = alignment_left
+                wrksht.cell(row=footer_row, column=7).border = top_border
+                wrksht.cell(row=footer_row, column=8).border = top_border
+                wrksht.cell(row=footer_row, column=9).value = "$ {:,.2f}".format(self.picked_qty_order_discount)
+                wrksht.cell(row=footer_row, column=9).font = table_font
+                wrksht.cell(row=footer_row, column=9).alignment = alignment = alignment_right
+                wrksht.cell(row=footer_row, column=9).border = top_border
+                wrksht.cell(row=footer_row, column=10).border = top_border
+                wrksht.row_dimensions[footer_row].height = 20
+                footer_row += 1
 
-        wrksht.cell(row=footer_row, column=7).value = 'Total'
-        wrksht.cell(row=footer_row, column=7).font = Font(size=9, bold=True, name="Lato")
-        wrksht.cell(row=footer_row, column=7).alignment = alignment_left
-        wrksht.cell(row=footer_row, column=7).border = top_border
-        wrksht.cell(row=footer_row, column=8).border = top_border
-        wrksht.cell(row=footer_row, column=9).value = "$ {:,.2f}".format(self.picked_qty_order_total)
-        wrksht.cell(row=footer_row, column=9).alignment = alignment_right
-        wrksht.cell(row=footer_row, column=9).font = table_font
-        wrksht.cell(row=footer_row, column=9).border = top_border
-        wrksht.cell(row=footer_row, column=10).border = top_border
-        wrksht.row_dimensions[footer_row].height = 20
-        footer_row += 1
+            wrksht.merge_cells("G"+str(footer_row)+":H"+str(footer_row))
+            wrksht.merge_cells("I"+str(footer_row)+":J"+str(footer_row))
 
-        wrksht.merge_cells("G"+str(footer_row)+":H"+str(footer_row))
-        wrksht.merge_cells("I"+str(footer_row)+":J"+str(footer_row))
+            wrksht.cell(row=footer_row, column=7).value = 'Tax'
+            wrksht.cell(row=footer_row, column=7).font = Font(size=9, bold=True, name="Lato")
+            wrksht.cell(row=footer_row, column=7).alignment = alignment_left
+            wrksht.cell(row=footer_row, column=7).border = top_border
+            wrksht.cell(row=footer_row, column=8).border = top_border
 
-        wrksht.cell(row=footer_row, column=7).value = "Total Qty"
-        wrksht.cell(row=footer_row, column=7).font = Font(size=9, bold=True, name="Lato")
-        wrksht.cell(row=footer_row, column=7).alignment = alignment_left
-        wrksht.cell(row=footer_row, column=7).border = top_border
-        wrksht.cell(row=footer_row, column=8).border = top_border
-        wrksht.cell(row=footer_row, column=9).alignment = alignment_right
-        wrksht.cell(row=footer_row, column=9).font = table_font
-        wrksht.cell(row=footer_row, column=9).value = int(total_quantity)
-        wrksht.cell(row=footer_row, column=9).border = top_border
-        wrksht.cell(row=footer_row, column=10).border = top_border
-        wrksht.row_dimensions[footer_row].height = 20
-        footer_row += 1
+            wrksht.cell(row=footer_row, column=9).value = "$ {:,.2f}".format(self.picked_qty_order_tax)
+            wrksht.cell(row=footer_row, column=9).alignment = alignment_right
+            wrksht.cell(row=footer_row, column=9).font = table_font
+            wrksht.cell(row=footer_row, column=9).border = top_border
+            wrksht.cell(row=footer_row, column=10).border = top_border
+            wrksht.row_dimensions[footer_row].height = 20
+            footer_row += 1
 
-        bank_details_wb = workb.get_sheet_by_name('Bank Details')
-        bank_sheet_row = 11
+            wrksht.merge_cells("G"+str(footer_row)+":H"+str(footer_row))
+            wrksht.merge_cells("I"+str(footer_row)+":J"+str(footer_row))
 
-        bank_details_wb.cell(row=bank_sheet_row,column=3).value = invoice.name if invoice else self.name
-        bank_details_wb.cell(row=bank_sheet_row+1,column=1).value = str("Invoice Date:" if invoice.invoice_date else '') if invoice else "Order Date:"
-        bank_details_wb.cell(row=bank_sheet_row+1,column=3).value = str(str(invoice.invoice_date.strftime('%d/%m/%Y') if invoice.invoice_date else '') if invoice else self.date_order.strftime('%d/%m/%Y'))
-        bank_details_wb.cell(row=bank_sheet_row+2,column=3).value = self.b2b_currency_id.name or ''
-        bank_details_wb.cell(row=bank_sheet_row+3,column=3).value = '(' + self.b2b_currency_id.name + ') ' +"$ {:,.2f}".format(self.picked_qty_order_total)
-        bank_details_wb.cell(row=bank_sheet_row+4,column=3).value = self.payment_term_id.name or 'Immediate Payment' or ''
+            wrksht.cell(row=footer_row, column=7).value = 'Total'
+            wrksht.cell(row=footer_row, column=7).font = Font(size=9, bold=True, name="Lato")
+            wrksht.cell(row=footer_row, column=7).alignment = alignment_left
+            wrksht.cell(row=footer_row, column=7).border = top_border
+            wrksht.cell(row=footer_row, column=8).border = top_border
+            wrksht.cell(row=footer_row, column=9).value = "$ {:,.2f}".format(self.picked_qty_order_total)
+            wrksht.cell(row=footer_row, column=9).alignment = alignment_right
+            wrksht.cell(row=footer_row, column=9).font = table_font
+            wrksht.cell(row=footer_row, column=9).border = top_border
+            wrksht.cell(row=footer_row, column=10).border = top_border
+            wrksht.row_dimensions[footer_row].height = 20
+            footer_row += 1
+
+            wrksht.merge_cells("G"+str(footer_row)+":H"+str(footer_row))
+            wrksht.merge_cells("I"+str(footer_row)+":J"+str(footer_row))
+
+            wrksht.cell(row=footer_row, column=7).value = "Total Qty"
+            wrksht.cell(row=footer_row, column=7).font = Font(size=9, bold=True, name="Lato")
+            wrksht.cell(row=footer_row, column=7).alignment = alignment_left
+            wrksht.cell(row=footer_row, column=7).border = top_border
+            wrksht.cell(row=footer_row, column=8).border = top_border
+            wrksht.cell(row=footer_row, column=9).alignment = alignment_right
+            wrksht.cell(row=footer_row, column=9).font = table_font
+            wrksht.cell(row=footer_row, column=9).value = int(total_quantity)
+            wrksht.cell(row=footer_row, column=9).border = top_border
+            wrksht.cell(row=footer_row, column=10).border = top_border
+            wrksht.row_dimensions[footer_row].height = 20
+            footer_row += 1
+
+            bank_details_wb = workb.get_sheet_by_name('Bank Details')
+            bank_sheet_row = 11
+
+            bank_details_wb.cell(row=bank_sheet_row,column=3).value = invoice.name if invoice else self.name
+            bank_details_wb.cell(row=bank_sheet_row+1,column=1).value = str("Invoice Date:" if invoice.invoice_date else '') if invoice else "Order Date:"
+            bank_details_wb.cell(row=bank_sheet_row+1,column=3).value = str(str(invoice.invoice_date.strftime('%d/%m/%Y') if invoice.invoice_date else '') if invoice else self.date_order.strftime('%d/%m/%Y'))
+            bank_details_wb.cell(row=bank_sheet_row+2,column=3).value = self.b2b_currency_id.name or ''
+            bank_details_wb.cell(row=bank_sheet_row+3,column=3).value = '(' + self.b2b_currency_id.name + ') ' +"$ {:,.2f}".format(self.picked_qty_order_total)
+            bank_details_wb.cell(row=bank_sheet_row+4,column=3).value = self.payment_term_id.name or 'Immediate Payment' or ''
         
         fp = BytesIO()
         workb.save(fp)
@@ -1979,19 +1972,15 @@ class sale_order(models.Model):
                                             WHEN SOL.PRODUCT_UOM_QTY > 0
                                                                 AND SOL.PRICE_TAX > 0 THEN SOL.PRICE_TAX / SOL.PRODUCT_UOM_QTY * SOL.PICKED_QTY
                                             ELSE 0
-                            END AS PRICE_TAX,
-                            SO.PICKED_QTY
-                        FROM SALE_ORDER AS SO
-                        INNER JOIN SALE_ORDER_LINE AS SOL ON SOL.ORDER_ID = SO.ID
-                        INNER JOIN STOCK_PICKING AS SP ON SP.ORIGIN = SO.NAME
-                        INNER JOIN SHIPPING_PROVIDER_SPT AS SPS ON SP.SHIPPING_ID = SPS.ID
-                        INNER JOIN RES_CURRENCY AS RC ON RC.ID = SOL.CURRENCY_ID
+                            END AS PRICE_TAX
+                        FROM sale_order_line AS sol
                         INNER JOIN PRODUCT_PRODUCT AS PP ON PP.ID = SOL.PRODUCT_ID
                         INNER JOIN PRODUCT_CATEGORY AS PC ON PC.ID = PP.CATEG_ID
                         INNER JOIN PRODUCT_MODEL_SPT AS PMS ON PMS.ID = PP.MODEL
                         INNER JOIN KITS_PRODUCT_COLOR_CODE AS KPCC ON KPCC.ID = PP.COLOR_CODE
                         INNER JOIN PRODUCT_SIZE_SPT AS PSS ON PSS.ID = PP.EYE_SIZE
-                        WHERE SO.ID ={self.id}'''
+                        WHERE sol.order_id ={self.id}
+'''
             self.env.cr.execute(query)
             record_data = self.env.cr.fetchall()
             row_index = table_header+1

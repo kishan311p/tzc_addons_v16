@@ -34,8 +34,7 @@
                                     <field name="subject"
                                         placeholder="Subject (placeholders may be used here)" />
                                 </h2>
-                                <field name="body_html" widget="html"
-                                    options="{'style-inline': true}" />
+                                <field name="body_html" widget="html" class="oe-bordered-editor" options="{'style-inline': true, 'codeview': true, 'dynamic_placeholder': true}"/>
                                 <field name="attachment_ids" widget="many2many_binary" />
                             </page>
                         </notebook>

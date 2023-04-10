@@ -210,6 +210,18 @@ class stock_picking(models.Model):
     ups_no_of_package = fields.Integer(' No of Package',default=1)
     warning = fields.Char()
     
+    # Sale Order Number
+    sale_order_number = fields.Char('Order Number',compute="_compute_sale_order_number")
+
+    def _compute_sale_order_number(self):
+        try:
+            for rec in self:
+                order_id = rec.get_order_id(rec)
+                rec.sale_order_number = order_id.name
+        except:
+            rec.sale_order_number = ""
+
+
     def set_order_status(self):
         sale_ids = self.env['sale.order'].search([('state','in',['sale','in_scanning','scanned','scan','shipped'])])
         for sale in sale_ids:
@@ -257,6 +269,7 @@ class stock_picking(models.Model):
             rec.provider = False
             if rec.shipping_id and rec.shipping_id.provider:
                 rec.provider = rec.shipping_id.provider
+            rec.sale_id.shipping_id = rec.shipping_id
                 
     @api.depends('sale_id','sale_id.include_cases','sale_id.no_of_cases','sale_id.case_weight_kg','shipping_weight')
     def _compute_weight_of_cases(self):
@@ -916,7 +929,7 @@ class stock_picking(models.Model):
                 self.sale_id = self.get_order_id(self)
             for line in range(len(self.move_ids_without_package)):
                     line =  self.move_ids_without_package[line]
-            wizard_id = self.env['remove.done.quantity.spt'].create({'picking_id' : self.id})
+            wizard_id = self.env['remove.done.quantity.spt'].create({'picking_id' : self.id,'product_ids':[(6,0,self.move_ids_without_package.mapped('product_id').ids)]})
             return {
                 'name': 'Remove Items',
                 'view_mode': 'form',
@@ -1242,7 +1255,7 @@ class stock_picking(models.Model):
             if sale_id and sale_id.picking_ids.filtered(lambda picking: picking.state != 'cancel' ):
                 raise UserError("You can not create more then one delivery order of same sale order.")
         
-        if "origin" in vals.keys():
+        if "origin" in vals.keys() and not self._context.get('skip_backorder'):
             sale_order_id = self.env['sale.order'].search([('name','=',vals['origin'])])
             if sale_order_id and len(sale_order_id.picking_ids.filtered(lambda x:x.state != 'cancel' and x.picking_type_id.name != "Receipts")) >= 1:
                 raise UserError(_('You can not add product in this order.\n%s has already one delivery order')%(vals.get('origin')))
@@ -1333,7 +1346,7 @@ class stock_picking(models.Model):
         state_list = self.mapped(lambda picking : picking.state in ['assigned'])
         if any(state_list):
             context = self._context.copy()
-            context.update({'no_shipping_label':True,'ship':True})
+            context.update({'no_shipping_label':True,'ship':True,'skip_backorder':True})
             self.env.context = context
             error_message = ''
             # shipping_error = []
@@ -1401,7 +1414,8 @@ class stock_picking(models.Model):
             res =  super(stock_picking, self).button_validate()
 
             template_id = self.env.ref('tzc_sales_customization_spt.tzc_order_shipped_notification_to_salesperson_spt')
-            template_id.with_context({'salesperson_notify':True}).send_mail(self.id,force_send=True,email_layout_xmlid="mail.mail_notification_light")
+            # template_id.with_context({'salesperson_notify':True}).send_mail(self.id,force_send=True,email_layout_xmlid="mail.mail_notification_light")
+            template_id.with_context({'salesperson_notify':True}).send_mail(self.sale_id.id,force_send=True,email_layout_xmlid="mail.mail_notification_light")
             # template_id.with_context({'default_attachment_ids':[(6,0,[attchment_id.id])]}).send_mail(self.id,force_send=True)
             # Check backorder should check for other barcodes
             immediate_transfer_view_id = self.env.ref('stock.view_immediate_transfer').id
@@ -1438,8 +1452,10 @@ class stock_picking(models.Model):
     def _send_confirmation_email(self):
         for stock_pick in self.filtered(lambda p:p.picking_type_id.code == 'outgoing'):
             if stock_pick.partner_id and stock_pick.partner_id.user_ids and stock_pick.sale_id.partner_verification():
-                delivery_template_id = stock_pick.company_id.stock_mail_confirmation_template_id.id
-                stock_pick.with_context(force_send=True).message_post_with_template(delivery_template_id, email_layout_xmlid='mail.mail_notification_light')
+                # delivery_template_id = stock_pick.company_id.stock_mail_confirmation_template_id.id
+                # stock_pick.with_context(force_send=True).message_post_with_template(delivery_template_id, email_layout_xmlid='mail.mail_notification_light')
+                delivery_template_id = self.env.ref('stock.mail_template_data_delivery_confirmation')
+                delivery_template_id.send_mail(stock_pick.sale_id.id,force_send=True,email_layout_xmlid="mail.mail_notification_light")
 
     def get_scanned_product(self):
         scaned_product = {}
@@ -1623,3 +1639,6 @@ class stock_picking(models.Model):
             'context':{'default_picking_id':self.id},
             'target':'new'
         }
+
+    def ordered_qty_button(self):
+        pass

@@ -4,7 +4,7 @@
         <record id="marketing_campaing_form_view" model="ir.ui.view">
             <field name="name">marketing.campaing.form.view</field>
             <field name="model">marketing.campaign</field>
-            <!-- <field name="">10</field> -->
+            <field name="priority">1</field>
             <field name="arch" type="xml">
                 <form>
                     <field name="active" invisible='1'/>

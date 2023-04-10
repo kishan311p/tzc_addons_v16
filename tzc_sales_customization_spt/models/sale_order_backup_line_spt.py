@@ -19,7 +19,7 @@ class sale_order_backup_line_spt(models.Model):
     is_shipping_product = fields.Boolean("Is Shipping Product",related="product_id.is_shipping_product", store=True)
     is_admin = fields.Boolean("Is Admin Product",related="product_id.is_admin", store=True)
     is_promotion_applied = fields.Boolean("Is promotion applied?")
-    is_fs = fields.Boolean("Is FS?")
+    # is_fs = fields.Boolean("Is FS?")
     sale_type = fields.Selection([('clearance','Clearance'),('on_sale','On Sale')],'Sale Type')
     is_pack_order_line = fields.Boolean('Backup Pack Order Line')
     package_id = fields.Many2one('kits.package.product','Package')

@@ -23,7 +23,7 @@ class add_admin_fee_wizard(models.TransientModel):
                 })]
                 self.kits_so_id.write({'order_line':order_line})
             else:
-                admin_fee_line.write({'price_unit':self.admin_fee_price,'unit_discount_price':self.admin_fee_price,'is_admin':True})
+                admin_fee_line.write({'price_unit':self.admin_fee_price,'unit_discount_price':self.admin_fee_price,'is_admin':True,'price_subtotal':self.admin_fee_price})
+            self.kits_so_id._amount_all()
         else:
-            raise UserError(_('Please add admin product'))
-        self.kits_so_id._amount_all()
+            raise UserError(_('Admin Fee Product not found.'))

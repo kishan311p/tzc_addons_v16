@@ -8,20 +8,10 @@ class remove_product_spt(models.TransientModel):
     _description = 'Remove Product'
 
     line_ids = fields.One2many("remove.product.qty.spt",'product_remove_line_id',string="Order Lines")
-    # line_ids = fields.Many2many("remove.product.qty.spt",string="Order Lines")
+    product_ids = fields.Many2many("product.product",string="Products")
     product_qty_count = fields.Integer("Total Qty",compute="_compute_product_qty")
     partner_id = fields.Many2one("res.partner","Customer")
-
-    def _get_domain(self):
-        product_ids = False
-        if self._context and self._context.get('default_sale_id'):
-            order_id = self.env['sale.order'].browse([self._context.get('default_sale_id')])
-            if order_id:
-                product_ids = self.env['product.product'].search([('id','in',order_id.order_line.product_id.ids)])
-
-        return [('id','in',product_ids.ids)] if product_ids else []
-
-    product_id = fields.Many2one("product.product","Manual",domain=_get_domain)
+    product_id = fields.Many2one("product.product","Manual")
     sale_id = fields.Many2one("sale.order","Order")
     qty = fields.Integer(default=1)
 
@@ -311,16 +301,16 @@ class remove_product_qty_spt(models.TransientModel):
     product_remove_line_id = fields.Many2one('remove.product.spt','Wizard Id')
     sequence = fields.Integer('Sequence',index=True)
 
-    # def action_product_selection(self):
-    #     self.ensure_one()
-    #     if self.product_remove_line_id:
-    #         self.product_remove_line_id.product_id = self.product_id.id
+    def action_product_selection(self):
+        self.ensure_one()
+        if self.product_remove_line_id:
+            self.product_remove_line_id.product_id = self.product_id.id
 
-    #         return {
-    #                 'name': 'Remove Items',
-    #                 'view_mode': 'form',
-    #                 'target': 'new',
-    #                 'res_id':self.product_remove_line_id.id,
-    #                 'res_model': 'remove.product.spt',
-    #                 'type': 'ir.actions.act_window',
-    #                 }
+            return {
+                    'name': 'Remove Items',
+                    'view_mode': 'form',
+                    'target': 'new',
+                    'res_id':self.product_remove_line_id.id,
+                    'res_model': 'remove.product.spt',
+                    'type': 'ir.actions.act_window',
+                    }

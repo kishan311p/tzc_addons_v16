@@ -96,7 +96,7 @@
         'views/internal_flag_view_spt.xml',
         'views/kits_shipping_error_log_view.xml',
         'views/kits_double_move_log.xml',
-        'views/flash_menu_spt.xml',
+        # 'views/flash_menu_spt.xml',
         # 'views/kits_inflation_rule.xml',
         'views/account_move_view.xml',
         'views/res_users_view.xml',
@@ -175,6 +175,7 @@
         'wizards/time_shift_wizard_view.xml',
         'wizards/mail_compose_message_wizard_view.xml',
         'wizards/mass_mailing_message_wizard_view.xml',
+        'wizards/stock_change_product_qty_view.xml',
 
         # Reports
         'reports/kits_commission_report.xml',

@@ -49,9 +49,23 @@
             <field name="header_spacing">35</field>
             <field name="dpi">90</field>
         </record>
-
+        <record id="kits_quotations_and_order" model="report.paperformat">
+            <field name="name">A4 Sale Order Quotation</field>
+            <field name="default" eval="True" />
+            <field name="format">Letter</field>
+            <field name="page_height">0</field>
+            <field name="page_width">0</field>
+            <field name="orientation">Portrait</field>
+            <field name="margin_top">5</field>
+            <field name="margin_bottom">10</field>
+            <field name="margin_left">7</field>
+            <field name="margin_right">7</field>
+            <field name="header_line" eval="False"/>
+            <field name="header_spacing">0</field>
+            <field name="dpi">90</field>
+        </record>
         <record id="sale.action_report_saleorder" model="ir.actions.report">
-            <field name="paperformat_id" ref="tzc_sales_customization_spt.kits_send_quotation_report_paperformat"/>
+            <field name="paperformat_id" ref="tzc_sales_customization_spt.kits_quotations_and_order"/>
         </record>
         <record id="sale.action_report_pro_forma_invoice" model="ir.actions.report">
             <field name="paperformat_id" ref="tzc_sales_customization_spt.kits_send_quotation_report_paperformat"/>

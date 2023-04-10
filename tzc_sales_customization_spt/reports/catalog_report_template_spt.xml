@@ -162,7 +162,7 @@
                                                     <span>https://www.teameto.com/web/static/src/img/placeholder.png</span>
                                                 </t>
                                             </td>
-                                            <td style="text-align: center; border: 1px solid #dbdde0; padding: 35px 10px 10px 10px;">
+                                            <td style="text-align: center; border: 1px solid #dbdde0; padding: 0px 10px 10px 10px;">
                                                 <span t-if="line.product_pro_id.brand" t-esc="line.product_pro_id.brand.name"/>
                                                 <span t-else="">N/A</span>
                                                 <br/>
@@ -207,13 +207,14 @@
                                             </td>
                                             <t t-set="pro_price" t-value="doc.env['product.pricelist.item'].search([('product_id','=',line.product_pro_id.id),('pricelist_id','=',doc.customer_id.property_product_pricelist.id)]).fixed_price"/>
                                             <t t-if="line.discount">
-                                                <t t-if="'eto dubai' in doc.customer_id.property_product_pricelist.name.lower() or 'other eto' in doc.customer_id.property_product_pricelist.name.lower()">
-                                                    <t t-if="doc.customer_id.property_product_pricelist.currency_id.name == 'USD'">
+                                                <t t-if="'eto dubai' in doc.customer_id.property_product_pricelist.name or 'other eto' in doc.customer_id.property_product_pricelist.name">
+                                                    <t t-set="disc" t-value="(line.product_pro_id.lst_price - pro_price) * line.product_qty"/>
+                                                    <!-- <t t-if="doc.customer_id.property_product_pricelist.currency_id.name == 'USD'">
                                                         <t t-set="disc" t-value="(line.product_pro_id.lst_price_usd - pro_price) * line.product_qty"/>
                                                     </t>
                                                     <t t-if="doc.customer_id.property_product_pricelist.currency_id.name == 'CAD'">
                                                         <t t-set="disc" t-value="(line.product_pro_id.lst_price - pro_price) * line.product_qty"/>
-                                                    </t>
+                                                    </t> -->
                                                 </t>
                                                 <t t-else="">
                                                     <t t-set="disc" t-value="(product_price * line.discount * 0.01) * line.product_qty"/>
@@ -222,13 +223,14 @@
                                             </t>
                                             <t t-set="unit_discount_price" t-value="product_price - (product_price * line.discount / 100)"/>
                                             <td style="text-align: right; border: 1px solid #dbdde0; padding: 60px 10px 10px 10px;" t-if="product_price != unit_discount_price">
-                                                <t t-if="'eto dubai' in doc.customer_id.property_product_pricelist.name.lower() or 'other eto' in doc.customer_id.property_product_pricelist.name.lower()">
-                                                    <t t-if="doc.customer_id.property_product_pricelist.currency_id.name=='USD'">
+                                                <t t-if="'eto dubai' in doc.customer_id.property_product_pricelist.name or 'other eto' in doc.customer_id.property_product_pricelist.name">
+                                                    <t t-set="product_price" t-value="line.product_pro_id.lst_price"/>
+                                                    <!-- <t t-if="doc.customer_id.property_product_pricelist.currency_id.name=='USD'">
                                                         <t t-set="product_price" t-value="line.product_pro_id.lst_price_usd"/>
                                                     </t>
                                                     <t t-if="doc.customer_id.property_product_pricelist.currency_id.name=='CAD'">
                                                         <t t-set="product_price" t-value="line.product_pro_id.lst_price"/>
-                                                    </t>
+                                                    </t> -->
                                                 </t>
                                                 <span t-if="product_price" style="white-space: nowrap;color:red;text-decoration:line-through;">
                                                     <span t-options='{"widget": "monetary", "display_currency":  doc.customer_id.property_product_pricelist.currency_id}' t-esc="product_price" style="white-space: nowrap;color:black;" />
@@ -236,7 +238,7 @@
                                                 <span style="text-align: center" t-if="not product_price"> N/A </span>
                                                 <br/>
                                                 <t t-if="unit_discount_price">
-                                                    <t t-if="'eto dubai' in doc.customer_id.property_product_pricelist.name.lower() or 'other eto' in doc.customer_id.property_product_pricelist.name.lower()">
+                                                    <t t-if="'eto dubai' in doc.customer_id.property_product_pricelist.name or 'other eto' in doc.customer_id.property_product_pricelist.name">
                                                         <span t-options='{"widget": "monetary", "display_currency":  doc.customer_id.property_product_pricelist.currency_id}' t-esc="doc.env['product.pricelist.item'].search([('product_id','=',line.product_pro_id.id),('pricelist_id','=',doc.customer_id.property_product_pricelist.id)]).fixed_price" style="white-space: nowrap;color:#7693f8;"/>
                                                     </t>
                                                     <t t-else="">
@@ -274,7 +276,7 @@
                                     <td name="td_total_amount">
                                         <strong>Subtotal</strong>
                                     </td>
-                                    <td name="td_amount_value" class="text-right">
+                                    <td name="td_amount_value" class="text-end">
                                         <span t-esc="round(main_subtotal,2)" t-options='{"widget": "monetary", "display_currency":  doc.customer_id.property_product_pricelist.currency_id}'/>
                                     </td>
                                 </tr>
@@ -282,7 +284,7 @@
                                     <td name="td_discount">
                                         <strong>Discount</strong>
                                     </td>
-                                    <td name="td_discount_value" class="text-right">
+                                    <td name="td_discount_value" class="text-end">
                                         <span t-esc="round(line_discount,2)" t-options='{"widget": "monetary", "display_currency":  doc.customer_id.property_product_pricelist.currency_id}'/>
                                     </td>
                                 </tr>
@@ -290,7 +292,7 @@
                                     <td name="td_final_total">
                                         <strong>Total</strong>
                                     </td>
-                                    <td name="td_final_total_value" class="text-right">
+                                    <td name="td_final_total_value" class="text-end">
                                         (                                        <span t-esc="doc.customer_id.property_product_pricelist.currency_id.name"/>
                                         )
                                         <span  t-esc="(main_subtotal - line_discount) + is_shipping_product" t-options='{"widget": "monetary", "display_currency":  doc.customer_id.property_product_pricelist.currency_id}'/>
@@ -300,7 +302,7 @@
                                     <td name="td_amount_total_qty">
                                         <strong>Total Quantity</strong>
                                     </td>
-                                    <td name="td_amount_total" class="text-right">
+                                    <td name="td_amount_total" class="text-end">
                                         <span t-esc="int(total_line_qty)"/>
                                     </td>
                                 </tr>
@@ -326,7 +328,7 @@
         <t t-call="web.external_layout">
             <t t-set="doc" t-value="doc.with_context(lang=doc.customer_id.lang)" />
 
-            <div class="page">
+            <div class="page" style="margin-top:-55px">
                 <div class="oe_structure"/>
                 <br/>
                 <strong t-if="doc.customer_id">Address:</strong>
@@ -375,7 +377,7 @@
                     </div>
                     <div class="col-auto mw-100 mb-2">
                         <strong>Total Quantity:</strong>
-                        <p class="m-0 text-center" t-esc="int(sum(request.env['sale.catalog.line'].sudo().search([('catalog_id','=',doc.id)]).mapped(lambda line:line.product_qty if doc.customer_id.country_id not in line.product_pro_id.geo_restriction else 0)))"/>
+                        <p class="m-0 text-start" t-esc="int(sum(request.env['sale.catalog.line'].sudo().search([('catalog_id','=',doc.id)]).mapped(lambda line:line.product_qty if doc.customer_id.country_id not in line.product_pro_id.geo_restriction else 0)))"/>
                     </div>
 
                 </div>
@@ -520,13 +522,14 @@
                                             </td>
                                             <t t-set="pro_price" t-value="doc.env['product.pricelist.item'].search([('product_id','=',line.product_pro_id.id),('pricelist_id','=',doc.customer_id.property_product_pricelist.id)]).fixed_price"/>
                                             <t t-if="line.discount">
-                                                <t t-if="'eto dubai' in doc.customer_id.property_product_pricelist.name.lower() or 'other eto' in doc.customer_id.property_product_pricelist.name.lower()">
-                                                    <t t-if="doc.customer_id.property_product_pricelist.currency_id.name == 'USD'">
+                                                <t t-if="'eto dubai' in doc.customer_id.property_product_pricelist.name or 'other eto' in doc.customer_id.property_product_pricelist.name">
+                                                    <t t-set="disc" t-value="(line.product_pro_id.lst_price - pro_price) * line.product_qty"/>
+                                                    <!-- <t t-if="doc.customer_id.property_product_pricelist.currency_id.name == 'USD'">
                                                         <t t-set="disc" t-value="(line.product_pro_id.lst_price_usd - pro_price) * line.product_qty"/>
                                                     </t>
                                                     <t t-if="doc.customer_id.property_product_pricelist.currency_id.name == 'CAD'">
                                                         <t t-set="disc" t-value="(line.product_pro_id.lst_price - pro_price) * line.product_qty"/>
-                                                    </t>
+                                                    </t> -->
                                                 </t>
                                                 <t t-else="">
                                                     <t t-set="disc" t-value="(product_price * line.discount * 0.01) * line.product_qty"/>
@@ -537,13 +540,14 @@
                                             
                                             
                                             <td style="text-align: right; border: 1px solid #dbdde0; padding: 60px 10px 10px 10px;" t-if="product_price != unit_discount_price">
-                                                <t t-if="'eto dubai' in doc.customer_id.property_product_pricelist.name.lower() or 'other eto' in doc.customer_id.property_product_pricelist.name.lower()">
-                                                    <t t-if="doc.customer_id.property_product_pricelist.currency_id.name=='USD'">
+                                                <t t-if="'eto dubai' in doc.customer_id.property_product_pricelist.name or 'other eto' in doc.customer_id.property_product_pricelist.name">
+                                                    <t t-set="product_price" t-value="line.product_pro_id.lst_price"/>
+                                                    <!-- <t t-if="doc.customer_id.property_product_pricelist.currency_id.name=='USD'">
                                                         <t t-set="product_price" t-value="line.product_pro_id.lst_price_usd"/>
                                                     </t>
                                                     <t t-if="doc.customer_id.property_product_pricelist.currency_id.name=='CAD'">
                                                         <t t-set="product_price" t-value="line.product_pro_id.lst_price"/>
-                                                    </t>
+                                                    </t> -->
                                                 </t>
                                                 <span t-if="product_price" style="white-space: nowrap;color:red;text-decoration:line-through;">
                                                     <span t-options='{"widget": "monetary", "display_currency":  doc.pricelist_id.currency_id}' t-esc="product_price" style="white-space: nowrap;color:black;" />
@@ -551,7 +555,7 @@
                                                 <span style="text-align: center" t-if="not product_price"> N/A </span>
                                                 <br/>
                                                 <t t-if="unit_discount_price">
-                                                    <t t-if="'eto dubai' in doc.customer_id.property_product_pricelist.name.lower() or 'other eto' in doc.customer_id.property_product_pricelist.name.lower()">
+                                                    <t t-if="'eto dubai' in doc.customer_id.property_product_pricelist.name or 'other eto' in doc.customer_id.property_product_pricelist.name">
                                                         <span t-options='{"widget": "monetary", "display_currency":  doc.pricelist_id.currency_id}' t-esc="doc.env['product.pricelist.item'].search([('product_id','=',line.product_pro_id.id),('pricelist_id','=',doc.customer_id.property_product_pricelist.id)]).fixed_price" style="white-space: nowrap;color:#7693f8;"/>
                                                     </t>
                                                     <t t-else="">
@@ -587,7 +591,7 @@
                                     <td name="td_total_amount">
                                         <strong>Subtotal</strong>
                                     </td>
-                                    <td name="td_amount_value" class="text-right">
+                                    <td name="td_amount_value" class="text-end">
                                         <span t-esc="round(main_subtotal,2)" t-options='{"widget": "monetary", "display_currency":  doc.pricelist_id.currency_id}'/>
                                     </td>
                                 </tr>
@@ -595,7 +599,7 @@
                                     <td name="td_discount">
                                         <strong>Discount</strong>
                                     </td>
-                                    <td name="td_discount_value" class="text-right">
+                                    <td name="td_discount_value" class="text-end">
                                         <span t-esc="round(line_discount,2)" t-options='{"widget": "monetary", "display_currency":  doc.pricelist_id.currency_id}'/>
                 
                                     </td>
@@ -604,7 +608,7 @@
                                     <td name="td_final_total">
                                         <strong>Total</strong>
                                     </td>
-                                    <td name="td_final_total_value" class="text-right">
+                                    <td name="td_final_total_value" class="text-end">
                                         (<span t-esc="doc.customer_id.property_product_pricelist.currency_id.name"/>)
                                            <span  t-esc="(main_subtotal - line_discount) + is_shipping_product" t-options='{"widget": "monetary", "display_currency":  doc.pricelist_id.currency_id}'/>
                                        </td>
@@ -613,7 +617,7 @@
                                     <td name="td_amount_total_qty">
                                         <strong>Total Quantity</strong>
                                     </td>
-                                    <td name="td_amount_total" class="text-right">
+                                    <td name="td_amount_total" class="text-end">
                                         <span t-esc="int(total_line_qty)"/>
                                     </td>
                                 </tr>

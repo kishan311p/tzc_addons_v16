@@ -62,6 +62,10 @@ class account_move(models.Model):
     filtere_state = fields.Char(compute="_compute_payment_status",copy=False,store=True)
     is_admin = fields.Char(compute='_compute_is_admin', string='is_admin')
     report_token = fields.Char('Report Access Token')
+    sale_order_number = fields.Char('Order Number',compute="_compute_sale_order_number")
+    kits_amount_tax = fields.Float('Tax')
+    kits_amount_total = fields.Float('Total')
+    kits_amount_residual = fields.Float('Amount Due')
 
     def _compute_is_admin(self):
         for record in self:
@@ -103,7 +107,7 @@ class account_move(models.Model):
                     record.name = name
 
     def button_cancel(self):
-        if self.state in ['draft']:
+        if self.state in ['draft','cancel']:
             self.commission_line_ids.action_cancel()
             # self.with_context(from_cancel=True).write({'is_commission_paid':False})
             sale_id = self.env['sale.order'].search([('invoice_ids','in',self.ids)],limit=1)
@@ -357,10 +361,14 @@ class account_move(models.Model):
             move.amount_is_shipping_total = total_amount_is_shipping_total
             move.amount_without_discount = amount_without_discount
             move.global_discount = - global_discount
-            move.amount_discount = amount_discount + abs(global_discount)
+            move.amount_discount = move.order_id.picked_qty_order_discount
+            # move.amount_discount = amount_discount + abs(global_discount)
             sign = move.direction_sign
             move.amount_untaxed = sign * total_untaxed_currency
             move.amount_tax = sign * total_tax_currency
+            move.kits_amount_tax = move.order_id.picked_qty_order_tax
+            move.kits_amount_total = move.order_id.picked_qty_order_total
+            move.kits_amount_residual = move.order_id.picked_qty_order_total
             move.amount_total = sign * total_currency
             move.amount_residual = -sign * total_residual_currency
             move.amount_untaxed_signed = -total_untaxed
@@ -766,6 +774,17 @@ class account_move(models.Model):
         elif '#' in name:
             name = name.replace('#', '%23')
         return name
+
+    def _compute_sale_order_number(self):
+        for rec in self:
+            try:
+                sale_order_id = self.env['sale.order'].search([('invoice_ids','in',self.ids)],limit=1)
+                rec.sale_order_number = sale_order_id.name
+            except:
+                rec.sale_order_number = ""
+
+    def ordered_qty_button(self):
+        pass
 
     # QuickBook Backend Don't Remove
     

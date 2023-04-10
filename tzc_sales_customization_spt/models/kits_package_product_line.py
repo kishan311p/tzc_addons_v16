@@ -73,15 +73,15 @@ class kits_package_product_lines(models.Model):
             unit_price = product_price
             if rec.product_id.sale_type:
                 if rec.product_id.sale_type == 'on_sale':
-                    if user_currency == 'CAD':
-                        unit_price =  rec.product_id.on_sale_cad
-                    else:
-                        unit_price = rec.product_id.on_sale_usd
+                    # if user_currency == 'CAD':
+                    #     unit_price =  rec.product_id.on_sale_cad
+                    # else:
+                    unit_price = rec.product_id.on_sale_usd
                 if rec.product_id.sale_type == 'clearance':
-                    if user_currency == 'CAD':
-                        unit_price = rec.product_id.clearance_cad
-                    else:
-                        unit_price =  rec.product_id.clearance_usd
+                    # if user_currency == 'CAD':
+                    #     unit_price = rec.product_id.clearance_cad
+                    # else:
+                    unit_price =  rec.product_id.clearance_usd
             rec.usd_price = unit_price
 
     @api.depends('usd_price')

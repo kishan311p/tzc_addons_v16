@@ -18,7 +18,7 @@
                                 <p style="margin-top:0px;">Hello <t t-out="ctx['name']"/>,</p>
                                 <!-- <br/> -->
                                 <!-- <br/> -->
-                                <p>This is a reminder to process order {{object.name}}. <b>
+                                <p>This is a reminder to process order <t t-out="object.name"/>. <b>
                                 <a t-attf-href="{{object.get_base_url()}}/web#id={{object.id}}&amp;action={{object.env.ref('sale.action_orders').id}}&amp;model=sale.order&amp;view_type=form" target="_blank" style="text-decoration: none;"><t t-out="object.name"/>,</a>
                                 </b></p>
                                 <!-- <br/> -->
@@ -31,7 +31,7 @@
                                 </p>
                                 <!-- <br/> -->
                                 <p style="margin-bottom:0px;">Thank you,<br/>
-                                ETO Support</p>
+                                Everything Optical Management</p>
                             </td>
                         </tr>
                     </tbody>

@@ -7,21 +7,11 @@ class remove_done_quantity_spt(models.TransientModel):
     _inherit = ["barcodes.barcode_events_mixin"]
     _description = 'Remove Done Quantity'
 
-    # line_ids = fields.Many2many("remove.stock.done.qty.line.spt")
+    product_ids = fields.Many2many("product.product")
     line_ids = fields.One2many("remove.stock.done.qty.line.spt",'product_line_id')
     picking_id = fields.Many2one('stock.picking',"Picking")
     total_qty = fields.Integer("Total Qty",compute="_compute_total_qty")
-
-    def _get_domain(self):
-        product_ids = False
-        if self._context and self._context.get('default_picking_id'):
-            delivery_id = self.env['stock.picking'].browse([self._context.get('default_picking_id')])
-            if delivery_id:
-                product_ids = self.env['product.product'].search([('id','in',delivery_id.move_ids_without_package.product_id.ids)])
-
-        return [('id','in',product_ids.ids)] if product_ids else []
-
-    product_id = fields.Many2one('product.product','Manual',domain=_get_domain)
+    product_id = fields.Many2one('product.product','Manual')
     qty = fields.Integer(default=1)
     # product_id = fields.Many2one('product.product','Manually Product Select')
 
@@ -235,16 +225,16 @@ class remove_stock_done_qty_line_spt(models.TransientModel):
     product_line_id = fields.Many2one('remove.done.quantity.spt',"Product")
     sequence = fields.Integer(string='Sequence',index=True)
 
-    # def action_product_selection(self):
-    #     self.ensure_one()
-    #     if self.product_line_id:
-    #         self.product_line_id.product_id = self.product_id.id
+    def action_product_selection(self):
+        self.ensure_one()
+        if self.product_line_id:
+            self.product_line_id.product_id = self.product_id.id
 
-    #         return {
-    #                 'name': 'Remove Items',
-    #                 'view_mode': 'form',
-    #                 'target': 'new',
-    #                 'res_id':self.product_line_id.id,
-    #                 'res_model': 'remove.done.quantity.spt',
-    #                 'type': 'ir.actions.act_window',
-    #                 }
+            return {
+                    'name': 'Remove Items',
+                    'view_mode': 'form',
+                    'target': 'new',
+                    'res_id':self.product_line_id.id,
+                    'res_model': 'remove.done.quantity.spt',
+                    'type': 'ir.actions.act_window',
+                    }

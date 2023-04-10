@@ -4,24 +4,25 @@
         <record id="tzc_order_shipped_notification_to_salesperson_spt" model="mail.template">
             <field name="name">Order Shipped Notification To Salesperson</field>
             <field name="email_from">"ETO-Support" &lt;{{(object.company_id.catchall_email or user.email)}}&gt;</field>
-            <field name="subject">Order {{object.sale_id.name}} has shipped.</field>
-            <field name="email_to">{{(object.sale_id.user_id.email and '%s &lt;%s&gt;' % (object.sale_id.user_id.partner_id.name, object.sale_id.user_id.email) or '')}}</field>
-            <field name="model_id" ref="stock.model_stock_picking"/>
+            <field name="subject">Order {{object.name}} has shipped.</field>
+            <field name="email_to">{{(object.user_id.email and '%s &lt;%s&gt;' % (object.user_id.partner_id.name, object.user_id.email) or '')}}</field>
+            <!-- <field name="model_id" ref="stock.model_stock_picking"/> -->
+            <field name="model_id" ref="sale.model_sale_order"/>
             <field name="auto_delete" eval="False"/>
-            <field name="lang">{{object.sale_id.user_id.partner_id.lang}}</field>
+            <field name="lang">{{object.user_id.partner_id.lang}}</field>
             <field name="body_html" type="html">
                 <!-- CONTENT -->
                     <table border="0" cellpadding="0" cellspacing="0" width="590" style="min-width: 590px; background-color: white; padding: 0px 8px 0px 8px; border-collapse:separate;">
                         <tr>
                             <td valign="top" style="font-size: 13px;">
-                                <p style="margin-top:0px;">Hello <t t-out="object.sale_id.user_id.partner_id.name"/>
+                                <p style="margin-top:0px;">Hello <t t-out="object.user_id.partner_id.name"/>
 ,</p>
                                 <!-- <br/> -->
                                 <p>Good news!<br/>
                                                     The order number <b>
-                                <t t-out="object.sale_id.name"/>
+                                <t t-out="object.name"/>
                             </b> for client <b>
-                            <t t-out="object.sale_id.partner_id.name"/>
+                            <t t-out="object.partner_id.name"/>
                         </b>, has been shipped. 
                         <br/>
                                                    The tracking details of the shipment is:
@@ -30,14 +31,14 @@
                         <t t-out="object.shipping_id.name or ''"/>
                         <br/>
                         <b>Tracking Number: </b>
-                        <t t-out="object.tracking_number_spt or ''"/>
+                        <t t-out="object.kits_carrier_tracking_ref or ''"/>
                         <br/>
                     </p>
                     <p>Please follow up with the client.</p>
                     <p style="margin-bottom:0px;">Thank you,<br/>
                                                     ETO Support</p>
                     <!-- <a t-attf-href="{{object.get_base_url()}}/report/pdf/sale.report_saleorder/{{object.sale_id.id}}"> -->
-                	<t t-set="pdf_url" t-value="object.env['ir.model'].generate_report_access_link('sale.order',object.sale_id.id,'sale.action_report_saleorder', object.partner_id.id)"/>
+                	<t t-set="pdf_url" t-value="object.env['ir.model'].generate_report_access_link('sale.order',object.id,'sale.action_report_saleorder', object.partner_id.id)"/>
                     <a t-attf-href="{{pdf_url.get('url') if pdf_url.get('success') and pdf_url.get('url') else ''}}">
                         <img src="/tzc_sales_customization_spt/static/src/img/pdf.png" style="height:60px;width:100px;"/>
                     </a>
@@ -84,23 +85,24 @@
 
         <record id="stock.mail_template_data_delivery_confirmation" model="mail.template">
             <field name="name">Delivery: Send by Email</field>
-            <field name="model_id" ref="model_stock_picking"/>
-            <field name="subject">Order {{object.name}} is on its way! </field>
+            <!-- <field name="model_id" ref="model_stock_picking"/> -->
+            <field name="model_id" ref="sale.model_sale_order"/>
+            <field name="subject">Order {{object.picking_ids.filtered(lambda x: x.state != 'cancel').name}} is on its way! </field>
             <!-- <field name="subject">Your Everything Optical (ETO) order has been shipped!</field> -->
             <field name="email_from">"ETO-Support" &lt;{{(object.user_id.company_id.catchall_email or user.email)}}&gt;</field>
             <field name="partner_to">{{object.partner_id.id}}</field>
             <field name="body_html" type="html">
                 <div style="margin: 0px; padding: 0px;">
-                    <p style="margin-top: 0px; padding: 0px; font-size: 13px;">Dear <t t-out="object.sale_id.partner_id.name"/>,</p>
-                    <p>We wanted to let you know that your order #<t t-out="object.sale_id.name"/> has been shipped! </p>
+                    <p style="margin-top: 0px; padding: 0px; font-size: 13px;">Dear <t t-out="object.partner_id.name"/>,</p>
+                    <p>We wanted to let you know that your order #<t t-out="object.name"/> has been shipped! </p>
                     <p>
-                        Here are the details of your shipment:
+                        Here are the details of your shipment: <br/>
                             - Shipping Carrier: <t t-out="object.shipping_id.name"/><br/>
-                            - Tracking Number: <t t-out="object.tracking_number_spt"/>
+                            - Tracking Number: <t t-out="object.kits_carrier_tracking_ref"/>
                     </p>
                     <p>It may take up to 24 hours for the carriers to update their system with the shipping information.</p>
                     <p>We hope you enjoy your purchase and thank you for your business!</p>
-                    <p>If you have any questions or concerns with your shipment, please don't hesitate to contact <t t-out="object.sale_id.user_id.name"/> by replying to this email.</p>
+                    <p>If you have any questions or concerns with your shipment, please don't hesitate to contact <t t-out="object.user_id.name"/> by replying to this email.</p>
                     <p style="margin-bottom:0px;">
                         Best regards,<br/>
                         <t t-if="user and user.signature">
@@ -111,7 +113,7 @@
                         </t>
                     </p>
                 <!-- <a href="${object.get_base_url()}/report/pdf/sale.report_saleorder/${object.sale_id.id}"> -->
-                    <t t-set="pdf_url" t-value="${object.env['ir.model'].generate_report_access_link(object.id,'sale.action_report_saleorder',object.partner_id.id,'pdf')}"/>
+                    <t t-set="pdf_url" t-value="object.env['ir.model'].generate_report_access_link(object.id,'sale.action_report_saleorder',object.partner_id.id,'pdf')"/>
                     <a t-attf-href="{{pdf_url.get('url') if pdf_url.get('success') and pdf_url.get('url') else ''}}">
                         <img src="/tzc_sales_customization_spt/static/src/img/pdf.png" style="height:60px;width:100px;"/>
                     </a>

@@ -66,3 +66,4 @@ from . import product_edit_wizard_spt
 # from . import product_edit_wizard_line_spt
 from . import mail_compose_message_wizard
 from . import mass_mailing_message_wizard
+from . import stock_change_product_qty

@@ -4,23 +4,23 @@
         <record id="mail_template_for_approve_payment" model="mail.template">
             <field name="name">Payment Approve</field>
             <field name="subject">Payment Approved!</field>
-            <field name="email_from">"ETO-Support" &lt;${object.company_id.catchall_email or user.email | safe}&gt;</field>
-            <field name="email_to">${(object.partner_id.email or '')|safe}</field>
+            <field name="email_from">"ETO-Support" &lt;{{object.company_id.catchall_email or user.email}}&gt;</field>
+            <field name="email_to">{{object.partner_id.email or ''}}</field>
             <field name="model_id" ref="sale.model_sale_order"/>
             <field name="auto_delete" eval="False"/>
-            <field name="lang">${object.partner_id.lang}</field>
+            <field name="lang">{{object.partner_id.lang}}</field>
             <field name="body_html" type="html">
-                <p style="margin-top:0px;">Dear ${object.partner_id.name},</p>
+                <p style="margin-top:0px;">Dear {{object.partner_id.name}},</p>
                 <p>
                     Great news! Your payment has been approved. Please find details below:
                 </p>
                 <br/>
                 <p>
-                    Order Number: <b>${ctx['order']}</b>
+                    Order Number: <b><t t-out="ctx['order']"/></b>
                     <br/>
-                    Date of Payment: <b>${ctx['date']}</b>
+                    Date of Payment: <b><t t-out="ctx['date']"/></b>
                     <br/>
-                    Amount: <b>${ctx['amount']}</b>
+                    Amount: <b><t t-out="ctx['amount']"/></b>
                 </p>
                 <br/>
                 <p>
@@ -37,23 +37,23 @@
         <record id="mail_template_for_decline_payment" model="mail.template">
             <field name="name">Payment Decline</field>
             <field name="subject">Payment Declined</field>
-            <field name="email_from">"ETO-Support" &lt;${object.company_id.catchall_email or user.email | safe}&gt;</field>
-            <field name="email_to">${(object.partner_id.email or '')|safe}</field>
+            <field name="email_from">"ETO-Support" &lt;{{object.company_id.catchall_email or user.email}}&gt;</field>
+            <field name="email_to">{{object.partner_id.email or '')}}</field>
             <field name="model_id" ref="sale.model_sale_order"/>
             <field name="auto_delete" eval="False"/>
-            <field name="lang">${object.partner_id.lang}</field>
+            <field name="lang">{{object.partner_id.lang}}</field>
             <field name="body_html" type="html">
-                <p style="margin-top:0px;">Dear ${object.partner_id.name},</p>
+                <p style="margin-top:0px;">Dear <t t-out="object.partner_id.name"/>,</p>
                 <p>
                     Your credit card payment has declined. Please find details below:
                 </p>
                 <br/>
                 <p>
-                    Order Number: <b>${ctx['order']}</b>
+                    Order Number: <b><t t-out="ctx['order']"/></b>
                     <br/>
-                    Date of Payment: <b>${ctx['date']}</b>
+                    Date of Payment: <b><t t-out="ctx['date']"/></b>
                     <br/>
-                    Amount: <b>${ctx['amount']}</b>
+                    Amount: <b><t t-out="ctx['amount']"/></b>
                 </p>
                 <br/>
                 <p>

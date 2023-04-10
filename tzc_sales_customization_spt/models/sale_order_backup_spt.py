@@ -123,8 +123,9 @@ class sale_order_backup_spt(models.Model):
                 'date_order' : record.date_order,
                 'applied_promo_code' : record.applied_promo_code,
                 'user_id': record.user_id.id,
-                'pricelist_id' : record.pricelist_id.id
-
+                'pricelist_id' : record.pricelist_id.id,
+                'currency_id':record.currency_id.id,
+                'b2b_currency_id':record.currency_id.id,
             })
             for line in record.line_ids.filtered(lambda x: not x.is_pack_order_line):
                 sale_order_line_obj.create({

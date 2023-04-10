@@ -24,8 +24,8 @@ class mail_compose_message_wizard(models.TransientModel):
 
     @api.constrains('campaign_name')
     def _camp_name_const(self):
-        res_partner_model_id = self.env.ref('base.model_res_partner').model
-        res_users_model_id = self.env.ref('base.model_res_users').model
+        res_partner_model_id = self.env.ref('base.model_res_partner').sudo().model
+        res_users_model_id = self.env.ref('base.model_res_users').sudo().model
         for rec in self:
             if rec.model and (rec.model == res_partner_model_id or rec.model == res_users_model_id):
                 campaign_names  = self.env['marketing.campaign'].search([]).mapped('name')

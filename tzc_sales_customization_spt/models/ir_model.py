@@ -71,10 +71,10 @@ class ir_model(models.Model):
                     })
                     if report_type == 'excel':
                         url += '&cid={}'.format(partner_id)
-                    result.update({
-                        'success': True,
-                        'url': url,
-                    })
+                result.update({
+                    'success': True,
+                    'url': url
+                })
         except Exception as e:
             result.update({
                 'error': str(e),

@@ -39,7 +39,7 @@
                                 <field name="line_ids">
                                     <tree default_order="product_id" limit="10000000" decoration-muted="is_shipping_product==True or is_admin==True or is_global_discount == True">
                                         <field name="product_id"/>
-                                        <field name="is_fs" readonly="1" force_save="1"/>
+                                        <!-- <field name="is_fs" readonly="1" force_save="1"/> -->
                                         <field name="sale_type" readonly="1" force_save="1"/>
                                         <field name="is_promotion_applied" readonly="1" force_save="1"/>
                                         <field name="is_shipping_product" invisible="1"/>

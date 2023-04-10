@@ -1,15 +1,24 @@
 from odoo import _, api, fields, models, tools
 from datetime import datetime
 
+from .sale_order import NO_TRACKING_FIELDS
+
 
 class mail_tracking_value(models.Model):
     _inherit = "mail.tracking.value"
 
     @api.model
-    def create_tracking_values(self, initial_value, new_value, col_name, col_info, tracking_sequence,model_name):
+    def create_tracking_values(self, initial_value, new_value, col_name, col_info, tracking_sequence, model_name):
         tracked = True
         field = self.env['ir.model.fields']._get(model_name, col_name)
-        values = {'field': field.id, 'field_desc': col_info['string'], 'field_type': col_info['type'], 'tracking_sequence': tracking_sequence}
+        values = {'field': field.id, 'field_desc': col_info['string'],
+                  'field_type': col_info['type'], 'tracking_sequence': tracking_sequence}
+
+        # Stop Auto Logl
+        if model_name == 'sale.order' and col_name in NO_TRACKING_FIELDS+[
+            'picked_qty_order_subtotal', 'picked_qty_order_discount', 'picked_qty_order_total',
+        ]:
+            tracked = False
 
         if col_info['type'] in ['integer', 'float', 'char', 'text', 'datetime', 'monetary']:
             values.update({

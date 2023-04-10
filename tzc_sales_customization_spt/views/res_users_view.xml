@@ -123,9 +123,6 @@
             <field name="inherit_id" ref="base.view_users_tree"/>
             <field name="arch" type="xml">
 
-                <field name='login_date' position="after">
-                    <field name='signup_user_ip' optional="show"/>
-                </field>
                 <xpath expr="//tree" position="attributes">
                     <attribute name="delete">false</attribute>
                 </xpath>
@@ -149,7 +146,11 @@
                     <attribute name="string">Last Logged on</attribute>
                     <attribute name="optional">show</attribute>
                 </field>
+                <xpath expr="//field[@name='state']" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </xpath>
                 <field name="login_date" position="after">
+                    <field name='signup_user_ip' optional="show"/>
                     <field name="last_order_id" optional="show"/>
                     <field name="last_order_date" optional="show"/>
                     <field name="last_order_value" optional="show"/>

@@ -116,15 +116,18 @@ class ir_report_action(models.Model):
                                 product_link = child_data[0].string
                                 child(lambda x:x.string and 'teameto' in x.string)[0].extract()
                                 if self.xml_id in ['tzc_sales_customization_spt.action_catalog_report_pdf','tzc_sales_customization_spt.action_catalog_report_spt','tzc_sales_customization_spt.action_confirm_catalog_report_spt']:
-                                    new_tag = soup.new_tag("img", src=product_link,onerror="this.onerror=null;this.src='https://www.teameto.com/web/static/src/img/placeholder.png';", style="height:130px; width:270px;")
-                                else:
                                     new_tag = soup.new_tag("img", src=product_link,onerror="this.onerror=null;this.src='https://www.teameto.com/web/static/src/img/placeholder.png';", style="max-height:130px; max-width:270px;")
+                                elif report_ref == 'tzc_sales_customization_spt.confirm_catalog_report_pdf_template':
+                                    new_tag = soup.new_tag("img", src=product_link,onerror="this.onerror=null;this.src='https://www.teameto.com/web/static/src/img/placeholder.png';", style="max-height:130px; max-width:270px;")
+                                else:
+                                    new_tag = soup.new_tag("img", src=product_link,onerror="this.onerror=null;this.src='https://www.teameto.com/web/static/src/img/placeholder.png';", style="max-height:50px; max-width:120px;")
                                 # child.find_all('div')[0].append(new_tag) if child.find_all('div') else None
                                 child.append(new_tag)
             bodies = [soup]
 
         pdf_content = self._run_wkhtmltopdf(
             bodies,
+            report_ref=report_ref,
             header=header,
             footer=footer,
             landscape=context.get('landscape'),

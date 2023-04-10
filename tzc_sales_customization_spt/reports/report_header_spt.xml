@@ -6,7 +6,7 @@
             <div class="o_background_header">
                 <div class="row" style="font-size:25px">
                     <div class="col-6 mb4">
-                        <img t-if="company.logo" t-att-src="image_data_uri(company.logo)" style="margin:40px 5px 5px 10px;height:51px;max-width:425px;" alt="Logo"/>
+                        <img t-if="company.logo" t-att-src="image_data_uri(company.logo)" style="margin:60px 5px 5px 10px;height:70px;max-width:525px;" alt="Logo"/>
                     </div>
                     <div class="col-6 float-right company_address" style="padding-left:20%;">
                         <div>

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
 
-    <data noupdate="1">
+    <data noupdate="0">
 
         <!-- <record id="rule_mailing_contact_of_manager_country" model="ir.rule">
             <field name="name">Mailing Contacts of Manager's designated countries</field>
@@ -42,6 +42,38 @@
             <field name="domain_force">[('user_id','in',user.allow_user_ids.ids)]</field>
             <field name="groups" eval="[(4, ref('tzc_sales_customization_spt.group_sales_manager_spt'))]"/>
         </record> -->
+        <function name = "write" model = "ir.model.data"> 
+            <function name = "search" model = "ir.model.data"> 
+                <value eval = "[('module', '=', 'base'),('name','=','res_partner_rule_private_employee')]"/> 
+            </function>
+            <value eval =" {'noupdate': False} "/> 
+        </function>
+
+        <record id="base.res_partner_rule_private_employee" model="ir.rule">
+            <field name="name">res.partner.rule.private.employee</field>
+            <field name="model_id" ref="base.model_res_partner"/>
+            <field name="domain_force">['|', ('type', '!=', 'private'), ('type', '=', False)]</field>
+            <field name="groups" eval="[Command.link(ref('base.group_user')),]"/>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="True"/>
+            <field name="perm_create" eval="True"/>
+            <field name="perm_unlink" eval="True"/>
+            <field name="active">0</field>
+        </record>
+
+        <function name = "write" model = "ir.model.data"> 
+            <function name = "search" model = "ir.model.data"> 
+                <value eval = "[('module', '=', 'base'),('name','=','res_partner_rule')]"/> 
+            </function>
+            <value eval =" {'noupdate': False} "/> 
+        </function>
+
+        <record model="ir.rule" id="base.res_partner_rule">
+            <field name="name">res.partner company</field>
+            <field name="active">0</field>
+            <field name="model_id" ref="base.model_res_partner"/>
+            <field name="domain_force">['|','|', ('partner_share', '=', False), ('company_id', 'in', company_ids), ('company_id', '=', False)]</field>
+        </record>
 
         <record id="sales_manager_rule_for_sale_order_spt" model="ir.rule">
             <field name="name">Sales Manager For Sale Order</field>
@@ -86,7 +118,7 @@
         <record id="self_access_rule_for_internaluser_res_partner_spt" model="ir.rule">
             <field name="name">self rule for internal user</field>
             <field ref="base.model_res_partner" name="model_id"/>
-            <field name="domain_force">['|',('id','=',user.partner_id.id),('is_user_internal','=',True)]</field>
+            <field name="domain_force">['|','|',('id','=',user.partner_id.id),('is_user_internal','=',True),('id','in',[4,2])]</field>
             <field name="groups" eval="[(4, ref('base.group_user'))]"/>
             <field name="perm_unlink" eval="False"/>
         </record>

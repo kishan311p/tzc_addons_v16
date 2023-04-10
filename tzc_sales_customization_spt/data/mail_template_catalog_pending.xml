@@ -403,7 +403,7 @@
                                             <tr>
                                                 <td valign="top" style="font-size: 13px;">
                                                     <p style="margin-top:0px;">Hello <t t-out="object.user_id.name"/>,</p>
-                                                    <p>The catalog <b>(<t t-out="object.name"/>)</b> sent to <b><t t-out="customer_id.name"/></b>was sent out successfully.</p>
+                                                    <p>The catalog <b>(<t t-out="object.name"/>)</b> sent to <b><t t-out="customer_id.name"/></b> was sent out successfully.</p>
                                                     <p>
                                                         <div style="text-align: left; margin: 16px 0px 16px 0px; font-size: 14px;">
                                                             <a t-attf-href="{{object.get_base_url()}}/web#id={{object.id}} &amp;action={{object.env.ref('tzc_sales_customization_spt.sale_catalog_action').id}} &amp;model=sale.catalog&amp;view_type=form" target="_blank" style="background-color: #1F7B6F; padding: 8px 16px 8px 16px; text-decoration: none; color: #fff; border-radius: 5px; font-size:13px;">

@@ -55,7 +55,7 @@ from . import delivery_carrier
 from . import kits_shipping_error_log
 from . import kits_double_move_log
 from . import kits_stock_move
-from . import flash_menu_spt
+# from . import flash_menu_spt
 from . import sale_catalog
 from . import sale_catalog_line
 from . import product_packaging
@@ -76,3 +76,4 @@ from . import marketing_activity
 from . import mailing_trace
 from . import campaign_report_contacts
 from . import campaign_monetization_spt
+from . import stock_move_line

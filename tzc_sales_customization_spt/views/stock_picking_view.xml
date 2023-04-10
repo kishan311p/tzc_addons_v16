@@ -10,6 +10,16 @@
                 <xpath expr="//button[@name='do_print_picking']" position="attributes">
                     <attribute name="invisible">1</attribute>
                 </xpath>
+                <xpath expr="//sheet/group/group[2]/field[@name='date_deadline']" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </xpath>
+                <xpath expr="//sheet/group/group[2]/field[@name='products_availability']" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </xpath>
+                <xpath expr="//sheet/notebook/page[@name='operations']/field[@name='move_ids_without_package']/tree/field[@name='product_id']" position="before">
+                    <field name="pro_primary_image_url" widget="image" options="{'zoom': true,'thumb_image':'pro_primary_image_url','preview_image':'pro_primary_image_url','size': [100, 90]}"/>
+                    <!-- <field name="id" /> -->
+                </xpath>
                 <xpath expr="//button[@name='action_cancel']" position="replace">
                     <button name="action_product_qty_delivery_order_cancel" invisible="1" string="Cancel Without Delivery Qty" class="oe_highlight" attrs="{'invisible': [('state', '=','cancel')]}" groups="tzc_sales_customization_spt.group_cancel_picking_rule_spt" type="object" />
                 </xpath>
@@ -24,8 +34,14 @@
                     </div>
                 </xpath>
                 <xpath expr="//field[@name='scheduled_date']" position="attributes">
-                    <attribute name="attrs">{'readonly': [('state','in',['assigned','done','cancel'])]}</attribute>
+                    <attribute name="invisible">1</attribute>
                 </xpath>
+                <xpath expr="//field[@name='date_done']" position="attributes">
+                    <attribute name="string">Shipped Date</attribute>
+                </xpath>
+                <!-- <xpath expr="//field[@name='scheduled_date']" position="after">
+                    <field name="ship_date" />
+                </xpath> -->
                 <xpath expr="//button[@name='action_picking_move_tree']" position="attributes">
                     <attribute name="invisible">1</attribute>
                 </xpath>
@@ -35,7 +51,7 @@
                     <attribute name="readonly">1</attribute>
                 </xpath>
                 <xpath expr="//field[@name='partner_id']" position="after">
-                    <label for="partner_street" string=""/>
+                    <label for="partner_street" string="" class="d-none" />
 
                     <div class="o_address_format">
                         <field name="partner_street" placeholder="Street..." class="o_address_street" readonly="1"/>
@@ -56,9 +72,9 @@
                     <button name="picking_cancel_spt" string="Cancel Delivery" class="oe_highlight" attrs="{'invisible': [('state', 'in',['draft','cancel'])]}" groups="tzc_sales_customization_spt.group_cancel_picking_rule_spt" type="object" confirm="This delivery will be cancel." context="{'cancel_delivery': True }"/>
                     <!-- <button name="action_open_return_picking_wizard_kits" string="Return" class="oe_highlight" attrs="{'invisible': ['|','|',('kits_return_picking','=',True), ('state', '!=', 'done'), ('is_locked', '=', False)]}" type="object" groups="base.group_user" /> -->
                 </xpath>
-                <xpath expr="//button[@name='%(stock.action_report_delivery)d']" position="attributes">
+                <!-- <xpath expr="//button[@name='%(stock.action_report_delivery)d']" position="attributes">
                     <attribute name="invisible">1</attribute>
-                </xpath>
+                </xpath> -->
                 <xpath expr="//button[@name='do_print_picking']" position="attributes">
                     <attribute name="attrs">{'invisible' : [('state','!=','done')]}</attribute>
                 </xpath>
@@ -121,8 +137,10 @@
                 </xpath>
                 <xpath expr="//field[@name='user_id']" position="replace">
                 </xpath>
+                <xpath expr="//field[@name='picking_type_id']" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </xpath>
                 <xpath expr="//field[@name='picking_type_id']" position="after">
-                    <field name="user_id" attrs="{'readonly': [('state','in',['assigned','done','cancel'])]}"/>
                     <field name="updated_on" readonly="1"/>
                     <field name="updated_by" readonly="1"/>
                     <!-- <field name="sale_website_id" invisible="1"/> -->
@@ -142,33 +160,35 @@
                             </button>
                         </div>
                     </div>
-                    <div role="alert" class="alert alert-info" attrs="{'invisible':['|',('state','in',('done','cancel')),('show_update_button','=',False)]}">
-                        Make sure you update cases in order.
-                    </div>
+                    
                 </xpath>
+                
                 <xpath expr="//div[@name='button_box']" position="after">
-                    <div class="row">
-                        <div class="col-2 text-left"/>
-                        <div class="col-2 text-left"/>
-                        <div class="col-2 text-left"/>
-                        <div class="col-2 text-left"/>
-                        <div class="col-2 text-left"/>
-                        <div class="col-2 text-end">
-                            <label for="ordered_qty" style="margin-right: 5%;"/>
-                            <field name="ordered_qty" />
-                            <br/>
-                            <label for="delivered_qty" style="margin-right: 5%;"/>
-                            <field name="delivered_qty" />
-                            <field name="order_qty_count_spt" invisible="1" />
-                            <field name="source_spt" invisible="1" />
-
-                        </div>
-                    </div>
+                    <field name="order_qty_count_spt" invisible="1" />
+                    <field name="source_spt" invisible="1" />
                 </xpath>
                 <xpath expr="//div[@name='button_box']" position="inside">
                     <button type="object" name="action_picking_to_order" class="oe_stat_button" icon="fa-shopping-bag">
                         <div class="o_field_widget o_stat_info">
-                            Order
+                            <field name="sale_order_number" />
+                        </div>
+                    </button>
+                </xpath>
+                <xpath expr="//div[@name='button_box']/field[@name='has_scrap_move']" position="before">
+                    <button name="ordered_qty_button" readonly="1" type="object" class="oe_stat_button disabled opacity-100">
+                        <div class="col-12 text-center">
+                            <field name="ordered_qty" style="color:#017e84;"/>
+                        </div>
+                        <div class="col-12 text-center">
+                            <span style="color:#017e84;">Ordered Quantity</span>
+                        </div>
+                    </button>
+                    <button name="ordered_qty_button" readonly="1" type="object" class="oe_stat_button disabled opacity-100">
+                        <div class="col-12 text-center">
+                            <field name="delivered_qty" style="color:#017e84;"/>
+                        </div>
+                        <div class="col-12 text-center">
+                            <span style="color:#017e84;">Picked Quantity</span>
                         </div>
                     </button>
                 </xpath>
@@ -262,9 +282,9 @@
             <xpath expr="//button[@name='%(stock.act_stock_return_picking)d']" position="attributes">
                 <attribute name="invisible">1</attribute>
             </xpath>
-            <xpath expr="//button[@name='excel_picking_order_report']" position="after">
+            <!-- <xpath expr="//button[@name='excel_picking_order_report']" position="after">
                 <button name="action_create_credit_note" type="object" string="Credit Note" class="oe_highlight" attrs="{'invisible':[('state','!=','done')]}"/>
-            </xpath>
+            </xpath> -->
             <!-- <xpath expr="//sheet" position="inside">
                 <field name="kits_return_picking" invisible="1" />
             </xpath> -->
@@ -294,7 +314,11 @@
                 <widget name="web_ribbon" class="s-ribbon-right" title="Package" attrs="{'invisible': ['|',('package_order','=',False),'&amp;',('package_order','=',True),('package_order_status','=','out_of_stock')]}" />
             </xpath>
             <xpath expr="//page/field[@name='move_ids_without_package']/tree/field[@name='product_uom_qty']" position="before">
-                <field name="package_id" readonly="1" />
+                <field name="package_id" readonly="1" invisible="1" />
+            </xpath>
+            
+            <xpath expr="//field[@name='origin']" position="attributes">
+                <attribute name="invisible">1</attribute>
             </xpath>
 
         </field>
@@ -316,21 +340,21 @@
                 <field name="location_dest_id" options="{'no_create': True}" string="To" groups="stock.group_stock_multi_locations" optional="show"/>
                 <field name="partner_id" optional="show"/>
                 <field name="is_signed" string="Signed" optional="hide" groups="stock.group_stock_sign_delivery"/>
-                <field name="user_id" optional="hide" widget="many2one_avatar_user"/>
-                <field name="scheduled_date" optional="show" widget="remaining_days" attrs="{'invisible':[('state', 'in', ('done', 'cancel'))]}"/>
+                <field name="user_id" optional="hide" invisible="1" widget="many2one_avatar_user"/>
+                <field name="date_done" optional="show" string="Shipped Date"/>
                 <field name="picking_type_code" invisible="1"/>
                 <field name="products_availability_state" invisible="1" options='{"lazy": true}'/>
-                <field name="products_availability" options='{"lazy": true}' optional="hide" attrs="{'invisible': ['|', ('picking_type_code', '!=', 'outgoing'), ('state', 'not in', ['confirmed', 'waiting', 'assigned'])]}" decoration-success="state == 'assigned' or products_availability_state == 'available'" decoration-warning="state != 'assigned' and products_availability_state in ('expected', 'available')" decoration-danger="state != 'assigned' and products_availability_state == 'late'"/>
-                <field name="date_deadline" optional="hide" widget="remaining_days" attrs="{'invisible':[('state', 'in', ('done', 'cancel'))]}"/>
-                <field name="date_done" string="Effective Date" optional="hide"/>
+                <field name="products_availability" options='{"lazy": true}' optional="hide" attrs="{'invisible': ['|', ('picking_type_code', '!=', 'outgoing'), ('state', 'not in', ['confirmed', 'waiting', 'assigned'])]}" decoration-success="state == 'assigned' or products_availability_state == 'available'" decoration-warning="state != 'assigned' and products_availability_state in ('expected', 'available')" decoration-danger="state != 'assigned' and products_availability_state == 'late'" invisible="1"/>
+                <field name="date_deadline" optional="hide" widget="remaining_days" attrs="{'invisible':[('state', 'in', ('done', 'cancel'))]}" invisible="1"/>
+                <!-- <field name="date_done" string="Effective Date" optional="hide" invisible="1"/> -->
                 <field name="origin" optional="show"/>
                 <field name="backorder_id" optional="hide" invisible="1"/>
                 <field name="company_id" groups="base.group_multi_company" optional="show"/>
                 <field name="state" optional="show" widget="badge" decoration-danger="state=='cancel'" decoration-info="state== 'assigned'" decoration-muted="state == 'draft'" decoration-success="state == 'done'" decoration-warning="state not in ('draft','cancel','done','assigned')"/>
                 <field name="activity_exception_decoration" widget="activity_exception"/>
                 <field name="json_popover" widget="stock_rescheduling_popover" nolabel="1" attrs="{'invisible': [('json_popover', '=', False)]}"/>
-                <field name="priority"/>
-                <field name="picking_type_id" optional="show"/>
+                <field name="priority" invisible="1"/>
+                <field name="picking_type_id" optional="show" invisible="1"/>
             </tree>
         </field>
     </record>
@@ -343,7 +367,7 @@
             <xpath expr="//field[@name='backorder_id']" position="after">
                 <field name="carrier_tracking_ref" optional="show"/>
                 <field name="carrier_id" optional="show"/>
-                <field name="destination_country_code" optional="hide" string="Destination"/>
+                <field name="destination_country_code" optional="hide" string="Destination" invisible="1"/>
                 <field name="weight" optional="show"/>
                 <field name="shipping_weight" invisible="1" optional="show"/>
             </xpath>
@@ -361,6 +385,12 @@
             <xpath expr="//group[@name='carrier_data']/div[2]" position="attributes">
                 <attribute name="invisible">1</attribute>
             </xpath>
+            <xpath expr="//group[@name='carrier_data']" position="attributes">
+                <attribute name="string"></attribute>
+            </xpath>
+            <xpath expr="//page[@name='extra']/group[1]" position="attributes">
+                <attribute name="string">Shipping Information</attribute>
+            </xpath>
             <xpath expr="//group[@name='carrier_data']/label[@for='weight']" position="attributes">
                 <attribute name="invisible">1</attribute>
             </xpath>
@@ -372,26 +402,20 @@
                 <attribute name="invisible">1</attribute>
             </xpath>
             <field name="carrier_id" position="attributes">
-                <attribute name="string">API Carrier</attribute>
+                <attribute name="invisible">1</attribute>
             </field>
             <xpath expr="//button[@name='print_return_label']" position="attributes">
                 <attribute name="invisible">1</attribute>
-            </xpath>
-            <xpath expr="//field[@name='carrier_id']" position="attributes">
-                <attribute name="string">Service Type</attribute>
-                <attribute name="force_save">1</attribute>
-                <attribute name="attrs">{'readonly':[('state','in',['done','cancel'])]}</attribute>
-                <attribute name="domain">[('delivery_type','=',provider),('is_freight','=',False)]</attribute>
             </xpath>
             <xpath expr="//field[@name='carrier_id']" position="after">
                 <field name="fright" attrs="{'invisible':[('is_ups','=',False)]}"/>
             </xpath>
             <xpath expr="//group[@name='carrier_data']" position="inside">
-                <label for="shipping_weight" string="Weight for shipping"/>
+                <!-- <label for="shipping_weight" string="Weight for shipping"/>
                 <div>
                     <field name="shipping_weight" class="oe_inline"/>
                     <field name="weight_uom_name" nolabel="1" class="oe_inline" style="margin-left:5px"/>
-                </div>
+                </div> -->
                 <label for="weight_of_cases" />
                 <div>
                     <field name="weight_of_cases" class="oe_inline"/> kg
@@ -409,6 +433,13 @@
                 <field name="file_name" invisible="1"/>
                 <field name="is_provider_pick_up" invisible="1"/>
                 <div>
+                    <div class="o_row d-flex">
+                        <label for="carrier_id" style="font-weight: bold;" attrs="{'readonly':[('state','in',['done','cancel'])]}">Service Type</label>
+                        <div class="col-12">
+                            <field name="carrier_id" string="Service Type" force_save="1" attrs="{'readonly':[('state','in',['done','cancel'])]}" domain="[('delivery_type','=',provider),('is_freight','=',False)]" options="{ 'no_open': True}"/>
+                            <!-- <field name="calulate_shipping_cost" widget="monetary" force_save="1" attrs="{'invisible':[('state','in',('cancel','merged'))],'readonly':[('state','in',['done','cancel','assigned'])]}"/> -->
+                        </div>
+                    </div>
                     <div class="o_row d-flex">
                         <label for="calulate_shipping_cost" style="font-weight: bold;" attrs="{'invisible':[('state','in',('cancel','merged'))]}"/>
                         <div class="col-12">
@@ -479,11 +510,7 @@
                         <field name="kits_country_id" placeholder="Country" class="o_address_country" readonly="1" attrs="{'readonly':[('state','in',['done','cancel'])]}" options="{'no_open': True,'no_create': True, 'no_create_edit':True}"/>
                     </div>
                 </group>
-                <div class="d-block mt-4 col-lg-12" attrs="{'invisible':[('is_ups','=',False)]}">
-                    <div role="alert" class="alert alert-info text-left" style="margin-left:10px; margin-right:2px; font-size:19px;">
-                        Note : If your order weight is smaller than 68.04 kg (150 lb), It consider as a small shipment.
-                    </div>
-                </div>
+                
                 <group string="Package and shipment details" attrs="{'invisible':[('is_ups','=',False),('is_fedex','=',False)]}">
                     <field name="package_contain" attrs="{'readonly':[('state','in',['done','cancel'])],'required':[('state','=','assigned'),('is_fedex','=',True)],'invisible':[('is_fedex','=',False)]}" />
                     <field name="num_of_package" invisible="1"/>
@@ -534,6 +561,16 @@
                     <button string="B13A Detail Pdf" icon="fa-download" name="action_download_pdf_report" type="object" class="oe_highlight" attrs="{'invisible':['|',('is_fedex','=',False),('state','in',['done','cancel','merged'])]}"/>
                 </group>
             </xpath>
+            <xpath expr="//sheet" position="before">
+                <div role="alert" class="alert alert-info" attrs="{'invisible':['|',('state','in',('done','cancel')),('show_update_button','=',False)]}">
+                    Make sure you update cases in order.
+                </div>
+                <div class="d-block mt-4 col-lg-12" attrs="{'invisible':[('is_ups','=',False)]}">
+                    <div role="alert" class="alert alert-info text-left" style="margin-left:10px; margin-right:2px; font-size:19px;">
+                        Note : If your order weight is smaller than 68.04 kg (150 lb), It consider as a small shipment.
+                    </div>
+                </div>
+            </xpath>
             <xpath expr="//page[@name='extra']" position="attributes">
                 <attribute name="string">Shipping Details</attribute>
                 <attribute name="attrs">{'readonly':[('state','in',['done','cancel'])]}</attribute>
@@ -549,6 +586,7 @@
             </xpath>
         </field>
     </record>
+    
     <record id="stock_picking_inherit_stock_account_view_form" model="ir.ui.view">
         <field name="name">stock.picking.inherit.stock.account.view.form</field>
         <field name="model">stock.picking</field>
@@ -568,6 +606,65 @@
     <record model="ir.actions.act_window" id="stock.stock_product_normal_action">
         <field name="name">Products</field>
     </record>
+    <record id="stock.stock_move_line_action" model="ir.actions.act_window">
+        <field name="name">Moves History</field>
+        <field name="res_model">stock.move.line</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="view_mode">tree,kanban,pivot,form</field>
+        <field name="view_id" ref="stock.view_move_line_tree"/>
+        <field name="context">{'search_default_done': 1, 'create': 0}</field>
+        <field name="domain">[('state','in',['draft','waiting','confirmed','partially_available','assignede','done'])]</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_empty_folder">
+                There's no product move yet
+            </p><p>
+                This menu gives you the full traceability of inventory operations on a specific product.
+                You can filter on the product to see all the past movements for the product.
+            </p>
+        </field>
+    </record>
+    <record id="view_stock_move_line_reference_tree_inherit_tzc_spt" model="ir.ui.view">
+        <field name="name">view.stock.move.line.reference.tree.inherit.tzc.spt</field>
+        <field name="model">stock.move.line</field>
+        <field name="inherit_id" ref="stock.view_move_line_tree"/>
+        <field name="arch" type="xml">
+
+            <xpath expr="//tree" position="attributes">
+                <attribute name="default_order">id</attribute>
+            </xpath>
+            <xpath expr="//field[@name='state']" position="replace">
+                <field name="status" widget="badge" optional="show" decoration-danger="status=='cancelled'" decoration-info="status=='reserved'" decoration-muted="status=='added'" decoration-success="status=='shipped'" decoration-warning="status=='removed'"/>
+            </xpath>
+            <xpath expr="//field[@name='location_id']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+            <xpath expr="//field[@name='location_dest_id']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+            <xpath expr="//field[@name='qty_done']" position="after">
+                <field name="qty_on_hand" />
+                <field name="available_qty" />
+            </xpath>
+        </field>
+    </record>
+    <!-- <record id="stock_picking_batch.stock_picking_batch_action" model="ir.actions.act_window">
+        <field name="name">Batch Transfers</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">stock.picking.batch</field>
+        <field name="view_mode">tree,kanban,form</field>
+        <field name="domain">[('is_wave', '=', False)]</field>
+        <field name="search_view_id" ref="stock_picking_batch_filter"/>
+        <field name="help" type="html">
+          <p class="o_view_nocontent_smiling_face">
+            Create a new batch transfer
+          </p><p>
+            The goal of the batch transfer is to group operations that may
+            (needs to) be done together in order to increase their efficiency.
+            It may also be useful to assign jobs (one person = one batch) or
+            help the timing management of operations (tasks to be done at 1pm).
+          </p>
+        </field>
+    </record> -->
 </data>
 
 

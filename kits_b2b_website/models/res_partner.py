@@ -23,9 +23,13 @@ class res_partner(models.Model):
 
 
     def write(self, vals):
+        if 'b2b_pricelist_id' in vals:
+            vals['property_product_pricelist'] = vals['b2b_pricelist_id']
+        elif 'property_product_pricelist' in vals:
+            vals['b2b_pricelist_id'] = vals['property_product_pricelist']
         res = super().write(vals)
-        for record in self:
-            vals['b2b_pricelist_id'] = record.property_product_pricelist.id
+        # for record in self:
+        #     vals['b2b_pricelist_id'] = record.property_product_pricelist.id
         return res
     
     def get_image(self):

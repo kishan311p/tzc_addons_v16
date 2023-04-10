@@ -9,6 +9,8 @@ import re
 import random
 import requests
 import base64
+import urllib
+
 class product_template(models.Model):
     _inherit = 'product.product'
     
@@ -140,7 +142,8 @@ class ProductProduct(models.Model):
     assign_qty = fields.Float('Assign Qty',default=0.0)
     # kits_ecom_categ_id = fields.Many2one('product.public.category','Website Public Product Category')
     variant_count = fields.Integer('Product Variant',compute="_get_product_variant")
-    is_image_missing = fields.Boolean(compute="_get_image",store=True)
+    # is_image_missing = fields.Boolean(compute="_get_image",store=True)
+    is_image_missing = fields.Boolean()
     is_forcefully_unpublished = fields.Boolean('Forcefully Unpublished')
     primary_image_url = fields.Char('Primary Url',compute='_compute_primary_image_url',store=True)
     sec_image_url = fields.Char('Secondary Url',compute='_compute_primary_image_url',store=True)
@@ -170,6 +173,7 @@ class ProductProduct(models.Model):
         string="HS Code",
         help="Standardized code for international shipping and goods declaration. At the moment, only used for the FedEx shipping provider.",
     )
+    product_pricelist_item_ids = fields.One2many('product.pricelist.item','product_id')
 
     
     _sql_constraints = [
@@ -200,16 +204,24 @@ class ProductProduct(models.Model):
             if rec.image_secondary_url:
                 rec.sec_image_url = rec.image_secondary_url
 
-    @api.depends('image_url','image_secondary_url')
-    def _get_image(self):
+    @api.onchange('image_url','image_secondary_url','case_image_url')
+    def get_image(self):
         for rec in self:
-            rec.is_image_missing = False
+            is_image_missing = False
             try:
-                img_primary = urlopen(rec.image_url)
-                img_secondary = urlopen(rec.image_secondary_url)
-                rec.is_image_missing = False
+                img_primary = urllib.request.Request(rec.image_url, headers={"User-Agent": "Chrome"})
+                urllib.request.urlopen(img_primary)
+
+                img_secondary = urllib.request.Request(rec.image_secondary_url, headers={"User-Agent": "Chrome"})
+                urllib.request.urlopen(img_secondary)
+
+                case_image_url = urllib.request.Request(rec.case_image_url, headers={"User-Agent": "Chrome"})
+                urllib.request.urlopen(case_image_url)
+
             except:
-                rec.is_image_missing = True
+                is_image_missing = True
+
+            rec.is_image_missing = is_image_missing
 
     def _get_product_variant(self):
         for rec in self:
@@ -219,7 +231,12 @@ class ProductProduct(models.Model):
             if product_ids:
                 rec.variant_count = len(product_ids)
     
-    
+    def _read_group_categ_id(self, categories, domain, order):
+        category_ids = self.env.context.get('default_categ_id')
+        if not category_ids and self.env.context.get('group_expand'):
+            category_ids = categories._search([], order=order, access_rights_uid=SUPERUSER_ID)
+        return categories.browse(category_ids)
+
     def calculate_actual_stock(self):
         for rec in self:
             rec.actual_stock = 0.0
@@ -458,13 +475,19 @@ class ProductProduct(models.Model):
             record.write({'image_secondary':image_secondary})
 
     def action_product_reserv_qty(self):
+        sml= self.env['stock.move.line'].search([('state','not in',['done','cancel']),('qty_done','!=',0),('product_id','in',self.ids)])
+        pick_id = sml.mapped("picking_id")
+        order_ids = pick_id.mapped('order_id').ids
+        order_ids = list(set(order_ids))
         return {
             'name': _('Reserved Products'),
             'view_mode': 'tree,form',
-            'res_model': 'stock.move.line',
-            'views': [(self.env.ref('stock.view_move_line_tree').id, 'tree'),(self.env.ref('stock.view_move_line_form').id, 'form')],
+            'res_model': 'sale.order',
+            'views': [
+                (self.env.ref('sale.view_order_tree').id, 'tree'),
+                (self.env.ref('sale.view_order_form').id, 'form'),],
             'type': 'ir.actions.act_window',
-            'domain': [('state','not in',['done','cancel']),('qty_done','!=',0),('product_id','in',self.ids)],
+            'domain': [('id','in',order_ids)],
         }
 
     def actoin_get_sale_order(self):
@@ -532,20 +555,9 @@ class ProductProduct(models.Model):
     def action_update_quantity_on_hand(self):
         return self.product_tmpl_id.with_context(default_product_id=self.id,reserve_calculated=True, create=True).action_update_quantity_on_hand()
 
-    @api.depends('image_url','image_secondary_url')
-    def _get_image(self):
-        for rec in self:
-            rec.is_image_missing = False
-            try:    
-                img_primary = urlopen(rec.image_url)
-                img_secondary = urlopen(rec.image_secondary_url)
-                rec.is_image_missing = False
-            except:
-                rec.is_image_missing = True
-
     def refresh_product_image(self):
         for rec in self.search([]):
-            rec._get_image()
+            rec.get_image()
 
     def action_create_bundal_product(self):
         unpublished = self.filtered(lambda product: not product.is_published_spt)
@@ -637,19 +649,19 @@ class ProductProduct(models.Model):
 
         return super(ProductProduct,self).write(vals)
 
-    def action_open_eto_method_wizard(self):
-        form_view_id = self.env.ref('tzc_sales_customization_spt.eto_sale_method_wizard_from_view_spt').id
-        return {
-            'name': _('Set Pricelist'),
-            'type': 'ir.actions.act_window',
-            'view_mode': 'form',
-            'view_type':'form',
-            'views':[[form_view_id,'form']],
-            'res_model': 'eto.sale.method.wizard.spt',
-            'target': 'new',
-            'context' : {
-                'default_product_ids': [(6,0,self.ids)],}
-        }
+    # def action_open_eto_method_wizard(self):
+    #     form_view_id = self.env.ref('tzc_sales_customization_spt.eto_sale_method_wizard_from_view_spt').id
+    #     return {
+    #         'name': _('Set Pricelist'),
+    #         'type': 'ir.actions.act_window',
+    #         'view_mode': 'form',
+    #         'view_type':'form',
+    #         'views':[[form_view_id,'form']],
+    #         'res_model': 'eto.sale.method.wizard.spt',
+    #         'target': 'new',
+    #         'context' : {
+    #             'default_product_ids': [(6,0,self.ids)],}
+    #     }
 
     def name_get(self):
         res = super(ProductProduct, self).name_get()
@@ -719,9 +731,10 @@ class ProductProduct(models.Model):
         return action
     
     def unpublished_product_from_website_spt(self):
-        # brand_obj = self.env['product.brand.spt']
+
+        self.env['product.product'].search([('is_published_spt','=',True)]).write({'is_published_spt':False})
+
         product_obj = self.env['product.product']
-        # categ_obj = self.env['product.category']
         color_obj = self.env['product.color.spt']
         material_obj = self.env['product.material.spt']
         rim_type_obj = self.env['product.rim.type.spt']
@@ -734,29 +747,30 @@ class ProductProduct(models.Model):
         color_ids = color_obj.search([('name','ilike','other')]).ids
 
         # publish products
-        unpublished = self.search([('is_published_spt','=',False)])
-        unpublished = unpublished.filtered(lambda x: x.eye_size_compute > 1 and x.available_qty_spt > 0 and not x.is_image_missing)
-        unpublished = unpublished.filtered(lambda x: x.product_color_name.id not in color_ids) 
-        unpublished = unpublished.filtered(lambda x: x.rim_type.id not in rim_type_ids)
-        unpublished = unpublished.filtered(lambda x: x.secondary_color_name.id not in color_ids)
-        unpublished = unpublished.filtered(lambda x: x.lense_color_name.id not in color_ids)
-        unpublished = unpublished.filtered(lambda x: x.material_id.filtered(lambda y:y.id not in material_ids))
-        unpublished = unpublished.filtered(lambda x: x.shape_id.filtered(lambda y:y.id not in shape_ids))
-        unpublished.write({'is_published_spt':True})
-        self._cr.commit()
+        product_ids = product_obj.search([])
+        product_ids = product_ids.filtered(lambda x: x.eye_size_compute > 1 and x.available_qty_spt > 0 and not x.is_image_missing)
+        product_ids = product_ids.filtered(lambda x: x.product_color_name.id and x.product_color_name.id not in color_ids)
+        product_ids = product_ids.filtered(lambda x: x.rim_type.id and x.rim_type.id not in rim_type_ids)
+        # product_ids = product_ids.filtered(lambda x: x.secondary_color_name.id and x.secondary_color_name.id not in color_ids)
+        product_ids = product_ids.filtered(lambda x: x.lense_color_name.id and x.lense_color_name.id not in color_ids)
+        product_ids = product_ids.filtered(lambda x: x.material_id.filtered(lambda y:y.id not in material_ids))
+        product_ids = product_ids.filtered(lambda x: x.shape_id.filtered(lambda y:y.id not in shape_ids))
+        product_ids.write({'is_published_spt':True})
+        
+        # self._cr.commit()
 
         # unpublish product
-        self.search([('is_published_spt','=',True),('is_forcefully_unpublished','=',True)]).write({'is_published_spt':False})
-        product_ids = self.search([('is_published_spt','=',True)])
-        product_obj |= product_ids.filtered(lambda x: x.available_qty_spt <= 0 or x.eye_size_compute < 1 and x.is_image_missing)
-        product_obj |= product_ids.filtered(lambda x: x.product_color_name.id in color_ids) 
-        product_obj |= product_ids.filtered(lambda x: x.rim_type.id in rim_type_ids)
-        product_obj |= product_ids.filtered(lambda x: x.secondary_color_name.id in color_ids)
-        product_obj |= product_ids.filtered(lambda x: x.lense_color_name.id in color_ids)
-        product_obj |= product_ids.filtered(lambda x: x.material_id.filtered(lambda y:y.id in material_ids))
-        product_obj |= product_ids.filtered(lambda x: x.shape_id.filtered(lambda y:y.id in shape_ids))
-        product_obj.write({'is_published_spt':False})
-        self._cr.commit()
+        # self.search([('is_published_spt','=',True),('is_forcefully_unpublished','=',True)]).write({'is_published_spt':False})
+        # product_ids = self.search([('is_published_spt','=',True)])
+        # product_obj |= product_ids.filtered(lambda x: x.available_qty_spt <= 0 or x.eye_size_compute < 1 and x.is_image_missing)
+        # product_obj |= product_ids.filtered(lambda x: x.product_color_name.id in color_ids) 
+        # product_obj |= product_ids.filtered(lambda x: x.rim_type.id in rim_type_ids)
+        # product_obj |= product_ids.filtered(lambda x: x.secondary_color_name.id in color_ids)
+        # product_obj |= product_ids.filtered(lambda x: x.lense_color_name.id in color_ids)
+        # product_obj |= product_ids.filtered(lambda x: x.material_id.filtered(lambda y:y.id in material_ids))
+        # product_obj |= product_ids.filtered(lambda x: x.shape_id.filtered(lambda y:y.id in shape_ids))
+        # product_obj.write({'is_published_spt':False})
+        # self._cr.commit()
 
         # Declare
         # eye_glass_cated_id = self.env['product.category'].search([('name','=','E')])
@@ -967,7 +981,7 @@ class ProductProduct(models.Model):
                     ) between %(min_price)s and %(max_price)s
                     ;
         """%({
-                        'field':'on_sale_cad' if pricelist.currency_id.name == 'CAD' else 'on_sale_usd',
+                        'field':'on_sale_usd',
                         'pids': str(self.ids).replace('[','(').replace(']',')'),
                         'country_id': self.env.user.country_id.id,
                         'min_price': min_price,
@@ -1421,6 +1435,7 @@ class ProductProduct(models.Model):
                 'unit_discount_price' : product_price,
                 })
             catalog_line_id._onchange_fix_discount_price()
+            catalog_id._onchange_pricelist_id()
         
         return {
             'name': _('Sale Catalog'),

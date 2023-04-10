@@ -265,7 +265,7 @@ The ${object.company_id.name} Team -->
         <record id="portal.mail_template_data_portal_welcome" model="mail.template">
             <field name="name">Portal: new user</field>
             <field name="model_id" ref="portal.model_portal_wizard_user"/>
-            <field name="subject">Your Account has been Approved! Welcome to Team Everything Optical.</field>
+            <field name="subject">Welcome to Team Everything Optical! Your Account has been created successfully.</field>
             <field name="email_from">"ETO-Support" &lt;{{(object.user_id.company_id.catchall_email or user.email)}}&gt;</field>
             <!-- <![CDATA[ETO-Support <${ |safe}>]]> -->
             <field name="email_to">{{object.user_id.email_formatted }}</field>
@@ -307,14 +307,14 @@ The ${object.company_id.name} Team -->
                                                 <tr>
                                                     <td valign="top" style="font-size: 13px;">
                                                         <div>
-                                                            <p style="margin-top:0px;">Dear <t t-out="object.user_id.name or ''"/>
-,</p>
+                                                            <p style="margin-top:0px;">Dear <t t-out="object.user_id.name or ''"/>,</p>
                                                             <p>Thank you for register to be a part of the Everything Optical Team! We're excited to have you as our client. Your account has been successfully created, and you can now log in using the email address and password you provided during registration.</p>
                                                             <!-- <br/> -->
                                                             <p>As part of the team, you'll now have access to the wide range of products we carry along with inventory and pricing information. Once you sign in, you can view inventory, add to cart and proceed to check out and orders will be created on your account.</p>
                                                             <p>
                                                                 <div style="margin: 16px 0px 16px 0px;">
-                                                                    <a t-attf-href="{{object.user_id.signup_url}}" style="background-color: #1F7B6F; padding: 8px 16px 8px 16px; text-decoration: none; color: #fff; border-radius: 5px; font-size:13px;">
+                                                                    <!-- <a t-attf-href="{{object.user_id.signup_url}}" style="background-color: #1F7B6F; padding: 8px 16px 8px 16px; text-decoration: none; color: #fff; border-radius: 5px; font-size:13px;"> -->
+                                                                    <a t-attf-href="{{object.env.context.get('url')}}" style="background-color: #1F7B6F; padding: 8px 16px 8px 16px; text-decoration: none; color: #fff; border-radius: 5px; font-size:13px;">
                                                                     Sign in
                                                                     </a>
                                                                 </div>
@@ -411,7 +411,7 @@ The ${object.company_id.name} Team -->
                             The invoice for your order <t t-out="object.order_id.name"/> is now ready. Payment details are available on the invoice
                         </p>
                         <p>
-                        For further assistance, please reach out to <t t-out="object.order_id.user_id.name"/>by replying to this email.
+                        For further assistance, please reach out to <t t-out="object.order_id.user_id.name"/> by replying to this email.
                         </p>
                         <p>
                         Best regards,<br/>

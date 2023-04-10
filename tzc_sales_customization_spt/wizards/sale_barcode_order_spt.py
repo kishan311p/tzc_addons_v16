@@ -176,16 +176,16 @@ class sale_barcode_order_line_spt(models.TransientModel):
     barcode_order_id = fields.Many2one('sale.barcode.order.spt','Barcode Order')
     sequence = fields.Integer(string='Sequence',index=True)
 
-    # def action_product_selection(self):
-    #     self.ensure_one()
-    #     if self.barcode_order_id:
-    #         self.barcode_order_id.product_id = self.product_id.id
+    def action_product_selection(self):
+        self.ensure_one()
+        if self.barcode_order_id:
+            self.barcode_order_id.product_id = self.product_id.id
 
-    #         return {
-    #                 'name': 'Scan Order',
-    #                 'view_mode': 'form',
-    #                 'target': 'new',
-    #                 'res_id':self.barcode_order_id.id,
-    #                 'res_model': 'sale.barcode.order.spt',
-    #                 'type': 'ir.actions.act_window',
-    #                 }
+            return {
+                    'name': 'Scan Order',
+                    'view_mode': 'form',
+                    'target': 'new',
+                    'res_id':self.barcode_order_id.id,
+                    'res_model': 'sale.barcode.order.spt',
+                    'type': 'ir.actions.act_window',
+                    }

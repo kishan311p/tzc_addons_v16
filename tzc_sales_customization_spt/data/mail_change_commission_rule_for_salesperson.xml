@@ -22,7 +22,7 @@
                                 <!-- % set rule = object.env.context.get('rule_name') -->
                                 <t t-set="orders" t-value="object.env.context.get('updated_orders')"/>
                                 <!-- % set orders = object.env.context.get('updated_orders') -->
-                                <p>{{object.env.user.name}} has changed your commission rule.</p>
+                                <p><t t-out="object.env.user.name"/> has changed your commission rule.</p>
                                 <!-- <t t-if="orders and rule">
                                     <br/>Your commission in following invoices are updated according to new rule <t t-out="rule"/>:
                                 <t t-out="orders"/> -->

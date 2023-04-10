@@ -126,7 +126,7 @@
                                     <tree editable="bottom" create="1" delete="1" decoration-success="mailgun_verification_status == 'approved'" decoration-danger="mailgun_verification_status == 'rejected'">
                                         <field name="mailgun_verification_status" />
                                         <field name="internal_id" />
-                                        <field name="display_name" />
+                                        <field name="display_name" string='Name/City/Country' />
                                         <field name="contact_name_spt" />
                                         <field name="phone" />
                                         <field name="email" />
@@ -151,9 +151,10 @@
                                         <field name="is_vendor" />
                                         <field name="is_email_verified" />
                                         <field name="is_granted_portal_access" />
-                                        <field name="catalog_count" />
-                                        <field name="updated_on" />
-                                        <field name="updated_by" />
+                                        <field name="catalog_count" string="#Catalog" />
+                                        <field name="updated_on" string="Last Updated On" />
+                                        <field name="updated_by" string="Last Updated By" />
+                                        <field name="access_field_flag"/>
                                     </tree>
                                 </field>
                             </page>

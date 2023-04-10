@@ -122,8 +122,8 @@
                             <th>Material</th>
                             <th>HS Code</th>
                             <th>Qty</th>
-                            <th class="text-right">Price</th>
-                            <th class="text-right">Subtotal</th>
+                            <th class="text-end">Price</th>
+                            <th class="text-end">Subtotal</th>
                         </tr>
                     </thead>
                     <t t-set="sub_total" t-value="0.00"/>
@@ -282,7 +282,8 @@
                                                                 <strong>Tax</strong>
                                                             </td>
                                                             <td name="td_amount_by_group" class="text-end o_price_total">
-                                                                <span t-esc="o.amount_tax" t-options='{"widget": "monetary", "display_currency": o.currency_id}'/>
+                                                                <span t-esc="o.currency_id.symbol"/>
+                                                                <span t-esc="'{0:.2f}'.format(round(o.kits_amount_tax,2))"/>
                                                             </td>
                                                         </tr>
 
@@ -293,7 +294,8 @@
                                                             <td style="white-space: nowrap;" name="td_amount_by_group" class="text-end o_price_total">
                                                             (                                                                <span t-esc="o.currency_id.name"/>
                                                                 )
-                                                                <span t-options="{&quot;widget&quot;: &quot;monetary&quot;, &quot;display_currency&quot;: o.currency_id}" t-esc="round((sub_total + o.amount_is_shipping_total + o.amount_is_admin  + o.amount_tax) - abs(o.global_discount),2)"/>
+                                                                <span t-esc="'{0:.2f}'.format(round(o.kits_amount_total,2))"/>
+                                                                <!-- <span t-options="{&quot;widget&quot;: &quot;monetary&quot;, &quot;display_currency&quot;: o.currency_id}" t-esc="round((sub_total + o.amount_is_shipping_total + o.amount_is_admin  + o.amount_tax) - abs(o.global_discount),2)"/> -->
                                                             </td>
                                                         </tr>
                                                         <tr class="border-black">
@@ -381,7 +383,8 @@
                                                                 <strong>Tax</strong>
                                                             </td>
                                                             <td name="td_amount_by_group" class="text-right o_price_total">
-                                                                <span t-esc="o.amount_tax" t-options='{"widget": "monetary", "display_currency": o.currency_id}'/>
+                                                                <span t-esc="o.currency_id.symbol"/>
+                                                                <span t-esc="'{0:.2f}'.format(round(o.kits_amount_tax,2))"/>
                                                             </td>
                                                         </tr>
 
@@ -392,7 +395,8 @@
                                                             <td style="white-space: nowrap;" name="td_amount_by_group" class="text-right o_price_total">
                                                             (                                                                <span t-esc="o.currency_id.name"/>
                                                                 )
-                                                                <span t-options="{&quot;widget&quot;: &quot;monetary&quot;, &quot;display_currency&quot;: o.currency_id}" t-esc="round((sub_total + o.amount_is_shipping_total + o.amount_is_admin  + o.amount_tax) - abs(o.global_discount),2)"/>
+                                                                <span t-esc="'{0:.2f}'.format(round(o.kits_amount_total,2))"/>
+                                                                <!-- <span t-options="{&quot;widget&quot;: &quot;monetary&quot;, &quot;display_currency&quot;: o.currency_id}" t-esc="round((sub_total + o.amount_is_shipping_total + o.amount_is_admin  + o.amount_tax) - abs(o.global_discount),2)"/> -->
                                                             </td>
                                                         </tr>
                                                         <tr class="border-black">

@@ -13,25 +13,26 @@ class AccountMoveLine(models.Model):
     unit_discount_price = fields.Float('Discount',compute='_compute_discount_price')
     product_categ_id = fields.Many2one('product.category',related="product_id.categ_id", string='Category', readonly=True)
     discount_unit_price = fields.Float('Our Price',compute='_compute_discount_price')
-    is_fs = fields.Boolean("Is FS?",compute='_compute_boolean_fields')
+    # is_fs = fields.Boolean("Is FS?",compute='_compute_boolean_fields')
+    # is_fs = fields.Boolean("Is FS?")
     is_promotion_applied = fields.Boolean("Is promotion applied?",compute='_compute_boolean_fields')
-    
-    def write(self, vals):
-        if 'pos_model' in self._context.keys():
-            create_context = {}
-            for context in self._context:
-                create_context[context] = self._context[context]
-            create_context['check_move_validity'] = False
-            self.env.context = create_context     
-        for record in self:
-            if record.debit:
-                if not record.balance:
-                    vals['balance']= record.debit
-            if record.credit:
-                if not record.balance:
-                    vals['balance']= record.credit
+    primary_image_url = fields.Char("Primary Image URL",related='product_id.primary_image_url')
+    # def write(self, vals):
+    #     if 'pos_model' in self._context.keys():
+    #         create_context = {}
+    #         for context in self._context:
+    #             create_context[context] = self._context[context]
+    #         create_context['check_move_validity'] = False
+    #         self.env.context = create_context     
+    #     for record in self:
+    #         if record.debit:
+    #             if not record.balance:
+    #                 vals['balance']= record.debit
+    #         if record.credit:
+    #             if not record.balance:
+    #                 vals['balance']= record.credit
 
-        return super(AccountMoveLine, self).write(vals)
+    #     return super(AccountMoveLine, self).write(vals)
 
 
 
@@ -44,14 +45,20 @@ class AccountMoveLine(models.Model):
     #    )
     def _compute_discount_price(self):
         for record in self:
-            discounted_price = record.price_unit
-            unit_discount_price = 0.0
-            if record.discount:
-                unit_discount_price = round( (record.price_unit*record.discount)/100,2)
-                discounted_price = round(record.price_unit - unit_discount_price,2)
-            record.unit_discount_price = round(unit_discount_price,2)
-            record.discount_unit_price = round(discounted_price,2)
-
+            # discounted_price = record.price_unit
+            # unit_discount_price = 0.0
+            # if record.discount:
+            #     unit_discount_price = round( (record.price_unit*record.discount)/100,2)
+                # discounted_price = round(record.price_unit - unit_discount_price,2)
+            record.unit_discount_price = round(record.sale_line_ids.fix_discount_price,2)
+            record.discount_unit_price = round(record.sale_line_ids.unit_discount_price,2) #Our Price
+            if record.product_id.detailed_type == 'product':
+                total = record._get_price_total_and_subtotal_model(record.sale_line_ids[0].price_unit,record.sale_line_ids[0].picked_qty,record.sale_line_ids[0].discount,record.sale_line_ids[0].currency_id,record.sale_line_ids[0].product_id,record.partner_id,record.sale_line_ids[0].tax_id,record.move_type)
+            else:
+                total = record._get_price_total_and_subtotal_model(record.sale_line_ids[0].price_unit,record.sale_line_ids[0].product_uom_qty,record.sale_line_ids[0].discount,record.sale_line_ids[0].currency_id,record.sale_line_ids[0].product_id,record.partner_id,record.sale_line_ids[0].tax_id,record.move_type)
+                
+            record.price_total = total.get('price_total')
+            record.price_subtotal = record.sale_line_ids.picked_qty_subtotal # Subtotal
 
     @api.onchange('product_id')
     def _onchange_product_id_spt(self):
@@ -69,11 +76,11 @@ class AccountMoveLine(models.Model):
     @api.depends('sale_line_ids')
     def _compute_boolean_fields(self):
         for record in self:
-            record.is_fs = False
+            # record.is_fs = False
             record.sale_type = False
             record.is_promotion_applied = False
             if record.sale_line_ids:
-                record.is_fs = record.sale_line_ids[0].is_fs
+                # record.is_fs = record.sale_line_ids[0].is_fs
                 record.sale_type = record.sale_line_ids[0].sale_type
                 record.is_promotion_applied = record.sale_line_ids[0].is_promotion_applied
 
@@ -99,9 +106,20 @@ class AccountMoveLine(models.Model):
         #compute unit_discount_price
 
         unit_discount_price = (discount *0.01) * price_unit
-        price_unit_wo_discount = price_unit - unit_discount_price
-        subtotal = quantity * price_unit_wo_discount
-        
+        # unit_discount_price = format(unit_discount_price,'.2f')
+        # try:
+        #     price_unit_wo_discount = price_unit - float(str(unit_discount_price).split('.')[0]+'.'+str(unit_discount_price).split('.')[1][0:2])
+        # except:
+        price_unit_wo_discount = price_unit - round(unit_discount_price,2)
+
+        try:
+            subtotal = quantity * float(str(price_unit_wo_discount).split('.')[0]+'.'+str(price_unit_wo_discount).split('.')[1][0:2])
+        except:
+            subtotal = quantity * round(price_unit_wo_discount,2)
+
+        # price_unit_wo_discount = float(price_unit_wo_discount)
+        # unit_discount_price = float(unit_discount_price)
+
         # price_unit_wo_discount = round(price_unit - ((discount *0.01) * price_unit),2)
         
 
@@ -112,7 +130,7 @@ class AccountMoveLine(models.Model):
             res['price_subtotal'] = taxes_res['total_excluded']
             res['price_total'] = taxes_res['total_included']
         else:
-            res['price_total'] = res['price_subtotal'] = round(subtotal,2)
+            res['price_total'] = res['price_subtotal'] = subtotal
         #In case of multi currency, round before it's use for computing debit credit
         if currency:
             res = {k: currency.round(v) for k, v in res.items()}
@@ -212,3 +230,10 @@ class AccountMoveLine(models.Model):
             elif isinstance(unknown_sale_line, models.BaseModel):  # already record of sale.order.line
                 result[move_line_id] = unknown_sale_line
         return result
+
+    @api.depends('quantity', 'discount', 'price_unit', 'tax_ids', 'currency_id')
+    def _compute_totals(self):
+        for record in self:
+            record.price_subtotal =  record.sale_line_ids.price_subtotal
+            record.price_total =  record.sale_line_ids.price_total
+        return super(AccountMoveLine, self)._compute_totals()

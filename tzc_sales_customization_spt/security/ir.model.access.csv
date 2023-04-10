@@ -89,7 +89,6 @@ access_reserved_product_report,access.reserved.product.report,model_reserved_pro
 access_product_report_on_date_wizard_spt,access.product.report.on.date.wizard.spt,model_product_report_on_date_wizard_spt,,1,1,1,1
 access_bank_inventory_report_wizard,access.bank.inventory.report.wizard,model_bank_inventory_report_wizard,,1,1,1,1
 access_brand_qty_report_wizard,access.brand.qty.report.wizard,model_brand_qty_report_wizard,,1,1,1,1
-access_flash_menu_spt,access.flash.menu.spt,model_flash_menu_spt,,1,1,1,1
 access_stock_picking_barcode_spt,access.stock.picking.barcode.spt,model_stock_picking_barcode_spt,,1,1,1,1
 access_stock_picking_barcode_line_spt,access.stock.picking.barcode.line.spt,model_stock_picking_barcode_line_spt,,1,1,1,1
 access_barcode_error_message_wizard_spt,access.barcode.error.message.wizard.spt,model_barcode_error_message_wizard_spt,,1,1,1,1
@@ -109,3 +108,4 @@ access_campaign_monetization_spt,access.campaign.monetization.spt,model_campaign
 access_mass_mailing_message_wizard,access.mass.mailing.message.wizard,model_mass_mailing_message_wizard,,1,1,1,1
 mail.access_mail_compose_message,mail.access.mail.compose.message,mail.model_mail_compose_message,base.group_user,1,1,1,1
 mail.access_mail_compose_message_portal,mail.access.mail.compose.message.portal,mail.model_mail_compose_message,base.group_portal,1,1,1,1
+product.access_product_product_employee,product.product employee,product.model_product_product,base.group_user,1,1,0,0

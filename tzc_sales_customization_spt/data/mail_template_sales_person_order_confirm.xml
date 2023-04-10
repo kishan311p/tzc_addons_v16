@@ -60,7 +60,7 @@
                                     <t t-out="object.create_date"/>                                
                                 </p>
                                 <p>
-                                    <a t-attf-href="{{object.get_base_url()}}/web#id={{object.id}}&amp;action={{object.env.ref('sale.action_orders').id}}&amp;model=sale.order&amp;view_type=form" target="_blank" style="background-color:#7693f8 !important; padding:10px; text-decoration: none; color: #fff; border-radius: 5px; font-size: 16px;" class="o_default_snippet_text">
+                                    <a t-attf-href="{{object.get_base_url()}}/web#id={{object.id}}&amp;action={{object.env.ref('sale.action_orders').id}}&amp;model=sale.order&amp;view_type=form" target="_blank" style="background-color:#1F7B6F !important; padding:10px; text-decoration: none; color: #fff; border-radius: 5px; font-size: 16px;" class="o_default_snippet_text">
                                         View Order
                                     </a>
                                 </p>

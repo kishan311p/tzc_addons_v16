@@ -22,7 +22,7 @@ class PublicReport(http.Controller):
         if not token or not record.ids or (hasattr(record, 'report_token') and token != record.report_token):
             return werkzeug.exceptions.HTTPException(description='Access Denied !')
 
-        pdf = report.with_context(context)._render_qweb_pdf(
+        pdf = request.env['ir.actions.report'].with_context(context).sudo()._render_qweb_pdf(
             reportname, docid)[0]
         return request.make_response(pdf, headers=[('Content-Type', 'application/pdf'), ('Content-Length', len(pdf))])
 
@@ -35,7 +35,9 @@ class PublicReport(http.Controller):
             if order and (hasattr(order, 'report_token') and order.report_token != token):
                 return werkzeug.exceptions.HTTPException(description='Access Denied !')
 
-            vals = {'with_img': True, 'order_id': docid}
+            vals = {'with_img': False, 'order_id': docid}
+            if order.download_image_sent:
+                vals.update({'with_img': True})
             wiz = request.env['order.report.with.image.wizard'].sudo().create(
                 vals)
             wiz.action_process_report()
@@ -45,7 +47,7 @@ class PublicReport(http.Controller):
                 headers=[
                     ('Content-Type', 'application/vnd.ms-excel'),
                     ('Content-Disposition',
-                     content_disposition('Sales.%s' % (file_ext)))
+                     content_disposition('Product Iamge.%s' % (file_ext)))
                 ]
             )
         elif modalname == 'sale.catalog':
@@ -70,5 +72,5 @@ class PublicReport(http.Controller):
                 headers=[
                     ('Content-Type', 'application/vnd.ms-excel'),
                     ('Content-Disposition',
-                        content_disposition('Sales_catalog.xlsm'))
+                        content_disposition(wizard_id.display_name + '.xlsx'))
                 ])

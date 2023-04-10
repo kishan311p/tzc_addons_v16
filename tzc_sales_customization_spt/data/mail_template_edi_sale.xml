@@ -17,7 +17,6 @@
                                     <p style="margin: 0px; padding: 0px; font-size: 13px;width: 590px !important;">
                                         <t t-set="doc_name" t-value="'quotation' if object.state in ('draft', 'sent') else 'order'"/>
                                         Dear <t t-out="object.partner_id.name"/>,
-                                        <br/><br/>
                                         <t t-if="ctx.get('proforma')">
                                             <p>
                                                 <t t-out="object.user_id.name"/> has your pro-forma invoice ready for order <t t-out="object.name"/>.
@@ -33,16 +32,15 @@
                                             <p>
                                                 <t t-out='object.user_id.name'/> is awaiting your review on a quotation sent to your account.
                                             </p>
-                                            <br/>
-                                            <a t-attf-href="{{object.get_order_portal_url()}}/order-details?order_id={{object.id}}" style="background-color:#1F7B6F !important; padding: 10px; text-decoration: none; color: #fff; border-radius: 5px; font-size: 16px;" class="o_default_snippet_text">
-                                                View Quotation
-                                            </a>
-                                            <br/>
+                                            <p>
+                                                <a t-attf-href="{{object.get_order_portal_url()}}/order-details?order_id={{object.id}}" style="background-color:#1F7B6F !important; padding: 10px; text-decoration: none; color: #fff; border-radius: 5px; font-size: 16px;" class="o_default_snippet_text">
+                                                    View Quotation
+                                                </a>
+                                            </p>
                                             <p>
                                                 For further assistance or to update quotation, please reach out to <t t-out='object.user_id.name'/> by replying to this email.
                                             </p>
                                         </t>
-                                        <br/><br/>
                                     </p>
                                     <p style="margin-bottom:0px;">                 
                                         Best regards,<br/>

@@ -247,6 +247,7 @@ class order_report_with_image_wizard(models.TransientModel):
 
         row_index = table_header+1
 
+        # ----------------------------- Table Data -----------------------------
         query = f'''SELECT 	COALESCE(PBS.NAME,' ') AS BRAND,
                             COALESCE(PMS.NAME,' ') AS MODEL,
                             COALESCE(KPCC.NAME,' ') AS COLOR,
@@ -270,112 +271,95 @@ class order_report_with_image_wizard(models.TransientModel):
                             COALESCE(SO.ORDERED_QTY,00) AS TOTAL_QTY,
                             COALESCE(SO.WEIGHT_TOTAL_KG,00) AS WEIGHT
                     FROM SALE_ORDER AS SO
-                    INNER JOIN SALE_ORDER_LINE AS SOL ON SOL.ORDER_ID = SO.ID
-                    INNER JOIN PRODUCT_PRODUCT AS PP ON PP.ID = SOL.PRODUCT_ID
-                    INNER JOIN KITS_PRODUCT_COLOR_CODE AS KPCC ON PP.COLOR_CODE = KPCC.ID
-                    INNER JOIN PRODUCT_SIZE_SPT AS PSS ON PP.EYE_SIZE = PSS.ID
-                    INNER JOIN PRODUCT_BRAND_SPT AS PBS ON PP.BRAND = PBS.ID
-                    INNER JOIN PRODUCT_MODEL_SPT AS PMS ON PP.MODEL = PMS.ID
-                    INNER JOIN PRODUCT_BRIDGE_SIZE_SPT AS PBSS ON PBSS.ID = PP.BRIDGE_SIZE
-                    INNER JOIN PRODUCT_TEMPLE_SIZE_SPT AS PTSS ON PTSS.ID = PP.TEMPLE_SIZE
-                    INNER JOIN PRODUCT_CATEGORY AS PC ON PC.ID = PP.CATEG_ID
-                    INNER JOIN RES_CURRENCY AS RC ON RC.ID = SOL.CURRENCY_ID
+                    LEFT JOIN SALE_ORDER_LINE AS SOL ON SOL.ORDER_ID = SO.ID
+                    LEFT JOIN PRODUCT_PRODUCT AS PP ON PP.ID = SOL.PRODUCT_ID
+                    LEFT JOIN KITS_PRODUCT_COLOR_CODE AS KPCC ON PP.COLOR_CODE = KPCC.ID
+                    LEFT JOIN PRODUCT_SIZE_SPT AS PSS ON PP.EYE_SIZE = PSS.ID
+                    LEFT JOIN PRODUCT_BRAND_SPT AS PBS ON PP.BRAND = PBS.ID
+                    LEFT JOIN PRODUCT_MODEL_SPT AS PMS ON PP.MODEL = PMS.ID
+                    LEFT JOIN PRODUCT_BRIDGE_SIZE_SPT AS PBSS ON PBSS.ID = PP.BRIDGE_SIZE
+                    LEFT JOIN PRODUCT_TEMPLE_SIZE_SPT AS PTSS ON PTSS.ID = PP.TEMPLE_SIZE
+                    LEFT JOIN PRODUCT_CATEGORY AS PC ON PC.ID = PP.CATEG_ID
+                    LEFT JOIN RES_CURRENCY AS RC ON RC.ID = SOL.CURRENCY_ID
                     WHERE ORDER_ID = {self.order_id.id} AND SOL.IS_ADMIN = false AND SOL.IS_SHIPPING_PRODUCT = false AND SOL.IS_GLOBAL_DISCOUNT = false '''
         self.env.cr.execute(query)
         record_data = self.env.cr.fetchall()
-        record_data
-        for data in record_data:
-            product_name = ((data[0] if data[0] else '') + ' ' + (data[1] if data[1] else '') + ' ' + (data[2] if data[2] else '') + ' ' + (data[3] if data[3] else '') + ' ' + (data[4] if data[4] else '') + ' ' + (data[5] if data[5] else '')) or ""
-        # ----------------------------- Table Data -----------------------------
-            if self.with_img:
-                wrk_sheet.row_dimensions[row_index].height = 50
+        if record_data:
+            for data in record_data:
+                product_name = ((data[0] if data[0] else '') + ' ' + (data[1] if data[1] else '') + ' ' + (data[2] if data[2] else '') + ' ' + (data[3] if data[3] else '') + ' ' + (data[4] if data[4] else '') + ' ' + (data[5] if data[5] else '')) or ""
 
-                # --------------- First Image --------------- 
-                
-                # sheet.merge_cells("A"+str(row_index)+":B"+str(row_index))
-                # img = BytesIO()
-                # img.flush()
-                # try:
-                #     img.write(base64.b64decode(line.product_id.image_variant_1920))
-                #     image = openpyxl.drawing.image.Image(img)
-                #     image.width = 153
-                #     image.height = 61
-                #     sheet.add_image(image, 'A'+str(row_index))
-                # except:
-                #     pass
-                # --------------- Sec. Image --------------- 
+            
+                if self.with_img:
+                    wrk_sheet.row_dimensions[row_index].height = 50
 
-                # sheet.merge_cells("C"+str(row_index)+":D"+str(row_index))
-                # img = BytesIO()
-                # img.flush()
-                # try:
-                #     img.write(base64.b64decode(line.product_id.image_secondary))
-                #     image = openpyxl.drawing.image.Image(img)
-                #     image.width = 153
-                #     image.height = 61
-                #     sheet.add_image(image, 'C'+str(row_index))
-                # except:
-                #     pass
+                    # --------------- First Image --------------- 
+                    
+                    # sheet.merge_cells("A"+str(row_index)+":B"+str(row_index))
+                    # img = BytesIO()
+                    # img.flush()
+                    # try:
+                    #     img.write(base64.b64decode(line.product_id.image_variant_1920))
+                    #     image = openpyxl.drawing.image.Image(img)
+                    #     image.width = 153
+                    #     image.height = 61
+                    #     sheet.add_image(image, 'A'+str(row_index))
+                    # except:
+                    #     pass
+                    # --------------- Sec. Image --------------- 
 
-                # ----------------------------- Other Data -----------------------------
-                wrk_sheet.cell(row=row_index, column=5).value = product_name
-                wrk_sheet.cell(row=row_index, column=5).alignment = alignment_wrapper
-                wrk_sheet.cell(row=row_index, column=6).value = data[6] or ''
-                wrk_sheet.cell(row=row_index, column=6).alignment = alignment
-                wrk_sheet.cell(row=row_index, column=7).value = data[7]
-                wrk_sheet.cell(row=row_index, column=7).alignment = alignment
-                wrk_sheet.cell(row=row_index, column=8).value = "{:,.2f}".format(data[8])
-                wrk_sheet.cell(row=row_index, column=8).alignment = alignment_right
-                wrk_sheet.cell(row=row_index, column=9).value = "$ {:,.2f}".format(data[9])
-                wrk_sheet.cell(row=row_index, column=9).alignment = alignment_right
-                wrk_sheet.cell(row=row_index, column=10).value = "$ {:,.2f}".format(round(data[10],2))
-                wrk_sheet.cell(row=row_index, column=10).alignment = alignment_right
-                wrk_sheet.cell(row=row_index, column=11).hyperlink = data[11] or ''
-                wrk_sheet.cell(row=row_index, column=11).alignment = address_alignment
-                wrk_sheet.cell(row=row_index, column=12).hyperlink = data[12] or ''
-                wrk_sheet.cell(row=row_index, column=12).alignment = address_alignment
-                row_index += 1
+                    # sheet.merge_cells("C"+str(row_index)+":D"+str(row_index))
+                    # img = BytesIO()
+                    # img.flush()
+                    # try:
+                    #     img.write(base64.b64decode(line.product_id.image_secondary))
+                    #     image = openpyxl.drawing.image.Image(img)
+                    #     image.width = 153
+                    #     image.height = 61
+                    #     sheet.add_image(image, 'C'+str(row_index))
+                    # except:
+                    #     pass
 
-                wrk_sheet.column_dimensions['A'].width = 10
-                wrk_sheet.column_dimensions['D'].width = 9
-                wrk_sheet.column_dimensions['E'].width = 20
-            else:
-                wrk_sheet.merge_cells("A"+str(row_index)+":D"+str(row_index))
-                wrk_sheet.cell(row=row_index, column=1).value = product_name
-                wrk_sheet.cell(row=row_index, column=1).alignment = Alignment(horizontal='left', vertical='center', text_rotation=0,wrap_text=True)
-                wrk_sheet.cell(row=row_index, column=1).font = Font(size=9, bold=False, name="Lato")
-                wrk_sheet.cell(row=row_index, column=1).border = bottom_border
-                wrk_sheet.cell(row=row_index, column=2).border = bottom_border
-                wrk_sheet.cell(row=row_index, column=3).border = bottom_border
-                wrk_sheet.cell(row=row_index, column=4).border = bottom_border
-                wrk_sheet.cell(row=row_index, column=5).border = bottom_border
-                wrk_sheet.cell(row=row_index, column=6).value = data[6] or ''
-                wrk_sheet.cell(row=row_index, column=6).alignment = alignment
-                wrk_sheet.cell(row=row_index, column=6).font = Font(size=9, bold=False, name="Lato")
-                wrk_sheet.cell(row=row_index, column=6).border = bottom_border
-                wrk_sheet.cell(row=row_index, column=7).value = data[7]
-                wrk_sheet.cell(row=row_index, column=7).alignment = alignment
-                wrk_sheet.cell(row=row_index, column=7).font = Font(size=9, bold=False, name="Lato")
-                wrk_sheet.cell(row=row_index, column=7).border = bottom_border
-                wrk_sheet.cell(row=row_index, column=8).value = data[8]
-                wrk_sheet.cell(row=row_index, column=8).alignment = alignment
-                wrk_sheet.cell(row=row_index, column=8).font = Font(size=9, bold=False, name="Lato")
-                wrk_sheet.cell(row=row_index, column=8).border = bottom_border
-                wrk_sheet.cell(row=row_index, column=9).value = "$ {:,.2f}".format(data[9])
-                wrk_sheet.cell(row=row_index, column=9).alignment = alignment_right
-                wrk_sheet.cell(row=row_index, column=9).font = Font(size=9, bold=False, name="Lato")
-                wrk_sheet.cell(row=row_index, column=9).border = bottom_border
-                wrk_sheet.merge_cells("J"+str(row_index)+":K"+str(row_index))
-                wrk_sheet.cell(row=row_index, column=10).value = "$ {:,.2f}".format(round(data[10],2))
-                wrk_sheet.cell(row=row_index, column=10).alignment = alignment_right
-                wrk_sheet.cell(row=row_index, column=10).font = Font(size=9, bold=False, name="Lato")
-                wrk_sheet.cell(row=row_index, column=10).border = bottom_border
-                wrk_sheet.cell(row=row_index, column=11).border = bottom_border
+                    # ----------------------------- Other Data -----------------------------
+                    wrk_sheet.cell(row=row_index, column=5).value = product_name
+                    wrk_sheet.cell(row=row_index, column=5).alignment = alignment_wrapper
+                    wrk_sheet.cell(row=row_index, column=6).value = data[6] or ''
+                    wrk_sheet.cell(row=row_index, column=6).alignment = alignment
+                    wrk_sheet.cell(row=row_index, column=7).value = data[7]
+                    wrk_sheet.cell(row=row_index, column=7).alignment = alignment
+                    wrk_sheet.cell(row=row_index, column=8).value = "{:,.2f}".format(data[8])
+                    wrk_sheet.cell(row=row_index, column=8).alignment = alignment_right
+                    wrk_sheet.cell(row=row_index, column=9).value = "$ {:,.2f}".format(data[9])
+                    wrk_sheet.cell(row=row_index, column=9).alignment = alignment_right
+                    wrk_sheet.cell(row=row_index, column=10).value = "$ {:,.2f}".format(round(data[9] * data[7],2))
+                    wrk_sheet.cell(row=row_index, column=10).alignment = alignment_right
+                    wrk_sheet.cell(row=row_index, column=11).hyperlink = data[11] or ''
+                    wrk_sheet.cell(row=row_index, column=11).alignment = address_alignment
+                    wrk_sheet.cell(row=row_index, column=12).hyperlink = data[12] or ''
+                    wrk_sheet.cell(row=row_index, column=12).alignment = address_alignment
+                    row_index += 1
 
-                wrk_sheet.row_dimensions[row_index].height = 27
-                row_index += 1
+                    wrk_sheet.column_dimensions['A'].width = 10
+                    wrk_sheet.column_dimensions['D'].width = 9
+                    wrk_sheet.column_dimensions['E'].width = 20
+                else:
+                    wrk_sheet.merge_cells("A"+str(row_index)+":D"+str(row_index))
+                    wrk_sheet.cell(row=row_index, column=1).value = product_name
+                    wrk_sheet.cell(row=row_index, column=1).alignment = Alignment(horizontal='left', vertical='center', text_rotation=0,wrap_text=True)
+                    wrk_sheet.cell(row=row_index, column=5).value = data[6] or ''
+                    wrk_sheet.cell(row=row_index, column=5).alignment = alignment
+                    wrk_sheet.cell(row=row_index, column=6).value = data[7]
+                    wrk_sheet.cell(row=row_index, column=6).alignment = alignment
+                    wrk_sheet.cell(row=row_index, column=7).value = data[8]
+                    wrk_sheet.cell(row=row_index, column=7).alignment = alignment_right
+                    wrk_sheet.cell(row=row_index, column=8).value = "$ {:,.2f}".format(data[9])
+                    wrk_sheet.cell(row=row_index, column=8).alignment = alignment_right
+                    wrk_sheet.cell(row=row_index, column=9).value = "$ {:,.2f}".format(round(data[9] * data[7],2))
+                    wrk_sheet.cell(row=row_index, column=9).alignment = alignment_right
 
-                wrk_sheet.column_dimensions['A'].width = 10
+                    wrk_sheet.row_dimensions[row_index].height = 27
+                    row_index += 1
+
+                    wrk_sheet.column_dimensions['A'].width = 10
             # ----------------------------- Total/Discount/shipping Cost/etc. ----------------------------- 
             footer_row = row_index+1
             col_num = 7 if self.with_img else 6
@@ -389,30 +373,29 @@ class order_report_with_image_wizard(models.TransientModel):
 
             wrk_sheet.cell(row=footer_row, column=col_num).value = "Subtotal"
             wrk_sheet.cell(row=footer_row, column=col_num).alignment = alignment_left
-            wrk_sheet.cell(row=footer_row, column=col_num).border = Border(top=Side(style='thin', color="000000"),bottom=Side(style='thin', color="000000"))
-            wrk_sheet.cell(row=footer_row, column=col_num).font = Font(size=9, bold=True, name="Lato")
-            wrk_sheet.cell(row=footer_row, column=col_num+1).border = Border(top=Side(style='thin', color="000000"),bottom=Side(style='thin', color="000000"))
-            wrk_sheet.cell(row=footer_row, column=col_num+2).font = Font(size=9, bold=False, name="Lato")
+            wrk_sheet.cell(row=footer_row, column=col_num).border = top_border
+            wrk_sheet.cell(row=footer_row, column=col_num).font = Font(size=11, bold=True, name="Calibri")
+            wrk_sheet.cell(row=footer_row, column=col_num+1).border = top_border
+            wrk_sheet.cell(row=footer_row, column=col_num+2).font = table_font
             wrk_sheet.cell(row=footer_row, column=col_num+2).value = "$ {:,.2f}".format(data[13]) or 0.0
             wrk_sheet.cell(row=footer_row, column=col_num+2).alignment = alignment_right
-            wrk_sheet.cell(row=footer_row, column=col_num+2).border = Border(top=Side(style='thin', color="000000"),bottom=Side(style='thin', color="000000"))
-            wrk_sheet.cell(row=footer_row, column=col_num+3).border = Border(top=Side(style='thin', color="000000"),bottom=Side(style='thin', color="000000"))
-            wrk_sheet.row_dimensions[footer_row].height = 21
+            wrk_sheet.cell(row=footer_row, column=col_num+2).border = top_border
+            wrk_sheet.cell(row=footer_row, column=col_num+3).border = top_border
             footer_row += 1
 
             if self.with_img:
                 wrk_sheet.merge_cells("G"+str(footer_row)+":H"+str(footer_row))
                 wrk_sheet.merge_cells("I"+str(footer_row)+":J"+str(footer_row))
             else:
+                wrk_sheet.merge_cells("F"+str(footer_row)+":G"+str(footer_row))
                 wrk_sheet.merge_cells("H"+str(footer_row)+":I"+str(footer_row))
-                wrk_sheet.merge_cells("J"+str(footer_row)+":K"+str(footer_row))
 
             wrk_sheet.cell(row=footer_row, column=col_num).value = "Shipping Cost"
             wrk_sheet.cell(row=footer_row, column=col_num).alignment = alignment_left
             wrk_sheet.cell(row=footer_row, column=col_num).border = top_border
             wrk_sheet.cell(row=footer_row, column=col_num).font = Font(size=11, bold=True, name="Calibri")
-            wrk_sheet.cell(row=footer_row, column=col_num+1).border = top_border 
-            wrk_sheet.cell(row=footer_row, column=col_num+2).value = "${:,.2f}".format(data[14])
+            wrk_sheet.cell(row=footer_row, column=col_num+1).border = top_border
+            wrk_sheet.cell(row=footer_row, column=col_num+2).value = "$ {:,.2f}".format(data[14]) or 0.0 # shipping
             wrk_sheet.cell(row=footer_row, column=col_num+2).alignment = alignment_right
             wrk_sheet.cell(row=footer_row, column=col_num+2).font = table_font
             wrk_sheet.cell(row=footer_row, column=col_num+2).border = top_border
@@ -436,7 +419,6 @@ class order_report_with_image_wizard(models.TransientModel):
             wrk_sheet.cell(row=footer_row, column=col_num+2).font = table_font
             wrk_sheet.cell(row=footer_row, column=col_num+2).border = top_border
             wrk_sheet.cell(row=footer_row, column=col_num+3).border = top_border
-            wrk_sheet.row_dimensions[footer_row].height = 21
             footer_row += 1
 
             if abs(self.order_id.amount_discount):
@@ -446,7 +428,6 @@ class order_report_with_image_wizard(models.TransientModel):
                 else:
                     wrk_sheet.merge_cells("F"+str(footer_row)+":G"+str(footer_row))
                     wrk_sheet.merge_cells("H"+str(footer_row)+":I"+str(footer_row))
-
                 wrk_sheet.cell(row=footer_row, column=col_num).value = "Discount"
                 wrk_sheet.cell(row=footer_row, column=col_num).alignment = alignment_left
                 wrk_sheet.cell(row=footer_row, column=col_num).border = top_border

@@ -38,19 +38,19 @@ class stock_picking_barcode_line_spt(models.TransientModel):
                             {'type': sound_type,'title': title, 'message': message, 'sticky': False}
                         )
 
-    # def action_product_selection(self):
-    #     self.ensure_one()
-    #     if self.sb_order_id:
-    #         self.sb_order_id.product_id = self.product_id.id
+    def action_product_selection(self):
+        self.ensure_one()
+        if self.sb_order_id:
+            self.sb_order_id.product_id = self.product_id.id
 
-    #         return {
-    #                 'name': 'Scan Order',
-    #                 'view_mode': 'form',
-    #                 'target': 'new',
-    #                 'res_id':self.sb_order_id.id,
-    #                 'res_model': 'stock.picking.barcode.spt',
-    #                 'type': 'ir.actions.act_window',
-    #                 }
+            return {
+                    'name': 'Scan Order',
+                    'view_mode': 'form',
+                    'target': 'new',
+                    'res_id':self.sb_order_id.id,
+                    'res_model': 'stock.picking.barcode.spt',
+                    'type': 'ir.actions.act_window',
+                    }
 
 class stock_picking_barcode_spt(models.TransientModel):
     _name = "stock.picking.barcode.spt"
@@ -124,14 +124,14 @@ class stock_picking_barcode_spt(models.TransientModel):
         qty = line.product_qty if line and not self._context.get('product_quantity') else self._context.get('product_quantity')
         notification_type = False
         if move:
-            if move.product_uom_qty < qty:
+            if move.product_uom_qty < qty if qty != None else 0:
                 notification_type = 'user_connection'
         else:
             notification_type = 'user_connection'
         
         return notification_type
     
-    def get_notify(self,barcode,type):
+    def get_notify(self,barcode,type,product_id=False):
         # notification = []
         # notification.append([user.partner_id, 'simple_notification', body])
         # body = {
@@ -145,7 +145,10 @@ class stock_picking_barcode_spt(models.TransientModel):
         if type == 'user_connection':
             notification = []
             invite_partner = self.env.user.partner_id
-            product_name = self.env['product.product'].search([('barcode','=',barcode)]).variant_name
+            if barcode:
+                product_name = self.env['product.product'].search([('barcode','=',barcode)]).variant_name
+            elif product_id:
+                product_name = self.env['product.product'].browse(product_id).variant_name
             if invite_partner:
                 body = {
                     'type': type,
@@ -233,7 +236,10 @@ class stock_picking_barcode_spt(models.TransientModel):
                 notify_type = self.get_notify_type(stock_move,search_line)
                 self.get_notify(self.product_id.barcode,notify_type)
             else:
-                raise UserError('Product not found.')
+                notify_type = self.get_notify_type(stock_move,search_line)
+                # notify_type = 'user_connection'
+                self.get_notify(self.product_id.barcode,notify_type)
+                # raise UserError('Product not found.')
 
             self.product_id = False
             self.qty = 1
@@ -296,6 +302,7 @@ class stock_picking_barcode_spt(models.TransientModel):
         self.ensure_one()
         sequence = 0
         if self.product_id and self.qty:
+            stock_move = self.picking_id.move_ids_without_package.filtered(lambda x:x.product_id == self.product_id.id)
             search_line = self.line_ids.filtered(lambda x:x.product_id.id == self.product_id.id)
             # self.line_ids.update({'sequence':0})
             if search_line:
@@ -307,12 +314,16 @@ class stock_picking_barcode_spt(models.TransientModel):
                     search_line.sequence = sequence
                 # search_line.sequence = -1
                 search_line.product_qty += self.qty
+                notify_type = self.get_notify_type(stock_move,search_line)
+                self.get_notify(self.product_id.barcode,notify_type)
             else:
                 line_id = self.env['stock.picking.barcode.line.spt'].create({'product_id':self.product_id.id,'product_qty':self.qty,'sequence':-1,'sb_order_id':self.id})
                 if self.line_ids:
                     line_id.sequence = sequence - len(self.line_ids)+1
                 else:
                     line_id.sequence = sequence
+                notify_type = self.get_notify_type(stock_move,search_line)
+                self.get_notify(self.product_id.barcode,notify_type)
             
             self.product_id = False
             self.qty = 1

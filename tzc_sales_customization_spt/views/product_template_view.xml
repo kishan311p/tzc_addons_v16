@@ -27,6 +27,9 @@
                         </div>
                     </div>
                 </xpath>
+                <xpath expr="//page[@name='purchase']" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </xpath>
                 <xpath expr="//div[@name='options']" position="replace">
                     <div name="options" position="inside">
                         <div>
@@ -56,7 +59,7 @@
                     <attribute name="invisible">1</attribute>
                 </xpath>
                 <xpath expr="//page[@name='sales']" position="after">
-                    <page name="product_tabs" string="Product Tabs">
+                    <page name="product_tabs" string="Product Tabs" invisible="1">
                         <!-- <field name="tab_line_ids" mode="kanban">
                             <kanban>
                                 <templates>
@@ -97,6 +100,32 @@
                     <attribute name="invisible">1</attribute>
                 </xpath>
 
+            </field>
+        </record>
+        <record id="product_template_hs_code_form_view_inherit_tzc_sales_customization" model="ir.ui.view">
+            <field name="name">product.template.hs.code.form.view.inherit.tzc.sales.customization</field>
+            <field name="model">product.template</field>
+            <field name="inherit_id" ref="delivery.product_template_hs_code"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='country_of_origin']" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </xpath>
+            </field>
+        </record>
+        <record id="view_template_property_form_form_view_inherit_tzc_sales_customization" model="ir.ui.view">
+            <field name="name">view.template.property.form.form.view.inherit.tzc.sales.customization</field>
+            <field name="model">product.template</field>
+            <field name="inherit_id" ref="stock.view_template_property_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//group[@name='operations']" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </xpath>
+                <xpath expr="//group[@name='stock_property']" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </xpath>
+                <xpath expr="//page[@name='inventory']/group[3]" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </xpath>
             </field>
         </record>
     </data>

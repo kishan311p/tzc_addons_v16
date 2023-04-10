@@ -246,7 +246,7 @@
                                     <br/>
 
 
-                                    <p>For further assistance, please reach out to *salesperson name* by replying to this email.</p>
+                                    <p>For further assistance, please reach out to <t t-out="object.user_id.name"/> by replying to this email.</p>
                                     <!-- <br/> -->
                                     <p style="margin-bottom:0px;">Best regards,<br/>
                                         Team Everything Optical

@@ -4,13 +4,41 @@
         <record model="ir.ui.view" id="inherit_view_partner_form">
             <field name="name">inherit.view.partner.form</field>
             <field name="model">res.partner</field>
+            <field name="priority">300</field>
             <field name="inherit_id" ref="base.view_partner_form"/>
             <field name="arch" type="xml">
+                <xpath expr="//sheet" position="before">
+                    <div attrs="{'invisible': [('signup_valid', '!=', True)]}">
+                        <div class="alert alert-success text-center o_form_header alert-dismissible" role="status">
+                            <button class="btn-close" data-bs-dismiss="alert" aria-label="Close"/>
+                            <div>
+                                <strong>A password reset has been requested for this user. An email containing the following link has been sent:</strong>
+                            </div>
+                            <div><field name="signup_url" widget="url"/></div>
+                             <field name="signup_valid" invisible="1"/>
+                         </div>
+                    </div>
+                 </xpath>
+                 <xpath expr="//field[@name='company_name']" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                 </xpath>
+                 <xpath expr="//page[@name='accounting']" position="attributes">
+                    <attribute name="groups">account.group_account_manager</attribute>
+                 </xpath>
                 <xpath expr="//form" position="attributes">
                     <attribute name="delete">0</attribute>
                 </xpath>
                 <xpath expr="//form/div[1]" position="before">
                     <field name="access_field_flag" invisible="1" />
+                </xpath>
+                <xpath expr="//sheet/notebook/page[@name='sales_purchases']/group/group[1]/field[@name='property_payment_term_id']" position="attributes">
+                    <attribute name='widget'>selection</attribute>
+                </xpath>
+                <xpath expr="//sheet/notebook/page[@name='sales_purchases']/group/group[@name='purchase']/field[@name='property_supplier_payment_term_id']" position="attributes">
+                    <attribute name='widget'>selection</attribute>
+                </xpath>
+                <xpath expr="//sheet/notebook/page[@name='sales_purchases']/group/group[1]/field[@name='property_ups_carrier_account']" position="attributes">
+                    <attribute name='invisible'>1</attribute>
                 </xpath>
                 <xpath expr="//sheet" position="before">
                     <header>
@@ -18,7 +46,7 @@
                         <!-- <field name="customer_type" groups="sales_team.group_sale_salesman" options="{'clickable': '1'}" widget="statusbar"/> -->
                         <button string="Send Email" class="btn btn-primary" type="object" name="partner_approved_spt" />
                         <button string="Send Reset Password Email" class="btn btn-primary" type="object" name="action_reset_password" />
-                        <button string="Assing Salesperson" class="btn btn-primary" type="object" name="update_salesperson" />
+                        <button string="Assign Salesperson" class="btn btn-primary" type="object" name="update_salesperson" />
                         <!-- <button string="Change Country" name="action_change_contact_country" type="object" class="oe_highlight" groups="base.group_system,tzc_sales_customization_spt.group_sales_manager_spt"/> -->
                         <button string="Verify Email" name="action_verify_email" type="object" class="oe_highlight" />
                     </header>
@@ -26,12 +54,41 @@
                 <!-- name="address_name" -->
                 <xpath expr="//sheet/group/group/span[@name='address_name']" position="before">
                     <field name="type"/>
+
+                    <field name="contact_name_spt" />
+                </xpath>
+                <xpath expr="//sheet/group/group[1]/span[@name='address_name']/field[@name='type']" position="attributes">
+                    <attribute name="invisible">1</attribute>
                 </xpath>
                 <xpath expr="//sheet/group/group/span[@name='address_name']/b" position="attributes">
                     <attribute name="invisible">1</attribute>
                 </xpath>
+
+                <xpath expr="//sheet/group/group[1]/field[@name='vat']" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </xpath>
+                <xpath expr="//sheet/group/group[2]/field[@name='lang']" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </xpath>
                 <xpath expr="//sheet/group/group/span[@name='address_name']" position="inside">
-                    <b>Address</b>
+                    <b attrs="{'invisible': [('type', '!=', 'contact')]}">
+						Company Address
+					</b>
+					<b attrs="{'invisible': [('type', '!=', 'invoice')]}">
+						Invoice Address
+					</b>
+					<b attrs="{'invisible': [('type', '!=', 'delivery')]}">
+						Delivery Address
+					</b>
+					<b attrs="{'invisible': [('type', '!=', 'other')]}">
+						Other Address
+					</b>
+					<b attrs="{'invisible': [('type', '!=', 'private')]}">
+						Private Address
+					</b>
+					<b attrs="{'invisible': [('type', '!=', False)]}">
+						Address
+					</b>
                 </xpath>
                 <xpath expr="//field[@name='state_id']" position="attributes">
                     <attribute name="invisible">1</attribute>
@@ -52,53 +109,56 @@
                 <xpath expr="//field[@name='country_id']" position="attributes">
                     <attribute name="invisible">1</attribute>
                 </xpath>
+                <xpath expr="//field[@name='website']" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </xpath>
+                <xpath expr="//field[@name='title']" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </xpath>
                 <xpath expr="//field[@name='vat']" position="after">
                     <field name="state_id" placeholder="State" options="{'no_open': True}" attrs="{'readonly': [('type', '=', 'contact'),('parent_id', '!=', False)]}" context="{'country_id': country_id, 'zip': zip}"/>
-                    <!-- <field name="country_id" placeholder="Country" options="{'no_open': True, 'no_create': True}" attrs="{'readonly': [('type', '=', 'contact'),('parent_id', '!=', False)]}"/> -->
-                    <field name="country_id" placeholder="Country" options="{'no_open': True, 'no_create': True}" />
+                    <field name="country_id" placeholder="Country" options="{'no_open': True, 'no_create': True}" attrs="{'readonly': [('type', '=', 'contact'),('parent_id', '!=', False)]}"/>
                     <field name="territory" />
-                    <field name="contact_name_spt" />
-                    <field name="access_field_flag" />
-                </xpath>
-                <xpath expr="//field[@name='category_id']" position="after">
-                    <field name="updated_on" readonly="1" />
-                    <field name="updated_by" readonly="1" />
+                    <label class="oe_inline" for="phone"/>
+                    <div class="o_row o_row_readonly">
+                        <button name="phone_action_blacklist_remove" class="fa fa-ban text-danger" title="This phone number is blacklisted for SMS Marketing. Click to unblacklist." type="object" context="{'default_phone': phone}" groups="base.group_user" attrs="{'invisible': [('phone_blacklisted', '=', False)]}"/>
+                        <field name="phone" widget="phone" on_change="1"/>
+                    </div>
+                    <label class="oe_inline" for="mobile"/>
+                    <div class="o_row o_row_readonly">
+                        <button name="phone_action_blacklist_remove" class="fa fa-ban text-danger" title="This phone number is blacklisted for SMS Marketing. Click to unblacklist." type="object" context="{'default_phone': mobile}" groups="base.group_user" attrs="{'invisible': [('mobile_blacklisted', '=', False)]}"/>
+                        <field name="mobile" widget="phone" on_change="1"/>
+                    </div>
+                    <label class="oe_inline" for="email"/>
+                    <div class="o_row o_row_readonly">
+                        <button name="mail_action_blacklist_remove" class="fa fa-ban text-danger" title="This email is blacklisted for mass mailings. Click to unblacklist." type="object" context="{'default_email': email}" groups="base.group_user" attrs="{'invisible': [('is_blacklisted', '=', False)]}"/>
+                        <field context="{'gravatar_image': True}" name="email" widget="email" on_change="1"/>
+                    </div>
+                    <field name="website" string="Website" widget="url"/>
+                    <field name="internal_id" string="Internal ID" readonly='1' required='0'/>
+                    <field name="access_field_flag" invisible="1"/>
                 </xpath>
                 <xpath expr="//notebook" position="before">
                     <group name="tzc_custome">
                         <group>
-                            <field name="internal_id" string="Internal ID" readonly='1' required='0'/>
-                            <field name="previous_total_sales"/>
-                            <field name="customer_sales_rank"/>
-                        </group>
-                        <group>
-                            <field name="kits_lang" />
-                            <field name="internal_flag_id" />
-                            <field name="eto" />
-                            <field name="business_type_ids" widget='many2many_tags'/>
-                            <field name="is_customer"/>
-                            <field name="is_vendor"/>
-                            <field name="is_salesperson"/>
-                            <field name="is_email_verified"/>
-                            <field name="is_granted_portal_access"/>
-                            <field name="is_default_shipping"/>
-                        </group>
-                        <group>
-                            <field name="business_fax"/>
-                            <field name="business_type"/>
+                            <field name="previous_total_sales" invisible="1"/>
+                            <field name="customer_sales_rank" invisible="1"/>
                         </group>
                     </group>
                 </xpath>
                 <xpath expr="//button[@name='open_partner_ledger']" position="attributes">
                     <attribute name="invisible">1</attribute>
                 </xpath>
+                <xpath expr="//notebook/page[@name='sales_purchases']/group/group[@name='sale']/field[@name='team_id'][2]" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </xpath>
                 <xpath expr="//notebook/page[@name='sales_purchases']/group/group[2]/field[@name='property_payment_method_id']" position="attributes">
                     <attribute name="invisible">1</attribute>
                 </xpath>
 
-                <xpath expr="//sheet/notebook/page[@name='sales_purchases']/group/group/field[@name='user_id']" position="after">
+                <!-- <xpath expr="//sheet/notebook/page[@name='sales_purchases']/group/group[1]/field[@name='property_payment_term_id']" position="before">
                     <field name="sales_person_id"/>
-                </xpath>
+                </xpath> -->
                 <xpath expr="//notebook/page[@name='sales_purchases']/group/group[1]/field[@name='property_delivery_carrier_id']" position="attributes">
                     <attribute name="invisible">1</attribute>
                 </xpath>
@@ -122,7 +182,7 @@
                     </group>
                 </xpath>
                 <xpath expr="//notebook" position="inside">
-                    <page name="mail_verification_details" string="Mail Verification Details">
+                    <page name="mail_verification_details" string="Mailgun">
                         <group>
                             <group>
                                 <field name="result" readonly="1" />
@@ -139,7 +199,14 @@
                         Website Activity
                         </div>
                     </button> -->
-
+                    <button type="object" name="action_catalogs" class="oe_stat_button" icon="fa-cart-plus">
+                        <div class="o_field_widget o_stat_info">
+                            <span class="o_stat_value" widget="statinfo">
+                                <field name="catalog_count" widget="statinfo" nolabel="1" class="mr4"/>
+                            </span>
+                            <span class="o_stat_text">Catalogs</span>
+                        </div>
+                    </button>
                     <button name="action_customer_order" type="object" icon="fa-dollar">
                         <div class="o_field_widget o_stat_info">
                         Customers Orders
@@ -174,6 +241,34 @@
                         <field name="territory"/>
                     </group>
                 </xpath>
+                <xpath expr="//field[@name='function']" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </xpath>
+                <xpath expr="//field[@name='lang']" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </xpath>
+                <xpath expr="//group[@name='misc']" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </xpath>
+                <xpath expr="//field[@name='category_id']" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </xpath>
+                <xpath expr="//field[@name='function']" position="after">
+                    <field name="kits_lang" string="Preferred Language" />
+                    <field name="internal_language" string="Internal Language" />
+                    <field name="updated_on" readonly="1" />
+                    <field name="updated_by" readonly="1" />
+                    <field name="category_id" widget="many2many_tags" options="{'color_field': 'color', 'no_create_edit': True}" placeholder="e.g. &quot;B2B&quot;, &quot;VIP&quot;, &quot;Consulting&quot;, ..."/>
+                    <field name="eto" invisible="1"/>
+                    <field name="business_type_ids" widget='many2many_tags' invisible="1"/>
+                    <field name="is_customer"/>
+                    <field name="is_vendor"/>
+                    <field name="is_salesperson"/>
+                    <field name="is_email_verified"/>
+                    <field name="is_granted_portal_access"/>
+                    <field name="is_default_shipping"/>
+                    <field name="duplicated_bank_account_partners_count" invisible="1"/>
+                </xpath>
             </field>
         </record>
 
@@ -201,7 +296,7 @@
                     <filter name="filter_verified_email" string="Verified Email" domain="[('is_email_verified','=',True)]" />
                     <separator/>
                     <filter name="filter_portal_access" string="Granted Portal Access" domain="[('is_granted_portal_access','=',True)]" />
-                    <filter name="language" context="{'group_by':'kits_lang'}" string="Language" />
+                    <filter name="language" context="{'group_by':'internal_language'}" string="Internal Language" />
                     <separator/>
                 </filter>
             </field>
@@ -243,7 +338,7 @@
                     <field name='is_salesperson' invisible="1"/>
                     <!-- <field name='catalog_count' invisible="1"/> -->
                     <field name="name_get_partner" invisible="1"/>
-                    <field name="access_field_flag" />
+                    <field name="access_field_flag" invisible="1"/>
                 </xpath>
                 <field name="vat" position="attributes">
                     <attribute name="optional">show</attribute>
@@ -267,12 +362,6 @@
                 <field name="state_id" optional="show"/>
                 <field name="country_id" optional="show"/> -->
                 </xpath>
-                <xpath expr="//field[@name='user_id']" position="after">
-                    <!-- <field name="sale_order_count" string="#Orders" optional="show"/> -->
-                    <field name="total_invoiced_count" string="#Invoices" optional="show"/>
-                    <field name="customer_type" string="Status" optional="show"/>
-                    <field name="user_state" string="User Status" optional="show"/>
-                </xpath>
                 <xpath expr="//field[@name='is_company']" position="after">
                     <field name="is_company" invisible="0" optional="show"/>
                     <field name="is_customer" invisible="context.get('supplier_spt', False)" optional="show"/>
@@ -280,23 +369,25 @@
                     <field name="is_vendor" invisible="context.get('customer_spt', False)" optional="show"/>
                     <field name="is_email_verified" readonly="0" optional="show"/>
                     <field name="is_granted_portal_access" readonly="0" optional="show"/>
-                    <!-- <field name="catalog_count" string="#Catalog" optional="show"/> -->
+                    <field name="catalog_count" string="#Catalog" optional="show"/>
                     <field name="designeted_country_ids" invisible="1" />
                 </xpath>
                 <xpath expr="//field[@name='vat']" position="attributes">
                     <attribute name="invisible">1</attribute>
                 </xpath>
+                <xpath expr="//field[@name='activity_ids']" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </xpath>
 
-                <field name="user_id" position="attributes">
+                <!-- <field name="user_id" position="attributes">
                     <attribute name="invisible">0</attribute>
                     <attribute name="optional">show</attribute>
-                </field>
+                </field> -->
                 <field name="is_company" position="attributes">
                     <attribute name="optional">show</attribute>
                 </field>
                 <field name="city" position="attributes">
                     <attribute name="optional">show</attribute>
-
                 </field>
                 <field name="state_id" position="attributes">
                     <attribute name="optional">show</attribute>
@@ -304,12 +395,20 @@
                 <field name="country_id" position="attributes">
                     <attribute name="optional">show</attribute>
                 </field>
-
+                <xpath expr="//field[@name='country_id']" position="before">
+                    <field name="territory" optional="show"/>
+                </xpath>
                 <xpath expr="//field[@name='city']" position="before">
                     <field name="street" optional="show"/>
                     <field name="street2" optional="show"/>
                 </xpath>
-
+                <xpath expr="//field[@name='is_company']" position="before">
+                    <field name="user_id" />
+                    <field name="sale_order_count" string="#Orders" optional="show"/>
+                    <field name="total_invoiced_count" string="#Invoices" optional="show"/>
+                    <field name="customer_type" string="Status" optional="show"/>
+                    <field name="user_state" string="User Status" optional="show"/>
+                </xpath>
             </field>
         </record>
         <record id="contacts.action_contacts" model="ir.actions.act_window">
@@ -351,9 +450,86 @@
                     <field name="is_vendor" optional="show"/>
                     <field name="is_email_verified" optional="show"/>
                     <field name="is_granted_portal_access" optional="show"/>
-                    <!-- <field name="catalog_count" optional="show" string="#Catalog"/> -->
+                    <field name="catalog_count" optional="show" string="#Catalog"/>
                 </tree>
             </field>
+        </record>
+
+        <record id="res_partner_kanban_view_inherit_tzc_sales_custom" model="ir.ui.view">
+            <field name="name">res.partner.kanban.view.inherit.tzc.sales.custom</field>
+            <field name="model">res.partner</field>
+            <field name="inherit_id" ref="base.res_partner_kanban_view"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='activity_ids']" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </xpath>
+            </field>
+        </record>
+        <record id="res_partner_form_inherit_ca_view_inherit_tzc_sales_custom" model="ir.ui.view">
+            <field name="name">res.partner.form.inherit.ca.view.inherit.tzc.sales.custom</field>
+            <field name="model">res.partner</field>
+            <field name="inherit_id" ref="l10n_ca.res_partner_form_inherit_ca"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='l10n_ca_pst']" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </xpath>
+            </field>
+        </record>
+        <record id="res_partner_view_form_inherit_mail_inherit_tzc_sales_custom" model="ir.ui.view">
+            <field name="name">res.partner.view.form.inherit.mail.inherit.tzc.sales.custom</field>
+            <field name="model">res.partner</field>
+            <field name="inherit_id" ref="mail.res_partner_view_form_inherit_mail"/>
+            <field name="arch" type="xml">
+                <xpath expr="//div[hasclass('o_row_readonly')][3]" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </xpath>
+                <xpath expr="//label[@for='email']" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </xpath>
+            </field>
+        </record>
+        <record id="res_partner_view_form_inherit_sms_inherit_tzc_sales_custom" model="ir.ui.view">
+            <field name="name">res.partner.view.form.inherit.sms.inherit.tzc.sales.custom</field>
+            <field name="model">res.partner</field>
+            <field name="inherit_id" ref="sms.res_partner_view_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//div[hasclass('o_row_readonly')][1]" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </xpath>
+                <xpath expr="//label[@for='phone']" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </xpath>
+                <xpath expr="//div[hasclass('o_row_readonly')][2]" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </xpath>
+                <xpath expr="//label[@for='mobile']" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </xpath>
+            </field>
+        </record>
+        <record id="view_partner_property_form_inherit_tzc_sales_custom" model="ir.ui.view">
+            <field name="name">view.partner.property.form.inherit.tzc.sales.custom</field>
+            <field name="model">res.partner</field>
+            <field name="inherit_id" ref="product.view_partner_property_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='property_product_pricelist']" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </xpath>
+            </field>
+        </record>
+        <record id="res_partner_view_form_inherit_stock_form_inherit_tzc_sales_custom" model="ir.ui.view">
+            <field name="name">res.partner.view.form.inherit.stock.form.inherit.tzc.sales.custom</field>
+            <field name="model">res.partner</field>
+            <field name="inherit_id" ref="stock.view_partner_stock_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//group[@name='inventory']" position="attributes">
+                    <attribute name="groups">base.group_system</attribute>
+                </xpath>
+            </field>
+        </record>
+
+        <record model="ir.actions.act_window.view" id="contacts_enterprise.res_partner_action_contacts_view_map">
+            <field name="sequence">100</field>
         </record>
 
     </data>

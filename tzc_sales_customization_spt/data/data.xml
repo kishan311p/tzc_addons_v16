@@ -23,9 +23,7 @@
         </record>
     </data>
     <data noupdate="0">
-        <record id="sale.sale_order_rule_portal" model="ir.rule">
-            <field name="domain_force">[('partner_id','=',user.partner_id.id)]</field>
-        </record>
+
         <record id="product.group_sale_pricelist" model="res.groups">
             <field name="users" eval="[Command.link(ref('base.user_root')), Command.link(ref('base.user_admin'))]"/>
         </record>

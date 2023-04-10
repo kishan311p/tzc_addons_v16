@@ -32,7 +32,7 @@ class kits_stock_move(models.Model):
                 'status': move.state,
                 'company_id': move.company_id.id,
                 'date': move.date,
-                'date_expected': move.date_expected,
+                'date_expected': move.forecast_expected_date,
                 'location_dest_id': move.location_dest_id.id,
                 'location_id': move.location_id.id,
                 'product_uom': move.product_uom.id,

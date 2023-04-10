@@ -11,16 +11,19 @@ class add_aditional_discount_wizard(models.TransientModel):
     def action_add_discount_precess(self):
         product_id = self.env['product.product'].search([('is_global_discount','=',True)],limit=1)
         discount_line = self.sale_order_id.order_line.filtered(lambda x: x.product_id == product_id)
-        if not discount_line:
-            order_line = [(0,0,{
-                'product_id':product_id.id,
-                'name':product_id.name,
-                'product_uom_qty': -1.0,
-                'price_unit':self.discount_price,
-                'unit_discount_price':self.discount_price,
-                'is_global_discount':True,
-            })]
-            self.sale_order_id.write({'order_line':order_line})
+        if product_id:
+            if not discount_line:
+                order_line = [(0,0,{
+                    'product_id':product_id.id,
+                    'name':product_id.name,
+                    'product_uom_qty': -1.0,
+                    'price_unit':self.discount_price,
+                    'unit_discount_price':self.discount_price,
+                    'is_global_discount':True,
+                })]
+                self.sale_order_id.write({'order_line':order_line})
+            else:
+                discount_line.write({'price_unit':self.discount_price,'unit_discount_price':self.discount_price,'is_global_discount':True})
+            self.sale_order_id._amount_all()
         else:
-            discount_line.write({'price_unit':self.discount_price,'unit_discount_price':self.discount_price,'is_global_discount':True})
-        self.sale_order_id._amount_all()
+            raise UserError(_('Additional Discount product not found.'))

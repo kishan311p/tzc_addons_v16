@@ -83,29 +83,29 @@ class kits_wizard_download_catalog_excel(models.TransientModel):
                     wrksht.cell(row=data_row, column=4).border = all_border
                     price = self.partner_id.property_product_pricelist._get_product_price(line.product_pro_id,line.product_qty,uom=line.product_pro_id.uom_id)
                     if line.sale_type == 'on_sale':
-                        if currency_name == 'USD':
-                            price = line.product_pro_id.on_sale_usd
-                        else:
-                            price = line.product_pro_id.on_sale_cad
+                        # if currency_name == 'USD':
+                        price = line.product_pro_id.on_sale_usd
+                        # else:
+                        #     price = line.product_pro_id.on_sale_cad
                     if line.sale_type == 'clearance':
-                        if currency_name == 'CAD':
-                            price = line.product_pro_id.clearance_cad
-                        else:
-                            price = line.product_pro_id.clearance_usd
+                        # if currency_name == 'CAD':
+                        #     price = line.product_pro_id.clearance_cad
+                        # else:
+                        price = line.product_pro_id.clearance_usd
                     if not price:
-                        if currency_name == 'USD':
-                            price = line.product_pro_id.lst_price_usd
-                        else:
-                            price = line.product_pro_id.lst_price
+                        # if currency_name == 'USD':
+                        #     price = line.product_pro_id.lst_price_usd
+                        # else:
+                        price = line.product_pro_id.lst_price
                     
                     product_price = 0.0
                     if 'eto dubai' in self.partner_id.property_product_pricelist.name.lower() or 'other eto' in self.partner_id.property_product_pricelist.name.lower():
                         product_price = self.env['product.pricelist.item'].search([('product_id','=',line.product_pro_id.id),('pricelist_id','=',self.partner_id.property_product_pricelist.id)],limit=1).fixed_price
                     else:
-                        if currency_name == 'USD':
-                            product_price = line.product_pro_id.lst_price_usd
-                        else:
-                            product_price = line.product_pro_id.lst_price
+                        # if currency_name == 'USD':
+                        #     product_price = line.product_pro_id.lst_price_usd
+                        # else:
+                        product_price = line.product_pro_id.lst_price
 
                     if 'eto dubai' in self.partner_id.property_product_pricelist.name.lower() or 'other eto' in self.partner_id.property_product_pricelist.name.lower():
                         discount_amount = (line.product_price - product_price) * line.product_qty
@@ -138,7 +138,7 @@ class kits_wizard_download_catalog_excel(models.TransientModel):
                     wrksht.cell(row=data_row, column=6).border = all_border
 
                     # wrksht.cell(row=data_row, column=7).hyperlink = line.product_pro_id.image_url
-                    # wrksht.cell(row=data_row, column=7).hyperlink = line.product_pro_id.image_url if line.product_pro_id.image_url else 'False' 
+                    wrksht.cell(row=data_row, column=7).hyperlink = line.product_pro_id.image_url if line.product_pro_id.image_url else 'False' 
                     wrksht.cell(row=data_row, column=7).alignment = alignment_center
                     wrksht.cell(row=data_row, column=7).font = Font(color="FF0000FF",underline='single',name='Calibri',size='16')
                     wrksht.cell(row=data_row, column=7).border = all_border
@@ -294,19 +294,19 @@ class kits_wizard_download_catalog_excel(models.TransientModel):
             
             price = pricelist.get_product_price(line.product_pro_id,line.product_qty,self.env['res.partner'].browse())
             if line.sale_type == 'on_sale':
-                if currency == 'USD':
-                    price = line.product_pro_id.on_sale_usd
-                else:
-                    price = line.product_pro_id.on_sale_cad
+                # if currency == 'USD':
+                price = line.product_pro_id.on_sale_usd
+                # else:
+                #     price = line.product_pro_id.on_sale_cad
             if line.sale_type == 'clearance':
-                if currency  == 'USD':
-                    price = line.product_pro_id.clearance_usd
-                else:
-                    price = line.product_pro_id.clearance_cad
+                # if currency  == 'USD':
+                price = line.product_pro_id.clearance_usd
+                # else:
+                #     price = line.product_pro_id.clearance_cad
             if not price:
-                if currency == 'USD':
-                    price = line.product_pro_id.lst_price_usd
-                else:
+                # if currency == 'USD':
+                #     price = line.product_pro_id.lst_price_usd
+                # else:
                     price = line.product_pro_id.lst_price
             
             disc = (price * line.discount * 0.01) * line.product_qty
