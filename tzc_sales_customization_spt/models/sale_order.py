@@ -956,19 +956,24 @@ class sale_order(models.Model):
                 record.case_weight_gm = weight
             if picking_id:
                 picking_id.include_cases = record.include_cases
-
-    @api.onchange('partner_shipping_id', 'partner_id', 'company_id','partner_id.country_id','pricelist_id')
-    def onchange_partner_shipping_id_kits(self):
+                
+    def fiscal_position_change(self):
         fiscal_position_obj = self.env['account.fiscal.position']
         for record in self:
-            record.pricelist_id = record.partner_id.b2b_pricelist_id if record.partner_id else False
-            record.b2b_currency_id = record.partner_id.preferred_currency.id
             if record.partner_id and record.partner_id.country_id:
                  record.fiscal_position_id = self.env['account.fiscal.position'].with_context(force_company=record.company_id.id or self.env.user.company_id.id)._get_fiscal_position(record.partner_id)
             else:
                 fiscal_position_id = fiscal_position_obj.sudo().search([('country_id','=',False)]).id
                 record.fiscal_position_id = fiscal_position_id
             record.order_line._compute_tax_id()
+
+    
+    @api.onchange('partner_shipping_id', 'partner_id', 'company_id','partner_id.country_id','pricelist_id')
+    def onchange_partner_shipping_id_kits(self):
+        for record in self:
+            record.pricelist_id = record.partner_id.b2b_pricelist_id if record.partner_id else False
+            record.b2b_currency_id = record.partner_id.preferred_currency.id if record.partner_id else False
+            record.fiscal_position_change()
 
     def check_stock_for_quotaion_spt(self,sale_id,order_lines):
         warning = False
