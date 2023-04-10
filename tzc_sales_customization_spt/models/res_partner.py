@@ -110,6 +110,18 @@ class res_partner(models.Model):
     kits_lang = fields.Selection(language_code,string='Language',default='en')
     internal_language = fields.Selection(language_code,string='Internal Language',default='en')
 
+    def onchange_country_id(self):
+        order_obj = self.env['sale.order']
+        try:
+            for record in self._origin:
+                order_ids = order_obj.search([('state','in',['draft','sent','received']),('partner_id','=',record.id)])
+                order_ids.onchange_partner_shipping_id_kits()
+        except:
+            for record in self:
+                order_ids = order_obj.search([('state','in',['draft','sent','received']),('partner_id','=',record.id)])
+                order_ids.onchange_partner_shipping_id_kits()
+        return{}
+                        
     def write(self,vals):
         user_obj = self.env['res.users']
         config_parameter_obj = self.env['ir.config_parameter'].sudo()
@@ -167,6 +179,8 @@ class res_partner(models.Model):
                         raise UserError('Salespreson is required.')        
         res = super(res_partner,self).write(vals)
         for rec in self:
+            if vals.get('country_id') or vals.get('state_id'):
+                rec.onchange_country_id()
             if 'email' in vals.keys() and vals['email']:
                 mailing_contact_id = self.env['mailing.contact'].search([('odoo_contact_id','=',self.id)])
                 # mailing_contact_id.mailgun_verification = False
