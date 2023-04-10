@@ -24,6 +24,8 @@ class create_catalog_quotation_wizard_spt(models.TransientModel):
                         'user_id':record.catalog_id.user_id.id,
                         'fiscal_position_id':fiscal_position_id.id if fiscal_position_id else False,
                         'source_spt' : 'Catalog',
+                        'b2b_currency_id' : customer_id.preferred_currency.id,
+                        'pricelist_id' : customer_id.b2b_pricelist_id.id,
                     })
                     self._cr.commit()
                     for line_id in record.catalog_id.line_ids.filtered(lambda x:x.product_qty != 0):
