@@ -5,7 +5,7 @@ class geo_restriction_spt(models.Model):
     _name = 'geo.restriction.spt'
     _description = 'Geo Restriction' 
 
-    name = fields.Char('Geo Restriction')
+    name = fields.Char('Geo Restriction', index=True)
 
     products_count = fields.Integer(compute="_compute_geo_restricted_products")
 

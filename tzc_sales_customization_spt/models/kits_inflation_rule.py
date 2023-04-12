@@ -4,8 +4,8 @@ from odoo import fields,models,api
 class kits_inflation_rule(models.Model):
     _name = 'kits.inflation.rule'
 
-    country_id = fields.Many2many('res.country','inflation_country_rel','discount_id','brand_id',string='Country')
-    brand_ids = fields.Many2many('product.brand.spt','inflation_brand_rel','model_id','brand_id','Brands')
+    country_id = fields.Many2many('res.country','inflation_country_rel','discount_id','brand_id',string='Country',index = True)
+    brand_ids = fields.Many2many('product.brand.spt','inflation_brand_rel','model_id','brand_id','Brands',index = True)
     # inflation_rate = fields.Float('inflation (%)')
     inflation_rate = fields.Integer('inflation (%)')
     inflation_id = fields.Many2one('kits.inflation')

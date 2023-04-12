@@ -5,7 +5,7 @@ class ProductColorSpt(models.Model):
     _name = 'product.color.spt'
     _description = 'Product Color' 
 
-    name = fields.Char('Color')
+    name = fields.Char('Color',index=True)
     color = fields.Char('HTML Code')
 
     primary_color_products = fields.Integer(compute="_compute_color_products_spt")

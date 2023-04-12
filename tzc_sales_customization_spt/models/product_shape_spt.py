@@ -5,7 +5,7 @@ class product_shape_spt(models.Model):
     _name = 'product.shape.spt'
     _description = 'Product shape' 
 
-    name = fields.Char('Shape')
+    name = fields.Char('Shape', index=True)
     # product_ids = fields.One2many('product.template','shape',string='Products')
     kits_product_ids = fields.Many2many('product.product','product_with_shape_real','shape_id','product_id','Products')
 

@@ -3812,3 +3812,7 @@ class sale_order(models.Model):
     def _inverse_ups_carrier_account(self):
         for order in self:
             order.sudo().partner_shipping_id.with_company(order.company_id).property_ups_carrier_account = order.partner_ups_carrier_account
+    
+    def get_wh_user(self):
+        user_id = self.env['res.users'].search([('is_warehouse','=',True)],limit=1)
+        return user_id.email

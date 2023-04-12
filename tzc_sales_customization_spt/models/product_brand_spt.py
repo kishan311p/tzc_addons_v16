@@ -7,7 +7,7 @@ class ProductBrandSpt(models.Model):
     # _inherit = ['website.published.multi.mixin']
     _description = 'Product Brand' 
 
-    name = fields.Char('Brand')
+    name = fields.Char('Brand',index=True)
     kits_product_ids = fields.One2many('product.product','brand',string="Brand ")
     description = fields.Text('   Description', translate=True)
     # website_id = fields.Many2one("website", string="Website")

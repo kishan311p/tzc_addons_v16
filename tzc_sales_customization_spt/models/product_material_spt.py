@@ -6,7 +6,7 @@ class ProductMaterialSpt(models.Model):
     _name = 'product.material.spt'
     _description = 'Product Material' 
 
-    name = fields.Char('Material')
+    name = fields.Char('Material', index=True)
     # product_ids = fields.One2many('product.template','material',string='Products')
 
     kits_product_ids = fields.Many2many('product.product','product_with_material_real','material_id','product_id',string='Products')

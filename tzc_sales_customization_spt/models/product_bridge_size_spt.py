@@ -6,7 +6,7 @@ class ProductBridgeSizeSpt(models.Model):
     _name = 'product.bridge.size.spt'
     _description = 'Product Bridge Size' 
 
-    name = fields.Char('Bridge Size')
+    name = fields.Char('Bridge Size', index=True)
     # product_ids = fields.One2many('product.template','bridge_size',string='Products')
     kits_product_ids = fields.One2many('product.product','bridge_size',string='Products')
 

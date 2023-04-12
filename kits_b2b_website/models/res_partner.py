@@ -5,7 +5,7 @@ class res_partner(models.Model):
     _inherit = 'res.partner'
 
     # b2b_pricelist_id = fields.Many2one(comodel_name='product.pricelist',string="Pricelist")
-    preferred_currency= fields.Many2one(comodel_name='res.currency',string="Preferred Currency")
+    preferred_currency= fields.Many2one(comodel_name='res.currency',string="Preferred Currency" ,index=True)
     b2b_wishlist_count = fields.Integer('Wishlist Count',compute='_compute_b2b_wishlist_count')
     b2b_recent_view_count = fields.Integer('Recent View Count',compute='_compute_b2b_wishlist_count')    
     

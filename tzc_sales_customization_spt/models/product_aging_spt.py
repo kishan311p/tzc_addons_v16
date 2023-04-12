@@ -5,7 +5,7 @@ class ProductAgingSpt(models.Model):
     _name = 'product.aging.spt'
     _description = 'Product Aging' 
 
-    name = fields.Char('Aging')
+    name = fields.Char('Aging', index=True)
     products_count = fields.Integer(compute="_compute_aging_products_count")
     kits_product_ids = fields.One2many('product.product','aging',string="Products")
 

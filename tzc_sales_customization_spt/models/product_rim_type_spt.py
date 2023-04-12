@@ -5,7 +5,7 @@ class product_rim_type_spt(models.Model):
     _name = 'product.rim.type.spt'
     _description = 'Product Rim Type' 
 
-    name = fields.Char('Rim Type')
+    name = fields.Char('Rim Type', index=True)
     # product_ids = fields.One2many('product.template','rim_type',string='Products')
     kits_product_ids = fields.One2many('product.product','rim_type',string='Products')
     products_count = fields.Integer(compute="_compute_rim_type_products")

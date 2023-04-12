@@ -5,7 +5,7 @@ class ProductModelSpt(models.Model):
     _name = 'product.model.spt'
     _description = 'Product Model' 
 
-    name = fields.Char('Model')
+    name = fields.Char('Model', index=True)
     # product_ids = fields.One2many('product.template','model',string='Products ')
     kits_product_ids = fields.One2many('product.product','model',string='Products ')
     

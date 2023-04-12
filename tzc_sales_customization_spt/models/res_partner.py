@@ -14,7 +14,7 @@ from openpyxl.workbook.workbook import Workbook
 from openpyxl.styles import PatternFill, Border, Side, Alignment, Protection, Font
 from bs4 import BeautifulSoup
 from operator import itemgetter
-
+from odoo.osv import expression
 from odoo.addons.auth_signup.models.res_partner import now
 from odoo.exceptions import UserError, ValidationError
 from datetime import datetime
@@ -31,7 +31,7 @@ language_code = [('en','English'),('af','Afrikaans'),('sq','Albanian'),('ar','Ar
 class res_partner(models.Model):
     _inherit = 'res.partner'
 
-    b2b_pricelist_id = fields.Many2one(comodel_name='product.pricelist',string="Pricelist")
+    b2b_pricelist_id = fields.Many2one(comodel_name='product.pricelist',string="Pricelist",index = True)
     internal_id = fields.Char('Internal ID ')
     previous_total_sales = fields.Float('Previous Total Sales')
     customer_sales_rank = fields.Float('Customer Sales Rank')
@@ -56,7 +56,7 @@ class res_partner(models.Model):
     is_email_verified = fields.Boolean(compute="_compute_info_fields",string='User Verified',store=True)
     sale_order_count = fields.Integer(compute='_compute_sale_order_count', string='Sale Order Count',store=True)
     email = fields.Char(track_visibility='onchange')
-    country_id = fields.Many2one('res.country', string='Country', ondelete='restrict',track_visibility="onchange")
+    country_id = fields.Many2one('res.country', string='Country', ondelete='restrict',track_visibility="onchange",index=True)
     internal_contacts_ids = fields.Many2many('res.users','internal_contact_res_users_rel','internal_contacts_id','res_users_id','Designated Salespersons',compute="_get_partner_data",compute_sudo=True)
     designeted_country_ids = fields.Many2many('res.country','res_partner_res_country_rel','res_partner_id','res_country_id','Sales Manager\'s Designated Countries',compute="_get_partner_data",compute_sudo=True)
     notify_salesperson_country_ids = fields.Many2many('res.country','notify_salesperson_country_res_country_rel','notify_salesperson_country_id','res_country_id','Notify Salesperson Country',compute="_get_partner_data",compute_sudo=True)

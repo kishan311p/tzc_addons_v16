@@ -6,7 +6,7 @@ class ProductSizeSpt(models.Model):
     _name = 'product.size.spt'
     _description = 'Product Size' 
 
-    name = fields.Char('Size')
+    name = fields.Char('Size', index=True)
     # product_ids = fields.One2many('product.template','size',string='Products')
     kits_product_ids = fields.One2many('product.product','size',string='Products')
 
