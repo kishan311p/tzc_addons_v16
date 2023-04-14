@@ -65,71 +65,84 @@ class kits_wizard_download_catalog_excel(models.TransientModel):
             total_discount = 0.00
             total_subtotal = 0.00
             total_products = 0
-            restricted_products = self.env['product.product'].search([('geo_restriction','in',self.partner_id.country_id.ids)])
-            lines = self.catalog_id.line_ids
-            for line in lines.sorted(lambda x: x.product_pro_id.variant_name):
-                if line.product_pro_id not in restricted_products:
+            # restricted_products = self.env['product.product'].search([('geo_restriction','in',self.partner_id.country_id.ids)])
+            lines = self.catalog_id.get_catalog_line()
+            for line in lines:
+                line_dict = lines.get(line,{})
+                product_id= line_dict.get('product_id')
+                # if line.product_pro_id not in restricted_products:
+                if product_id.type == 'product':
                     wrksht.row_dimensions[data_row].height = 240
                     wrksht.cell(row=data_row, column=1).border = all_border
                     wrksht.cell(row=data_row, column=2).border = all_border
-                    wrksht.cell(row=data_row, column=3).value = line.product_pro_id.catalog_report_product_name() or ''
+                    wrksht.cell(row=data_row, column=3).value = product_id.catalog_report_product_name() or ''
                     wrksht.cell(row=data_row, column=3).font = Font(name='Calibri',size='16',bold=False)
                     wrksht.cell(row=data_row, column=3).alignment = Alignment(horizontal='center', vertical='center', text_rotation=0,wrap_text=True)
                     wrksht.cell(row=data_row, column=3).border = all_border
-                    wrksht.cell(row=data_row, column=4).value = line.product_qty or 0
-                    total_products += line.product_qty
+                    wrksht.cell(row=data_row, column=4).value = int(line_dict.get('qty',0.0)) or 0
+                    # total_products += line.product_qty
+                    total_products += int(line_dict.get('qty',0.0)) or 0
                     wrksht.cell(row=data_row, column=4).alignment = alignment_center
                     wrksht.cell(row=data_row, column=4).font = Font(name='Calibri',size='16',bold=False)
                     wrksht.cell(row=data_row, column=4).border = all_border
-                    price = self.partner_id.property_product_pricelist._get_product_price(line.product_pro_id,line.product_qty,uom=line.product_pro_id.uom_id)
-                    if line.sale_type == 'on_sale':
-                        # if currency_name == 'USD':
-                        price = line.product_pro_id.on_sale_usd
-                        # else:
-                        #     price = line.product_pro_id.on_sale_cad
-                    if line.sale_type == 'clearance':
-                        # if currency_name == 'CAD':
-                        #     price = line.product_pro_id.clearance_cad
-                        # else:
-                        price = line.product_pro_id.clearance_usd
-                    if not price:
-                        # if currency_name == 'USD':
-                        #     price = line.product_pro_id.lst_price_usd
-                        # else:
-                        price = line.product_pro_id.lst_price
+                    # price = self.partner_id.property_product_pricelist._get_product_price(line.product_pro_id,line.product_qty,uom=line.product_pro_id.uom_id)
+                    # if line.sale_type == 'on_sale':
+                    #     # if currency_name == 'USD':
+                    #     price = line.product_pro_id.on_sale_usd
+                    #     # else:
+                    #     #     price = line.product_pro_id.on_sale_cad
+                    # if line.sale_type == 'clearance':
+                    #     # if currency_name == 'CAD':
+                    #     #     price = line.product_pro_id.clearance_cad
+                    #     # else:
+                    #     price = line.product_pro_id.clearance_usd
+                    # if not price:
+                    #     # if currency_name == 'USD':
+                    #     #     price = line.product_pro_id.lst_price_usd
+                    #     # else:
+                    #     price = line.product_pro_id.lst_price
                     
-                    product_price = 0.0
-                    if 'eto dubai' in self.partner_id.property_product_pricelist.name.lower() or 'other eto' in self.partner_id.property_product_pricelist.name.lower():
-                        product_price = self.env['product.pricelist.item'].search([('product_id','=',line.product_pro_id.id),('pricelist_id','=',self.partner_id.property_product_pricelist.id)],limit=1).fixed_price
-                    else:
-                        # if currency_name == 'USD':
-                        #     product_price = line.product_pro_id.lst_price_usd
-                        # else:
-                        product_price = line.product_pro_id.lst_price
+                    # product_price = 0.0
+                    # if 'eto dubai' in self.partner_id.property_product_pricelist.name.lower() or 'other eto' in self.partner_id.property_product_pricelist.name.lower():
+                    #     product_price = self.env['product.pricelist.item'].search([('product_id','=',line.product_pro_id.id),('pricelist_id','=',self.partner_id.property_product_pricelist.id)],limit=1).fixed_price
+                    # else:
+                    #     # if currency_name == 'USD':
+                    #     #     product_price = line.product_pro_id.lst_price_usd
+                    #     # else:
+                    #     product_price = line.product_pro_id.lst_price
 
-                    if 'eto dubai' in self.partner_id.property_product_pricelist.name.lower() or 'other eto' in self.partner_id.property_product_pricelist.name.lower():
-                        discount_amount = (line.product_price - product_price) * line.product_qty
-                        subtotal = product_price * line.product_qty
-                        total_discount += round(discount_amount,2)
-                        total_subtotal += round(subtotal,2)
-                    else:
-                        discount_amount = product_price * line.discount * 0.01 * line.product_qty
-                        subtotal = (product_price * line.product_qty) - discount_amount
-                        total_discount += round(discount_amount,2)
-                        total_subtotal += round(subtotal,2)
+                    # if 'eto dubai' in self.partner_id.property_product_pricelist.name.lower() or 'other eto' in self.partner_id.property_product_pricelist.name.lower():
+                    #     discount_amount = (line.product_price - product_price) * line.product_qty
+                    #     subtotal = product_price * line.product_qty
+                    #     total_discount += round(discount_amount,2)
+                    #     total_subtotal += round(subtotal,2)
+                    # else:
+                    #     discount_amount = product_price * line.discount * 0.01 * line.product_qty
+                    #     subtotal = (product_price * line.product_qty) - discount_amount
+                    #     total_discount += round(discount_amount,2)
+                    #     total_subtotal += round(subtotal,2)
                     
-                    if 'eto dubai' in self.partner_id.property_product_pricelist.name.lower() or 'other eto' in self.partner_id.property_product_pricelist.name.lower():
-                        wrksht.cell(row=data_row, column=5).value = round(product_price,2) or 0.00
-                        wrksht.cell(row=data_row, column=5).alignment = alignment_center
-                        wrksht.cell(row=data_row, column=5).font = Font(name='Calibri',size='16',bold=False)
-                        wrksht.cell(row=data_row, column=5).number_format = '"$"#,##0.00'
-                        wrksht.cell(row=data_row, column=5).border = all_border
-                    else:
-                        wrksht.cell(row=data_row, column=5).value = round(product_price - (product_price * line.discount / 100),2) or 0.00
-                        wrksht.cell(row=data_row, column=5).alignment = alignment_center
-                        wrksht.cell(row=data_row, column=5).font = Font(name='Calibri',size='16',bold=False)
-                        wrksht.cell(row=data_row, column=5).number_format = '"$"#,##0.00'
-                        wrksht.cell(row=data_row, column=5).border = all_border
+                    # if 'eto dubai' in self.partner_id.property_product_pricelist.name.lower() or 'other eto' in self.partner_id.property_product_pricelist.name.lower():
+                    #     wrksht.cell(row=data_row, column=5).value = round(product_price,2) or 0.00
+                    #     wrksht.cell(row=data_row, column=5).alignment = alignment_center
+                    #     wrksht.cell(row=data_row, column=5).font = Font(name='Calibri',size='16',bold=False)
+                    #     wrksht.cell(row=data_row, column=5).number_format = '"$"#,##0.00'
+                    #     wrksht.cell(row=data_row, column=5).border = all_border
+                    # else:
+                    #     wrksht.cell(row=data_row, column=5).value = round(product_price - (product_price * line.discount / 100),2) or 0.00
+                    #     wrksht.cell(row=data_row, column=5).alignment = alignment_center
+                    #     wrksht.cell(row=data_row, column=5).font = Font(name='Calibri',size='16',bold=False)
+                    #     wrksht.cell(row=data_row, column=5).number_format = '"$"#,##0.00'
+                    #     wrksht.cell(row=data_row, column=5).border = all_border
+                    
+                    wrksht.cell(row=data_row, column=5).value = round(line_dict.get('our_price',0),2) or 0.00
+                    wrksht.cell(row=data_row, column=5).alignment = alignment_center
+                    wrksht.cell(row=data_row, column=5).font = Font(name='Calibri',size='16',bold=False)
+                    wrksht.cell(row=data_row, column=5).number_format = '"$"#,##0.00'
+                    wrksht.cell(row=data_row, column=5).border = all_border
+                    
+                    total_discount = total_discount + (line_dict.get('price_unit',0) - line_dict.get('our_price',0))
+                    total_subtotal = total_subtotal + line_dict.get('our_price',0)
 
                     wrksht.cell(row=data_row, column=6).value = '=D%s*E%s'%(str(data_row),str(data_row))
                     wrksht.cell(row=data_row, column=6).alignment = alignment_center
@@ -138,13 +151,13 @@ class kits_wizard_download_catalog_excel(models.TransientModel):
                     wrksht.cell(row=data_row, column=6).border = all_border
 
                     # wrksht.cell(row=data_row, column=7).hyperlink = line.product_pro_id.image_url
-                    wrksht.cell(row=data_row, column=7).hyperlink = line.product_pro_id.image_url if line.product_pro_id.image_url else 'False' 
+                    wrksht.cell(row=data_row, column=7).hyperlink = product_id.image_url if product_id.image_url else 'False' 
                     wrksht.cell(row=data_row, column=7).alignment = alignment_center
                     wrksht.cell(row=data_row, column=7).font = Font(color="FF0000FF",underline='single',name='Calibri',size='16')
                     wrksht.cell(row=data_row, column=7).border = all_border
 
                     # wrksht.cell(row=data_row, column=8).hyperlink = line.product_pro_id.image_secondary_url
-                    wrksht.cell(row=data_row, column=8).hyperlink = line.product_pro_id.image_secondary_url if line.product_pro_id.image_secondary_url else 'False' 
+                    wrksht.cell(row=data_row, column=8).hyperlink = product_id.image_secondary_url if product_id.image_secondary_url else 'False' 
                     wrksht.cell(row=data_row, column=8).alignment = alignment_center
                     wrksht.cell(row=data_row, column=8).font = Font(color="FF0000FF",underline='single',name='Calibri',size='16')
                     wrksht.cell(row=data_row, column=8).border = all_border

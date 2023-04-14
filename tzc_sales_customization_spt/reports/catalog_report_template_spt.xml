@@ -402,7 +402,7 @@
                             </th>
                             <th style="padding: 10px;text-align: center;width: 20%;">Product</th>
                             <th style="padding: 10px;text-align: center;width: 9%;">Qty</th>
-                            <th style="padding: 10px;text-align: right;width: 9%;">Price(<t t-esc="doc.customer_id.property_product_pricelist.currency_id.name"/>)</th>
+                            <th style="padding: 10px;text-align: right;width: 9%;">Price(<t t-esc="doc.customer_id.preferred_currency.name"/>)</th>
                         </tr>
                     </thead>
                     <tbody class="sale_tbody">
@@ -582,7 +582,7 @@
                                         <strong>Total</strong>
                                     </td>
                                     <td name="td_final_total_value" class="text-end">
-                                        (<span t-esc="doc.customer_id.property_product_pricelist.currency_id.name"/>)
+                                        (<span t-esc="doc.customer_id.preferred_currency.name"/>)
                                            <span  t-esc="total + is_shipping_product" t-options='{"widget": "monetary", "display_currency":   doc.customer_id.preferred_currency}'/>
                                        </td>
                                 </tr>
