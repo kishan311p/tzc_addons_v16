@@ -13,6 +13,7 @@ class stock_picking_barcode_line_spt(models.TransientModel):
     sb_order_id = fields.Many2one('stock.picking.barcode.spt','Barcode Order')
     barcode_spt = fields.Char('Barcode')
     sequence = fields.Integer(string='Sequence',index=True)
+    scan_extra_item_wiz = fields.Boolean()
 
     @api.onchange('product_id','product_qty')
     def onchange_sound(self):
@@ -126,6 +127,8 @@ class stock_picking_barcode_spt(models.TransientModel):
         if move:
             if move.product_uom_qty < qty if qty != None else 0:
                 notification_type = 'user_connection'
+            elif move.scan_extra_item:
+                notification_type = 'user_connection'
         else:
             notification_type = 'user_connection'
         
@@ -198,6 +201,7 @@ class stock_picking_barcode_spt(models.TransientModel):
                     'company_id': self.picking_id.company_id.id,
                     'quantity_done' : line.product_qty,
                     'name':line.product_id.name,
+                    'scan_extra_item':line.scan_extra_item_wiz,
                     'description_picking':line.product_id.name,
                 })
                 stock_move_id.move_line_ids.write({'qty_done':line.product_qty,'picking_id':self.picking_id.id})
@@ -275,7 +279,7 @@ class stock_picking_barcode_spt(models.TransientModel):
                 notify_type = self.get_notify_type(stock_move,search_line)
                 self.get_notify(self.product_id.barcode,notify_type)
             else:
-                line_id = self.env['stock.picking.barcode.line.spt'].create({'product_id':self.product_id.id,'product_qty':self.qty,'sequence':-1,'sb_order_id':self.id})
+                line_id = self.env['stock.picking.barcode.line.spt'].create({'product_id':self.product_id.id,'product_qty':self.qty,'sequence':-1,'sb_order_id':self.id,'scan_extra_item_wiz':True})
                 if self.line_ids:
                     line_id.sequence = sequence - len(self.line_ids)+1
                 else:
@@ -302,7 +306,7 @@ class stock_picking_barcode_spt(models.TransientModel):
         self.ensure_one()
         sequence = 0
         if self.product_id and self.qty:
-            stock_move = self.picking_id.move_ids_without_package.filtered(lambda x:x.product_id == self.product_id.id)
+            stock_move = self.picking_id.move_ids_without_package.filtered(lambda x:x.product_id.id == self.product_id.id)
             search_line = self.line_ids.filtered(lambda x:x.product_id.id == self.product_id.id)
             # self.line_ids.update({'sequence':0})
             if search_line:
@@ -317,7 +321,7 @@ class stock_picking_barcode_spt(models.TransientModel):
                 notify_type = self.get_notify_type(stock_move,search_line)
                 self.get_notify(self.product_id.barcode,notify_type)
             else:
-                line_id = self.env['stock.picking.barcode.line.spt'].create({'product_id':self.product_id.id,'product_qty':self.qty,'sequence':-1,'sb_order_id':self.id})
+                line_id = self.env['stock.picking.barcode.line.spt'].create({'product_id':self.product_id.id,'product_qty':self.qty,'sequence':-1,'sb_order_id':self.id,'scan_extra_item_wiz':True})
                 if self.line_ids:
                     line_id.sequence = sequence - len(self.line_ids)+1
                 else:

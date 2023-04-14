@@ -13,7 +13,7 @@
 
                 <!-- <div t-field="company.report_footer"/> -->
 
-                <div t-if="report_type == 'pdf'" class="text-muted">
+                <div t-if="report_type == 'pdf'" >
                     Page:
                     <span class="page"/>
                     of

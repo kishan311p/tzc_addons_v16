@@ -65,7 +65,7 @@
                     confirm="This will cancel current order and restore the Original quotation." /> -->
         </xpath>
         <xpath expr="//button[@name='action_quotation_send'][4]" position="after">
-            <button string="Revert Pricing" type="object" name="order_revert" class="oe_highlight" attrs="{'invisible': [('state','not in',('draft','sent','received','salesperson_confirmation','sale','in_scanning','scanned','scanned','scan'))]}" />
+            <button string="Revert Pricing" type="object" name="order_revert" class="oe_highlight" attrs="{'invisible': [('state','not in',('draft','sent','received','sale','in_scanning','scanned','scanned','scan'))]}" />
             <button string="FREIGHT INVOICE" name="excel_order_report" type="object" class="oe_highlight" sequence="100" attrs="{'invisible': [('state', 'not in', ('in_scanning','scan','shipped','draft_inv','open_inv','paid','scanned'))]}" />
         </xpath>
         <xpath expr="//form/sheet/notebook/page[@name='order_lines']" position="after">
@@ -156,7 +156,7 @@
                 <group name="note_group">
                     <group>
                         <group string="Original Order"
-                            attrs="{'invisible':[('state','in',['draft','sent','received','salesperson_confirmation'])]}" col="2">
+                            attrs="{'invisible':[('state','in',['draft','sent','received'])]}" col="2">
                             <field name="amount_untaxed" invisible="1" widget='monetary' options="{'currency_field': 'currency_id'}"/>
                             <field name="amount_without_discount" string="Subtotal" widget='monetary' options="{'currency_field': 'currency_id'}"/>
                             <field name="shipping_cost" string="Original Shipping Cost" widget='monetary' options="{'currency_field': 'currency_id'}"/>
@@ -165,14 +165,14 @@
                             <field name="amount_discount" widget='monetary' options="{'currency_field': 'currency_id'}"/>
                             <field name="amount_tax" string='Tax' widget='monetary' options="{'currency_field': 'currency_id'}"/>
                             <div class="oe_inline o_td_label">
-                                <label for="amount_total" string="Total" attrs="{'invisible':[('state','not in',['draft','sent','received','salesperson_confirmation'])]}"/>
-                                <label for="amount_total" string="Order Total" attrs="{'invisible':[('state','in',['draft','sent','received','salesperson_confirmation'])]}"/>
+                                <label for="amount_total" string="Total" attrs="{'invisible':[('state','not in',['draft','sent','received'])]}"/>
+                                <label for="amount_total" string="Order Total" attrs="{'invisible':[('state','in',['draft','sent','received'])]}"/>
                             </div>
                             <field name="amount_total" nolabel="1" widget='monetary' options="{'currency_field': 'currency_id'}"/>
                         </group>
                     </group>
 
-                    <group class="oe_subtotal_footer oe_right" attrs="{'invisible':[('state','not in',['draft','sent','received','salesperson_confirmation'])]}" colspan="2" name="orignal_sale_total">
+                    <group class="oe_subtotal_footer oe_right" attrs="{'invisible':[('state','not in',['draft','sent','received'])]}" colspan="2" name="orignal_sale_total">
                         <field name="amount_untaxed" invisible="1" widget='monetary' options="{'currency_field': 'currency_id'}"/>
                         <field name="amount_without_discount" string="Subtotal" widget='monetary' options="{'currency_field': 'currency_id'}"/>
                         <field name="shipping_cost" string="Original Shipping Cost" widget='monetary' options="{'currency_field': 'currency_id'}"/>
@@ -181,14 +181,14 @@
                         <field name="amount_discount" widget='monetary' options="{'currency_field': 'currency_id'}"/>
                         <field name="amount_tax" string='Tax' widget='monetary' options="{'currency_field': 'currency_id'}"/>
                         <div class="oe_subtotal_footer_separator oe_inline o_td_label">
-                            <label for="amount_total" string="Total" attrs="{'invisible':[('state','not in',['draft','sent','received','salesperson_confirmation'])]}"/>
-                            <label for="amount_total" string="Order Total" attrs="{'invisible':[('state','in',['draft','sent','received','salesperson_confirmation'])]}"/>
+                            <label for="amount_total" string="Total" attrs="{'invisible':[('state','not in',['draft','sent','received'])]}"/>
+                            <label for="amount_total" string="Order Total" attrs="{'invisible':[('state','in',['draft','sent','received'])]}"/>
                         </div>
                         <field name="amount_total" nolabel="1" widget='monetary' options="{'currency_field': 'currency_id'}"/>
 
                     </group>
 
-                    <group class="oe_subtotal_footer oe_right" attrs="{'invisible':[('state','in',['draft','sent','received','salesperson_confirmation'])]}" colspan="2" name="sale_total">
+                    <group class="oe_subtotal_footer oe_right" attrs="{'invisible':[('state','in',['draft','sent','received'])]}" colspan="2" name="sale_total">
                         <field name="amount_without_discount" invisible="1"/>
                         <field name="picked_qty_order_subtotal" string="Subtotal"/>
                         <field name="shipping_cost" string="Original Shipping Cost" widget='monetary' options="{'currency_field': 'currency_id'}"/>
@@ -197,8 +197,8 @@
                         <field name="picked_qty_order_discount" readonly="1" string="Discount"/>
                         <field name="picked_qty_order_tax"/>
                         <div class="oe_subtotal_footer_separator oe_inline o_td_label">
-                            <label for="picked_qty_order_total" string="Total" attrs="{'invisible':[('state','not in',['draft','sent','received','salesperson_confirmation'])]}"/>
-                            <label for="picked_qty_order_total" string="Invoice Total" attrs="{'invisible':[('state','in',['draft','sent','received','salesperson_confirmation'])]}"/>
+                            <label for="picked_qty_order_total" string="Total" attrs="{'invisible':[('state','not in',['draft','sent','received'])]}"/>
+                            <label for="picked_qty_order_total" string="Invoice Total" attrs="{'invisible':[('state','in',['draft','sent','received'])]}"/>
 
                         </div>
                         <field name="picked_qty_order_total" nolabel="1" class="oe_subtotal_footer_separator" widget='monetary' options="{'currency_field': 'currency_id'}"/>
@@ -249,7 +249,7 @@
 
             <xpath expr="//field[@name='order_line']" position="attributes">
                     <!-- <attribute name="attrs">{'readonly': [('state','in',['draft_inv','open_inv','scan','shipped','cancel','merged'])]}</attribute> -->
-                    <attribute name="attrs">{'readonly': [('state','not in',['draft','sent','received','salesperson_confirmation','in_scanning','sale','scanned'])]}</attribute>
+                    <attribute name="attrs">{'readonly': [('state','not in',['draft','sent','received','in_scanning','sale','scanned'])]}</attribute>
                     <attribute name="options">{'no_create':True}</attribute>
             </xpath>
 
@@ -327,7 +327,7 @@
                                 name="action_order_payment_approval" type="object"
                                 class="oe_highlight"
                                 groups="base.group_system,tzc_sales_customization_spt.group_sales_manager_spt,sales_team.group_sale_salesman"
-                                attrs="{'invisible':[('state','in',['paid','cancel','merged','draft','sent','received','salesperson_confirmation'])]}" />
+                                attrs="{'invisible':[('state','in',['paid','cancel','merged','draft','sent','received'])]}" />
                         </div>
                         <br />
                         <div class="col-md-4 my-3" style="width:250px;" >
@@ -335,13 +335,13 @@
                                 name="action_generate_payment_link" type="object"
                                 class="oe_highlight"
                                 groups="base.group_system,tzc_sales_customization_spt.group_sales_manager_spt,sales_team.group_sale_salesman"
-                                attrs="{'invisible':[('state','in',['paid','cancel','merged','draft','sent','received','salesperson_confirmation'])]}" />
+                                attrs="{'invisible':[('state','in',['paid','cancel','merged','draft','sent','received'])]}" />
                         </div>
                         <br />
                         <div class="col-md-4 my-3" style="width:250px;" >
                             <button string="Send Payment Link" name="send_payment_link_mail"
                                 type="object" class="oe_highlight"
-                                attrs="{'invisible':[('state','in',['paid','cancel','merged','draft','sent','received','salesperson_confirmation'])]}" />
+                                attrs="{'invisible':[('state','in',['paid','cancel','merged','draft','sent','received'])]}" />
                         </div>
                     </div>
                     <group>
@@ -441,7 +441,7 @@
                 <page string="Shipping Details">
                     <group string="Shipping Information">
                         <group name='shipping_weight_info' >
-                            <field name="shipping_id" attrs="{'readonly':[('state','in',['scan','shipped','draft_inv','open_inv','paid','cancel','merged','done'])]}" />
+                            <!-- <field name="shipping_id" attrs="{'readonly':[('state','in',['scan','shipped','draft_inv','open_inv','paid','cancel','merged','done'])]}" /> -->
                             <field name="carrier_id" string="API Carrier" readonly="1" />
                             <field name="kits_carrier_tracking_ref" readonly="1" />
                             <!-- Case Weight & Qty -->
@@ -499,6 +499,7 @@
                 </xpath>
                 <xpath expr="//group[1]/group[2]/field[@name='payment_term_id']" position="replace">
                     <field name="payment_term_id" options="{'no_open':True,'no_create': True}" attrs="{'readonly': [('state','in',['scan','shipped','draft_inv','open_inv','paid','cancel','merged'])]}"/>
+                    <field name="shipping_id" string='Shipping Provider' attrs="{'readonly':[('state','in',['scan','shipped','draft_inv','open_inv','paid','cancel','merged','done'])]}"/>
                     <field name="merged_order" invisible="1"/>
                     <field name="merge_reference" widget="many2many_tags" attrs="{'invisible': [('merged_order', '=', False)]}" readonly="1"/>
                 </xpath>
@@ -519,8 +520,9 @@
             <xpath expr="//field[@name='partner_shipping_id']" position="attributes">
                 <attribute name="attrs">{'readonly':[('state','not in',('draft','sent','received'))],'invisible':[('is_same_delivery_address','=',True)]}</attribute>
                 <attribute name="domain">['|', ('company_id', '=', False), ('company_id', '=', company_id),'|','&amp;',('type','=','delivery'),('parent_id','=',partner_id),('id','=',partner_id)]</attribute>
-                <!-- <attribute name="context">"{'default_type':'delivery','default_name':True}"</attribute> -->
+                <!-- <attribute name="context">"{'default_type':'delivery'}"</attribute> -->
             </xpath>
+                <!-- <attribute name="context">"{'default_type':'delivery','default_name':True}"</attribute> -->
                 <xpath expr="//page[@name='order_lines']/field[@name='order_line']/tree/control" position="replace">
                 </xpath>
                 <!-- <xpath expr="//page[@name='order_lines']/field[@name='order_line']/tree/field[@name='product_template_id']" position="replace">
@@ -607,7 +609,7 @@
 				</field>
                 <xpath expr="//sheet" position="before">
                     <field name="is_not_product_aval_qty_flag" invisible="1"/>
-                    <div class="alert alert-danger text-center o_form_header" role="status" attrs="{'invisible':['|',('is_not_product_aval_qty_flag','=',False),('state','not in',['draft','sent','received','salesperson_confirmation','sale','in_scanning','scanned','scan'])]}">
+                    <div class="alert alert-danger text-center o_form_header" role="status" attrs="{'invisible':['|',('is_not_product_aval_qty_flag','=',False),('state','not in',['draft','sent','received','sale','in_scanning','scanned','scan'])]}">
                         <div>
                             <strong style="font-size:16px;">Some ordered products do not have enough quantity. To reset the order quantity to the available quantity, please </strong>
                             <![CDATA[&nbsp;]]>
@@ -617,6 +619,10 @@
                     <field name="cart_discount_availability" invisible="1"/>
                     <div class="alert alert-success alert-dismissable d-print-none text-center" role="status" attrs="{'invisible':[('cart_discount_availability','=',False)]}">
                         <strong style="font-size:16px;">This order is eligible for an additional <field name="cart_discount" nolabel="1" readonly="1"/>% discount on a minimum order value of <field name="cart_to_price" nolabel="1" readonly="1" /><![CDATA[&nbsp;]]><field name="currency_name"/>.</strong>
+                    </div>
+                    <field name="shipping_msg_inv_flag" invisible="1"/>
+                    <div class="alert alert-danger alert-dismissable d-print-none text-center" attrs="{'invisible':['|',('shipping_msg_inv_flag','=',True),('state','not in','scanned')]}" role="status">
+                        <strong style="font-size:16px;">Shipping provider is changed so that the previous shipping cost will be changed based on the new shipping provider.</strong> 
                     </div>
                     <div id="scanned_msg" class="col-sm-20"
                         attrs="{'invisible':[('state','not in',('scanned'))]}">
@@ -687,25 +693,24 @@
             <xpath expr="//button[@name='action_quotation_send']" position="before">
                 <button name="action_view_sale_advance_payment_inv" string="Create Invoice" type="object" context="{'default_advance_payment_method': 'delivered'}" class='oe_highlight' attrs="{'invisible': [('state','not in',['shipped'])]}" groups="account.group_account_invoice" />
                 <button name="button_open_quick_scan" type="object" attrs="{'invisible':[('state','in',['merged','sale','scan','cancel','shipped','draft_inv','open_inv','paid','in_scanning','scanned'])]}" string="Add Items to Quotation" class="oe_highlight" />
-                <button name="action_salesperson_confirmation" class="oe_highlight" string="Salesperson Confirmation" type="object" attrs="{'invisible': [('state', 'not in', ['draft','sent','received'])]}" />
-                <button name="action_confirm" class="oe_highlight" string="Confirm Quotation" type="object" attrs="{'invisible': [('state', 'not in', ['salesperson_confirmation'])]}" />
+                <button name="action_confirm" class="oe_highlight" string="Confirm Quotation" type="object" attrs="{'invisible': [('state', 'not in', ['draft','sent','received'])]}" />
                 <button name="action_discount_wizard" type="object" string="Bulk Discount" class="oe_highlight" attrs="{'invisible': [('state','in',('scan','shipped','cancel','draft_inv','open_inv','merged'))]}" />
                 <button string="Revert to Quotation" name="action_revert_order_to_quotation" class="oe_highlight" attrs="{'invisible': [('state', 'in', ('draft','shipped','open_inv','draft_inv','paid','cancel','merged'))]}" groups="tzc_sales_customization_spt.group_revert_order_to_quotation_spt" type="object" confirm="This will cancel current order and restore the Original quotation." />
-                <button name="action_open_remove_product_wizard" type="object" string="Remove Items from Quotation" class="oe_highlight" attrs="{'invisible': [('state', 'not in', ['draft','sent','recieved','salesperson_confirmation'])]}" />
+                <button name="action_open_remove_product_wizard" type="object" string="Remove Items from Quotation" class="oe_highlight" attrs="{'invisible': [('state', 'not in', ['draft','sent','recieved'])]}" />
             </xpath>
             <field name="partner_id" position="after">
                 <!-- <field name="_barcode_scanned" widget="barcode_handler" invisible="1"/> -->
                 <field name="source_spt" invisible="1" />
             </field>
             <xpath expr="//button[@name='action_quotation_send'][2]" position="attributes">
-                <attribute name="attrs">{'invisible':[('state','in',('draft','sent','received','salesperson_confirmation','sale','in_scanning','cancel','merged'))]}</attribute>
+                <attribute name="attrs">{'invisible':[('state','in',('draft','sent','received','sale','in_scanning','cancel','merged'))]}</attribute>
             </xpath>
             <xpath expr="//button[@name='action_quotation_send'][3]" position="attributes">
                 <attribute name="invisible">1</attribute>
             </xpath>
             <xpath expr="//button[@name='action_quotation_send'][1]" position="attributes">
                 <attribute name="class">oe_highlight</attribute>
-                <attribute name="attrs">{'invisible':[('state','not in',('draft','sale','sent','salesperson_confirmation','scan','shipped','open_inv'))]}</attribute>
+                <attribute name="attrs">{'invisible':[('state','not in',('draft','sale','sent','scan','shipped','open_inv'))]}</attribute>
             </xpath>
             <xpath expr="//button[@name='action_quotation_send'][4]" position="attributes">
                 <attribute name="invisible">1</attribute>
@@ -713,8 +718,8 @@
                 <attribute name="attrs">{'invisible':[('state','not in',('in_scanning','scan','shipped','draft_inv','open_inv','paid')),('invoice_count','>=',1)]}</attribute>                     -->
             </xpath>
             <button name="action_cancel" position="after">
-                <button string="Cancel Quotation" type="object" name="sale_order_cancel_spt" class="oe_highlight" attrs="{'invisible': [('state','not in',('draft','sent','received','salesperson_confirmation'))]}" context="{'cancel_order':True,'quotation':True}" confirm="This quotation will be cancel." />
-                <button string="Cancel Order" type="object" name="sale_order_cancel_spt" class="oe_highlight" attrs="{'invisible': [('state','in',('draft','sent','received','cancel','salesperson_confirmation','merged'))]}" context="{'cancel_order':True,'quotation':False}" confirm="This order will be cancel." />
+                <button string="Cancel Quotation" type="object" name="sale_order_cancel_spt" class="oe_highlight" attrs="{'invisible': [('state','not in',('draft','sent','received'))]}" context="{'cancel_order':True,'quotation':True}" confirm="This quotation will be cancel." />
+                <button string="Cancel Order" type="object" name="sale_order_cancel_spt" class="oe_highlight" attrs="{'invisible': [('state','in',('draft','sent','received','cancel','merged'))]}" context="{'cancel_order':True,'quotation':False}" confirm="This order will be cancel." />
             </button>
             <button name="action_cancel" position="attributes">
                 <attribute name="invisible">1</attribute>
@@ -777,7 +782,6 @@
                 <attribute name="invisible">1</attribute>
             </xpath>
             
-
         </field>
 
     </record>

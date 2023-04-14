@@ -24,7 +24,10 @@ class stock_quant(models.Model):
         if fields.Float.is_zero(qty, 0, precision_rounding=self.product_uom_id.rounding):
             name = _('Product Quantity Confirmed')
         else:
-            name = _('Manual Product Quantity Updated ')
+            if self._context.get('inventory_mode') and self._context.get('default_origin'):
+                name = _(self._context.get('default_origin')+ ' (' + ('Manual Product Quantity Updated') + ')')
+            else:
+                name = _('Manual Product Quantity Updated ')
 
         return {
             'name': self.env.context.get('inventory_name') or name,

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="report_salesorder">
+        <t t-call="web.html_container">
+            <t t-set="is_sales_order_r" t-value="True"/>
+            <t t-foreach="docs" t-as="doc">
+                <t t-if="doc.state in ['draft','sent','received','sale','in_scanning']">
+                    <t t-call="tzc_sales_customization_spt.validation_template" t-lang="doc.partner_id.lang"/>
+                </t>
+                <t t-else="">
+                    <t t-call="sale.report_saleorder_document" t-lang="doc.partner_id.lang"/>
+                </t>
+            </t>
+        </t>
+    </template>
+</odoo>

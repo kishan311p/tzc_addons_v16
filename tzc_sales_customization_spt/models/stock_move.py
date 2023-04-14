@@ -13,6 +13,7 @@ class stock_move(models.Model):
     package_id = fields.Many2one('kits.package.product',compute="_compute_package_id",store=True,compute_sudo=True)
     qty_available = fields.Float('Total Qty',related='product_id.qty_available')
     pro_primary_image_url = fields.Char("Primary Image URL",related='product_id.primary_image_url')
+    scan_extra_item = fields.Boolean(default=False)
 
     @api.depends('sale_line_id','sale_line_id.package_id')
     def _compute_package_id(self):
@@ -42,13 +43,7 @@ class stock_move(models.Model):
     @api.depends('picking_id', 'name')
     def _compute_reference(self):
         for move in self:
-            move_reference = False
-            if move.picking_id:
-                move_reference = move.picking_id.name
-            if move_reference and move.sale_line_id:
-                move.reference = '%s (%s)'%(move.sale_line_id.order_id.name,move_reference)
-            else:
-                move.reference = ''
+            move.reference = move.picking_id.delivery_name if move.picking_id else move.name
 
     def _action_done(self, cancel_backorder=False):
         moves = self.filtered(lambda move: move.state == 'draft')._action_confirm()  # MRP allows scrapping draft moves

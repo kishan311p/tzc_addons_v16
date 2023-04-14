@@ -242,7 +242,7 @@ class remove_product_spt(models.TransientModel):
                                     vals.update({'sequence': sequence - len(self.line_ids)})
                             else:
                                 vals.update({'sequence': 0})
-                            new_line_ids = self.line_ids.create(vals)                                                                    
+                            new_line_ids = self.line_ids.new(vals)                                                                    
                             self.line_ids += new_line_ids
                     # raise error for packaged product
                     else:

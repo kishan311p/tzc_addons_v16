@@ -825,7 +825,7 @@ class product_import_spt(models.Model):
                     COALESCE(STATE,'') AS STATE,
                     COALESCE(BASED_ON_CATEGORIES,'') AS BASED_ON_CATEGORY,
                     COALESCE(DATA_ON,'') AS DATA_ON
-                FROM PRODUCT_IMPORT_SPT '''
+                FROM PRODUCT_IMPORT_SPT ORDER BY NAME'''
         self.env.cr.execute(query)
         report_data = self.env.cr.fetchall()
 

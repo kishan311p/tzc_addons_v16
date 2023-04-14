@@ -20,7 +20,7 @@
                             Thank you for your business. How can we do better? support@teameto.com</span>
                         </li>
                     </ul>
-                    <div t-if="report_type == 'pdf'" class="text-muted">
+                    <div t-if="report_type == 'pdf'" >
                         Page: <span class="page"/> of <span class="topage"/>
                         &#160;
                     </div>

@@ -281,7 +281,7 @@ class order_report_with_image_wizard(models.TransientModel):
                     LEFT JOIN PRODUCT_TEMPLE_SIZE_SPT AS PTSS ON PTSS.ID = PP.TEMPLE_SIZE
                     LEFT JOIN PRODUCT_CATEGORY AS PC ON PC.ID = PP.CATEG_ID
                     LEFT JOIN RES_CURRENCY AS RC ON RC.ID = SOL.CURRENCY_ID
-                    WHERE ORDER_ID = {self.order_id.id} AND SOL.IS_ADMIN = false AND SOL.IS_SHIPPING_PRODUCT = false AND SOL.IS_GLOBAL_DISCOUNT = false '''
+                    WHERE ORDER_ID = {self.order_id.id} AND SOL.IS_ADMIN = false AND SOL.IS_SHIPPING_PRODUCT = false AND SOL.IS_GLOBAL_DISCOUNT = false ORDER BY PBS.NAME'''
         self.env.cr.execute(query)
         record_data = self.env.cr.fetchall()
         if record_data:

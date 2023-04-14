@@ -311,7 +311,7 @@
                     <field name="amount_discount"/>
                     <field name="kits_amount_tax" readonly="1"/>
                     <field name="kits_amount_total" class="oe_subtotal_footer_separator" colspan="2" readonly="1"/>
-                    <field name="kits_amount_residual" class="oe_subtotal_footer_separator" readonly="1" attrs="{'invisible': [('state', '=', 'draft')]}"/>
+                    <!-- <field name="kits_amount_residual" class="oe_subtotal_footer_separator" readonly="1" attrs="{'invisible': [('state', '=', 'draft')]}"/> -->
                     <field name="global_discount" readonly="1" invisible="1"/>
                     <field name="amount_total" class="oe_subtotal_footer_separator" colspan="2"/>
                     <field name="tax_totals" invisible="1" nolabel="1" colspan="2" attrs="{'readonly': ['|', ('state', '!=', 'draft'), '&amp;', ('move_type', 'not in', ('in_invoice', 'in_refund')), ('quick_edit_mode', '=', False)]}"/>
@@ -429,14 +429,14 @@
                             <span style="color:#017e84;">Delivered Quantity</span>
                         </div>
                     </button>
-                    <button name="ordered_qty_button" readonly="1" type="object" class="oe_stat_button disabled opacity-100">
+                    <!-- <button name="ordered_qty_button" readonly="1" type="object" class="oe_stat_button disabled opacity-100">
                         <div class="col-12 text-center">
                             <field name="picked_qty" style="color:#017e84;"/>
                         </div>
                         <div class="col-12 text-center">
                             <span style="color:#017e84;">Picked Quantity</span>
                         </div>
-                    </button>
+                    </button> -->
                 </xpath>
                 
                 <xpath expr="//group[@name='sale_info_group']/field[@name='invoice_origin']" position="attributes">

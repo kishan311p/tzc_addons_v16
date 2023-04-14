@@ -20,21 +20,25 @@ class paid_amount_wizard(models.TransientModel):
             else:
                 rec.is_paid = True
                 if invoice_id and invoice_id.commission_line_ids:
-                    if rec.due_amount < 0.0:
-                        invoice_id.commission_line_ids.write({'state':'paid'})
-                    elif rec.due_amount > 0.0:
-                        if self.amount >= rec.due_amount:
-                            invoice_id.commission_line_ids.write({'state':'paid'})
-                        elif self.amount < rec.due_amount:
-                            invoice_id.commission_line_ids.write({'state':'draft'})
-                    elif rec.due_amount == 0.0:
-                        if rec.amount_paid and rec.amount_paid == rec.picked_qty_order_total:
-                            invoice_id.commission_line_ids.write({'state':'paid'})
-                        else:
-                            if self.amount >= rec.picked_qty_order_total:
-                                invoice_id.commission_line_ids.write({'state':'paid'})
-                            elif self.amount < rec.picked_qty_order_total:
-                                invoice_id.commission_line_ids.write({'state':'draft'})
+                    if self.order_id.payment_status:
+                        invoice_id.commission_line_ids.write({'state':self.order_id.payment_status})
+                    else:
+                        invoice_id.commission_line_ids.write({'state':'draft'})
+                    # if rec.due_amount < 0.0:
+                    #     invoice_id.commission_line_ids.write({'state':'paid'})
+                    # elif rec.due_amount > 0.0:
+                    #     if self.amount >= rec.due_amount:
+                    #         invoice_id.commission_line_ids.write({'state':'paid'})
+                    #     elif self.amount < rec.due_amount:
+                    #         invoice_id.commission_line_ids.write({'state':'draft'})
+                    # elif rec.due_amount == 0.0:
+                    #     if rec.amount_paid and rec.amount_paid == rec.picked_qty_order_total:
+                    #         invoice_id.commission_line_ids.write({'state':'paid'})
+                    #     else:
+                    #         if self.amount >= rec.picked_qty_order_total:
+                    #             invoice_id.commission_line_ids.write({'state':'paid'})
+                    #         elif self.amount < rec.picked_qty_order_total:
+                    #             invoice_id.commission_line_ids.write({'state':'draft'})
 
             rec.mark_as_paid_by_user = self.env.user.id
             rec.paid_amount = self.amount or 0.0

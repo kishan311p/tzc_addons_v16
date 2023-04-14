@@ -7,6 +7,9 @@
             <field name="model">kits.commission.lines</field>
             <field name="arch" type="xml">
                 <form create='false' edit="false" duplicate="false">
+                    <header>
+                        <field name="state" widget="statusbar" statusbar_visible="draft,full,partial,over"/>
+                    </header>
                     <sheet>
                         <div>
                             <h3>
@@ -17,6 +20,7 @@
                             <group>
                                 <field name="commission_for" required="1" attrs="{'readonly':[('create_type','=','by_system')]}" />
                                 <field name="user_id" required="1" attrs="{'readonly':[('create_type','=','by_system')]}" options="{'no_create':True,'no_open':True}" />
+                                <field name="commission_date" readonly="1"/>
                             </group>
                             <group>
                                 <field name="invoice_id" options="{'no_create':True,'no_open':True}" readonly="1"/>
@@ -34,14 +38,31 @@
             <field name="name">kits.commission.lines.tree.view</field>
             <field name="model">kits.commission.lines</field>
             <field name="arch" type="xml">
-                <tree create="false" edit="false" decoration-danger="create_type == 'manual'" decoration-info="create_type == 'by_system'" decoration-muted="state == 'cancel'">
+                <tree create="false" edit="false" decoration-danger="create_type == 'manual'" decoration-info="create_type == 'by_system'">
                     <field name="create_type" invisible="1" />
-                    <field name="state" invisible="1" />
-                    <field name="name" attrs="{'readonly':[('create_type','=','by_system')]}"/>
+                    <!-- <field name="name" attrs="{'readonly':[('create_type','=','by_system')]}"/> -->
+                    <field name="commission_date" />
+                    <field name="kits_order_id" />
                     <field name="user_id" attrs="{'readonly':[('create_type','=','by_system')]}"/>
                     <field name="commission_for" attrs="{'readonly':[('create_type','=','by_system')]}"/>
                     <field name="amount" sum="Total" attrs="{'readonly':[('create_type','=','by_system')]}"/>
+                    <field name="state" />
                 </tree>
+            </field>
+        </record>
+
+        <record id="commission_line_search_view" model="ir.ui.view">
+            <field name="name">commission.line.search.view</field>
+            <field name="model">kits.commission.lines</field>
+            <field name="arch" type="xml">
+                <search>
+                    <filter string="Draft Commission" domain="[('state', '=', 'draft')]" name="draft_commission_line"/>
+                    <filter string="Paid Commission" domain="[('state', '=', 'paid')]" name="paid_commission_line"/>
+                    <filter string="Date" name="start_date" date="commission_date"/>
+                    <group expand="0" string="Group By">
+                        <filter string="State" name="group_by_status" context="{'group_by': 'state'}"/>
+                    </group>
+                </search>
             </field>
         </record>
 

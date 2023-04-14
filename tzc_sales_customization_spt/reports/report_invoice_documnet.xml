@@ -1,10 +1,73 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
+    <template id="kits_invoice_external_layout_standard">
+        <t t-set="company" t-value="o.company_id"/>
+
+        <div t-attf-class="article o_report_layout_standard o_company_#{company.id}_layout {{  'o_report_layout_background' if company.layout_background in ['Geometric', 'Custom']  else  '' }}" t-attf-style="background-image: url({{ 'data:image/png;base64,%s' % company.layout_background_image.decode('utf-8') if company.layout_background_image and company.layout_background == 'Custom' else '/base/static/img/bg_background_template.jpg' if company.layout_background == 'Geometric' else ''}});" t-att-data-oe-model="o and o._name" t-att-data-oe-id="o and o.id" t-att-data-oe-lang="o and o.env.context.get('lang')">
+            <div class="">
+                <!-- This div ensures that the address is not cropped by the header. -->
+                <!-- <t t-call="web.address_layout"/> -->
+            </div>
+            <t t-out="0"/>
+        </div>
+
+        <div t-attf-class="footer o_standard_footer o_company_#{company.id}_layout" style="position:absolute;bottom:-115px;width:100%">
+            <div class="text-center">
+                <hr style="margin:0 !important" />
+                <div name="financial_infos">
+                    <!-- <span t-field="company.report_footer"/> -->
+                </div>
+
+                <ul class="list-inline">
+                    <li class="list-inline-item" style="font-size: 12px">
+                        <span>Please make all payments to Tanzacan Tradelink Inc.<br/>
+                            Thank you for your business. How can we do better? support@teameto.com</span>
+                        </li>
+                </ul>
+                <div t-if="report_type == 'pdf'" style="margin-top:-15px;font-size:16px">
+                    Page: <span class="page"/>
+ /                <span class="topage"/>
+                    &#160;
+                <span t-field="o.name"/>
+            </div>
+        </div>
+        </div>
+    </template>
     <template id="report_kits_invoice_document">
-        <t t-call="web.external_layout">
-            <div class="page">
-                <div class="row" style="margin-top:-50px;">
-                    <div class="col-7">
+        <t t-call="tzc_sales_customization_spt.kits_invoice_external_layout_standard">
+            <t t-if="o">
+                <t t-set="company" t-value="o.company_id"/>
+                <t t-set="model" t-value="o._name"/>
+            </t>
+            <t t-elif="doc">
+                <t t-set="company" t-value="doc.company_id.sudo()"/>
+                <t t-set="model" t-value="doc._name"/>
+            </t>
+            <div class="row" style="font-size:15px">
+                <div class="col-6 mb4">
+                    <img t-if="company.logo" t-att-src="image_data_uri(company.logo)" style="margin:40px 5px 5px 10px;height:35px;max-width:375px;" alt="Logo"/>
+                </div>
+                <div class="col-6 float-right company_address" style="padding-left:20%;">
+                    <div>
+                        <strong t-field="company.partner_id.name"/>
+                    </div>
+                    (A division of Tanzacan Tradelink Inc.)
+                    <span t-field="company.street"/>
+                    <br/>
+                    <span t-field="company.city"/>
+                    <span t-field="company.state_id.name"/>
+                    <span t-field="company.country_id.name"/>
+                    <span t-field="company.zip"/>
+                    <br/>
+                    Tel. <span t-field="company.phone"/>
+                    <br/>
+                        Email. <span t-field="company.email"/>
+                </div>
+            </div>
+            <hr style="margin-top:0 !important"/>
+            <!-- <div class="page"> -->
+                <div class="row" style="margin-top:0px;">
+                    <div class="col-6">
                         <strong t-if="o.partner_id">Billing Address:</strong>
                         <div>
                             <span t-field="o.partner_id.name"/>
@@ -34,38 +97,41 @@
                             <span t-field="o.partner_id.email" />
                         </div>
                     </div>
-                    <div class="col-5">
-                        <strong t-if="o.partner_id">Shipping Address:</strong>
-                        <div>
-                            <span t-field="o.partner_id.name"/>
+                    <div class="col-6">
+                        <t t-if="o.partner_shipping_id">
+                            
+                            <strong >Shipping Address:</strong>
+                            <div>
+                            <span t-field="o.partner_shipping_id.name"/>
                         </div>
                         <div>
-                            <span t-field="o.partner_id.street"/>
+                            <span t-field="o.partner_shipping_id.street"/>
                         </div>
                         <div>
-                            <span t-field="o.partner_id.street2"/>
+                            <span t-field="o.partner_shipping_id.street2"/>
                         </div>
                         <div>
-                            <span t-field="o.partner_id.city"/>
-                            <span t-if="o.partner_id.city and o.partner_id.zip">,</span>
-                            <span t-field="o.partner_id.zip"/>
+                            <span t-field="o.partner_shipping_id.city"/>
+                            <span t-if="o.partner_shipping_id.city and o.partner_shipping_id.zip">,</span>
+                            <span t-field="o.partner_shipping_id.zip"/>
                         </div>
                         <div>
-                            <span t-field="o.partner_id.state_id.name"/>
-                            <span t-if="o.partner_id.state_id.name and o.partner_id.country_id.name">,</span>
-                            <span t-field="o.partner_id.country_id.name"/>
+                            <span t-field="o.partner_shipping_id.state_id.name"/>
+                            <span t-if="o.partner_shipping_id.state_id.name and o.partner_shipping_id.country_id.name">,</span>
+                            <span t-field="o.partner_shipping_id.country_id.name"/>
                         </div>
                         <div>Tel:
-                    
-                            <span t-field="o.partner_id.phone" />
+                            
+                            <span t-field="o.partner_shipping_id.phone" />
                         </div>
                         <div>Email:
-                    
-                            <span t-field="o.partner_id.email" />
+                            
+                            <span t-field="o.partner_shipping_id.email" />
                         </div>
+                    </t>
                     </div>
                 </div>
-                <h4 style="color:#808080;line-height: 0.6;">
+                <h4 style="line-height: 0.6;">
                     <br/>
                     <span t-if="o.move_type == 'out_invoice' and o.state == 'posted'">Invoice</span>
                     <span t-if="o.move_type == 'out_invoice' and o.state == 'draft'">Draft Invoice</span>
@@ -282,8 +348,7 @@
                                                                 <strong>Tax</strong>
                                                             </td>
                                                             <td name="td_amount_by_group" class="text-end o_price_total">
-                                                                <span t-esc="o.currency_id.symbol"/>
-                                                                <span t-esc="'{0:.2f}'.format(round(o.kits_amount_tax,2))"/>
+                                                                <span t-esc="o.amount_tax" t-options='{"widget": "monetary", "display_currency": o.currency_id}'/>
                                                             </td>
                                                         </tr>
 
@@ -294,8 +359,7 @@
                                                             <td style="white-space: nowrap;" name="td_amount_by_group" class="text-end o_price_total">
                                                             (                                                                <span t-esc="o.currency_id.name"/>
                                                                 )
-                                                                <span t-esc="'{0:.2f}'.format(round(o.kits_amount_total,2))"/>
-                                                                <!-- <span t-options="{&quot;widget&quot;: &quot;monetary&quot;, &quot;display_currency&quot;: o.currency_id}" t-esc="round((sub_total + o.amount_is_shipping_total + o.amount_is_admin  + o.amount_tax) - abs(o.global_discount),2)"/> -->
+                                                                <span t-options="{&quot;widget&quot;: &quot;monetary&quot;, &quot;display_currency&quot;: o.currency_id}" t-esc="round((sub_total + o.amount_is_shipping_total + o.amount_is_admin  + o.amount_tax) - abs(o.global_discount),2)"/>
                                                             </td>
                                                         </tr>
                                                         <tr class="border-black">
@@ -383,8 +447,7 @@
                                                                 <strong>Tax</strong>
                                                             </td>
                                                             <td name="td_amount_by_group" class="text-right o_price_total">
-                                                                <span t-esc="o.currency_id.symbol"/>
-                                                                <span t-esc="'{0:.2f}'.format(round(o.kits_amount_tax,2))"/>
+                                                                <span t-esc="o.amount_tax" t-options='{"widget": "monetary", "display_currency": o.currency_id}'/>
                                                             </td>
                                                         </tr>
 
@@ -395,8 +458,7 @@
                                                             <td style="white-space: nowrap;" name="td_amount_by_group" class="text-right o_price_total">
                                                             (                                                                <span t-esc="o.currency_id.name"/>
                                                                 )
-                                                                <span t-esc="'{0:.2f}'.format(round(o.kits_amount_total,2))"/>
-                                                                <!-- <span t-options="{&quot;widget&quot;: &quot;monetary&quot;, &quot;display_currency&quot;: o.currency_id}" t-esc="round((sub_total + o.amount_is_shipping_total + o.amount_is_admin  + o.amount_tax) - abs(o.global_discount),2)"/> -->
+                                                                <span t-options="{&quot;widget&quot;: &quot;monetary&quot;, &quot;display_currency&quot;: o.currency_id}" t-esc="round((sub_total + o.amount_is_shipping_total + o.amount_is_admin  + o.amount_tax) - abs(o.global_discount),2)"/>
                                                             </td>
                                                         </tr>
                                                         <tr class="border-black">
@@ -515,7 +577,7 @@ Since 1995</span>
                     </span>
                 </div>
                 <br/>
-            </div>
+            <!-- </div> -->
 
         </div>
     </t>

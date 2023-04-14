@@ -114,7 +114,7 @@ class brand_qty_report_wizard(models.TransientModel):
                                 query = query + " AND AML.CREATE_DATE >= '%s'" % (start_date)
                             if end_date:
                                 query = query + " AND AML.CREATE_DATE <= '%s'" % (end_date)
-                            query = query + " GROUP BY PP.DEFAULT_CODE,AML.PRICE_SUBTOTAL,AML.QUANTITY"
+                            query = query + " GROUP BY PP.DEFAULT_CODE,AML.PRICE_SUBTOTAL,AML.QUANTITY ORDER BY PP.DEFAULT_CODE"
                             self.env.cr.execute(query)
                             report_data = self.env.cr.fetchall()
                             for data in report_data:

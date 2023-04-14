@@ -118,7 +118,7 @@ class product_report_on_date_wizard_spt(models.TransientModel):
                     WHERE SML.PRODUCT_ID = {product_id.id}
                         AND SML.STATE = 'done'
                         AND SML.DATE <= '{str(self.start_date)}'
-                    GROUP BY PP.VARIANT_NAME,PC.NAME,PMS.NAME,SL.USAGE,S.USAGE,PP.DEFAULT_CODE,PBS.NAME,PP.LST_PRICE_USD'''
+                    GROUP BY PP.VARIANT_NAME,PC.NAME,PMS.NAME,SL.USAGE,S.USAGE,PP.DEFAULT_CODE,PBS.NAME,PP.LST_PRICE_USD ORDER BY PP.VARIANT_NAME'''
             self.env.cr.execute(query)
             record_data = self.env.cr.fetchall()
             on_date_products=[]

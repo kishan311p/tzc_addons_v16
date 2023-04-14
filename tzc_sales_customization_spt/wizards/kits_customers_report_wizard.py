@@ -122,7 +122,7 @@ class kits_customers_report_wizard(models.TransientModel):
                     RP.WRITE_DATE,
                     RP.CONTACT_NAME_SPT,
                     RP.LAST_ORDER_VALUE,
-                    RCG.NAME AS TERRITORY,
+                    RCG.NAME->>'en_US' AS TERRITORY,
                     RP.IS_EMAIL_VERIFIED,
 	                RP.IS_GRANTED_PORTAL_ACCESS
                 FROM RES_PARTNER AS RP

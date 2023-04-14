@@ -195,6 +195,8 @@
         'reports/report_deliveryslip.xml',
         'reports/product_product_templates.xml',
         'reports/product_label_pdf_report.xml',
+        'reports/report_picking_list.xml',
+        'reports/sales_order_report.xml',
 
         # Templates
         'template/excel_data.xml',

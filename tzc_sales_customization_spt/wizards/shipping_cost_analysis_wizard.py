@@ -194,7 +194,7 @@ class shipping_cost_analysis_wizard(models.TransientModel):
             sheet.cell(row=row_index, column=8).alignment = left_alignment
             sheet.cell(row=row_index, column=9).value = round(data[18],2)
             sheet.cell(row=row_index, column=9).alignment = left_alignment
-            sheet.cell(row=row_index, column=10).value = round(data[19],2)
+            sheet.cell(row=row_index, column=10).value = data[19]
             sheet.cell(row=row_index, column=10).alignment = left_alignment
             sheet.cell(row=row_index, column=11).value = data[9]
             sheet.cell(row=row_index, column=12).value = data[10]

@@ -86,7 +86,19 @@ class stock_picking(models.Model):
     #     for record in self:
     #         record.sale_website_id = record.sale_id.website_id.id if record.sale_id.website_id else website 
     
-    state = fields.Selection(selection_add=[
+    # state = fields.Selection(selection_add=[
+    #     ('draft', 'Draft'),
+    #     ('waiting', 'Waiting Another Operation'),
+    #     ('confirmed', 'Waiting'),
+    #     ('in_scanning', 'In Scanning'),
+    #     ('scanned','Scanning Completed'),
+    #     ('assigned', 'Ready To Ship'),
+    #     ('done', 'Shipped'),
+    #     ('cancel', 'Cancelled'),
+    # ], string='Status',
+    #     copy=False, index=True, tracking=True,default='confirmed' ,
+    #     help="Delivery in Which state",readonly=False)
+    state = fields.Selection([
         ('draft', 'Draft'),
         ('waiting', 'Waiting Another Operation'),
         ('confirmed', 'Waiting'),
@@ -95,9 +107,7 @@ class stock_picking(models.Model):
         ('assigned', 'Ready To Ship'),
         ('done', 'Shipped'),
         ('cancel', 'Cancelled'),
-    ], string='Status',
-        copy=False, index=True, tracking=True,default='confirmed' ,
-        help="Delivery in Which state",readonly=False)
+    ], string='Status',copy=False, index=True, readonly=True, tracking=True)
     ordered_qty = fields.Integer('Order Quantity',compute="_compute_qty",store=True)
     delivered_qty = fields.Integer('Picked Quantity',compute="_compute_qty",store=True)
     source_spt =  fields.Char('source',related="sale_id.source_spt")
@@ -781,20 +791,12 @@ class stock_picking(models.Model):
         }
 
     def action_scanned(self):
-        error_msg = ''
         state_list = self.mapped(lambda picking : picking.state in ['in_scanning'])
         if any(state_list):
             for rec in self:
                 for line in range(len(rec.move_ids_without_package)):
                     line = rec.move_ids_without_package[line]
                     rec.check_duplicate_move(line)
-                if not rec.shipping_id:
-                    error_msg = 'Please select shipping provider.'
-                elif not rec.sale_id.order_line.filtered(lambda x:x.product_id.is_shipping_product) and rec.shipping_id and rec.shipping_id.name.lower() != 'pick up':
-                    error_msg = 'Please calculate and add the shipping cost to the order.'
-
-                if error_msg:
-                    raise UserError(error_msg)
 
                 template_id = self.env.ref('tzc_sales_customization_spt.mail_template_notify_salesperson_order_scanned')
                 user_id = self.env['res.users'].search([('is_warehouse','=',True)],limit=1)
@@ -1263,7 +1265,9 @@ class stock_picking(models.Model):
         order = self.env['sale.order'].search([('name','=',vals.get('origin'))],limit=1)
         if order and vals.get('origin'):
             vals.update(include_cases=order.include_cases,no_of_cases=order.no_of_cases)
-        return super(stock_picking,self).create(vals)
+        res = super(stock_picking,self).create(vals)
+        res.state = 'confirmed'
+        return res
     
     def add_shipping_cost(self):
         if self.sale_id.state not in ['scan','shipped','draft_inv','open_inv','cancel','merged','done','assigned']:
@@ -1641,4 +1645,8 @@ class stock_picking(models.Model):
         }
 
     def ordered_qty_button(self):
+        pass
+
+    @api.depends('move_type', 'immediate_transfer', 'move_ids.state', 'move_ids.picking_id')
+    def _compute_state(self):
         pass

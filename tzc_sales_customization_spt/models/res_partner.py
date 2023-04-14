@@ -1561,3 +1561,36 @@ class res_partner(models.Model):
                
                 get_dict = self.env['ir.model'].generate_report_access_link('sale.catalog',res_id,'tzc_sales_customization_spt.action_catalog_report_pdf',self.id,'pdf')
         return get_dict
+
+    @api.model
+    def get_mention_suggestions(self, search, limit=8, channel_id=None):
+        """ Return 'limit'-first partners' such that the name or email matches a 'search' string.
+            Prioritize partners that are also (internal) users, and then extend the research to all partners.
+            If channel_id is given, only members of this channel are returned.
+            The return format is a list of partner data (as per returned by `mail_partner_format()`).
+        """
+        search_dom = expression.OR([[('name', 'ilike', search)], [('email', 'ilike', search)]])
+        search_dom = expression.AND([[('active', '=', True), ('type', '!=', 'private'),('is_user_internal','=',True)], search_dom])
+        # search_dom = expression.AND([[('active', '=', True), ('type', '!=', 'private')], search_dom])
+        if channel_id:
+            search_dom = expression.AND([[('channel_ids', 'in', channel_id)], search_dom])
+        domain_is_user = expression.AND([[('user_ids', '!=', False), ('user_ids.active', '=', True)], search_dom])
+        priority_conditions = [
+            expression.AND([domain_is_user, [('partner_share', '=', False)]]),  # Search partners that are internal users
+            domain_is_user,  # Search partners that are users
+            search_dom,  # Search partners that are not users
+        ]
+        partners = self.env['res.partner']
+        for domain in priority_conditions:
+            remaining_limit = limit - len(partners)
+            if remaining_limit <= 0:
+                break
+            partners |= self.search(expression.AND([[('id', 'not in', partners.ids)], domain]), limit=remaining_limit)
+        partners_format = partners.mail_partner_format()
+        if channel_id:
+            member_by_partner = {member.partner_id: member for member in self.env['mail.channel.member'].search([('channel_id', '=', channel_id), ('partner_id', 'in', partners.ids)])}
+            for partner in partners:
+                partners_format.get(partner)['persona'] = {
+                    'channelMembers': [('insert', member_by_partner.get(partner)._mail_channel_member_format(fields={'id': True, 'channel': {'id'}, 'persona': {'partner': {'id'}}}).get(member_by_partner.get(partner)))],
+                }
+        return list(partners_format.values())

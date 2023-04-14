@@ -80,6 +80,11 @@ class sale_order(models.Model):
     cart_recovery_email_sent = fields.Boolean('Cart recovery email already sent')
     report_token = fields.Char('Report Access Token')
 
+    shipping_prev_cost_flag = fields.Float("Prev Shipping Cost Flag",compute='_compute_shipping_msg_flag',store=True)
+    shipping_prev_id_flag = fields.Many2one('shipping.provider.spt',default=False,compute='_compute_shipping_msg_flag',store=True)
+    shipping_msg_inv_flag = fields.Boolean('Shipping Msg Flag',compute='_compute_shipping_msg_flag',store=True)
+
+
     @api.depends('case_weight_gm','no_of_cases','include_cases')
     def _calculate_case_weight_kg(self):
         context = self._context.copy()
@@ -102,7 +107,7 @@ class sale_order(models.Model):
                 total_weight_kg += record.case_weight_kg
             lines = record.order_line.filtered(lambda x: x.picked_qty)
             weight = round(sum(list(map(lambda x: x.product_id.weight * x.picked_qty,lines))),2)
-            if record.state in ('draft','sent','salesperson_confirmation','received','sale','in_scanning'):
+            if record.state in ('draft','sent','received','sale','in_scanning'):
                 weight = round(sum(list(map(lambda x: x.product_id.weight * x.product_uom_qty,record.order_line))),2)
             record.glass_weight_kg = weight
             record.weight_total_kg  = round(total_weight_kg + weight,2)
@@ -146,6 +151,13 @@ class sale_order(models.Model):
     def send_shipment_ready_email_to_salesperson_spt(self):
         #create attachment
         self.ensure_one()
+        if not self.shipping_id and not self.payment_term_id:
+            raise UserError("Please select Shipping provider and Payment Term")
+        if not self.shipping_id:
+            raise UserError("Please select Shipping provider")
+        if not self.payment_term_id:
+            raise UserError("Please select Payment Term")
+
         if self.state == 'scanned':
             picking_id = self.picking_ids.filtered(lambda x:x.state != 'cancel')
             template_id = self.env.ref('tzc_sales_customization_spt.tzc_picking_ready_notification_to_salesperson_spt')
@@ -253,7 +265,7 @@ class sale_order(models.Model):
         return weight
 
     state = fields.Selection(selection_add=[
-               ('draft', 'Quotation'),('sent', 'Quotation Sent'),('received', 'Quotation Received'),('salesperson_confirmation', 'Salesperson Confirmation'),('sale', 'Order Confirmed'),('in_scanning','In Scanning'),('scanned','Scanning Completed'),('scan', 'Ready to Ship'),('shipped', 'Shipped'),('draft_inv', 'Draft Invoice'),('open_inv', 'Invoiced'),('cancel', 'Cancelled'),('merged', 'Merged'),('done', 'Locked')], string='Status', readonly=True, copy=False, index=True, tracking=3, default='draft')
+               ('draft', 'Quotation'),('sent', 'Quotation Sent'),('received', 'Quotation Received'),('sale', 'Order Confirmed'),('in_scanning','In Scanning'),('scanned','Scanning Completed'),('scan', 'Ready to Ship'),('shipped', 'Shipped'),('draft_inv', 'Draft Invoice'),('open_inv', 'Invoiced'),('cancel', 'Cancelled'),('merged', 'Merged'),('done', 'Locked')], string='Status', readonly=True, copy=False, index=True, tracking=3, default='draft')
 
     catalog_id = fields.Many2one('sale.catalog', ondelete='set null', string='Corresponding Catalog')
     amount_is_shipping_total = fields.Monetary(string='Shipping Cost', store=True, readonly=True,compute_sudo=True, compute='_amount_all', tracking=4)
@@ -481,7 +493,7 @@ class sale_order(models.Model):
 
     def action_open_remove_product_wizard(self):
         self.ensure_one()
-        if self.state in ['draft','sent','salesperson_confirmation']:
+        if self.state in ['draft','sent']:
             wizard_id = self.env['remove.product.spt'].create({'partner_id':self.partner_id.id,'sale_id' : self.id,'product_ids':[(6,0,self.order_line.mapped('product_id').ids)]})
             return {
                 'name': 'Remove Items',
@@ -519,7 +531,7 @@ class sale_order(models.Model):
 
     def action_discount_wizard(self):
         self.ensure_one()
-        if self.state in ['draft','sent','received','salesperson_confirmation','in_scanning','sale','scan','scanned','shipped']:
+        if self.state in ['draft','sent','received','in_scanning','sale','scan','scanned','shipped']:
             if 'draft' not in self.mapped('invoice_ids.state') and  'posted' not in self.mapped('invoice_ids.state'):
                 return {
                     'name': 'Bulk Discount',
@@ -706,7 +718,7 @@ class sale_order(models.Model):
 
     def button_open_quick_scan(self):
         self.ensure_one()
-        if self.state in ['draft','sent','received','salesperson_confirmation']:
+        if self.state in ['draft','sent','received']:
             wizard_id = self.env['sale.barcode.order.spt'].create({'partner_id':self.partner_id.id,'sale_id' : self.id})
             return {
                 'name': 'Scan Order',
@@ -1188,7 +1200,7 @@ class sale_order(models.Model):
         if len(invoice):
             invoice = invoice if len(invoice) else invoice[0]
         wrksht.cell(row=name_row, column=1).value = str("Invoice " + invoice.name if invoice else 'Invoice %s'%(self.name))
-        wrksht.cell(row=name_row, column=1).font = Font(name='Lato', size=14, bold=False,color="666666")
+        wrksht.cell(row=name_row, column=1).font = Font(name='Lato', size=14, bold=False)
 
         # ----------------------------------------------------------------
         # Date, Salesperson
@@ -1562,7 +1574,7 @@ class sale_order(models.Model):
             invoice = invoice if len(invoice) else invoice[0]
         wrksht.cell(row=name_row, column=1).value = str("Invoice "+invoice.name if invoice else 'Invoice %s'%(self.name))
         # if invoice:
-        wrksht.cell(row=name_row, column=1).font = Font(name='Lato', size=14, bold=False,color='666666')
+        wrksht.cell(row=name_row, column=1).font = Font(name='Lato', size=14, bold=False)
         # else:
         #     wrksht.cell(row=name_row, column=1).font = Font(name='Lato', size=12, bold=False,color='666666')
 
@@ -1626,10 +1638,10 @@ class sale_order(models.Model):
                                                         AND PT.TYPE != 'service' THEN 'Assorted Other'
                     END AS TYPE
                 FROM SALE_ORDER AS SO
-                INNER JOIN SALE_ORDER_LINE AS SOL ON SO.ID = SOL.ORDER_ID
-                INNER JOIN PRODUCT_PRODUCT AS PP ON PP.ID = SOL.PRODUCT_ID
-                INNER JOIN PRODUCT_TEMPLATE AS PT ON PT.ID = PP.PRODUCT_TMPL_ID
-                INNER JOIN PRODUCT_CATEGORY AS PC ON PC.ID = PP.CATEG_ID
+                LEFT JOIN SALE_ORDER_LINE AS SOL ON SO.ID = SOL.ORDER_ID
+                LEFT JOIN PRODUCT_PRODUCT AS PP ON PP.ID = SOL.PRODUCT_ID
+                LEFT JOIN PRODUCT_TEMPLATE AS PT ON PT.ID = PP.PRODUCT_TMPL_ID
+                LEFT JOIN PRODUCT_CATEGORY AS PC ON PC.ID = PP.CATEG_ID
                 WHERE SO.ID = {self.id}
                 GROUP BY TYPE,
                     SO.NAME,
@@ -1911,7 +1923,7 @@ class sale_order(models.Model):
                 invoice = invoice if len(invoice) else invoice[0]
             wrksht.cell(row=name_row, column=1).value = str("Invoice "+invoice.name if invoice else 'Invoice %s'%(self.name))
             # if invoice:
-            wrksht.cell(row=name_row, column=1).font = Font(name='Lato', size=14, bold=False,color='666666')
+            wrksht.cell(row=name_row, column=1).font = Font(name='Lato', size=14, bold=False)
             # else:
             #     wrksht.cell(row=name_row, column=1).font = Font(name='Lato', size=14, bold=False,color='666666')
 
@@ -1955,13 +1967,14 @@ class sale_order(models.Model):
             # ========================= Product Table ===========================
             table_header = date_person_row+2
 
-            query = f'''SELECT CONCAT(PP.DEFAULT_CODE,' ',PMS.NAME,' ',KPCC.NAME,' ',PSS.NAME),
+            query = f'''SELECT CONCAT(PMS.NAME,' ',KPCC.NAME,' ',PSS.NAME) AS NAME,
                             PC.NAME,
                             PP.MATERIAL,
                             PP.HS_CODE,
                             SOL.PICKED_QTY,
                             SOL.UNIT_DISCOUNT_PRICE,
                             (SOL.UNIT_DISCOUNT_PRICE * SOL.PICKED_QTY) AS SUBTOTAL,
+
                             CASE
                                             WHEN SOL.IS_SHIPPING_PRODUCT = TRUE THEN SOL.UNIT_DISCOUNT_PRICE * SOL.PRODUCT_UOM_QTY
                                             ELSE 0
@@ -1978,14 +1991,20 @@ class sale_order(models.Model):
                                             WHEN SOL.PRODUCT_UOM_QTY > 0
                                                                 AND SOL.PRICE_TAX > 0 THEN SOL.PRICE_TAX / SOL.PRODUCT_UOM_QTY * SOL.PICKED_QTY
                                             ELSE 0
-                            END AS PRICE_TAX
-                        FROM sale_order_line AS sol
-                        INNER JOIN PRODUCT_PRODUCT AS PP ON PP.ID = SOL.PRODUCT_ID
-                        INNER JOIN PRODUCT_CATEGORY AS PC ON PC.ID = PP.CATEG_ID
-                        INNER JOIN PRODUCT_MODEL_SPT AS PMS ON PMS.ID = PP.MODEL
-                        INNER JOIN KITS_PRODUCT_COLOR_CODE AS KPCC ON KPCC.ID = PP.COLOR_CODE
-                        INNER JOIN PRODUCT_SIZE_SPT AS PSS ON PSS.ID = PP.EYE_SIZE
-                        WHERE sol.order_id ={self.id}
+                            END AS PRICE_TAX,
+                            SO.PICKED_QTY,
+                            PP.DEFAULT_CODE
+                        FROM SALE_ORDER AS SO
+                        LEFT JOIN SALE_ORDER_LINE AS SOL ON SOL.ORDER_ID = SO.ID
+                        LEFT JOIN STOCK_PICKING AS SP ON SP.ORIGIN = SO.NAME
+                        LEFT JOIN SHIPPING_PROVIDER_SPT AS SPS ON SP.SHIPPING_ID = SPS.ID
+                        LEFT JOIN RES_CURRENCY AS RC ON RC.ID = SOL.CURRENCY_ID
+                        LEFT JOIN PRODUCT_PRODUCT AS PP ON PP.ID = SOL.PRODUCT_ID
+                        LEFT JOIN PRODUCT_CATEGORY AS PC ON PC.ID = PP.CATEG_ID
+                        LEFT JOIN PRODUCT_MODEL_SPT AS PMS ON PMS.ID = PP.MODEL
+                        LEFT JOIN KITS_PRODUCT_COLOR_CODE AS KPCC ON KPCC.ID = PP.COLOR_CODE
+                        LEFT JOIN PRODUCT_SIZE_SPT AS PSS ON PSS.ID = PP.EYE_SIZE
+                        WHERE SO.ID ={self.id} ORDER BY PP.VARIANT_NAME
 '''
             self.env.cr.execute(query)
             record_data = self.env.cr.fetchall()
@@ -2042,7 +2061,7 @@ class sale_order(models.Model):
                 else: 
                     # product name
                     wrksht.merge_cells("A"+str(row_index)+':'+"D"+str(row_index))
-                    wrksht.cell(row=row_index, column=1).value = data[0]
+                    wrksht.cell(row=row_index, column=1).value = data[12].split('-')[1] + ' ' + data[0]
                     # HS Code
                     wrksht.cell(row=row_index, column=7).value = data[3]
                     # Material
@@ -2841,7 +2860,7 @@ class sale_order(models.Model):
             return super(sale_order,self).action_draft()
 
     def action_revert_order_to_quotation(self):
-        if self.state not in ['sent','received','sale','in_scanning','scanned','scan','salesperson_confirmation']:
+        if self.state not in ['sent','received','sale','in_scanning','scanned','scan']:
             return {
                 'type': 'ir.actions.client',
                 'tag': 'display_notification',
@@ -2853,7 +2872,7 @@ class sale_order(models.Model):
                 }
         else:
             order_id = self.env['sale.order.backup.spt'].search([('order_id','=',self.id)],limit=1,order="id desc")
-            if self.state not in ['sent','received','sale','in_scanning','scanned','scan','salesperson_confirmation']:
+            if self.state not in ['sent','received','sale','in_scanning','scanned','scan']:
                 return {
                     'type': 'ir.actions.client',
                     'tag': 'display_notification',
@@ -2927,8 +2946,7 @@ class sale_order(models.Model):
     def action_confirm(self):
         sol_obj = self.env['sale.order.line']
         order_backup_obj = self.env['sale.order.backup.spt']
-        state_list = self.mapped(lambda so : so.state in ['draft','sent','received','salesperson_confirmation'])
-        # state_list = self.mapped(lambda so : so.state in ['draft','sent','received'])
+        state_list = self.mapped(lambda so : so.state in ['draft','sent','received'])
         if any(state_list):
             for record in self:
                 if not record.order_line:
@@ -3729,6 +3747,14 @@ class sale_order(models.Model):
     def order_quantity_btn(self):
         pass
 
+    @api.onchange('shipping_id')
+    def onchange_shipping_id(self):
+        for rec in self:
+            picking_ids = self.mapped('picking_ids')
+            for picking_id in picking_ids:
+                if picking_id.state not in ['done','cancel']:
+                    picking_id._origin.shipping_id = rec.shipping_id
+
     def get_tracked_fields(self, changes, tracking_value_ids, initial_value):
 
         def get_field_name(f_name):
@@ -3793,14 +3819,6 @@ class sale_order(models.Model):
     def draft_states(self):
         return ['draft','sent','received']
 
-    
-    def action_salesperson_confirmation(self):
-        for rec in self:
-            if rec.shipping_id:
-                rec.state='salesperson_confirmation'
-            else:
-                raise UserError('Select shipping provider before proceeding.')
-        
     @api.onchange('shipping_id')
     def onchange_shipping_id(self):
         for rec in self:
@@ -3816,3 +3834,24 @@ class sale_order(models.Model):
     def get_wh_user(self):
         user_id = self.env['res.users'].search([('is_warehouse','=',True)],limit=1)
         return user_id.email
+
+    @api.depends('order_line','state','shipping_id')
+    def _compute_shipping_msg_flag(self):
+        for rec in self:
+            shipping_line_id = rec.order_line.filtered(lambda x:x.product_id.is_shipping_product==True)
+            shipping_cost = sum(shipping_line_id.mapped('unit_discount_price')) if shipping_line_id else 0
+            if rec.state=='scanned':
+                if rec._origin.shipping_prev_id_flag != rec.shipping_id:
+                    if rec._origin.shipping_prev_cost_flag != shipping_cost:
+                        rec.shipping_msg_inv_flag = True
+                        rec.shipping_prev_id_flag=rec.shipping_id
+                        rec.shipping_prev_cost_flag=shipping_cost
+                    else:
+                        rec.shipping_msg_inv_flag=False
+                else:
+                    rec.shipping_prev_cost_flag=shipping_cost
+            else:
+                rec.shipping_msg_inv_flag=True
+                rec.shipping_prev_id_flag=rec.shipping_id
+                rec.shipping_prev_cost_flag=shipping_cost
+            

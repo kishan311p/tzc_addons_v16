@@ -65,7 +65,7 @@ class account_move(models.Model):
     sale_order_number = fields.Char('Order Number',compute="_compute_sale_order_number")
     kits_amount_tax = fields.Float('Tax')
     kits_amount_total = fields.Float('Total')
-    kits_amount_residual = fields.Float('Amount Due')
+    # kits_amount_residual = fields.Float('Amount Due')
 
     def _compute_is_admin(self):
         for record in self:
@@ -81,12 +81,12 @@ class account_move(models.Model):
             record.delivered_qty = sale_id.picked_qty
             record.picked_qty = sale_id.delivered_qty
     
-    @api.depends('line_ids','line_ids.sale_line_ids')
+    @api.depends('line_ids','line_ids.sale_line_ids','invoice_line_ids')
     def _compute_order_id(self):
         for record in self:
             record.order_id = False
-            if record.line_ids and record.line_ids[0].sale_line_ids:
-                record.order_id = record.line_ids[0].sale_line_ids[0].order_id.id
+            if record.invoice_line_ids and record.invoice_line_ids[0].sale_line_ids:
+                record.order_id = record.invoice_line_ids[0].sale_line_ids.mapped('order_id')
 
     @api.onchange('invoice_user_id','order_id.sale_manager_id')
     def _onchange_user_id(self):
@@ -191,13 +191,14 @@ class account_move(models.Model):
                             else:
                                 if commission:
                                     brand_commission_line_id.create(vals)
-
-                    if record.commission_line_ids and record.inv_payment_status in ['full','over']:
-                        record.commission_line_ids.write({'state':'paid'})
-                    elif record.commission_line_ids and record.inv_payment_status == 'partial':
-                        record.commission_line_ids.write({'state':'draft'})
-                    else:
-                        record.commission_line_ids.write({'state':'draft'})
+                                    
+                    record.commission_line_ids.write({'state':record.inv_payment_status})
+                    # if record.commission_line_ids and record.inv_payment_status in ['full','over']:
+                    #     record.commission_line_ids.write({'state':'paid'})
+                    # elif record.commission_line_ids and record.inv_payment_status == 'partial':
+                    #     record.commission_line_ids.write({'state':'draft'})
+                    # else:
+                    #     record.commission_line_ids.write({'state':'draft'})
             return res
         else:
             return {
@@ -368,7 +369,7 @@ class account_move(models.Model):
             move.amount_tax = sign * total_tax_currency
             move.kits_amount_tax = move.order_id.picked_qty_order_tax
             move.kits_amount_total = move.order_id.picked_qty_order_total
-            move.kits_amount_residual = move.order_id.picked_qty_order_total
+            # move.kits_amount_residual = move.order_id.picked_qty_order_total
             move.amount_total = sign * total_currency
             move.amount_residual = -sign * total_residual_currency
             move.amount_untaxed_signed = -total_untaxed
@@ -614,7 +615,8 @@ class account_move(models.Model):
             default_email_layout_xmlid="mail.mail_notification_light",
             model_description=self.with_context(lang=lang).type_name,
             force_email=True,
-            default_is_print=False
+            default_is_print=False,
+            signature=self.invoice_user_id.signature
         )
         return {
             'name': _('Send Invoice'),

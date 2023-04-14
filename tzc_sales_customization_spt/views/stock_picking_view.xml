@@ -123,7 +123,7 @@
                 </xpath>
                 <xpath expr="//button[@name='action_confirm']" position="before">
                     <button string="Merge Quotation" name="action_update_order" type="object" class="oe_highlight" attrs="{'invisible':[('state','in',('scanned','done','cancel','assigned'))]}"/>
-                    <button name="excel_picking_order_report" string="Pick List" type="object" class="oe_highlight" attrs="{ 'invisible':[('state','=','cancel')] }"/>
+                    <!-- <button name="excel_picking_order_report" string="Pick List" type="object" class="oe_highlight" attrs="{ 'invisible':[('state','=','cancel')] }"/> -->
                     <button name="button_open_quick_scan_spt" string="Scan Order" attrs="{'invisible':[('state','in',('scanned','done','cancel','assigned'))]}" class="oe_highlight" type="object"/>
                     <button name="set_qty_by_script" type="object" string="Update Stock" class="oe_highlight" groups="base.group_system" attrs="{ 'invisible':[('state','not in',['assigned'])] }" confirm="This will adjust product stock according to this delivery."/>
                     <button string="Scanning Completed" name="action_scanned" type="object" class="oe_highlight" attrs="{'invisible':[('state','not in',('in_scanning'))]}"/>

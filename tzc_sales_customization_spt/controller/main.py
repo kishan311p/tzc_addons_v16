@@ -8,10 +8,74 @@ from odoo.addons.web.controllers.main import ensure_db, Home
 from odoo.addons.base_setup.controllers.main import BaseSetup
 from odoo.exceptions import UserError
 from odoo.addons.web.controllers.main import ReportController
+from odoo.addons.portal.controllers.portal import CustomerPortal
+from odoo.addons.account.controllers.portal import PortalAccount
+from odoo.addons.website_sale_digital.controllers.main import WebsiteSaleDigital
+from odoo.addons.sale.controllers.portal import CustomerPortal as SaleCustomerPortal
 import datetime
 import json
 
 _logger = logging.getLogger(__name__)
+
+class kitsCustomerPortal(http.Controller):
+    @http.route(['/my/home'], type='http', auth="user", website=True)
+    def home(self, **kw):
+        # values = self._prepare_portal_layout_values()
+        return request.render("http_routing.404")
+    
+    @http.route(['/my/account'], type='http', auth='user', website=True)
+    def account(self, redirect=None, **post):
+        return request.render("http_routing.404")
+
+    @http.route('/my/security', type='http', auth='user', website=True, methods=['GET', 'POST'])
+    def security(self, **post):
+        return request.render("http_routing.404")
+    
+CustomerPortal.home = kitsCustomerPortal.home
+CustomerPortal.account = kitsCustomerPortal.account
+CustomerPortal.security = kitsCustomerPortal.security
+CustomerPortal.home = kitsCustomerPortal.home
+
+class kitsSaleCustomerPortal(CustomerPortal):
+    
+    @http.route(['/my/quotes/page/<int:page>'], type='http', auth="user", website=True)
+    def portal_my_quotes(self, **kwargs):
+        return request.render("http_routing.404")
+    
+    @http.route(['/my/orders/page/<int:page>'], type='http', auth="user", website=True)
+    def portal_my_orders(self, **kwargs):
+        return request.render("http_routing.404")
+
+    @http.route(['/my/orders/<int:order_id>'], type='http', auth="public", website=True)
+    def portal_order_page(self, order_id, report_type=None, access_token=None, message=False, download=False, **kw):
+        return request.render("http_routing.404")
+
+    @http.route(['/my/orders/<int:order_id>/accept'], type='json', auth="public", website=True)
+    def portal_quote_accept(self, order_id, access_token=None, name=None, signature=None):
+        return request.render("http_routing.404")
+
+    @http.route(['/my/orders/<int:order_id>/decline'], type='http', auth="public", methods=['POST'], website=True)
+    def portal_quote_decline(self, order_id, access_token=None, decline_message=None, **kwargs):
+        return request.render("http_routing.404")
+    
+SaleCustomerPortal.portal_my_quotes = kitsSaleCustomerPortal.portal_my_quotes
+SaleCustomerPortal.portal_my_orders = kitsSaleCustomerPortal.portal_my_orders
+SaleCustomerPortal.portal_order_page = kitsSaleCustomerPortal.portal_order_page
+SaleCustomerPortal.portal_quote_accept = kitsSaleCustomerPortal.portal_quote_accept
+SaleCustomerPortal.portal_quote_decline = kitsSaleCustomerPortal.portal_quote_decline
+
+class kitsPortalAccount(CustomerPortal):
+
+    @http.route(['/my/invoices', '/my/invoices/page/<int:page>'], type='http', auth="user", website=True)
+    def portal_my_invoices(self, page=1, date_begin=None, date_end=None, sortby=None, filterby=None, **kw):
+       return request.render("http_routing.404")
+    
+    @http.route(['/my/invoices/<int:invoice_id>'], type='http', auth="public", website=True)
+    def portal_my_invoice_detail(self, invoice_id, access_token=None, report_type=None, download=False, **kw):
+       return request.render("http_routing.404")
+    
+PortalAccount.portal_my_invoices = kitsPortalAccount.portal_my_invoices
+PortalAccount.portal_my_invoice_detail = kitsPortalAccount.portal_my_invoice_detail
 
 class kits_ReportController(http.Controller):
     @http.route(['/bambora/approved','/bambora/declined'], type='http', auth='public', website=True, method=['GET', 'POST'], csrf=False)

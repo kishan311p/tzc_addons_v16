@@ -54,4 +54,27 @@
         <!-- <field name="binding_model_ids" eval="False"/> -->
         <field name="binding_type">report</field>
     </record>
+    <record id="action_report_salesorder" model="ir.actions.report">
+        <field name="name">Sales Order</field>
+        <field name="model">sale.order</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">tzc_sales_customization_spt.report_salesorder</field>
+        <field name="report_file">tzc_sales_customization_spt.report_salesorder</field>
+        <field name="print_report_name">'Sales Order - %s' % object.name</field>
+        <field name="binding_model_id" ref="model_sale_order"/>
+        <field name="paperformat_id" ref="tzc_sales_customization_spt.kits_quotations_and_order"/>
+        <field name="binding_type">report</field>
+        <!-- <field name="context">{'sales_order_r':True}</field> -->
+    </record>
+    <record id="action_report_delivery" model="ir.actions.report">
+        <field name="name">Pick List</field>
+        <field name="model">sale.order</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">tzc_sales_customization_spt.kits_sale_order_picking_list_report</field>
+        <field name="report_file">tzc_sales_customization_spt.kits_sale_order_picking_list_report</field>
+        <field name="print_report_name">'Picking List - %s' % (object.name)</field>
+        <field name="binding_model_id" ref="model_sale_order"/>
+        <field name="paperformat_id" ref="tzc_sales_customization_spt.kits_quotations_and_order"/>
+        <field name="binding_type">report</field>
+    </record>
 </odoo>
