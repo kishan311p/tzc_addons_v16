@@ -377,10 +377,24 @@
                     </div>
                     <div class="col-auto mw-100 mb-2">
                         <strong>Total Quantity:</strong>
-                        <p class="m-0 text-start" t-esc="int(sum(request.env['sale.catalog.line'].sudo().search([('catalog_id','=',doc.id)]).mapped(lambda line:line.product_qty if doc.customer_id.country_id not in line.product_pro_id.geo_restriction else 0)))"/>
+                        <t t-if="doc.env['kits.b2b.website'].search([('website_name','=','b2b1')],limit = 1).is_allow_for_geo_restriction">
+                            
+                             <p class="m-0 text-start" t-esc="int(sum(request.env['sale.catalog.line'].sudo().search([('catalog_id','=',doc.id)]).mapped(lambda line:line.product_qty if doc.customer_id.country_id not in line.product_pro_id.geo_restriction else 0 )))"/>
+                        </t>
+                        <t t-else="">
+                             <p class="m-0 text-start" t-esc="int(sum(request.env['sale.catalog.line'].sudo().search([('catalog_id','=',doc.id)]).mapped(lambda line:line.product_qty )))"/>
+
+                        </t>
                     </div>
 
                 </div>
+                <t t-set="line_dict" t-value="doc.get_catalog_line()"/>
+                <t t-set="is_shipping_product" t-value="0"/>
+                <t t-set="is_admin" t-value="0"/>
+                <t t-set="discount_total" t-value="0"/>
+                <t t-set="total_with_discount" t-value="0"/>
+                <t t-set="total_line_qty" t-value="0"/>
+                <t t-set="total" t-value="0"/>
                 <table class="table table-sm o_main_table">
                     <thead>
                         <tr>
@@ -392,28 +406,20 @@
                         </tr>
                     </thead>
                     <tbody class="sale_tbody">
-                        <t t-set="line_discount" t-value="0"/>
-                        <t t-set="main_subtotal" t-value="0"/>
-                        <t t-set="total" t-value="0"/>
-                        <t t-set="is_shipping_product" t-value="0"/>
-                        <t t-set="is_admin" t-value="0"/>
-                        <t t-set="total_line_qty" t-value="0"/>
-                        <t t-set="product_name_list" t-value="doc.line_ordering_by_product()"/>
-                        <t t-foreach="range(len(product_name_list))" t-as="product_name">
-                            <t t-set="product_name" t-value="product_name_list[product_name]"/>
-                            <t t-foreach="doc.line_product_dict(product_name)[product_name]['line_ids']" t-as="line">
-                                <t t-set="sale_type_total_discount" t-value="0"/>
-                                <t t-set="sale_type_total" t-value="0"/>
-                                <t t-set="price_total" t-value="0"/>
-                                <t t-set="product_price" t-value="doc.env['product.pricelist.item'].search([('product_id','=',line.product_pro_id.id),('pricelist_id','=',doc.customer_id.property_product_pricelist.id)]).fixed_price"/>
-                                <t t-if="not line.product_pro_id.is_admin">
-                                    <t t-if="not line.product_pro_id.is_shipping_product">
-                                        <t t-set="product_price_discount_total" t-value="0"/>
-                                        <tr>
+                        <tr t-foreach="line_dict" t-as="product_name_dict">
+                            <t t-set="product_id" t-value="line_dict.get(product_name_dict,{}).get('product_id',doc.env['product.product'])"/>
+                            <t t-set="unit_discount_price" t-value="line_dict.get(product_name_dict,{}).get('our_price',0)"/>
+                            <t t-set="line_sub_total" t-value="line_dict.get(product_name_dict,{}).get('sub_total',0)"/>
+                            <t t-set="unit_price" t-value="line_dict.get(product_name_dict,{}).get('price_unit',0)"/>
+                            <t t-set="qty" t-value="line_dict.get(product_name_dict,{}).get('qty',0)"/>
+                            <t t-set="is_special_discount" t-value="line_dict.get(product_name_dict,{}).get('is_special_discount',0)"/>
+                                <t t-if="not product_id.is_admin">
+                                    <t t-if="not product_id.is_shipping_product">
                                             <td style="border: 1px solid #dbdde0; padding: 10px;" name="td_image">
-                                                <t t-set="special_discount" t-value="line.product_pro_id._get_black_special_friday_sale()"/>
-                                                <t t-set="fest_discount_icon" t-value="request.env['tzc.fest.discount'].search([('id','=',special_discount.get('dynamic_label_icon'))])"/>
-                                                <t t-if="line.sale_type">
+                                                <t t-set="special_discount" t-value="product_id._get_black_special_friday_sale()"/>
+                                        
+                                                <t t-set="fest_discount_icon" t-value="doc.env['tzc.fest.discount'].search([('id','=',special_discount.get('dynamic_label_icon'))])"/>
+                                                <t t-if="product_id.sale_type">
                                                     <style>
                                                         .te_ribbon-wrapper kits_ribbon #style_3.label_div {
                                                             display: inline-block;
@@ -442,145 +448,112 @@
                                                         }
                                                     </style>
 
-                                                    <t t-if="line.is_special_discount and fest_discount_icon">
+                                                    <t t-if="is_special_discount and fest_discount_icon">
                                                         <div class="icon_div position-absolute" id="style_3" style="background-color: transparent !important;top:unset !important;">
                                                             <img t-attf-src="data:image/png;base64,#{fest_discount_icon.dynamic_label_icon}" alt="Discount Icon" style="height:25px !important;"/>
                                                         </div>
                                                     </t>
                                                     <t t-else=''>
                                                         <span class="te_ribbon-wrapper kits_ribbon mr-1" style="color:white;position: absolute;margin-top: -6px;">
-                                                            <span t-attf-class="style_3 label_div py-1 #{'kits_label_div' if line.sale_type == 'clearance' else ''}" id="style_3" t-attf-style="background-color:#{'#e50000' if line.sale_type == 'on_sale' else '#990000' if line.sale_type == 'clearance' else ''};font-weight: bold;top: auto !important;left: 20px !important;font-size: 9px;">
-                                                                <span t-attf-class="te_label_name te_label_name_wish #{'kits_label_name' if line.sale_type == 'clearance' else ''}">
-                                                                    <span class="p-1" style="line-height: 1;" t-esc="dict(line._fields['sale_type'].selection).get(line.sale_type)"></span>
+                                                            <span t-attf-class="style_3 label_div py-1 #{'kits_label_div' if product_id.sale_type == 'clearance' else ''}" id="style_3" t-attf-style="background-color:#{'#e50000' if product_id.sale_type == 'on_sale' else '#990000' if product_id.sale_type == 'clearance' else ''};font-weight: bold;top: auto !important;left: 20px !important;font-size: 9px;">
+                                                                <span t-attf-class="te_label_name te_label_name_wish #{'kits_label_name' if product_id.sale_type == 'clearance' else ''}">
+                                                                    <span class="p-1" style="line-height: 1;" t-esc="dict(product_id._fields['sale_type'].selection).get(product_id.sale_type)"></span>
                                                                 </span>
                                                             </span>
                                                         </span>
                                                     </t>
                                                 </t>
-                                                <t t-if="line.is_special_discount and fest_discount_icon">
+                                                <t t-if="is_special_discount and fest_discount_icon">
                                                     <div class="icon_div position-absolute" id="style_3" style="background-color: transparent !important;top:unset !important;">
                                                         <img t-attf-src="data:image/png;base64,#{fest_discount_icon.dynamic_label_icon}" alt="Discount Icon" style="height:25px !important;"/>
                                                     </div>
                                                 </t>
-                                                <t t-if="line.product_pro_id.image_url">
-                                                    <span><t t-esc="line.product_pro_id.image_url"/></span>
+                                                <t t-if="product_id.image_url">
+                                                    <span><t t-esc="product_id.image_url"/></span>
                                                 </t>
                                                 <t t-else="">
                                                     <span>https://www.teameto.com/web/static/src/img/placeholder.png</span>
                                                 </t>
                                             </td>
                                             <td style="border: 1px solid #dbdde0; padding: 10px;" name="td_image_secondary">
-                                                <t t-if="line.product_pro_id.image_secondary_url">
-                                                    <span><t t-esc="line.product_pro_id.image_secondary_url"/></span>
+                                                <t t-if="product_id.image_secondary_url">
+                                                    <span><t t-esc="product_id.image_secondary_url"/></span>
                                                 </t>
                                                 <t t-else="">
                                                     <span>https://www.teameto.com/web/static/src/img/placeholder.png</span>
                                                 </t>
                                             </td>
                                             <td style="text-align: center; border: 1px solid #dbdde0; padding: 35px 10px 10px 10px;">
-                                                <span t-if="line.product_pro_id.brand" t-esc="line.product_pro_id.brand.name"/>
+                                                <span t-if="product_id.brand" t-esc="product_id.brand.name"/>
                                                 <span t-else="">N/A</span>
                                                 <br/>
 
-                                                <span t-if="line.product_pro_id.model" t-esc="line.product_pro_id.model.name"/>
+                                                <span t-if="product_id.model" t-esc="product_id.model.name"/>
                                                 <span t-else="">N/A</span>
                                                 <br/>
                                             
-                                                    <t t-if="line.product_pro_id.color_code">
-                                                        <span t-esc="line.product_pro_id.color_code.name"/>
+                                                    <t t-if="product_id.color_code">
+                                                        <span t-esc="product_id.color_code.name"/>
                                                     </t>
                                                     <t t-else="else">
                                                         <span>00</span>
                                                     </t>
                                                     <br/>
-                                                    <t t-if="line.product_pro_id.eye_size">
-                                                        <span t-field="line.product_pro_id.eye_size.name"/>
+                                                    <t t-if="product_id.eye_size">
+                                                        <span t-field="product_id.eye_size.name"/>
                                                     </t>
                                                     <t t-else="else">
                                                         <span>00</span>
                                                     </t>
-                                                    <t t-if="line.product_pro_id.bridge_size">
-                                                        <span t-field="line.product_pro_id.bridge_size.name"/>
+                                                    <t t-if="product_id.bridge_size">
+                                                        <span t-field="product_id.bridge_size.name"/>
                                                     </t>
                                                     <t t-else="else">
                                                         <span>00</span>
                                                     </t>
-                                                    <t t-if="line.product_pro_id.temple_size">
-                                                        <span t-field="line.product_pro_id.temple_size.name"/>
+                                                    <t t-if="product_id.temple_size">
+                                                        <span t-field="product_id.temple_size.name"/>
                                                     </t>
                                                     <t t-else="else">
                                                         <span>00</span>
                                                     </t>
-                                                    <t t-if="line.product_pro_id.categ_id">
-                                                        (<span t-field="line.product_pro_id.categ_id.name"/>)
+                                                    <t t-if="product_id.categ_id">
+                                                        (<span t-field="product_id.categ_id.name"/>)
                                                     </t>
                                             </td>
                                             <td style="text-align: center; border: 1px solid #dbdde0; padding: 70px 10px 10px 10px;">
-                                                <span t-if="line.product_qty" t-field="line.product_qty" />
-                                                <span style="text-align: center" t-if="not line.product_qty"> N/A </span>
-                                                <t t-set="total_line_qty" t-value="total_line_qty + line.product_qty"/>
-                                            </td>
-                                            <t t-set="pro_price" t-value="doc.env['product.pricelist.item'].search([('product_id','=',line.product_pro_id.id),('pricelist_id','=',doc.customer_id.property_product_pricelist.id)]).fixed_price"/>
-                                            <t t-if="line.discount">
-                                                <t t-if="'eto dubai' in doc.customer_id.property_product_pricelist.name or 'other eto' in doc.customer_id.property_product_pricelist.name">
-                                                    <t t-set="disc" t-value="(line.product_pro_id.lst_price - pro_price) * line.product_qty"/>
-                                                    <!-- <t t-if="doc.customer_id.property_product_pricelist.currency_id.name == 'USD'">
-                                                        <t t-set="disc" t-value="(line.product_pro_id.lst_price_usd - pro_price) * line.product_qty"/>
-                                                    </t>
-                                                    <t t-if="doc.customer_id.property_product_pricelist.currency_id.name == 'CAD'">
-                                                        <t t-set="disc" t-value="(line.product_pro_id.lst_price - pro_price) * line.product_qty"/>
-                                                    </t> -->
-                                                </t>
-                                                <t t-else="">
-                                                    <t t-set="disc" t-value="(product_price * line.discount * 0.01) * line.product_qty"/>
-                                                </t>
-                                                <t t-set="line_discount" t-value="line_discount + disc"/>
-                                            </t>
-                                            <t t-set="unit_discount_price" t-value="product_price - (product_price * line.discount / 100)"/>
+                                                <span t-if="qty" t-esc="qty" />
+                                                <span style="text-align: center" t-if="not qty"> N/A </span>
+                                            </td>                                            
+
+                                            <t t-set="total_line_qty" t-value="total_line_qty + qty"/>
+                                            <t t-set="discount_total" t-value="discount_total + (unit_price- unit_discount_price)"/>
+                                            <t t-set="total_with_discount" t-value="total_with_discount + unit_price"/>
+                                            <t t-set="total" t-value="total + unit_discount_price"/>
                                             
-                                            
-                                            <td style="text-align: right; border: 1px solid #dbdde0; padding: 60px 10px 10px 10px;" t-if="product_price != unit_discount_price">
-                                                <t t-if="'eto dubai' in doc.customer_id.property_product_pricelist.name or 'other eto' in doc.customer_id.property_product_pricelist.name">
-                                                    <t t-set="product_price" t-value="line.product_pro_id.lst_price"/>
-                                                    <!-- <t t-if="doc.customer_id.property_product_pricelist.currency_id.name=='USD'">
-                                                        <t t-set="product_price" t-value="line.product_pro_id.lst_price_usd"/>
-                                                    </t>
-                                                    <t t-if="doc.customer_id.property_product_pricelist.currency_id.name=='CAD'">
-                                                        <t t-set="product_price" t-value="line.product_pro_id.lst_price"/>
-                                                    </t> -->
-                                                </t>
-                                                <span t-if="product_price" style="white-space: nowrap;color:red;text-decoration:line-through;">
-                                                    <span t-options='{"widget": "monetary", "display_currency":  doc.pricelist_id.currency_id}' t-esc="product_price" style="white-space: nowrap;color:black;" />
+                                            <td style="text-align: right; border: 1px solid #dbdde0; padding: 60px 10px 10px 10px;" t-if="unit_price != unit_discount_price">
+                                                <span t-if="unit_price" style="white-space: nowrap;color:red;text-decoration:line-through;">
+                                                    <span t-options='{"widget": "monetary", "display_currency":   doc.customer_id.preferred_currency}' t-esc="unit_price" style="white-space: nowrap;color:black;" />
                                                 </span>
-                                                <span style="text-align: center" t-if="not product_price"> N/A </span>
+                                                <span style="text-align: center" t-if="not unit_price"> N/A </span>
                                                 <br/>
                                                 <t t-if="unit_discount_price">
-                                                    <t t-if="'eto dubai' in doc.customer_id.property_product_pricelist.name or 'other eto' in doc.customer_id.property_product_pricelist.name">
-                                                        <span t-options='{"widget": "monetary", "display_currency":  doc.pricelist_id.currency_id}' t-esc="doc.env['product.pricelist.item'].search([('product_id','=',line.product_pro_id.id),('pricelist_id','=',doc.customer_id.property_product_pricelist.id)]).fixed_price" style="white-space: nowrap;color:#7693f8;"/>
-                                                    </t>
-                                                    <t t-else="">
-                                                        <span t-options='{"widget": "monetary", "display_currency":  doc.pricelist_id.currency_id}' t-esc="round(product_price - (product_price * line.discount / 100),2)" style="white-space: nowrap;color:#7693f8;"/>
-                                                    </t>
+                                                    
+                                                    <span t-options='{"widget": "monetary", "display_currency":  doc.customer_id.preferred_currency}' t-esc="round(unit_discount_price,2)" style="white-space: nowrap;color:#7693f8;"/>
                                                 </t>
                                             </td>
-                                            <td style="text-align: right; border: 1px solid #dbdde0; padding: 70px 10px 10px 10px;" t-if="product_price == unit_discount_price">
-                                                $ <span t-esc="'{0:.2f}'.format(round(product_price,2))"/>
+                                            <td style="text-align: right; border: 1px solid #dbdde0; padding: 70px 10px 10px 10px;" t-if="unit_price == unit_discount_price">
+                                                $ <span t-esc="'{0:.2f}'.format(round(unit_price,2))"/>
                                             </td>
-
-                                            <t t-set="main_subtotal" t-value="main_subtotal + (product_price * line.product_qty)"/>
-                                            <t t-set="total" t-value="total + (round(unit_discount_price,2) * line.product_qty)"/>
-                                           
-                                        </tr>
                                     </t>
                                     <t t-else="">
-                                        <t t-set="is_shipping_product" t-value="is_shipping_product +  (product_price * line.product_qty)"/>
+                                        <t t-set="is_shipping_product" t-value="is_shipping_product +  (unit_price * qty)"/>
                                     </t>
                                 </t>
                                 <t t-else="">
-                                    <t t-set="is_admin" t-value="is_admin +  (product_price * line.product_qty)"/>
+                                    <t t-set="is_admin" t-value="is_admin +  (unit_price * qty)"/>
                                 </t>
-                            </t>
-                        </t>
+                        </tr>
                     </tbody>
                 </table>
                 <div class="clearfix" name="so_total_summary">
@@ -592,7 +565,7 @@
                                         <strong>Subtotal</strong>
                                     </td>
                                     <td name="td_amount_value" class="text-end">
-                                        <span t-esc="round(main_subtotal,2)" t-options='{"widget": "monetary", "display_currency":  doc.pricelist_id.currency_id}'/>
+                                        <span t-esc="round(total_with_discount,2)" t-options='{"widget": "monetary", "display_currency":   doc.customer_id.preferred_currency}'/>
                                     </td>
                                 </tr>
                                 <tr class="border-black o_subtotal" style="">
@@ -600,7 +573,7 @@
                                         <strong>Discount</strong>
                                     </td>
                                     <td name="td_discount_value" class="text-end">
-                                        <span t-esc="round(line_discount,2)" t-options='{"widget": "monetary", "display_currency":  doc.pricelist_id.currency_id}'/>
+                                        <span t-esc="round(discount_total,2)" t-options='{"widget": "monetary", "display_currency":   doc.customer_id.preferred_currency}'/>
                 
                                     </td>
                                 </tr>
@@ -610,7 +583,7 @@
                                     </td>
                                     <td name="td_final_total_value" class="text-end">
                                         (<span t-esc="doc.customer_id.property_product_pricelist.currency_id.name"/>)
-                                           <span  t-esc="(main_subtotal - line_discount) + is_shipping_product" t-options='{"widget": "monetary", "display_currency":  doc.pricelist_id.currency_id}'/>
+                                           <span  t-esc="total + is_shipping_product" t-options='{"widget": "monetary", "display_currency":   doc.customer_id.preferred_currency}'/>
                                        </td>
                                 </tr>
                                 <tr class="border-black o_total">

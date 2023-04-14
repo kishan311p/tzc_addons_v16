@@ -388,15 +388,71 @@ class SaleCatalog(models.Model):
         for line in self.line_ids:
             line_dict = {} 
             product_name = line.product_pro_id.name_get()[0][1].strip()
-            if user.country_id.id not in line.product_pro_id.geo_restriction.ids:
-                if line.product_pro_id.name in product_dict.keys():
-                    product_dict[product_name]['line_ids'].append(line) 
-                else:
-                    line_dict['line_ids'] = [line]
-                    product_dict[product_name] = line_dict
+            # if user.country_id.id not in line.product_pro_id.geo_restriction.ids:
+            if line.product_pro_id.name in product_dict.keys():
+                product_dict[product_name]['line_ids'].append(line) 
+            else:
+                line_dict['line_ids'] = [line]
+                product_dict[product_name] = line_dict
         return product_dict
 
-
+    def get_catalog_line(self):
+        product_obj = self.env['product.product']
+        order_line_obj = self.env['sale.order.line']
+        catalog_line_obj = self.env['sale.catalog.line']
+        is_geo_restriction = True
+        order_id = self.env['sale.order'].search([('catalog_id','=',self.id),('partner_id','=',self.customer_id.id)],order = 'id desc',limit = 1)
+        if order_id:
+            b2b_currency_id = self.env['kits.b2b.multi.currency.mapping'].search([('currency_id','=',order_id.b2b_currency_id.id)])
+            if b2b_currency_id.currency_id.id != self.customer_id.preferred_currency.id:
+                b2b_currency_id = self.env['kits.b2b.multi.currency.mapping'].search([('currency_id','=',self.customer_id.preferred_currency.id)])
+            rate = b2b_currency_id.currency_rate or 1.0
+            line_ids = order_line_obj.search([('order_id','=',order_id.id)])
+            product_list = set(line_ids.mapped('product_id.variant_name'))
+        else:
+            self._onchange_pricelist_id()
+            rate = self.env['kits.b2b.multi.currency.mapping'].search([('currency_id','=',self.customer_id.preferred_currency.id)]).currency_rate or 1.0
+            line_ids = self.line_ids
+            product_list = set(line_ids.mapped('product_pro_id.variant_name'))
+            
+        (list(product_list)).sort()
+        product_dict = {}
+        for product_name in product_list:
+            product_id = product_obj.search([('active','=',True),('variant_name','=',product_name)],order = 'id desc',limit=1)
+            if is_geo_restriction and self.customer_id.country_id.id in product_id.geo_restriction.ids:
+                continue
+            line_dict = {'product_id' : product_id,'qty': 0}
+            if order_id:
+                line_ids = order_line_obj.search([('order_id','=',order_id.id),('product_id','=',product_id.id)])
+                for line in line_ids:
+                    if line_dict.get('price_unit',False):
+                        line_dict['price_unit'] = (line_dict.get('price_unit',0) + line.price_unit)/2
+                        line_dict['our_price'] =( line_dict.get('our_price',0) + line.unit_discount_price)/2
+                        line_dict['qty'] = int(line_dict.get('qty',0) + line.product_qty)
+                    else:    
+                        line_dict['price_unit'] = line.price_unit
+                        line_dict['our_price'] = line.unit_discount_price
+                        line_dict['qty'] = int(line.product_qty)
+                    if line.is_special_discount:
+                        line_dict['is_special_discount'] = True
+            else: 
+                line_ids = catalog_line_obj.search([('catalog_id','=',self.id),('product_pro_id','=',product_id.id)])
+                for line in line_ids:
+                    if line_dict.get('price_unit',False):
+                        line_dict['price_unit'] = (line_dict.get('price_unit',0) + line.price_unit)/2
+                        line_dict['our_price'] =( line_dict.get('our_price',0) + line.unit_discount_price)/2
+                        line_dict['qty'] = int(line_dict.get('qty',0) + line.product_qty)
+                    else:    
+                        line_dict['price_unit'] = line.product_price
+                        line_dict['our_price'] = line.unit_discount_price
+                        line_dict['qty'] = line.product_qty 
+                    if line.is_special_discount:
+                        line_dict['is_special_discount'] = True   
+            line_dict['price_unit'] = round(line_dict.get('price_unit',0)* rate,2)
+            line_dict['our_price'] = round(line_dict.get('our_price',0),2)    
+            line_dict['sub_total'] = round(line_dict.get('our_price',0) * line_dict.get('qty',0),2)        
+            product_dict [product_name] = line_dict
+        return product_dict
 
     def send_catalog(self):
         SCO_Obj = self.env['sale.catalog.order']
