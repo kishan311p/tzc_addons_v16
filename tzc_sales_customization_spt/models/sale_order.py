@@ -68,7 +68,7 @@ class sale_order(models.Model):
     company_id = fields.Many2one('res.company')
 
     #kits_shipping_cost
-    shipping_id = fields.Many2one('shipping.provider.spt',default=False)
+    shipping_id = fields.Many2one('shipping.provider.spt',default=False,track_visibility=True)
     estimate_shipping_cost = fields.Float('Shipping Cost ')
     actual_weight = fields.Float('Actual Weight (kg)')
     kits_carrier_tracking_ref = fields.Char('Tracking Reference',compute="_compute_carrier_tracking_ref",compute_sudo=True,store=True)
@@ -83,7 +83,7 @@ class sale_order(models.Model):
     shipping_prev_cost_flag = fields.Float("Prev Shipping Cost Flag",compute='_compute_shipping_msg_flag',store=True)
     shipping_prev_id_flag = fields.Many2one('shipping.provider.spt',default=False,compute='_compute_shipping_msg_flag',store=True)
     shipping_msg_inv_flag = fields.Boolean('Shipping Msg Flag',compute='_compute_shipping_msg_flag',store=True)
-
+    notify_done = fields.Boolean('Notification (Flag)')
 
     @api.depends('case_weight_gm','no_of_cases','include_cases')
     def _calculate_case_weight_kg(self):
@@ -3074,8 +3074,17 @@ class sale_order(models.Model):
                     }
                 on_consign_product_ids = self.order_line.filtered(lambda x:x.product_id.on_consignment and x.product_uom_qty > x.product_id.actual_stock)
                 if on_consign_product_ids and not self._context.get('on_consign_wizard'):
+                    wizard_id = self.env['on.consignment.product.message.wizard'].create({
+                        'order_id' : self.id
+                    })
+                    wizard_lines_list = []
                     for line in on_consign_product_ids:
-                        line.product_id.assign_qty = line.product_uom_qty or 0.0
+                        wizard_lines_list.append((0,0,{
+                            'product_id' : line.product_id.id,
+                            'sol_id' : line.id,
+                            'assign_qty' : line.product_id.minimum_qty,
+                        }))
+                    wizard_id.line_ids = wizard_lines_list
                     return {
                         'name': _('Product Minimum Stock Alert.'),
                         'type': 'ir.actions.act_window',
@@ -3083,7 +3092,8 @@ class sale_order(models.Model):
                         'view_mode': 'form',
                         'res_model': 'on.consignment.product.message.wizard',
                         'target': 'new',
-                        'context': {'default_product_ids': [(6,0,on_consign_product_ids.mapped('product_id').ids)],'default_order_id':self.id }
+                        'res_id' : wizard_id.id,
+
                     }
                 if record.state in ['draft'] and not record.website_id and not record.catalog_id:
                     template_id = self.env.ref('tzc_sales_customization_spt.mail_template_notify_customer_quotation_create').sudo()
@@ -3835,9 +3845,10 @@ class sale_order(models.Model):
         user_id = self.env['res.users'].search([('is_warehouse','=',True)],limit=1)
         return user_id.email
 
-    @api.depends('order_line','state','shipping_id')
+    @api.depends('order_line.price_unit','order_line.unit_discount_price','state','shipping_id')
     def _compute_shipping_msg_flag(self):
         for rec in self:
+            rec_id = rec._origin.id
             shipping_line_id = rec.order_line.filtered(lambda x:x.product_id.is_shipping_product==True)
             shipping_cost = sum(shipping_line_id.mapped('unit_discount_price')) if shipping_line_id else 0
             if rec.state=='scanned':
@@ -3846,6 +3857,7 @@ class sale_order(models.Model):
                         rec.shipping_msg_inv_flag = True
                         rec.shipping_prev_id_flag=rec.shipping_id
                         rec.shipping_prev_cost_flag=shipping_cost
+                        rec.notify_done = False
                     else:
                         rec.shipping_msg_inv_flag=False
                 else:
@@ -3854,4 +3866,3 @@ class sale_order(models.Model):
                 rec.shipping_msg_inv_flag=True
                 rec.shipping_prev_id_flag=rec.shipping_id
                 rec.shipping_prev_cost_flag=shipping_cost
-            

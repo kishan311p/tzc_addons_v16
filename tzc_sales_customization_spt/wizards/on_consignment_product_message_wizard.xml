@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="on_consignment_product_message_wizard_view_form" model="ir.ui.view">
+        <field name="name">on.consignment.product.message.wizard.view.form</field>
+        <field name="model">on.consignment.product.message.wizard</field>
+        <field name="arch" type="xml">
+            <form string="">
+                <sheet>
+                    <field name="line_ids">
+                        <tree editable="bottom" create="0" delete="0">
+                            <field name="product_id" readonly="1"/>
+                            <field name="minimum_qty" />
+                            <field name="available_qty_spt" />
+                            <field name="ordered_qty" />
+                            <field name="assign_qty" />
+                        </tree>
+
+                    
+
+                    </field>
+                </sheet>
+                <footer>
+                    <button string="Process" name="action_process_product" type="object" class="oe_highlight"/>
+                    <button string="Cancel" special="cancel" class="btn-secondary"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+</odoo>

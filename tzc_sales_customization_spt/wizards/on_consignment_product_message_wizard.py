@@ -4,15 +4,31 @@ class on_consignment_product_message_wizard(models.TransientModel):
     _name = 'on.consignment.product.message.wizard'
     _description = "On Consignment Product Message Wizard"
 
-    product_ids = fields.Many2many('product.product','on_consignment_product_with_product_product_real','wizard_id','product_id','Products')
     order_id = fields.Many2one('sale.order',"order")
+    line_ids = fields.One2many('on.consignment.product.message.wizard.line', 'on_consignment_id', string='line')
 
     def action_process_product(self):
-        for product in self.product_ids:
-            product_id = self.env['product.product'].search([('id','=',product.id)])
-            if product_id:
-                ordre_line_id = self.order_id.order_line.filtered(lambda x:x.product_id.id == product_id.id)
-                if ordre_line_id:
-                    ordre_line_id.write({'product_uom_qty':product.assign_qty})
+        for line in self.line_ids:
+            line.sol_id.write({'product_uom_qty':line.assign_qty})
                 
         self.order_id.with_context(on_consign_wizard=True).action_confirm()
+
+class on_consignment_product_message_wizard_line(models.TransientModel):
+    _name = 'on.consignment.product.message.wizard.line'
+    _description = 'on.consignment.product.message.wizard.line'
+    
+    
+    product_id = fields.Many2one('product.product', string='Product')
+    minimum_qty = fields.Integer('Minimum Qty',related='product_id.minimum_qty')
+    available_qty_spt = fields.Integer('Available Qty',related='product_id.available_qty_spt',store=True)
+    assign_qty = fields.Integer('Assign Qty')
+    on_consignment_id = fields.Many2one('on.consignment.product.message.wizard','On Consignment')
+    sol_id = fields.Many2one('sale.order.line')
+    ordered_qty = fields.Float('Ordered Qty',related='sol_id.product_uom_qty')
+    
+    
+    @api.onchange('assign_qty')
+    def _onchange_assign_qty(self):
+        for record in self:
+            if record.assign_qty >= record.product_id.available_qty_spt:
+                record.assign_qty = record.product_id.available_qty_spt

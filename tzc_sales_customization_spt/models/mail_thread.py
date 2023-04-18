@@ -23,6 +23,10 @@ class mail_thread(models.AbstractModel):
                 if 'contact_allowed_countries' in initial_values[rec.id] or 'country_ids' in initial_values[self.id]:
                     rec._mail_track(self.fields_get(
                         tracked_fields), initial_values[rec.id])
+        if self._name == 'sale.order':
+            ctx = self._context.copy()
+            ctx.update({'order_id':self})
+            self.env.context = ctx
         res = super(mail_thread, self)._message_track(
             tracked_fields, initial_values)
         return res

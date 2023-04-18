@@ -56,7 +56,7 @@
         'data/mail_template_sale_confirmation.xml',
         'data/mail_template_on_consignment.xml',
         'data/kits_notify_reject_catalog.xml',
-
+        'data/wh_notify_mail_template.xml',
 
         # Views
         'views/product_product_view.xml',
@@ -176,6 +176,7 @@
         'wizards/mail_compose_message_wizard_view.xml',
         'wizards/mass_mailing_message_wizard_view.xml',
         'wizards/stock_change_product_qty_view.xml',
+        'wizards/on_consignment_product_message_wizard.xml',
 
         # Reports
         'reports/kits_commission_report.xml',
