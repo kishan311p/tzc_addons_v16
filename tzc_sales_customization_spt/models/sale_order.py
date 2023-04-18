@@ -3079,10 +3079,11 @@ class sale_order(models.Model):
                     })
                     wizard_lines_list = []
                     for line in on_consign_product_ids:
+                        qty = line.product_uom_qty - line.product_id.minimum_qty
                         wizard_lines_list.append((0,0,{
                             'product_id' : line.product_id.id,
                             'sol_id' : line.id,
-                            'assign_qty' : line.product_id.minimum_qty,
+                            'assign_qty' : qty if qty > 0 else 0,
                         }))
                     wizard_id.line_ids = wizard_lines_list
                     return {

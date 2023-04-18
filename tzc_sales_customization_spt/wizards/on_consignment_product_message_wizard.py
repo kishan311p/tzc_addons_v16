@@ -26,9 +26,3 @@ class on_consignment_product_message_wizard_line(models.TransientModel):
     sol_id = fields.Many2one('sale.order.line')
     ordered_qty = fields.Float('Ordered Qty',related='sol_id.product_uom_qty')
     
-    
-    @api.onchange('assign_qty')
-    def _onchange_assign_qty(self):
-        for record in self:
-            if record.assign_qty >= record.product_id.available_qty_spt:
-                record.assign_qty = record.product_id.available_qty_spt

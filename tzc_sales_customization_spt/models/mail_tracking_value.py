@@ -57,11 +57,13 @@ class mail_tracking_value(models.Model):
 
         wh_user = self.env['res.users'].search([('is_warehouse','=',True)])
         order_id = self._context.get('order_id') or False
-        if order_id and not order_id.shipping_msg_inv_flag and not order_id.notify_done:
-            for user in wh_user:
-                tmpl_id = self.env.ref('tzc_sales_customization_spt.shipping_provider_change_notification_to_wh')
-                tmpl_id.with_context(name=user.name,email=user.partner_id.email).send_mail(order_id.id,force_send=True,email_layout_xmlid="mail.mail_notification_light")
-            order_id.notify_done = True
+        if order_id:
+            for ord in order_id:
+                if not ord.shipping_msg_inv_flag and not ord.notify_done:
+                    for user in wh_user:
+                        tmpl_id = self.env.ref('tzc_sales_customization_spt.shipping_provider_change_notification_to_wh')
+                        tmpl_id.with_context(name=user.name,email=user.partner_id.email).send_mail(ord.id,force_send=True,email_layout_xmlid="mail.mail_notification_light")
+                    ord.notify_done = True
 
         if tracked:
             return values
