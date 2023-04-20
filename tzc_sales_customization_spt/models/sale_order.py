@@ -161,7 +161,7 @@ class sale_order(models.Model):
         if self.state == 'scanned':
             picking_id = self.picking_ids.filtered(lambda x:x.state != 'cancel')
             template_id = self.env.ref('tzc_sales_customization_spt.tzc_picking_ready_notification_to_salesperson_spt')
-            template_id.send_mail(picking_id.id,force_send=True,email_layout_xmlid="mail.mail_notification_light")
+            template_id.send_mail(self.id,force_send=True,email_layout_xmlid="mail.mail_notification_light")
             ready_to_ship_template_id = self.env.ref('tzc_sales_customization_spt.tzc_email_template_order_ready_to_ship')
             ready_to_ship_template_id.send_mail(self.id,force_send=True,email_layout_xmlid="mail.mail_notification_light")
             picking_id.write({'state':'assigned'})
@@ -274,6 +274,7 @@ class sale_order(models.Model):
     amount_discount = fields.Monetary(string='Discount', store=True, readonly=True,compute_sudo=True, compute='_amount_all', tracking=4)
     delivered_qty = fields.Integer('Delivered Quantity ',compute_sudo=True,compute="_amount_all",store=True)
     ordered_qty = fields.Integer('Ordered Quantity ',compute_sudo=True,compute="_amount_all",store=True)
+    extra_qty = fields.Integer('Extra Quantity ',compute_sudo=True,compute="_compute_extra_qty",store=True)
     picked_qty = fields.Integer('Quantity Shipped ',compute_sudo=True,compute="_amount_all",store=True)
     amount_without_discount = fields.Monetary(string='Subtotal',compute_sudo=True,compute='_amount_all',  store=True,tracking=4)
     global_discount = fields.Monetary('Additional Discount',compute_sudo=True, store=True, readonly=True, compute='_amount_all', tracking=4)
@@ -285,10 +286,10 @@ class sale_order(models.Model):
     invoice_name = fields.Char("Invoice",compute="_compute_invoice_name",store=True,compute_sudo=True)
     partner_shipping_id = fields.Many2one('res.partner','Delivery Address')
 
-    picked_qty_order_subtotal = fields.Monetary('picked Subtotal', tracking='32',compute="_amount_all",store=True,compute_sudo=True)
-    picked_qty_order_total = fields.Monetary('picked Total', tracking='33',compute="_amount_all",store=True,compute_sudo=True)
+    picked_qty_order_subtotal = fields.Monetary('Subtotal', tracking='32',compute="_amount_all",store=True,compute_sudo=True)
+    picked_qty_order_total = fields.Monetary('Total', tracking='33',compute="_amount_all",store=True,compute_sudo=True)
     picked_qty_order_tax = fields.Monetary('Tax', tracking='34',compute="_amount_all",store=True,compute_sudo=True)
-    picked_qty_order_discount = fields.Monetary('picked Discount', tracking='35',scompute="_amount_all",store=True,compute_sudo=True)
+    picked_qty_order_discount = fields.Monetary('Discount', tracking='35',scompute="_amount_all",store=True,compute_sudo=True)
     create_uid_spt = fields.Many2one('res.users', 'Created by User',compute="_compute_create_uid_spt", index=True, readonly=True)
     count_backup_order = fields.Integer('Original Order',compute="_get_compute_message",store=True)
     free_shipping = fields.Boolean('Free Shippping')
@@ -619,10 +620,42 @@ class sale_order(models.Model):
         update = self.env['ir.model']._updated_data_validation(field_list,vals,self._name)
         if update:
             vals.update({'updated_by':self.env.user.id,'updated_on':datetime.today()})
+        initial_state = {}
+        prev_state = self['state']
+        amount_log = False
+        if 'state' in vals:
+            #  and vals['state'] in ['draft','salesperson_confirmation','sale','scanned','scan']
+            if vals['state'] not in ('draft','sent','received','salesperson_confirmation','sale'):
+                amount_log = True
+                for track_field in ['amount_without_discount','amount_discount','amount_tax','amount_total']:
+                    initial_state[track_field] = self[track_field]
+            else:
+                amount_log = True
+                for track_field in ['picked_qty_order_subtotal','picked_qty_order_discount','picked_qty_order_tax','picked_qty_order_total']:
+                    initial_state[track_field] = self[track_field]
         res = super(sale_order,self).write(vals)
         if vals.get('sale_manager_id'):
             self.invoice_ids.filtered(lambda inv: inv.state != 'cancel')._onchange_user_id()
+        if amount_log:
+            tracking_value_ids = []
+            for i,tracking_field in enumerate(initial_state):
+                f_id = self.env['ir.model.fields'].search([('name','=',tracking_field),('model','=','sale.order')])
+
+                tracking_value_ids.insert(i, Command.create({
+                    'field': f_id.id,
+                    'field_type': f_id.ttype,
+                    'field_desc': f_id.field_description,
+                    'tracking_sequence': f_id.tracking,
+                    'old_value_%s' % (f_id.ttype): initial_state[tracking_field],
+                    'new_value_%s' % (f_id.ttype): self[tracking_field],
+                }))
+            
+            if len(tracking_value_ids):
+                self.message_post(
+                    tracking_value_ids=tracking_value_ids
+                )
         return res
+
     # def action_confirm(self):
         # if self.state in ['draft','sent','received']:
         #     self = self.sudo()
@@ -867,7 +900,7 @@ class sale_order(models.Model):
                     product_list.append(line.product_id.id)
 
 
-                if line.product_id.type != 'service' and line.picked_qty:
+                if line.product_id.type != 'service' and line.picked_qty and line.product_uom_qty:
                         picked_qty_order_subtotal = picked_qty_order_subtotal + (line.price_unit * line.picked_qty)
 
                         unit_per_tax = round(line.price_tax/line.product_uom_qty,2)
@@ -947,6 +980,14 @@ class sale_order(models.Model):
             elif rec.ordered_qty:
                 no_of_cases = sum(rec.order_line.filtered(lambda x:x.product_id.sale_type != 'clearance').mapped('product_uom_qty'))
                 rec.no_of_cases = no_of_cases
+
+    @api.depends('picked_qty','ordered_qty')
+    def _compute_extra_qty(self):
+        for rec in self:
+            rec.extra_qty=0
+            for line in rec.order_line:
+                if line.picked_qty>line.product_uom_qty:
+                    rec.extra_qty+=line.picked_qty-line.product_uom_qty
 
     @api.depends('picking_ids')
     def _compute_picking_ids(self):
@@ -3766,77 +3807,69 @@ class sale_order(models.Model):
                 if picking_id.state not in ['done','cancel']:
                     picking_id._origin.shipping_id = rec.shipping_id
 
-    def get_tracked_fields(self, changes, tracking_value_ids, initial_value):
+    # def get_tracked_fields(self, changes, tracking_value_ids, initial_value):
 
-        def get_field_name(f_name):
-            field_name = f_name
-            if self.state not in ('draft','sent','received','sale'):
-                if f_name  == 'amount_without_discount':
-                    field_name = 'picked_qty_order_subtotal'
-                elif f_name == 'amount_discount':
-                    field_name = 'picked_qty_order_discount'
-                elif f_name == 'amount_tax':
-                    field_name = 'picked_qty_order_tax'
-                elif f_name == 'amount_total':
-                    field_name = 'picked_qty_order_total'
-            return field_name
+    #     def get_field_name(f_name):
+    #         field_name = f_name
+    #         if self.state not in ('draft','sent','received','sale'):
+    #             if f_name  == 'amount_without_discount':
+    #                 field_name = 'picked_qty_order_subtotal'
+    #             elif f_name == 'amount_discount':
+    #                 field_name = 'picked_qty_order_discount'
+    #             elif f_name == 'amount_tax':
+    #                 field_name = 'picked_qty_order_tax'
+    #             elif f_name == 'amount_total':
+    #                 field_name = 'picked_qty_order_total'
+    #         return field_name
 
-        changes = set(list(changes) + NO_TRACKING_FIELDS)
-        tracking_value_ids = []
-        for i, changed_field in enumerate(changes):
-            field = self.env['ir.model.fields']._get(self._name, changed_field)
-            vals = {
-                'field': field.id,
-                'field_desc': field.field_description,
-                'field_type': field.ttype,
-                'tracking_sequence': field.tracking,
-            }
+    #     changes = set(list(changes) + NO_TRACKING_FIELDS)
+    #     tracking_value_ids = []
+    #     for i, changed_field in enumerate(changes):
+    #         field = self.env['ir.model.fields']._get(self._name, changed_field)
+    #         vals = {
+    #             'field': field.id,
+    #             'field_desc': field.field_description,
+    #             'field_type': field.ttype,
+    #             'tracking_sequence': field.tracking,
+    #         }
 
-            changed_field = get_field_name(changed_field)
-            if field.ttype in ['integer', 'float', 'char', 'text', 'datetime', 'monetary']:
-                vals.update({
-                    'old_value_%s' % field.ttype : initial_value[changed_field],
-                    'new_value_%s' % field.ttype : self[changed_field],
-                    'currency_id': self.currency_id.id
-                })
-            elif field.ttype == 'selection':
-                vals.update({
-                    'old_value_char': dict(self._fields[changed_field].selection).get(initial_value[changed_field]),
-                    'new_value_char': dict(self._fields[changed_field].selection).get(self[changed_field]),
-                })
-            tracking_value_ids.insert(i, Command.create(vals))
-        return changes, tracking_value_ids
+    #         changed_field = get_field_name(changed_field)
+    #         if field.ttype in ['integer', 'float', 'char', 'text', 'datetime', 'monetary']:
+    #             vals.update({
+    #                 'old_value_%s' % field.ttype : initial_value[changed_field],
+    #                 'new_value_%s' % field.ttype : self[changed_field],
+    #                 'currency_id': self.currency_id.id
+    #             })
+    #         elif field.ttype == 'selection':
+    #             vals.update({
+    #                 'old_value_char': dict(self._fields[changed_field].selection).get(initial_value[changed_field]),
+    #                 'new_value_char': dict(self._fields[changed_field].selection).get(self[changed_field]),
+    #             })
+    #         tracking_value_ids.insert(i, Command.create(vals))
+    #     return changes, tracking_value_ids
 
-    def _mail_track(self, tracked_fields, initial_values):
-        changes, tracking_value_ids = super()._mail_track(tracked_fields, initial_values)
-        if 'state' in initial_values:
-            initial_value = initial_values['state']
-            new_value = self['state']
+    # def _mail_track(self, tracked_fields, initial_values):
+    #     changes, tracking_value_ids = super()._mail_track(tracked_fields, initial_values)
+    #     if 'state' in initial_values:
+    #         initial_value = initial_values['state']
+    #         new_value = self['state']
 
-            # OPTIMISE CODE LATER
-            if initial_value == 'draft' and new_value in ['sent','recieved','sale']:
-                changes, tracking_value_ids = self.get_tracked_fields(changes, tracking_value_ids, initial_values)
-            elif initial_value == 'in_scanning' and new_value == 'scanned':
-                changes, tracking_value_ids = self.get_tracked_fields(changes, tracking_value_ids, initial_values)
-            elif initial_value == 'scanned' and new_value == 'scan':
-                changes, tracking_value_ids = self.get_tracked_fields(changes, tracking_value_ids, initial_values)
-            elif initial_value == 'scan' and new_value == 'shipped':
-                changes, tracking_value_ids = self.get_tracked_fields(changes, tracking_value_ids, initial_values)
-            elif initial_value == 'shipped' and new_value == 'draft_inv':
-                changes, tracking_value_ids = self.get_tracked_fields(changes, tracking_value_ids, initial_values)
+    #         # OPTIMISE CODE LATER
+    #         if initial_value == 'draft' and new_value in ['sent','recieved','sale']:
+    #             changes, tracking_value_ids = self.get_tracked_fields(changes, tracking_value_ids, initial_values)
+    #         elif initial_value == 'in_scanning' and new_value == 'scanned':
+    #             changes, tracking_value_ids = self.get_tracked_fields(changes, tracking_value_ids, initial_values)
+    #         elif initial_value == 'scanned' and new_value == 'scan':
+    #             changes, tracking_value_ids = self.get_tracked_fields(changes, tracking_value_ids, initial_values)
+    #         elif initial_value == 'scan' and new_value == 'shipped':
+    #             changes, tracking_value_ids = self.get_tracked_fields(changes, tracking_value_ids, initial_values)
+    #         elif initial_value == 'shipped' and new_value == 'draft_inv':
+    #             changes, tracking_value_ids = self.get_tracked_fields(changes, tracking_value_ids, initial_values)
 
-        return changes, tracking_value_ids
+    #     return changes, tracking_value_ids
 
     def draft_states(self):
         return ['draft','sent','received']
-
-    @api.onchange('shipping_id')
-    def onchange_shipping_id(self):
-        for rec in self:
-            picking_ids = self.mapped('picking_ids')
-            for picking_id in picking_ids:
-                if picking_id.state not in ['done','cancel']:
-                    picking_id._origin.shipping_id = rec.shipping_id
 
     def _inverse_ups_carrier_account(self):
         for order in self:

@@ -557,8 +557,9 @@ class stock_picking(models.Model):
                     if line.sale_line_id:
                         #update the quontity in related sale order line
                         if line.quantity_done > line.product_uom_qty:
-                            line.product_uom_qty = line.quantity_done
-                            line.sale_line_id.product_uom_qty = line.quantity_done
+                            # We don't want to update demand qty if there is an extra qty added.
+                            # line.product_uom_qty = line.quantity_done
+                            line.sale_line_id.qty_to_invoice = line.quantity_done
                             line.sale_line_id.price_unit = round(product_data.get('price'),2)
                             line.sale_line_id.unit_discount_price = round(product_data.get('sale_type_price'),2)
                             line.sale_line_id.product_id_change()
@@ -574,7 +575,7 @@ class stock_picking(models.Model):
                                 order_line_id = order_line_obj.sudo().create({
                                     'order_id': record.sale_id.id,
                                     'product_id': line.product_id.id,
-                                    'product_uom_qty': line.quantity_done,
+                                    'product_uom_qty': 0,
                                     'product_uom': line.product_id.uom_id.id,
                                     'name': line.product_id.display_name,
                                     'price_unit': product_prices.get(product).get('price'),
@@ -585,7 +586,8 @@ class stock_picking(models.Model):
                                     order_line_id.product_id_change()
                                     order_line_id._onchange_discount_spt()
                                     order_line_id._onchange_unit_discounted_price_spt()
-                                    line.write({'sale_line_id':order_line_id.id,'product_uom_qty':line.quantity_done})
+                                    line.write({'sale_line_id':order_line_id.id,'product_uom_qty':0})
+                                    # line.write({'sale_line_id':order_line_id.id,'product_uom_qty':line.quantity_done})
                 record.sale_id._amount_all()
         else:
             return {
@@ -1350,7 +1352,8 @@ class stock_picking(models.Model):
         state_list = self.mapped(lambda picking : picking.state in ['assigned'])
         if any(state_list):
             context = self._context.copy()
-            context.update({'no_shipping_label':True,'ship':True,'skip_backorder':True})
+            context.update({'no_shipping_label':True,'ship':True,'skip_backorder':True,'order_shipped':True})
+            # context.update({'no_shipping_label':True,'ship':True,'skip_backorder':True})
             self.env.context = context
             error_message = ''
             # shipping_error = []
@@ -1379,42 +1382,44 @@ class stock_picking(models.Model):
             quant_obj = self.env['stock.quant']
             if not self.shipping_id:
                 raise ValidationError("Please add shipping details before order shipped.")
+            
+            # Commented below, as we have 0 Demand order line also in order and we want to still process this. The Below Part will validate if there is 0 Demand product and shipped qty is more
             ## check if picking have more then quantity then order
-            custom_warning = False
-            for line in range(len(self.move_ids_without_package)):
-                line = self.move_ids_without_package[line]
-                if line.sale_line_id:
-                    if line.quantity_done > line.product_uom_qty:
-                        custom_warning = True
-                else:
-                    custom_warning = True if line.quantity_done > 0 else False
-                if line.product_id.virtual_available < line.reserved_availability:
-                    line_ids = line.move_line_ids.mapped(lambda move_line: move_line if move_line.state not in ['done','cancel'] else None)
-                    if line_ids:
-                        available_quantity = quant_obj._get_available_quantity(line_ids[0].product_id, line_ids[0].location_id, None, None, None, False)
-                        quants = quant_obj._gather(line_ids[0].product_id, line_ids[0].location_id, lot_id=None, package_id=None, owner_id=None, strict=False)
+            # custom_warning = False
+            # for line in range(len(self.move_ids_without_package)):
+            #     line = self.move_ids_without_package[line]
+            #     if line.sale_line_id:
+            #         if line.quantity_done > line.product_uom_qty:
+            #             custom_warning = True
+            #     else:
+            #         custom_warning = True if line.quantity_done > 0 else False
+            #     if line.product_id.virtual_available < line.reserved_availability:
+            #         line_ids = line.move_line_ids.mapped(lambda move_line: move_line if move_line.state not in ['done','cancel'] else None)
+            #         if line_ids:
+            #             available_quantity = quant_obj._get_available_quantity(line_ids[0].product_id, line_ids[0].location_id, None, None, None, False)
+            #             quants = quant_obj._gather(line_ids[0].product_id, line_ids[0].location_id, lot_id=None, package_id=None, owner_id=None, strict=False)
                         
-                        quantity = -line_ids[0].reserved_qty
-                        rounding = line_ids[0].product_id.uom_id.rounding
-                        if float_compare(quantity, 0, precision_rounding=rounding) > 0:
-                            # if we want to reserve
-                            if float_compare(quantity, available_quantity, precision_rounding=rounding) > 0:
-                                self._cr.execute('''
-                                    Update stock_move_line set reserved_qty = 0.00 where id =%s
-                                ''',[str(line_ids[0].id)])
-                                self._cr.commit()
-                        elif float_compare(quantity, 0, precision_rounding=rounding) < 0:
-                            # if we want to unreserve
-                            available_quantity = sum(quants.mapped('reserved_quantity'))
-                            if float_compare(abs(quantity), available_quantity, precision_rounding=rounding) > 0:
-                                self._cr.execute('''
-                                        Update stock_move_line set reserved_qty = 0.00 where id =%s
-                                    ''',[str(line_ids[0].id)])
-                                self._cr.commit()
+            #             quantity = -line_ids[0].reserved_qty
+            #             rounding = line_ids[0].product_id.uom_id.rounding
+            #             if float_compare(quantity, 0, precision_rounding=rounding) > 0:
+            #                 # if we want to reserve
+            #                 if float_compare(quantity, available_quantity, precision_rounding=rounding) > 0:
+            #                     self._cr.execute('''
+            #                         Update stock_move_line set reserved_qty = 0.00 where id =%s
+            #                     ''',[str(line_ids[0].id)])
+            #                     self._cr.commit()
+            #             elif float_compare(quantity, 0, precision_rounding=rounding) < 0:
+            #                 # if we want to unreserve
+            #                 available_quantity = sum(quants.mapped('reserved_quantity'))
+            #                 if float_compare(abs(quantity), available_quantity, precision_rounding=rounding) > 0:
+            #                     self._cr.execute('''
+            #                             Update stock_move_line set reserved_qty = 0.00 where id =%s
+            #                         ''',[str(line_ids[0].id)])
+            #                     self._cr.commit()
                                     
-            if custom_warning:
-                message = "You are shipping more than what was initially ordered, please click on UPDATE ORDER button before ship."
-                raise ValidationError(message)
+            # if custom_warning:
+            #     message = "You are shipping more than what was initially ordered, please click on UPDATE ORDER button before ship."
+            #     raise ValidationError(message)
             res =  super(stock_picking, self).button_validate()
 
             template_id = self.env.ref('tzc_sales_customization_spt.tzc_order_shipped_notification_to_salesperson_spt')
@@ -1437,6 +1442,7 @@ class stock_picking(models.Model):
                 return 
 
             self.mapped('sale_id').write({'state': 'shipped'})
+            self.order_id.order_line._compute_qty_delivered()
             self.write({'state': 'done'})
             self._cr.commit()
             self.set_order_status()
@@ -1459,6 +1465,7 @@ class stock_picking(models.Model):
                 # delivery_template_id = stock_pick.company_id.stock_mail_confirmation_template_id.id
                 # stock_pick.with_context(force_send=True).message_post_with_template(delivery_template_id, email_layout_xmlid='mail.mail_notification_light')
                 delivery_template_id = self.env.ref('stock.mail_template_data_delivery_confirmation')
+                delivery_template_id.model = 'sale.order'
                 delivery_template_id.send_mail(stock_pick.sale_id.id,force_send=True,email_layout_xmlid="mail.mail_notification_light")
 
     def get_scanned_product(self):

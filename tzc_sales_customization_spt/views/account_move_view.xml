@@ -233,9 +233,15 @@
                 </xpath>
                 <xpath expr="//button[@name='button_draft']" position="attributes">
                     <attribute name="class">oe_highlight</attribute>
+                    <attribute name="groups">account.group_account_manager,base.group_system</attribute>
                 </xpath>
-                <xpath expr="//button[@name='button_cancel']" position="attributes">
+                <xpath expr="//button[@name='button_cancel'][1]" position="attributes">
                     <attribute name="class">oe_highlight</attribute>
+                    <attribute name="groups">account.group_account_manager,base.group_system</attribute>
+                </xpath>
+                <xpath expr="//button[@name='button_cancel'][2]" position="attributes">
+                    <attribute name="class">oe_highlight</attribute>
+                    <attribute name="groups">account.group_account_manager,base.group_system</attribute>
                 </xpath>
                 <xpath expr="//field[@name='invoice_user_id']" position="attributes">
                     <attribute name="domain">[('is_salesperson','=',True)]</attribute>

@@ -61,8 +61,10 @@ class stock_move(models.Model):
         for move in moves:
             if move.state == 'cancel' or (move.quantity_done <= 0 and not move.is_inventory):
                 continue
-
-            moves_ids_todo |= move._create_extra_move().ids
+            
+            # Checking context and see if order is shipping then there is no requirement to create move for product. As it will update demand qty.
+            if not self._context.get('order_shipped'):
+                moves_ids_todo |= move._create_extra_move().ids
 
         moves_todo = self.browse(moves_ids_todo)
         moves_todo._check_company()

@@ -175,9 +175,29 @@ class ProductProduct(models.Model):
     )
     product_pricelist_item_ids = fields.One2many('product.pricelist.item','product_id')
     
+    # Fields for Product Details IN B2B website For Optimised Query.
+    b2b_product_size_value = fields.Char('B2B Product Size Value', compute="compute_b2b_values", compute_sudo=True, store=True)
+    b2b_name = fields.Char('B2B Name', compute='compute_b2b_values', compute_sudo=True, store=True)
+
+    
     _sql_constraints = [
         ('seo_keyword', 'unique(product_seo_keyword)', 'Seo keyword already exists!')
     ]
+
+    @api.depends('eye_size_compute', 'bridge_size_compute', 'temple_size_compute','eye_size','bridge_size', 'temple_size',
+                 'model','model.name','manufacture_color_code', 'categ_id', 'categ_id.name'
+                 )
+    def compute_b2b_values(self):
+        for product in self:
+            product.b2b_product_size_value = '{} {} {}'.format(product.eye_size_compute or '00',product.bridge_size_compute or '00',product.temple_size_compute or '00')
+            product.b2b_name = '{} {} {} {} {} ({})'.format(
+                product.model.name or '00',
+                product.manufacture_color_code or '00',
+                product.eye_size_compute or '00',
+                product.bridge_size_compute or '00',
+                product.temple_size_compute or '00',
+                product.categ_id.name,
+            )
 
     # @api.depends('clearance_usd','clearance_usd_in_percentage')
     # def _compute_clearance_price(self):

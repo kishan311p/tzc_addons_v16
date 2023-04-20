@@ -10,7 +10,7 @@
             <field name="auto_delete" eval="False"/>
             <field name="lang">{{object.partner_id.lang}}</field>
             <field name="body_html" type="html">
-                <p style="margin-top:0px;">Dear {{object.partner_id.name}},</p>
+                <p style="margin-top:0px;">Dear <t t-out="object.partner_id.name"/>,</p>
                 <p>
                     Great news! Your payment has been approved. Please find details below:
                 </p>

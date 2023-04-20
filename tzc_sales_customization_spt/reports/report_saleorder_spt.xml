@@ -38,11 +38,11 @@
     <xpath expr="//div[hasclass('page')]/h2[1]" position="replace">
         <h4 class="mt-2" style="">
             <t t-if="not (env.context.get('proforma', False) or is_pro_forma)">
-                <span t-if="doc.state not in ['draft','sent']">Sales Order # </span>
+                <span t-if="doc.state not in ['draft','sent'] and not is_sales_order_r"> Quotation # </span>
                 <span t-if="doc.state in ['draft','sent']">Quotation # </span>
             </t>
             <t t-if="is_sales_order_r">
-             
+                Sales Order #
             </t>
             <t t-elif="env.context.get('proforma', False) or is_pro_forma">
                 <span>Pro-Forma Invoice # </span>
@@ -165,7 +165,10 @@
                 </t>
             </t>
             <t t-else="">
-                <t t-if="doc.ordered_qty">
+                <t t-if="is_sales_order_r">
+                    <p class="m-0 " t-esc="doc.picked_qty" />
+                </t>
+                <t t-else="">
                     <p class="m-0 " t-esc="doc.ordered_qty" />
                 </t>
             </t>
@@ -175,12 +178,17 @@
                 <t t-if="doc.delivered_qty">
                     <p class="m-0" t-esc="doc.delivered_qty" />
                 </t>
-                <t t-elif="doc.picked_qty">
-                    <p class="m-0" t-esc="doc.picked_qty" />
+                <t t-else="">
+                    <t t-if="is_sales_order_r">
+                        <p class="m-0 " t-esc="doc.picked_qty" />
+                    </t>
+                    <t t-else="">
+                        <p class="m-0 " t-esc="doc.ordered_qty" />
+                    </t>
                 </t>
-                <t t-elif="not doc.delivered_qty and not doc.picked_qty">
+                <!-- <t t-elif="not doc.delivered_qty and not doc.picked_qty">
                     <p class="m-0" t-esc="doc.ordered_qty" />
-                </t>
+                </t> -->
             </t>
             <t t-else="">
                 <t t-if="doc.ordered_qty">
@@ -248,6 +256,7 @@
                 <!-- check pro-forma -->
                 <t t-if="is_pro_forma or env.context.get('proforma', False) or doc.state in ['in_scanning','scanned','scan','shipped','draft_inv','open_inv','paid']">
                     <t t-set="is_pro_forma" t-value="True"/>
+                    <!-- <t t-if="line.picked_qty and not line.product_id.is_admin and not line.product_id.is_shipping_product and not line.product_id.is_global_discount"> -->
                     <t t-if="line.picked_qty and not line.product_id.is_admin and not line.product_id.is_shipping_product and not line.product_id.is_global_discount">
                         <!-- pro-forma line print -->
                         <td name="td_image" class="text-center">
@@ -343,21 +352,23 @@
                             <!-- text calculation -->
                             <t t-set="total_tax_amount" t-value="0"/>
                             <t t-set="total_tax_amount" t-value="round(line.price_tax/line.product_uom_qty,2)"/>
-                            <t t-if="is_sales_order_r">
+                            <!-- <t t-if="is_sales_order_r">
                                 <t t-set="total_for_is_pro_forma_text" t-value="round(total_for_is_pro_forma_text + (total_tax_amount * line.product_uom_qty),2)"/>
                             </t>
-                            <t t-else="">
+                            <t t-else=""> -->
                                 <t t-set="total_for_is_pro_forma_text" t-value="round(total_for_is_pro_forma_text + (total_tax_amount * line.picked_qty),2)"/>
-                            </t>
+                            <!-- </t> -->
                             <!-- discount calculation -->
 
                             <t t-set="total_discount" t-value="round(total_discount + ((line.price_unit * line.picked_qty) - (line.unit_discount_price * line.picked_qty)),2)"/>
-                            <t t-set="total_line_qty" t-value="total_line_qty + line.picked_qty"/>
-
-                            <t t-if="is_sales_order_r">
+                            
+                            <!-- <t t-if="is_sales_order_r or from_original_ord"> -->
+                            <t t-if="from_original_ord">
                                 <span t-field="line.product_uom_qty"/>
+                                <t t-set="total_line_qty" t-value="total_line_qty + line.product_uom_qty"/>
                             </t>
                             <t t-else="">
+                                <t t-set="total_line_qty" t-value="total_line_qty + line.picked_qty"/>
                                 <span t-field="line.picked_qty"/>
                             </t>
                         </td>
@@ -382,24 +393,20 @@
                         </td>
                         <td name="td_subtotal" class="text-end o_price_total">
                             <!-- pro-forma total calculation -->
-                            <t t-if="is_sales_order_r">
+                            <!-- <t t-if="is_sales_order_r or from_original_ord"> -->
+                            <t t-if="from_original_ord">
                                 <t t-set="subtotal_spt" t-value="round((line.price_unit * line.product_uom_qty),2)"/>
+                                <span t-esc="round(line.unit_discount_price * line.product_uom_qty,2)" t-options='{"widget": "monetary", "display_currency": doc.pricelist_id.currency_id}'/>
                             </t>
                             <t t-else="">
                                 <t t-set="subtotal_spt" t-value="round((line.price_unit * line.picked_qty),2)"/>
+                                <span t-esc="round(line.unit_discount_price * line.picked_qty,2)" t-options='{"widget": "monetary", "display_currency": doc.pricelist_id.currency_id}'/>
                             </t>
-                            
                             <t t-set="total_for_is_pro_forma" t-value="total_for_is_pro_forma + subtotal_spt"/>
-                            <span t-esc="round(line.unit_discount_price * line.picked_qty,2)" t-options='{"widget": "monetary", "display_currency": doc.pricelist_id.currency_id}'/>
-
+                            
                         </td>
                         <t t-set="custom_current_subtotal" t-value="round(custom_current_subtotal + (line.price_unit * line.product_uom_qty),2)" groups="account.group_show_line_subtotals_tax_excluded"/>
-
-
-
                     </t>
-
-
                 </t>
                 <t t-else="not is_pro_forma or env.context.get('proforma', False)">
                     <!-- normal sale order line  -->
@@ -541,14 +548,13 @@
                     <strong>Sub Total</strong>
                 </td>
                 <td name="td_amount_untaxed" class="text-end">
-                    <t t-if="env.context.get('proforma', False) or is_pro_forma">
+                    <t t-if="env.context.get('proforma', False) or is_pro_forma and not from_original_ord">
                         <span t-esc="total_for_is_pro_forma" t-options='{"widget": "monetary", "display_currency": doc.pricelist_id.currency_id}'/>
                     </t>
                     <t t-else="">
-                        <span t-esc="custom_current_subtotal" t-options='{"widget": "monetary", "display_currency": doc.pricelist_id.currency_id}'/>
+                        <!-- <span t-esc="custom_current_subtotal" t-options='{"widget": "monetary", "display_currency": doc.pricelist_id.currency_id}'/> -->
+                        <span t-esc="doc.amount_without_discount" t-options='{"widget": "monetary", "display_currency": doc.pricelist_id.currency_id}'/>
                     </t>
-
-
                 </td>
             </tr>
             <tr class="border-black o_subtotal" style="">
@@ -595,7 +601,13 @@
                     <strong>Discount</strong>
                 </td>
                 <td name="td_amount_discount" class="text-end o_price_total" t-if="is_pro_forma">
-                    <span t-esc="round(total_discount + abs(doc.global_discount),2)" t-options='{"widget": "monetary", "display_currency": doc.pricelist_id.currency_id}'/>
+                    <!-- <t t-if="is_sales_order_r or from_original_ord"> -->
+                    <t t-if="from_original_ord">
+                        <span t-esc="doc.amount_discount" t-options='{"widget": "monetary", "display_currency": doc.pricelist_id.currency_id}'/>
+                    </t>
+                    <t t-else="">
+                        <span t-esc="round(total_discount + abs(doc.global_discount),2)" t-options='{"widget": "monetary", "display_currency": doc.pricelist_id.currency_id}'/>
+                    </t>
                 </td>
 
             </tr>
@@ -624,11 +636,16 @@
                 </td>
                 <td name="td_amount_total" style="white-space: nowrap;" class="text-end d-line-block">
                     <t t-if="env.context.get('proforma', False) or is_pro_forma">
-                    
-        (                        <span t-esc="doc.currency_id.name"/>
-        )
-                        <span t-esc="round(total_for_is_pro_forma +doc.amount_is_shipping_total+ doc.amount_is_admin + total_for_is_pro_forma_text - abs(doc.global_discount) - total_discount,2)" t-options='{"widget": "monetary", "display_currency": doc.pricelist_id.currency_id}'/>
-
+                     <!-- <t t-if="not is_sales_order_r and not from_original_ord"> -->
+                     <t t-if="not from_original_ord">
+                         ( <span t-esc="doc.currency_id.name"/>
+                         )
+                            <span t-esc="round(total_for_is_pro_forma +doc.amount_is_shipping_total+ doc.amount_is_admin + total_for_is_pro_forma_text - abs(doc.global_discount) - total_discount,2)" t-options='{"widget": "monetary", "display_currency": doc.pricelist_id.currency_id}'/>
+                        
+                     </t>
+                     <t t-else="">
+                        <span t-esc="doc.amount_total" t-options='{"widget": "monetary", "display_currency": doc.pricelist_id.currency_id}' />
+                     </t>
                     </t>
 
                     <t t-else="" class="col-12 d-flex-row">
@@ -693,29 +710,85 @@
 
 </template>
 
-<template id="validation_template">
-<t t-call="web.external_layout">
-    <div class="page">
-        <t t-if="is_sales_order_r">
-            <h2>You can not print Sales order report before scanning completed.</h2>
-        </t>
-        <t t-else="">
-            <h2>You can not print PRO-FORMA Invoice report before scanning completed.</h2>
-        </t>
+<!-- <template id="kits_validation_template_layout">
+    <div t-attf-class="article o_report_layout_standard o_company_#{company.id}_layout" t-att-data-oe-model="o and o._name" t-att-data-oe-id="o and o.id" t-att-data-oe-lang="o and o.env.context.get('lang')" style="margin-top:0 !important;">
+        <t t-esc="0"/>
     </div>
-</t>
 </template>
-
-<template id="report_saleorder_report_inherit_spt2" inherit_id="sale.report_saleorder_pro_forma">
-<xpath expr="//t[@t-foreach='docs']" position="replace">
-    <t t-foreach="docs" t-as="doc">
-        <t t-if="doc.state in ['draft','sent','received','sale','in_scanning']">
-            <t t-call="tzc_sales_customization_spt.validation_template" t-lang="doc.partner_id.lang"/>
-        </t>
-        <t t-else="">
-            <t t-call="sale.report_saleorder_document" t-lang="doc.partner_id.lang"/>
-        </t>
+<template id="validation_template">
+    <t t-if="o">
+        <t t-set="company" t-value="o.company_id"/>
+        <t t-set="model" t-value="o._name"/>
     </t>
-</xpath>
-</template>
+    <t t-elif="doc">
+        <t t-set="company" t-value="doc.company_id.sudo()"/>
+        <t t-set="model" t-value="doc._name"/>
+    </t>
+    <t t-call="tzc_sales_customization_spt.kits_validation_template_layout">
+        <div class="page" style="color:color:#808080;font-size:30px">
+            <t t-if="is_sales_order_r">
+                <h2>You can not print Sales order report before scanning completed.</h2>
+            </t>
+            <t t-else="">
+                <h2>You can not print PRO-FORMA Invoice report before scanning completed.</h2>
+            </t>
+        </div>
+    </t>
+</template> -->
+
+    <template id="validation_template">
+        <t t-if="o">
+            <t t-set="company" t-value="o.company_id"/>
+            <t t-set="model" t-value="o._name"/>
+        </t>
+        <t t-elif="doc">
+            <t t-set="company" t-value="doc.company_id.sudo()"/>
+            <t t-set="model" t-value="doc._name"/>
+        </t>
+        <t t-call="tzc_sales_customization_spt.kits_sale_order_quotation_header">
+            <div class="row" style="font-size:15px;">
+                <div class="col-6 mb4">
+                    <img t-if="company.logo" t-att-src="image_data_uri(company.logo)" style="margin:40px 5px 5px 10px;height:35px;max-width:375px;" alt="Logo"/>
+                </div>
+                <div class="col-6 float-right company_address" style="padding-left:20%;">
+                    <div>
+                        <strong t-field="company.partner_id.name"/>
+                    </div>
+                    (A division of Tanzacan Tradelink Inc.)
+                    <span t-field="company.street"/>
+                    <br/>
+                    <span t-field="company.city"/>
+                    <span t-field="company.state_id.name"/>
+                    <span t-field="company.country_id.name"/>
+                    <span t-field="company.zip"/>
+                    <br/>
+                    Tel. <span t-field="company.phone"/>
+                    <br/>
+                        Email. <span t-field="company.email"/>
+                </div>
+            </div>
+            <hr />
+            <div class="page" style="margin-top:10px">
+                <t t-if="is_sales_order_r">
+                    <h2>You can not print Sales order report before scanning completed.</h2>
+                </t>
+                <t t-else="">
+                    <h2>You can not print PRO-FORMA Invoice report before scanning completed.</h2>
+                </t>
+            </div>
+        </t>
+    </template>
+
+    <template id="report_saleorder_report_inherit_spt2" inherit_id="sale.report_saleorder_pro_forma">
+        <xpath expr="//t[@t-foreach='docs']" position="replace">
+            <t t-foreach="docs" t-as="doc">
+                <t t-if="doc.state in ['draft','sent','received','sale','in_scanning']">
+                    <t t-call="tzc_sales_customization_spt.validation_template" t-lang="doc.partner_id.lang"/>
+                </t>
+                <t t-else="">
+                    <t t-call="sale.report_saleorder_document" t-lang="doc.partner_id.lang"/>
+                </t>
+            </t>
+        </xpath>
+    </template>
 </odoo>

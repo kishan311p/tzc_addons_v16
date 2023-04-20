@@ -440,14 +440,14 @@
                             <!-- <field name="calulate_shipping_cost" widget="monetary" force_save="1" attrs="{'invisible':[('state','in',('cancel','merged'))],'readonly':[('state','in',['done','cancel','assigned'])]}"/> -->
                         </div>
                     </div>
-                    <div class="o_row d-flex">
-                        <label for="calulate_shipping_cost" style="font-weight: bold;" attrs="{'invisible':[('state','in',('cancel','merged'))]}"/>
+                    <div class="o_row d-flex" groups="stock.group_stock_manager">
+                        <label for="calulate_shipping_cost" style="font-weight: bold;" attrs="{'invisible':[('state','in',('cancel','merged'))]}" />
                         <div class="col-12">
-                            <field name="calulate_shipping_cost" widget="monetary" force_save="1" attrs="{'invisible':[('state','in',('cancel','merged'))],'readonly':[('state','in',['done','cancel','assigned'])]}"/>
+                            <field name="calulate_shipping_cost" widget="monetary" force_save="1" attrs="{'invisible':[('state','in',('cancel','merged'))],'readonly':[('state','in',['done','cancel','assigned'])]}" />
                         </div>
                     </div>
                     <div>
-                        <button name="add_shipping_cost" type="object" attrs="{'invisible':[('state','in',('done','cancel','merged'))]}">
+                        <button name="add_shipping_cost" type="object" attrs="{'invisible':[('state','in',('done','cancel','merged'))]}" groups="base.group_system,stock.group_stock_manager">
                             <i class="fa fa-arrow-right mr-1" />
                                 Add Shipping Cost
                         </button>

@@ -112,3 +112,5 @@ product.access_product_product_employee,product.product employee,product.model_p
 
 access_on_consignment_product_message_wizard,access.on.consignment.product.message.wizard,model_on_consignment_product_message_wizard,,1,1,1,1
 access_on_consignment_product_message_wizard_line,access.on.consignment.product.message.wizard.line,model_on_consignment_product_message_wizard_line,,1,1,1,1
+access_kits_message_update_picking_wizard,access.kits.message.update.picking.wizard,model_kits_message_update_picking_wizard,,1,1,1,1
+

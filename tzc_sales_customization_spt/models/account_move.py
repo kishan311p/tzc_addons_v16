@@ -39,7 +39,7 @@ class account_move(models.Model):
     amount_is_shipping_total = fields.Monetary(string='Shipping Cost',store=True,compute_sudo=True,compute='_compute_amount')
     ordered_qty = fields.Integer('Ordered Quantity',compute="_compute_qty")
     delivered_qty = fields.Integer('Delivered Quantity',compute="_compute_qty")
-    picked_qty = fields.Integer('Picked Quantity',compute="_compute_qty")
+    # picked_qty = fields.Integer('Picked Quantity',compute="_compute_qty")
     amount_without_discount = fields.Monetary(string='Subtotal',compute_sudo=True,compute='_compute_amount', store=True, tracking=4)
     amount_discount = fields.Monetary(string='Discount',compute_sudo=True,compute='_compute_amount', store=True, tracking=4)
     global_discount = fields.Float('Additional Discount',compute_sudo=True,store=True,compute='_compute_amount')
@@ -79,7 +79,7 @@ class account_move(models.Model):
                 sale_id = self.env['sale.order'].search([('invoice_ids','in',record.ids)])
             record.ordered_qty = sale_id.ordered_qty
             record.delivered_qty = sale_id.picked_qty
-            record.picked_qty = sale_id.delivered_qty
+            # record.picked_qty = sale_id.delivered_qty
     
     @api.depends('line_ids','line_ids.sale_line_ids','invoice_line_ids')
     def _compute_order_id(self):

@@ -203,6 +203,7 @@ class stock_picking_barcode_spt(models.TransientModel):
                     'name':line.product_id.name,
                     'scan_extra_item':line.scan_extra_item_wiz,
                     'description_picking':line.product_id.name,
+                    'product_uom_qty':0,
                 })
                 stock_move_id.move_line_ids.write({'qty_done':line.product_qty,'picking_id':self.picking_id.id})
                 stock_move_id.picking_id = self.picking_id.id

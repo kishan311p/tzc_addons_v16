@@ -151,7 +151,7 @@
                 <div align="right">
                     <button class='button_order_icon' icon="fa-money" help="Admin Fee" name="action_add_admin_fee" type="object" attrs="{'invisible':[('state','in',['scan','shipped','open_inv','cancel','merged','draft_inv'])]}"/>
                     <button class='button_order_icon' icon="fa-percent" help="Additional Discount" name="action_add_aditional_discount" type="object" attrs="{'invisible':[('state','in',['scan','shipped','open_inv','cancel','merged','paid','draft_inv'])]}"/>
-                    <button class='button_order_icon' icon="fa-truck" help="Shipping Cost" name="action_add_shipping_cost" type="object" attrs="{'invisible':[('state','in',['scan','shipped','open_inv','cancel','merged','paid','draft_inv'])]}"/>
+                    <button class='button_order_icon' icon="fa-truck" help="Shipping Cost" name="action_add_shipping_cost" type="object" attrs="{'invisible':[('state','in',['scan','shipped','open_inv','cancel','merged','paid','draft_inv'])]}" groups="base.group_system,stock.group_stock_manager"/>
                 </div>
                 <group name="note_group">
                     <group>
@@ -217,6 +217,14 @@
                 <attribute name="invisible">1</attribute>
             </xpath>
             <xpath expr="//button[@name='action_view_project_ids']" position="before">
+                    <button name="order_quantity_btn" readonly="1" type="object" class="oe_stat_button disabled opacity-100" attrs="{'invisible':[('state','in',['draft','sent','recieved','cancel','merged'])]}">
+                        <div class="col-12 text-center">
+                            <field name="extra_qty" style="color:#017e84;"/>
+                        </div>
+                        <div class="col-12 text-center">
+                            <span style="color:#017e84;">Extra Quantity</span>
+                        </div>
+                    </button>
                     <button name="order_quantity_btn" readonly="1" type="object" class="oe_stat_button disabled opacity-100">
                         <div class="col-12 text-center">
                             <field name="ordered_qty" style="color:#017e84;"/>
@@ -225,7 +233,7 @@
                             <span style="color:#017e84;">Ordered Quantity</span>
                         </div>
                     </button>
-                    <button name="order_quantity_btn" readonly="1" type="object" class="oe_stat_button disabled opacity-100">
+                    <button name="order_quantity_btn" readonly="1" type="object" class="oe_stat_button disabled opacity-100" attrs="{'invisible':[('state','not in',['shipped','draft_inv','open_inv'])]}">
                         <div class="col-12 text-center">
                             <field name="delivered_qty" style="color:#017e84;"/>
                         </div>
@@ -233,7 +241,7 @@
                             <span style="color:#017e84;">Delivered Quantity</span>
                         </div>
                     </button>
-                    <button name="order_quantity_btn" readonly="1" type="object" class="oe_stat_button disabled opacity-100">
+                    <button name="order_quantity_btn" readonly="1" type="object" class="oe_stat_button disabled opacity-100" attrs="{'invisible':[('state','not in',['in_scanning','scanned','scan'])]}">
                         <div class="col-12 text-center">
                             <field name="picked_qty" style="color:#017e84;"/>
                         </div>
@@ -468,8 +476,8 @@
                                 <div class="col-10">
                                     <button name="action_check_shipping_cost"
                                         class="button_order_icon" type="object"
-                                        attrs="{'invisible':[('state','in',('cancel','merged'))]}">
-                                        <i class="fa fa-truck" title="Done" />
+                                        attrs="{'invisible':[('state','in',('cancel','merged'))]}" groups="base.group_system,stock.group_stock_manager">
+                                        <i class="fa fa-truck" title="Done"/>
                                     </button>
                                 </div>
                             </div>
@@ -498,8 +506,8 @@
                     <attribute name="invisible">1</attribute>
                 </xpath>
                 <xpath expr="//group[1]/group[2]/field[@name='payment_term_id']" position="replace">
-                    <field name="payment_term_id" options="{'no_open':True,'no_create': True}" attrs="{'readonly': [('state','in',['scan','shipped','draft_inv','open_inv','paid','cancel','merged'])]}"/>
-                    <field name="shipping_id" string='Shipping Provider' attrs="{'readonly':[('state','in',['scan','shipped','draft_inv','open_inv','paid','cancel','merged','done'])]}"/>
+                    <field name="payment_term_id" options="{'no_open':True,'no_create': True}" attrs="{'readonly': [('state','in',['scan','shipped','draft_inv','open_inv','paid','cancel','merged'])]}" groups="base.group_system,account.group_account_manager"/>
+                    <field name="shipping_id" options="{'no_open':True,'no_create': True}" string='Shipping Provider' attrs="{'readonly':[('state','in',['scan','shipped','draft_inv','open_inv','paid','cancel','merged','done'])]}"/>
                     <field name="merged_order" invisible="1"/>
                     <field name="merge_reference" widget="many2many_tags" attrs="{'invisible': [('merged_order', '=', False)]}" readonly="1"/>
                 </xpath>

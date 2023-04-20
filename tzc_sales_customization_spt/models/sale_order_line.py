@@ -305,7 +305,7 @@ class SaleOrderLine(models.Model):
             line = self[line]
             if line.order_id.state in ['sale', 'done','in_scanning','scanned','scan','shipped','draft_inv','open_inv']:
                 if line.product_id.invoice_policy == 'order':
-                    line.qty_to_invoice = line.product_uom_qty - line.qty_invoiced
+                    line.qty_to_invoice = line.picked_qty - line.qty_invoiced
                 else:
                     line.qty_to_invoice = line.qty_delivered - line.qty_invoiced
             else:
@@ -341,3 +341,18 @@ class SaleOrderLine(models.Model):
                 if line.product_id.expense_policy not in [False, 'no'] and not line.order_id.analytic_account_id:
                     line.order_id._create_analytic_account()
         return lines
+    
+    def write(self,vals):
+        if self.is_shipping_product and not(self.env.user.has_group('base.group_system') or self.env.user.has_group('stock.group_stock_manager')):
+            raise UserError('You cannot change Shipping Cost')
+        return super().write(vals)
+
+    @api.depends('move_ids.state', 'move_ids.scrapped', 'move_ids.product_uom_qty', 'move_ids.product_uom','picked_qty')
+    def _compute_qty_delivered(self):
+        for rec in self:
+            if rec.state=='shipped':
+                rec.qty_delivered = rec.picked_qty
+            elif rec.state=='cancel':
+                rec.qty_delivered = rec.picked_qty
+            else:
+                pass

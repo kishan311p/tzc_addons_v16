@@ -99,6 +99,13 @@ class res_partner(models.Model):
     # catalog_ids = fields.Many2many('sale.catalog', string='Catalogs')
     # catalog_count = fields.Integer('Number of catalog',compute="_catalog_count",store=True,compute_sudo=True)
 
+    @api.depends('country_id')
+    @api.depends_context('company')
+    def _compute_product_pricelist(self):
+        res = self.env.ref('tzc_sales_customization_spt.usd_public_pricelist_spt')
+        for partner in self:
+            partner.property_product_pricelist = res.id
+
     def _get_default_lang(self):
         lang = self.env['res.lang'].search([('code','=','en_US')],limit=1)
         return lang.code
@@ -544,7 +551,14 @@ class res_partner(models.Model):
     def _compute_signup_url(self):
         """ proxy for function field towards actual implementation """
         for rec in self:
-            if rec.user_ids:
+            # if rec.user_ids:
+            if rec.is_user_internal:
+                result = self.sudo()._get_signup_url_for_action()
+                for partner in self:
+                    if any(u._is_internal() for u in partner.user_ids if u != self.env.user):
+                        self.env['res.users'].check_access_rights('write')
+                    partner.signup_url = result.get(partner.id, False)
+            elif rec.is_granted_portal_access:
                 website = self.env['kits.b2b.website'].search([('website_name','=','b2b1')],limit=1)
                 url='%s/forget-password?code=%s&login=%s' % (website.url or '', rec.user_ids[0].access_token, rec.user_ids[0].login)
                 rec.signup_url = url

@@ -1,0 +1,29 @@
+<?xml version='1.0' encoding='utf-8'?>
+<odoo>
+    <data>
+        <record id="kits_message_update_picking_wizard_view_form" model="ir.ui.view">
+            <field name="name">kits.message.update.picking.wizard.view.form</field>
+            <field name="model">kits.message.update.picking.wizard</field>
+            <field name="arch" type="xml">
+                <form>
+                    <sheet>
+                        <h3>
+                            <field name="message" nolabel="1" readonly="1"/>
+                        </h3>
+                        <br/>
+                        <field name="product_ids" nolabel="1" readonly="1">
+                            <tree>
+                                <field name="display_name" string="Name"/>
+                            </tree>
+                        </field>
+                    </sheet>
+                    <footer>
+                        <button name="action_merge_with_order" type="object" string="Merge With Order" class="oe_highlight"/>
+                        <span style="padding-left:5px !important;margin-right:5px !important;">OR</span>
+                        <button special="cancel" type="object" string="Cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+    </data>
+</odoo>

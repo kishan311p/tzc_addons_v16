@@ -70,7 +70,6 @@ class remove_done_quantity_spt(models.TransientModel):
                 raise UserError('Scanned product not found in Order !')
         else:
             raise UserError("Scanned barcode not found in any products !")
-            
     
     def action_process(self):
         messages=[]
