@@ -39,6 +39,7 @@ class kits_update_picking_wizard(models.TransientModel):
                     self.picking_id.sale_id.with_context(mail_notrack=True).state = sale_old_state
                     self.picking_id.sale_id.merge_reference = [(4,rec.id)]
                     self.picking_id.sale_id.order_line.filtered(lambda line: line.id not in order_line_list).product_id_change()
+                    self.picking_id.sale_id._amount_all()
             else:
                 product_ids = self.env['product.product'].browse(diff_price)
                 message = 'Below products having different price.'

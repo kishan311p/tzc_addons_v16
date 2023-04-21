@@ -28,3 +28,4 @@ class kits_message_update_picking_wizard(models.TransientModel):
                     line_id = self.env['sale.order.line'].create(order_lines_vals)
                     line_id.product_id_change()
             rec.state = 'merged'
+        self.picking_id.sale_id._amount_all()

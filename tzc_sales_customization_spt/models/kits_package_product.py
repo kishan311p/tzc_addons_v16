@@ -10,9 +10,9 @@ class kits_package_product(models.Model):
     package_seo_name = fields.Char('Seo Name') 
     pack_seo_split_name = fields.Char('Seo Name Split')
     pack_product_image_url = fields.Char('Product Image ')
-    pack_product_image = fields.Binary('Product Image') 
+    pack_product_image = fields.Char('Product Image',related='pack_product_image_url') 
     is_published = fields.Boolean('Is Published')
-    pack_product_url = fields.Char('Package Product Url',compute="_compute_pack_url",store=True,compute_sudo=True)
+    pack_product_url = fields.Char('Package Product Url')
     product_line_ids = fields.One2many('kits.package.product.lines','combo_product_id',string='Package Product Lines')
      
     # sale_price_cad = fields.Float('Sale Price CAD')
@@ -76,7 +76,6 @@ class kits_package_product(models.Model):
     @api.depends('package_seo_name')
     def _compute_pack_url(self):
         base_url = self.env['ir.config_parameter'].sudo().get_param('web.base.url')
-        pack_product_url = ''
         for rec in self:
             seo_name = rec.package_seo_name
             pack_seo_split_name = ''
@@ -85,7 +84,6 @@ class kits_package_product(models.Model):
                 rec.pack_seo_split_name = pack_seo_split_name
             if pack_seo_split_name:
                 pack_product_url = base_url + '/package-product/' + pack_seo_split_name
-            rec.pack_product_url = pack_product_url
             
     def product_is_publish(self):
         self.write({'is_published':True})

@@ -3263,6 +3263,7 @@ class sale_order(models.Model):
                         so_id._compute_package_order()
                         so_id.write({'merged_order':True,'merge_reference':[(6,0,so_id.merge_reference.ids+self.ids+self.mapped('merge_reference').ids)]})
                         self.sale_order_cancel_spt()
+                        so_id._amount_all()
                         self.sudo().write({'state':'merged'})
                         return {
                             'name': 'Original Order',

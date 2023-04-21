@@ -6,7 +6,7 @@ class kits_package_order_line(models.Model):
 
     order_id = fields.Many2one('sale.order','Order')
     product_id = fields.Many2one('kits.package.product','Package Product',required="1")
-    pack_image= fields.Binary('Package Image',related="product_id.pack_product_image")
+    pack_image= fields.Char('Package Image',related="product_id.pack_product_image")
     qty = fields.Integer('Qty',default="1")
     sale_price = fields.Float('Sale Price')
     discount_amount = fields.Float('Discount Amount')

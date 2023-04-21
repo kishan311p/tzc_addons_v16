@@ -1043,12 +1043,6 @@
     <record id="sale.menu_sale_invoicing" model="ir.ui.menu">
         <field name="active" eval="False" />
     </record>
-    <record id="sale_loyalty.menu_discount_loyalty_type_config" model="ir.ui.menu">
-        <field name="active" eval="False" />
-    </record>
-    <record id="sale_loyalty.menu_gift_ewallet_type_config" model="ir.ui.menu">
-        <field name="active" eval="False" />
-    </record>
     <record id="sale_order_filter_replace" model="ir.ui.view">
         <field name="name">sale.order.filter.replace</field>
         <field name="model">sale.order</field>
