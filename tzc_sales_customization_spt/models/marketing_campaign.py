@@ -134,7 +134,7 @@ class marketing_campaign(models.Model):
                         'before_status_type' : participant.resource_ref.status_type,
                         'before_action_type' : participant.resource_ref.action_type,
                         'before_orders' : participant.resource_ref.orders,
-                        'before_promo_code_ids' : [(6,0,participant.resource_ref.promo_code_ids.ids)],
+                        # 'before_promo_code_ids' : [(6,0,participant.resource_ref.promo_code_ids.ids)],
                         'campaign_id' : participant.campaign_id.id,
                         'participant_id' :participant.id,
                     })

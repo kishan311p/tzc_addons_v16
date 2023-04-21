@@ -114,7 +114,13 @@
                     </div>
                     <div class="col-auto mw-100 mb-2">
                         <strong>Total Cases:</strong>
-                        <p class="mx-5" t-esc="int(o.no_of_cases)"/>
+                        <!-- <p class="mx-5" t-esc="int(o.no_of_cases)"/> -->
+                        <t t-if="o.include_cases">
+                            <p class="mx-5" t-esc="int(o.no_of_cases)"/>
+                        </t>
+                        <t t-else="">
+                              <p class="mx-5" >0</p>
+                        </t>
                     </div>
                 </div>
                 <table class="table table-sm o_main_table mt-4 table-borderless">
@@ -137,6 +143,8 @@
                         <t t-set="custom_current_subtotal" t-value="0"/>
                         <t t-set="total_for_is_pro_forma" t-value="0"/>
                         <t t-set="total_for_is_pro_forma_text" t-value="0"/>
+                        <t t-set="total_available_qty" t-value="0"/>
+                        <t t-set="total_reserved_qty" t-value="0"/>
                         <t t-set="product_name_list" t-value="o.line_ordering_by_product()"/>
                         <!-- sorting products -->
                         <t t-foreach="range(len(product_name_list))" t-as="product_name">
@@ -241,14 +249,14 @@
 
                                         </td>
                                         <td name="td_available_qty" class="text-center">
-
+                                            <t t-set="total_available_qty" t-value="total_available_qty + line.product_id.available_qty_spt"/>
                                             <span t-field="line.product_id.available_qty_spt"/>
                                             <!-- <span t-field="line.product_uom" groups="uom.group_uom"/> -->
                                             <!-- <t t-set="total_line_qty" t-value="total_line_qty + line.product_uom_qty"/> -->
 
                                         </td>
                                         <td name="td_reserved_qty" class="text-center">
-
+                                            <t t-set="total_reserved_qty" t-value="total_reserved_qty + line.product_id.reversed_qty_spt"/>
                                             <span t-field="line.product_id.reversed_qty_spt"/>
 
                                         </td>
@@ -260,6 +268,33 @@
                         </t>
                     </tbody>
                 </table>
+                <div class="clearfix" name="so_total_summary">
+                    <div id="total" class="row" name="total">
+                        <div class="row">
+                            <div t-attf-class="#{'col-8' if report_type != 'html' else 'col-sm-5 col-md-7'} ml-auto"></div>
+                            <div t-attf-class="#{'col-4' if report_type != 'html' else 'col-sm-7 col-md-5'} ml-auto">
+                                <table class="table table-sm table-borderless">
+                                    <tr class="border-black o_subtotal" style="">
+                                        <td name="td_shipping_product_total_amount_label">
+                                            <strong>Total Available Qty</strong>
+                                        </td>
+                                        <td name="td_amount_untaxed" class="text-end">
+                                        <t t-out="total_available_qty"/>
+                                        </td>
+                                    </tr>
+                                    <tr class="border-black o_subtotal" style="">
+                                        <td name="td_shipping_product_total_amount_label">
+                                            <strong>Total Reserved Qty</strong>
+                                        </td>
+                                        <td name="td_amount_untaxed" class="text-end">
+                                        <t t-out="total_reserved_qty"/>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </t>
 
         </template>

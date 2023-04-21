@@ -280,7 +280,7 @@ class sale_order(models.Model):
     global_discount = fields.Monetary('Additional Discount',compute_sudo=True, store=True, readonly=True, compute='_amount_all', tracking=4)
     # check_line_qty = fields.Integer('Line Qty',compute="_compute_check_line_qty")
     # report_file = fields.Binary()
-    applied_promo_code = fields.Char("Applied Promo Code")
+    # applied_promo_code = fields.Char("Applied Promo Code")
     shipped_date = fields.Datetime(string="Shipped Date",compute="_compute_shipped_date",store=True,compute_sudo=True)
     source_spt = fields.Char("Order Source ",store=True,compute_sudo=True,default= 'Manually',help="When order create from backend side then set 'Manually', when order create from website then set 'Website' and when order create from catalog then set 'Catalog' ")
     invoice_name = fields.Char("Invoice",compute="_compute_invoice_name",store=True,compute_sudo=True)
@@ -2941,7 +2941,7 @@ class sale_order(models.Model):
                             # 'is_fs':line.is_fs,
                             'is_admin':line.is_admin,
                             'is_shipping_product':line.is_shipping_product,
-                            'is_promotion_applied':line.is_promotion_applied,
+                            # 'is_promotion_applied':line.is_promotion_applied,
                             'sale_type':line.sale_type,
                         })
                     else:
@@ -3072,7 +3072,7 @@ class sale_order(models.Model):
                     'currency_id' : record.pricelist_id.currency_id.id,
                     'payment_term_id' : record.payment_term_id.id,
                     'date_order' : record.date_order,
-                    'applied_promo_code' : record.applied_promo_code,
+                    # 'applied_promo_code' : record.applied_promo_code,
                     'line_ids' : backup_order_line_list,
                     'order_id': record.id,
                     'user_id': self.env.user.id,
@@ -3243,7 +3243,7 @@ class sale_order(models.Model):
                                             'product_uom':sol.product_uom.id,
                                             # 'is_fs':sol.is_fs,
                                             'sale_type':sol.sale_type,
-                                            'is_promotion_applied':sol.is_promotion_applied
+                                            # 'is_promotion_applied':sol.is_promotion_applied
                                         })
                                     sale_line_id._onchange_unit_discounted_price_spt()
                         else:
@@ -3406,13 +3406,13 @@ class sale_order(models.Model):
 
 
     # theme_tzc_enterprice
-    def recompute_coupon_lines(self):
-        for order in self:
-            if not order.applied_coupon_ids.on_order_line and order.applied_coupon_ids:
-            # if not order.code_promo_program_id.on_order_line and order.code_promo_program_id:
-                order._remove_invalid_reward_lines()
-                order._create_new_no_code_promo_reward_lines()
-                order._update_existing_reward_lines()
+    # def recompute_coupon_lines(self):
+    #     for order in self:
+    #         if not order.applied_coupon_ids.on_order_line and order.applied_coupon_ids:
+    #         # if not order.code_promo_program_id.on_order_line and order.code_promo_program_id:
+    #             order._remove_invalid_reward_lines()
+    #             order._create_new_no_code_promo_reward_lines()
+    #             order._update_existing_reward_lines()
 
     def _cart_update(self, product_id=None, line_id=None, add_qty=0, set_qty=0, **kwargs):
         """ Add or set product quantity, add_qty can be negative """

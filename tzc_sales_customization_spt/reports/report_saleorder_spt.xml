@@ -157,11 +157,11 @@
         <strong>Total Quantity:</strong>
         <t t-if="env.context.get('proforma', False) or is_pro_forma" >
             <t t-if="doc.state not in ('draft','sent','received')">
-                <t t-if="doc.delivered_qty">
-                    <p class="m-0 " t-esc="doc.delivered_qty" />
-                </t>
                 <t t-if="doc.picked_qty">
                     <p class="m-0 " t-esc="doc.picked_qty" />
+                </t>
+                <t t-elif="doc.delivered_qty">
+                    <p class="m-0 " t-esc="doc.delivered_qty" />
                 </t>
             </t>
             <t t-else="">
@@ -175,7 +175,7 @@
         </t>
         <t t-else="" >
             <t t-if="doc.state not in ('draft','sent','received')">
-                <t t-if="doc.delivered_qty">
+                <t t-if="doc.delivered_qty and not from_original_ord">
                     <p class="m-0" t-esc="doc.delivered_qty" />
                 </t>
                 <t t-else="">
@@ -200,7 +200,12 @@
 
     <div class="col-auto mw-100 mb-2 text-center">
         <strong>Total Cases:</strong>
-        <p class="m-0" t-esc="int(doc.no_of_cases)"/>
+        <t t-if="doc.include_cases">
+            <p class="m-0" t-esc="int(doc.no_of_cases)"/>
+        </t>
+        <t t-else="">
+            <p>0</p>
+        </t>
     </div>
 
 </xpath>

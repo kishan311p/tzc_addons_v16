@@ -26,16 +26,16 @@ class kits_package_product(models.Model):
     # for promotion
     start_date = fields.Date('Package Start Date')
     end_date = fields.Date('Package End Date')
-    promo_code = fields.Char('Promocode')
-    is_promotion_required = fields.Boolean('Promo Code Requied ?')
+    # promo_code = fields.Char('Promocode')
+    # is_promotion_required = fields.Boolean('Promo Code Requied ?')
     partner_ids = fields.Many2many('res.partner','package_product_partner_id_rel','package_product_id','partner_id', string='Customers',copy=True)
 
     select_all = fields.Boolean('Select All')
     is_global = fields.Boolean('Is Public')
 
     _sql_constraints = [
-        ('kits_package_seo_name','unique(package_seo_name)',_('Package SEO Name should be unique.')),
-        ('kits_promo_code','unique(promo_code)',_('Package Promo Code should be unique.')),
+        ('kits_package_seo_name','unique(package_seo_name)',_('Package SEO Name should be unique.'))
+        # ,('kits_promo_code','unique(promo_code)',_('Package Promo Code should be unique.')),
     ]
     
     @api.depends('product_line_ids','product_line_ids.product_price','product_line_ids.qty')

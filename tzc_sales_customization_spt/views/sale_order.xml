@@ -91,7 +91,7 @@
             <field name="is_admin" invisible="1"/>
             <field name="is_global_discount" invisible="1"/>
             <field name="package_id" readonly="1" invisible="1" />
-            <field name="is_promotion_applied" readonly="1" force_save="1" invisible="1"/>
+            <!-- <field name="is_promotion_applied" readonly="1" force_save="1" invisible="1"/> -->
             <field name="product_categ_id" readonly="1" />
         </xpath>
         <xpath expr="//field[@name='order_line']/tree/field[@name='product_uom_qty']" position="attributes">
@@ -520,7 +520,7 @@
                 <attribute name="invisible">1</attribute>
             </xpath>
             <xpath expr="//field[@name='currency_id']" position="before">
-                <field name="applied_promo_code" readonly="1" force_save="1" attrs="{'invisible': [('state', 'not in', ('sale', 'done'))]}"/>
+                <!-- <field name="applied_promo_code" readonly="1" force_save="1" attrs="{'invisible': [('state', 'not in', ('sale', 'done'))]}"/> -->
             </xpath>
             <xpath expr="//field[@name='partner_id']" position="after">
                 <field name="is_same_delivery_address" invisible="1"/>

@@ -51,10 +51,10 @@ class mailing_contact(models.Model):
             rec.salesperson_id = salesperson
             rec.marketing_activities_compute = False
 
-    @api.depends('partner_promo_code_ids')
-    def _compute_promocodes(self):
-        for record in self:
-            record.promo_code_ids = [(6,0,record.partner_promo_code_ids.ids)]
+    # @api.depends('partner_promo_code_ids')
+    # def _compute_promocodes(self):
+    #     for record in self:
+    #         record.promo_code_ids = [(6,0,record.partner_promo_code_ids.ids)]
 
     @api.depends('country_id','country_id.territory_id')
     def _compute_territory(self):
@@ -187,7 +187,7 @@ class mailing_contact(models.Model):
                 'phone':record.phone or '',
                 'website':record.website or '',
                 'user_id':record.salesperson_id.id or False,
-                'promo_code_ids':record.promo_code_ids.ids or [],
+                # 'promo_code_ids':record.promo_code_ids.ids or [],
                 'company_name':record.company_name or '',
                 'title':record.title_id.id or False,
             }

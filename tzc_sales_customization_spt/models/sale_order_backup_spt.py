@@ -13,7 +13,7 @@ class sale_order_backup_spt(models.Model):
     partner_invoice_id = fields.Many2one('res.partner','Invoice Address')
     partner_shipping_id = fields.Many2one('res.partner','Delivery Address')
     date_order = fields.Datetime('Order Date')
-    applied_promo_code = fields.Char('Applied Promo Code')
+    # applied_promo_code = fields.Char('Applied Promo Code')
     payment_term_id = fields.Many2one('account.payment.term','Payment Terms')
     line_ids = fields.One2many('sale.order.backup.line.spt','order_backup_id','Order Lines', ondelete='cascade', index=True, copy=False)
     total_subtotal = fields.Monetary('Subtotal',compute="_compute_order_total")
@@ -121,7 +121,7 @@ class sale_order_backup_spt(models.Model):
                 'partner_shipping_id' : record.partner_shipping_id.id,
                 'payment_term_id' : record.payment_term_id.id,
                 'date_order' : record.date_order,
-                'applied_promo_code' : record.applied_promo_code,
+                # 'applied_promo_code' : record.applied_promo_code,
                 'user_id': record.user_id.id,
                 'pricelist_id' : record.pricelist_id.id,
                 'currency_id':record.currency_id.id,

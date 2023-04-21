@@ -30,7 +30,7 @@
                             </group>
                             <group>
                                 <field name="date_order"/>
-                                <field name="applied_promo_code"/>
+                                <!-- <field name="applied_promo_code"/> -->
                                 <field name="payment_term_id"/>
                             </group>
                         </group>
@@ -41,7 +41,7 @@
                                         <field name="product_id"/>
                                         <!-- <field name="is_fs" readonly="1" force_save="1"/> -->
                                         <field name="sale_type" readonly="1" force_save="1"/>
-                                        <field name="is_promotion_applied" readonly="1" force_save="1"/>
+                                        <!-- <field name="is_promotion_applied" readonly="1" force_save="1"/> -->
                                         <field name="is_shipping_product" invisible="1"/>
                                         <field name="is_admin" invisible="1"/>
                                         <field name="is_global_discount" invisible="1"/>

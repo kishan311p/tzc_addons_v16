@@ -70,7 +70,7 @@
                         <!-- <field name="name" widget="section_and_note_text" optional="show"/> -->
                         <!-- <field name="is_fs"/> -->
                         <field name="sale_type"/>
-                        <field name="is_promotion_applied" invisible="1" />
+                        <!-- <field name="is_promotion_applied" invisible="1" /> -->
                         <field name="product_categ_id" string="Category"/>
                         <field name="account_id" context="{'partner_id': partner_id, 'move_type': parent.move_type}" groups="account.group_account_manager" options="{'no_create': True}" domain="[('deprecated', '=', False), ('account_type', 'not in', ('asset_receivable', 'liability_payable')), ('company_id', '=', parent.company_id), ('is_off_balance', '=', False)]" attrs="{'required': [('display_type', 'not in', ('line_note', 'line_section'))]}"/>
                         <field name="analytic_distribution" widget="analytic_distribution" groups="analytic.group_analytic_accounting" optional="show" options="{'product_field': 'product_id', 'account_field': 'account_id'}" business_domain_compute="parent.move_type in ['out_invoice', 'out_refund', 'out_receipt'] and 'invoice' or parent.move_type in ['in_invoice', 'in_refund', 'in_receipt'] and 'bill' or 'general'"/>
@@ -250,9 +250,9 @@
                 <xpath expr="//field[@name='invoice_user_id']" position="after">
                     <field name="sale_manager_id" attrs="{'readonly' : [('is_admin','=',False)]}" options="{'no_create':True}"/>
                 </xpath>
-                <xpath expr="//field[@name='invoice_date']" position="after">
+                <!-- <xpath expr="//field[@name='invoice_date']" position="after">
                     <field name="applied_promo_code" readonly="1" force_save="1" invisible="1" />
-                </xpath>
+                </xpath> -->
                 <xpath expr="//notebook/page[@id='other_tab']/group[@id='other_tab_group']/group[@name='accounting_info_group']/field[@name='to_check']" position="attributes">
                     <attribute name="attrs">{'invisible':[('move_type','!=','entry')]}</attribute>
                 </xpath>

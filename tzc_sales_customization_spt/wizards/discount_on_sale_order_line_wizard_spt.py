@@ -61,9 +61,9 @@ class discount_on_sale_order_line_wizard_spt(models.TransientModel):
         return {}
 
     def action_process(self):
-        order_line_obj = self.env['sale.order.line'] 
+            order_line_obj = self.env['sale.order.line'] 
         # if not self.mapped('sale_id.code_promo_program_id'):
-        if not self.mapped('sale_id.applied_coupon_ids'):
+        # if not self.mapped('sale_id.applied_coupon_ids'):
             for record in self:
                 if record.sale_id:
                     order_line_ids = []
@@ -120,6 +120,6 @@ class discount_on_sale_order_line_wizard_spt(models.TransientModel):
                             line.write({'unit_discount_price':unit_discount_price})
                             line.order_id.write({'updated_by':self.env.user.id,'updated_on':datetime.now()})
                             line._onchange_unit_discounted_price_spt()
-        else:
-            raise UserError(_("This order contains promotion program,You can't apply bulk discount.")) 
+        # else:
+        #     raise UserError(_("This order contains promotion program,You can't apply bulk discount.")) 
  

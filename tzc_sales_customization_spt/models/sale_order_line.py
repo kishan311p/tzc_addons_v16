@@ -34,7 +34,7 @@ class SaleOrderLine(models.Model):
     sale_type = fields.Selection([('clearance','Clearance'),('on_sale','On Sale')],'Sale Type')
     unit_discount_price = fields.Float('Our Price')
     product_categ_id = fields.Many2one('product.category',related="product_id.categ_id", string='Category ', readonly=True)
-    is_promotion_applied = fields.Boolean("Is promotion applied?")
+    # is_promotion_applied = fields.Boolean("Is promotion applied?")
     picked_qty = fields.Integer('Delivered',compute='_compute_picked_qty',store=True)
     picked_qty_subtotal = fields.Float('Subtotal',compute="_compute_picked_qty",store=True)
     is_special_discount = fields.Boolean("Is Special Discount",help="This is flag for check product is in special discount or not.")

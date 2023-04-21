@@ -45,7 +45,7 @@ class account_move(models.Model):
     global_discount = fields.Float('Additional Discount',compute_sudo=True,store=True,compute='_compute_amount')
     order_id = fields.Many2one('sale.order','Sale Order',compute_sudo=True,compute='_compute_order_id',store=True)
     report_file = fields.Binary()
-    applied_promo_code = fields.Char("Applied Promo Code",related="invoice_line_ids.sale_line_ids.order_id.applied_promo_code")
+    # applied_promo_code = fields.Char("Applied Promo Code",related="invoice_line_ids.sale_line_ids.order_id.applied_promo_code")
     country_id = fields.Many2one('res.country','Country',related="partner_id.country_id")
     sale_manager_id = fields.Many2one('res.users','Sales Manager',domain=_get_sales_manager_domain,default=_get_default_sale_manager_id)
     street = fields.Char('Street',related='partner_id.street')

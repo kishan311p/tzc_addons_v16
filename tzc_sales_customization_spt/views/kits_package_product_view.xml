@@ -47,9 +47,8 @@
                                 <!-- <field name="sale_price_cad" readonly="1" /> -->
                                 <field name="discounted_price_usd" readonly="1" />
                                 <!-- <field name="discounted_price_cad" readonly="1" /> -->
-                                <field name="is_promotion_required" />
-                                <field name="promo_code"
-                                    attrs="{'invisible':[('is_promotion_required','=',False)],'required':[('is_promotion_required','=',True)]}" />
+                                <!-- <field name="is_promotion_required" /> -->
+                                <!-- <field name="promo_code" attrs="{'invisible':[('is_promotion_required','=',False)],'required':[('is_promotion_required','=',True)]}" /> -->
                                 <field name="start_date" />
                                 <field name="end_date" />
                                 <field name="is_global" />

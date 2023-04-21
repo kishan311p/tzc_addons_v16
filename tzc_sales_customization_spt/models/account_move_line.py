@@ -15,7 +15,7 @@ class AccountMoveLine(models.Model):
     discount_unit_price = fields.Float('Our Price',compute='_compute_discount_price')
     # is_fs = fields.Boolean("Is FS?",compute='_compute_boolean_fields')
     # is_fs = fields.Boolean("Is FS?")
-    is_promotion_applied = fields.Boolean("Is promotion applied?",compute='_compute_boolean_fields')
+    # is_promotion_applied = fields.Boolean("Is promotion applied?",compute='_compute_boolean_fields')
     primary_image_url = fields.Char("Primary Image URL",related='product_id.primary_image_url')
     # def write(self, vals):
     #     if 'pos_model' in self._context.keys():
@@ -78,11 +78,11 @@ class AccountMoveLine(models.Model):
         for record in self:
             # record.is_fs = False
             record.sale_type = False
-            record.is_promotion_applied = False
+            # record.is_promotion_applied = False
             if record.sale_line_ids:
                 # record.is_fs = record.sale_line_ids[0].is_fs
                 record.sale_type = record.sale_line_ids[0].sale_type
-                record.is_promotion_applied = record.sale_line_ids[0].is_promotion_applied
+                # record.is_promotion_applied = record.sale_line_ids[0].is_promotion_applied
 
     # Method Depriciated in 16.
     @api.model
