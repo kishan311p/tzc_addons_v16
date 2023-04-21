@@ -3214,7 +3214,7 @@ class sale_order(models.Model):
                         self = self-so_id
                         diff_price = []
                         for line in self.mapped('order_line'):
-                            sale_line_id = so_id.order_line.filtered(lambda x: x.product_id.id == line.product_id.id and x.is_promotion_applied == line.is_promotion_applied and x.sale_type == line.sale_type)
+                            sale_line_id = so_id.order_line.filtered(lambda x: x.product_id.id == line.product_id.id and x.sale_type == line.sale_type)
                             # sale_line_id = so_id.order_line.filtered(lambda x: x.product_id.id == line.product_id.id and x.is_fs == line.is_fs and x.is_promotion_applied == line.is_promotion_applied and x.sale_type == line.sale_type)
                             if sale_line_id and round(sale_line_id.unit_discount_price,2) != round(line.unit_discount_price,2):
                                 if sale_line_id.product_id.name not in diff_price:
@@ -3222,7 +3222,7 @@ class sale_order(models.Model):
                         if not diff_price:
                             for sol in self.mapped('order_line'):
                                 if not sol.is_pack_order_line or not sol.package_id:
-                                    sale_line_id = so_id.order_line.filtered(lambda x: x.product_id.id == sol.product_id.id and x.is_promotion_applied == sol.is_promotion_applied and x.sale_type == sol.sale_type)
+                                    sale_line_id = so_id.order_line.filtered(lambda x: x.product_id.id == sol.product_id.id and x.sale_type == sol.sale_type)
                                     # sale_line_id = so_id.order_line.filtered(lambda x: x.product_id.id == sol.product_id.id and x.is_fs == sol.is_fs and x.is_promotion_applied == sol.is_promotion_applied and x.sale_type == sol.sale_type)
                                     if sale_line_id and sale_line_id.id:
                                         sale_line_id.write({
