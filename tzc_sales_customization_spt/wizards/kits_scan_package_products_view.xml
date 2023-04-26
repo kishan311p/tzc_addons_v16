@@ -9,7 +9,7 @@
                 <form>
                     <sheet>
                         <group>
-                            <field name="_barcode_scanned" widget="barcode_handler" invisible="1"/>
+                            <field name="_barcode_scanned" widget="barcode_handler" invisible="0" nolabel="1"/>
                             <field name="total_qty" readonly="1" />
                         </group>
                         <group>

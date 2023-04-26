@@ -5,19 +5,20 @@ class kits_package_product(models.Model):
     _name = 'kits.package.product'
     _description = 'To create Package of multiple products.'
 
+    state = fields.Selection([('unverified', 'Unverified'),('verified', 'Verified')], string='State',default= 'unverified')
     name = fields.Char('Name',required=True,default='New')
     pack_description = fields.Html('Description  ')
     package_seo_name = fields.Char('Seo Name') 
     pack_seo_split_name = fields.Char('Seo Name Split')
-    pack_product_image_url = fields.Char('Product Image ')
-    pack_product_image = fields.Char('Product Image',related='pack_product_image_url') 
+    # pack_product_image_url = fields.Char('Product Image ')
+    pack_product_image = fields.Char('Product Image',store=True) 
     is_published = fields.Boolean('Is Published')
     pack_product_url = fields.Char('Package Product Url')
     product_line_ids = fields.One2many('kits.package.product.lines','combo_product_id',string='Package Product Lines')
      
     # sale_price_cad = fields.Float('Sale Price CAD')
-    sale_price_usd = fields.Float('Sale Price',compute="_calc_sale_price_usd",store=True,compute_sudo=True)
-    discounted_price_usd = fields.Float('Discounted Price',compute="_calc_discounted_price_usd",store=True,compute_sudo=True)
+    sale_price = fields.Float('Sale Price',compute="_calc_sale_price",store=True,compute_sudo=True)
+    discounted_price = fields.Float('Discounted Price',compute="_calc_discounted_price",store=True,compute_sudo=True)
     # discounted_price_cad = fields.Float('Discounted Price CAD')
     # website_size_x = fields.Integer('Size X', default=1)
     # website_size_y = fields.Integer('Size Y', default=1)
@@ -30,48 +31,54 @@ class kits_package_product(models.Model):
     # is_promotion_required = fields.Boolean('Promo Code Requied ?')
     partner_ids = fields.Many2many('res.partner','package_product_partner_id_rel','package_product_id','partner_id', string='Customers',copy=True)
 
-    select_all = fields.Boolean('Select All')
-    is_global = fields.Boolean('Is Public')
+    # select_all = fields.Boolean('Select All')
+    is_global = fields.Boolean('Is Public',compute="product_validation")
+    warning_message = fields.Text('Error Message',compute="product_validation")
 
     _sql_constraints = [
         ('kits_package_seo_name','unique(package_seo_name)',_('Package SEO Name should be unique.'))
         # ,('kits_promo_code','unique(promo_code)',_('Package Promo Code should be unique.')),
     ]
     
+    @api.onchange('pack_product_url')
+    def _onchange_pack_product_url(self):
+        for record in self:
+            record.pack_product_image = record.pack_product_url
+    
     @api.depends('product_line_ids','product_line_ids.product_price','product_line_ids.qty')
-    def _calc_sale_price_usd(self):
+    def _calc_sale_price(self):
         for rec in self:
             # cad_rate  = float(self.env['ir.config_parameter'].sudo().get_param('tzc_sales_customization_spt.on_sale_cad_spt', default=0))
-            sale_price_usd = 0.0
+            sale_price = 0.0
             for line in rec.product_line_ids:
-                sale_price_usd += round(line.product_price * line.qty,2)
-            rec.sale_price_usd = sale_price_usd
-            # rec.sale_price_cad = round(sale_price_usd * cad_rate,2)
+                sale_price += round(line.product_price * line.qty,2)
+            rec.sale_price = sale_price
+            # rec.sale_price_cad = round(sale_price * cad_rate,2)
     
     @api.onchange('product_line_ids')
     def on_change_product_lines(self):
         for rec in self:
-            rec._calc_sale_price_usd()
-            rec._calc_discounted_price_usd()
+            rec._calc_sale_price()
+            rec._calc_discounted_price()
     
     # def _calc_discounted_price_cad(self):
     #     cad_rate  = float(self.env['ir.config_parameter'].sudo().get_param('tzc_sales_customization_spt.on_sale_cad_spt', default=0))
     #     for rec in self:
     #         discounted_price_cad = 0.0
-    #         if rec.discounted_price_usd:
-    #             discounted_price_cad = round(rec.discounted_price_usd * cad_rate,2)
+    #         if rec.discounted_price:
+    #             discounted_price_cad = round(rec.discounted_price * cad_rate,2)
     #         rec.discounted_price_cad = discounted_price_cad
 
     @api.depends('product_line_ids','product_line_ids.subtotal')
-    def _calc_discounted_price_usd(self):
+    def _calc_discounted_price(self):
         # cad_rate  = float(self.env['ir.config_parameter'].sudo().get_param('tzc_sales_customization_spt.on_sale_cad_spt', default=0))
         for rec in self:
-            discounted_price_usd = 0.0
+            discounted_price = 0.0
             # discounted_price_cad = 0.0
             for line in rec.product_line_ids:
-                discounted_price_usd += line.subtotal
-            rec.discounted_price_usd = discounted_price_usd
-            # rec.discounted_price_cad = round(discounted_price_usd * cad_rate,2)
+                discounted_price += line.subtotal
+            rec.discounted_price = discounted_price
+            # rec.discounted_price_cad = round(discounted_price * cad_rate,2)
             
     @api.depends('package_seo_name')
     def _compute_pack_url(self):
@@ -101,13 +108,14 @@ class kits_package_product(models.Model):
             'target':'new'
         }
 
-    @api.onchange('select_all')
-    def _onchange_select_all(self):
-        for record in self:
-            if record.select_all:
-                record.partner_ids = [(6,0,self.env['res.partner']._search([]))]
-            else:
-                record.partner_ids = False
+    # @api.onchange('select_all')
+    # def _onchange_select_all(self):
+    #     for record in self:
+    #         if record.select_all:
+    #             parner_list = [(4,rpid) for rpid in list(self.env['res.partner']._search([]))]
+    #             record.partner_ids = parner_list
+    #         else:
+    #             record.partner_ids = False
 
     def get_package_validation(self):
         vals = {}
@@ -200,3 +208,51 @@ class kits_package_product(models.Model):
             elif product.available_qty_spt <= 0.0:
                 out_of_stock = True
         return out_of_stock,geo_ristricted
+
+    def unverified_product(self):
+        for record in self:
+            record.state = 'unverified'
+            
+    def product_validation(self):
+        product_error = []
+        stock_error = []
+        for record in self:
+            warning_message = ''
+            for line in record.product_line_ids:
+                if not line.product_id.is_published_spt:
+                    product_error.append(line.product_id.variant_name)
+                if line.product_id.available_qty_spt <= 0:
+                    stock_error.append(line.product_id.variant_name)
+            if product_error :
+                warning_message += ', '.join(product_error) + ' product unpublished'
+            if stock_error:
+                if warning_message:
+                   warning_message += '\n'  
+                warning_message += ', '.join(stock_error)+' product stock not available.'
+            record.warning_message = warning_message
+            record.is_global = True if warning_message else False
+
+    def verified_product(self):
+        product_error = []
+        stock_error = []
+        for record in self:
+            for line in record.product_line_ids:
+                if not line.product_id.is_published_spt:
+                    product_error.append(line.product_id.variant_name)
+                if line.product_id.available_qty_spt <= 0:
+                    stock_error.append(line.product_id.variant_name)
+            if not product_error and not stock_error:
+                record.state = 'verified'
+        if product_error or stock_error:   
+            error = ''      
+            if product_error:   
+                error += "Some product unpublished\n"
+                error += '\n'.join(product_error)
+            if stock_error:
+                if error:
+                    error +='\n'
+                error +="Some product stock not available.\n"
+                error += '\n'.join(stock_error)
+            
+            raise UserError(_(error))
+        

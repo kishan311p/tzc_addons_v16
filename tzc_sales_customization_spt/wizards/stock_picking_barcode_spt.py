@@ -84,7 +84,7 @@ class stock_picking_barcode_spt(models.TransientModel):
         #         'sequence': 0,
         #         })
         search_lines = self.line_ids.filtered(lambda ol: ol.product_id.barcode == barcode)
-        stock_move = self.picking_id.move_ids_without_package.filtered(lambda x:x.product_id.barcode == barcode)
+        stock_move = self.picking_id.move_ids_without_package.filtered(lambda x:x.product_id.barcode == barcode and not x.package_id)
         if search_lines:
             search_lines.barcode_spt = barcode
             search_lines.product_qty += 1

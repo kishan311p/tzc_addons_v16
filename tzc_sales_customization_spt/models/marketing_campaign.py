@@ -28,6 +28,7 @@ class marketing_campaign(models.Model):
     count_unsubscribe = fields.Integer(compute="_compute_count_sent")
     count_received = fields.Integer(compute="_compute_count_sent")
     mailgun_failed_count = fields.Integer(compute="_compute_count_sent")
+    is_custome_rec = fields.Boolean('Is Custome Rec. (Flag)')
 
     @api.depends('marketing_activity_ids')
     def _compute_count_sent(self):
@@ -457,5 +458,5 @@ class marketing_campaign(models.Model):
 
     def execute_activities(self):
         for campaign in self:
-            if campaign._context.get('from_bulk_mail'):
-                campaign.marketing_activity_ids.execute()
+            # if campaign._context.get('from_bulk_mail'):
+            campaign.marketing_activity_ids.execute()

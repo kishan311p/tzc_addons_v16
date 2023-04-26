@@ -69,7 +69,7 @@
             <button string="FREIGHT INVOICE" name="excel_order_report" type="object" class="oe_highlight" sequence="100" attrs="{'invisible': [('state', 'not in', ('in_scanning','scan','shipped','draft_inv','open_inv','paid','scanned'))]}" />
         </xpath>
         <xpath expr="//form/sheet/notebook/page[@name='order_lines']" position="after">
-            <page name="package_order_lines" string="Pack Products" attrs="{'invisible':[('package_order_lines','=',[])]}">
+            <page name="package_order_lines" string="Pack Products">
                 <field name="package_order_lines" mode="tree" attrs="{'readonly':[('state','not in',('draft','sent','received'))]}">
                     <tree editable="bottom" create="1" delete="1" string="Pack Order Lines" default_order="product_id" decoration-info="availability == 'available'" decoration-danger="availability == 'out_of_stock'">
                         <field name="product_id" />
@@ -90,7 +90,7 @@
             <field name="is_shipping_product" invisible="1"/>
             <field name="is_admin" invisible="1"/>
             <field name="is_global_discount" invisible="1"/>
-            <field name="package_id" readonly="1" invisible="1" />
+            <field name="package_id" readonly="1" />
             <!-- <field name="is_promotion_applied" readonly="1" force_save="1" invisible="1"/> -->
             <field name="product_categ_id" readonly="1" />
         </xpath>
@@ -114,10 +114,10 @@
             <field name="primary_image_url" string="Image" widget="image" options="{'zoom': true,'thumb_image':'primary_image_url','preview_image':'primary_image_url','size': [300, 90]}"/>
         </xpath>
         <xpath expr="//field[@name='order_line']/tree/field[@name='discount']" position="attributes">
-            <attribute name="attrs">{'readonly':['|','|',('is_admin','=',True),('is_shipping_product','=',True),('state','not in',['draft','sent','received','in_scanning','sale','scanned'])]}</attribute>
+            <attribute name="attrs">{'readonly':['|','|','|',('is_admin','=',True),('is_shipping_product','=',True),('state','not in',['draft','sent','received','in_scanning','sale','scanned']),('package_id','!=',False)]}</attribute>
         </xpath>
         <xpath expr="//tree/field[@name='price_unit']" position="after">
-            <field name="unit_discount_price" force_save="1" attrs="{'readonly':['|','|',('is_admin','=',True),('is_global_discount','=',True),('state','not in',['draft','sent','received','in_scanning','sale','scanned'])]}" />
+            <field name="unit_discount_price" force_save="1" attrs="{'readonly':['|','|','|',('is_admin','=',True),('is_global_discount','=',True),('state','not in',['draft','sent','received','in_scanning','sale','scanned']),('package_id','!=',False)]}" />
         </xpath>
         <xpath expr="//tree/field[@name='discount']" position="after">
             <field name="fix_discount_price" readonly="1" attrs="{'readonly':['|','|',('is_admin','=',True),('is_shipping_product','=',True),('state','not in',['draft','sent','received','in_scanning','sale','scanned'])]}" groups="product.group_discount_per_so_line" force_save="1"/>
@@ -498,6 +498,20 @@
                 </xpath>
                 <xpath expr="//group[@name='sale_info']" position="inside">
                     <field name="customer_credit" attrs="{'readonly':[('state','in',['scan','shipped','draft_inv','open_inv','paid','cancel','merged','done'])]}" />
+                    <field name="original_user_id" widget="many2one_avatar_user" />
+                    <field name="original_sale_manager_id" />
+                </xpath>
+                <xpath expr="//page[@name='other_information']" position="inside">
+                    <field name="sale_manager_tracking_ids" nolabel='1' readonly="1" >
+                    <tree>
+                        <field name="create_date" />
+                        <field name="user" />
+                        <field name="user_id" />
+                        <field name="new_user_id" />
+                        <field name="sale_manager_id" />
+                        <field name="new_sale_manager_id" />
+                    </tree>
+                    </field>
                 </xpath>
                 <xpath expr="//field[@name='client_order_ref']" position="attributes">
                     <attribute name="invisible">1</attribute>
@@ -506,7 +520,7 @@
                     <attribute name="invisible">1</attribute>
                 </xpath>
                 <xpath expr="//group[1]/group[2]/field[@name='payment_term_id']" position="replace">
-                    <field name="payment_term_id" options="{'no_open':True,'no_create': True}" attrs="{'readonly': [('state','in',['scan','shipped','draft_inv','open_inv','paid','cancel','merged'])]}" groups="base.group_system,account.group_account_manager"/>
+                    <field name="payment_term_id" options="{'no_open':True,'no_create': True}" attrs="{'readonly': [('state','in',['scan','shipped','draft_inv','open_inv','paid','cancel','merged'])]}"/>
                     <field name="shipping_id" options="{'no_open':True,'no_create': True}" string='Shipping Provider' attrs="{'readonly':[('state','in',['scan','shipped','draft_inv','open_inv','paid','cancel','merged','done'])]}"/>
                     <field name="merged_order" invisible="1"/>
                     <field name="merge_reference" widget="many2many_tags" attrs="{'invisible': [('merged_order', '=', False)]}" readonly="1"/>

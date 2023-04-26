@@ -110,6 +110,7 @@
         'views/campaign_monetization_view_spt.xml',
         'views/mailing_mailing_view.xml',
         'views/res_partner_view.xml',
+        'views/mail_wizard_invite_view.xml',
 
         # Wizard
         'wizards/kits_warning_wizard_view.xml',
@@ -178,6 +179,7 @@
         'wizards/stock_change_product_qty_view.xml',
         'wizards/on_consignment_product_message_wizard.xml',
         'wizards/kits_message_update_picking_wizard_view.xml',
+        'wizards/kits_remove_package_products_view.xml',
 
         # Reports
         'reports/kits_commission_report.xml',

@@ -272,6 +272,7 @@ class mail_compose_message_wizard(models.TransientModel):
                 'user_id':self.env.uid ,
                 'domain': [('id','in',partner_ids)],
                 'name': name,
+                'is_custome_rec':True,
                 })
             
             mailing_id = mailing_obj.create({
@@ -314,7 +315,7 @@ class mail_compose_message_wizard(models.TransientModel):
 
             campaign_id.action_start_campaign()
             campaign_id.sync_participants()
-            campaign_id.with_context(from_bulk_mail=True).execute_activities()
+            campaign_id.with_context.execute_activities()
             campaign_id.execution_datetime = datetime.now()
             campaign_id.count_sent = len(partner_ids) if partner_ids else 0
             campaign_id.action_stop_campaign()

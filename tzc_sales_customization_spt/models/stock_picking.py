@@ -223,6 +223,8 @@ class stock_picking(models.Model):
     # Sale Order Number
     sale_order_number = fields.Char('Order Number',compute="_compute_sale_order_number")
 
+    is_fulfiled = fields.Boolean('Is Fullfiled (Flag)',default=False)
+
     def _compute_sale_order_number(self):
         try:
             for rec in self:
@@ -605,19 +607,22 @@ class stock_picking(models.Model):
         state_list = self.mapped(lambda picking : picking.state in  ['in_scanning','confirmed'])
         if any(state_list):
             for record in self:
-                    if not record.sale_id:
-                        record.sale_id = record.get_order_id(self)
-                    record.preiviews_scanning_products_data = record.get_scanned_product()
-                    if record.ordered_qty >= record.delivered_qty:
-                        for line in range(len(record.move_ids_without_package)):
-                            line = record.move_ids_without_package[line]
-                            line.quantity_done = line.product_uom_qty
-                        record.sale_id.write({'state':'in_scanning'})
-                        record.write({'state': 'in_scanning'})
-                        # record.sale_id.with_context(fulfilled=True).send_shipment_ready_email_to_salesperson_spt()
-                        record.sale_id._amount_all()
-                    else:
-                        raise UserError(_('If user clicks when fulfilled is higher than ordered qty.'))
+                if not record.sale_id:
+                    record.sale_id = record.get_order_id(self)
+                record.preiviews_scanning_products_data = record.get_scanned_product()
+                # if record.ordered_qty >= record.delivered_qty:
+                line_ids = []
+                for line in range(len(record.move_ids_without_package)):
+                    line = record.move_ids_without_package[line]
+                    if line.product_uom_qty > line.quantity_done:
+                        line.quantity_done = line.product_uom_qty
+                        line_ids.append(line.id)
+                record.sale_id.write({'state':'in_scanning'})
+                record.write({'state': 'in_scanning','is_fulfiled':True if line_ids else False})
+                # record.sale_id.with_context(fulfilled=True).send_shipment_ready_email_to_salesperson_spt()
+                record.sale_id._amount_all()
+                # else:
+                #     raise UserError(_('If user clicks when fulfilled is higher than ordered qty.'))
         else:
             return {
                 'type': 'ir.actions.client',
@@ -644,7 +649,7 @@ class stock_picking(models.Model):
                             if line_id:
                                 line_id.quantity_done = data.get(rec.id).get(product_id.id)
                         rec.sale_id.write({'updated_by':self.env.user.id,'updated_on':datetime.now()}) if rec.sale_id else None
-                                
+                rec.is_fulfiled = False               
                 self.message_post(body='Revert Fullfil.')
                 self.state = 'confirmed' if not any(self.move_ids_without_package.mapped('quantity_done')) else 'in_scanning'
         else:
@@ -1547,6 +1552,7 @@ class stock_picking(models.Model):
         move_data = self._cr.fetchall()
 
         move_id = self.env['stock.move'].browse([id[0] for id in move_data])
+        move_id = move_id.filtered(lambda move: not move.package_id)
         if move_id:
             if len(move_id)>1 :
                 self.env['kits.double.move.log'].genarete_double_move_log(move_id[0].product_id,self,move_id)

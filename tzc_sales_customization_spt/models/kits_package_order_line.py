@@ -47,7 +47,7 @@ class kits_package_order_line(models.Model):
         for rec in self:
             rec.subtotal = round(rec.pack_price * rec.qty,2)
 
-    @api.depends('product_id','product_id.product_line_ids')
+    # @api.depends('product_id')
     def _compute_availability(self):
         orders = self.mapped('backup_order') if all([each.backup_order for each in self]) else self.mapped('order_id')
         countries = orders.mapped('partner_id').mapped('country_id').ids
@@ -76,7 +76,22 @@ class kits_package_order_line(models.Model):
                     'type':'ir.actions.act_window',
                     'res_model':'kits.warning.wizard',
                     'view_mode':'form',
-                    'view_id':self.env.ref('kits_package_product.kits_warning_wizard_form_view').id,
+                    'view_id':self.env.ref('tzc_sales_customization_spt.kits_warning_wizard_form_view').id,
                     'context':{'default_message':'\n\n'.join(message)},
                     'target' : 'new',
                 }
+
+    @api.onchange('product_id')
+    def _onchange_product_id(self):
+        for record in self:
+            product_price = 0.00
+            unit_discount_price = 0.00
+            discount = 0
+            if record.product_id:
+                product_price = record.product_id.sale_price
+                unit_discount_price = record.product_id.discounted_price
+            if product_price and unit_discount_price:
+                discount = (1-(unit_discount_price/product_price)) *100
+            record.sale_price = product_price
+            record.pack_price = unit_discount_price
+            record.discount = discount

@@ -116,32 +116,32 @@
                                                             </div>
                                                             <div t-if="record.activity_type.raw_value == 'email'" name="mail_details" class="mt-4 row o_ma_email_details text-center">
                                                                 <div class="col" title="Mails sent and not bounced">
-                                                                    <a name="action_view_sent" type="object">
+                                                                    <a name="action_kits_view_sent" type="object">
                                                                         <strong><t t-esc="record.total_sent.raw_value or 0"/></strong> Sent
                                                                     </a>
                                                                 </div>
                                                                 <div class="col">
-                                                                    <a name="action_view_received" type="object">
+                                                                    <a name="action_kits_view_received" type="object">
                                                                         <strong><field name="total_received" /> Received</strong> 
                                                                     </a>
                                                                 </div>
                                                                 <div class="col">
-                                                                    <a name="action_view_opened" type="object">
+                                                                    <a name="action_kits_view_opened" type="object">
                                                                         <strong><field name="total_open" /> Opened</strong> 
                                                                     </a>
                                                                 </div>
                                                                 <div class="col">
-                                                                    <a name="action_view_clicked" type="object">
+                                                                    <a name="action_kits_view_clicked" type="object">
                                                                         <strong><field name="total_click" /> Clicked</strong> 
                                                                     </a>
                                                                 </div>
                                                                 <div class="col">
-                                                                    <a name="action_view_fialed_by_odoo" type="object">
+                                                                    <a name="action_kits_view_fialed_by_odoo" type="object">
                                                                         <strong><field name="total_odoo_fail" /> Odoo Fail</strong> 
                                                                     </a>
                                                                 </div>
                                                                 <div class="col">
-                                                                    <a name="action_view_fialed_by_mailgun" type="object">
+                                                                    <a name="action_kits_view_fialed_by_mailgun" type="object">
                                                                         <strong><field name="total_mailgun_failed" /> Mailgun Fail</strong>
                                                                     </a>
                                                                 </div>
@@ -264,6 +264,7 @@
         <record id="action_model_mail_campaign" model="ir.actions.act_window">
             <field name="name">Marketing Campaign</field>
             <field name="res_model">marketing.campaign</field>
+            <field name="domain">[('is_custome_rec','=',True)]</field>
             <field name="view_ids" eval="[(5,0,0),(0, 0, {'view_mode': 'kanban', 'view_id': ref('kits_marketing_campaign_view_kanban')}),
                                           (0, 0, {'view_mode': 'form', 'view_id': ref('marketing_campaing_form_view')}),
                                           (0, 0, {'view_mode': 'tree', 'view_id': ref('marketing_campaing_view_tree')})]"/>
@@ -273,6 +274,7 @@
             <field name="name">Campaigns</field>
             <field name="res_model">marketing.campaign</field>
             <field name="view_mode">kanban,tree,form</field>
+            <field name="domain">[('is_custome_rec','=',False)]</field>
             <field name="view_ids" eval="[(5,0,0),(0, 0, {'view_mode': 'kanban', 'view_id': ref('marketing_automation.marketing_campaign_view_kanban')}),
                                           (0, 0, {'view_mode': 'form', 'view_id': ref('marketing_automation.marketing_campaign_view_form')}),
                                           (0, 0, {'view_mode': 'tree', 'view_id': ref('marketing_automation.marketing_campaign_view_tree')})]"/>
@@ -282,6 +284,25 @@
                 </p><p>
                     Define workflows by chaining up activities and let Odoo handle the rest.
                 </p>
+            </field>
+        </record>
+        <record id="inherit_marketing_campaign_view_form" model="ir.ui.view">
+            <field name="name">inherit.marketing.campaign.view.form</field>
+            <field name="model">marketing.campaign</field>
+            <field name="inherit_id" ref='marketing_automation.marketing_campaign_view_form'/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='mailing_filter_id']" position="attributes">
+                    <attribute name="attrs">{'readonly':[('state','not in','draft')]}</attribute>
+                </xpath>
+                <xpath expr="//field[@name='domain']" position="attributes">
+                    <attribute name="attrs">{'readonly':[('state','not in','draft')]}</attribute>
+                </xpath>
+                <xpath expr="//field[@name='title']" position="attributes">
+                    <attribute name="attrs">{'readonly':[('state','not in','draft')]}</attribute>
+                </xpath>                
+                <xpath expr="//field[@name='unique_field_id']" position="attributes">
+                    <attribute name="attrs">{'readonly':[('state','not in','draft')]}</attribute>
+                </xpath>
             </field>
         </record>
         

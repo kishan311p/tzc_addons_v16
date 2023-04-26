@@ -59,8 +59,10 @@ class sale_order(models.Model):
                     pass
             return manager.id if len(manager) <= 1 else manager[0].id
 
-    sale_manager_id = fields.Many2one('res.users','Sales Manager',default=get_sale_manager,domain=_get_salesmangers)
-
+    sale_manager_id = fields.Many2one('res.users','Sales Manager',default=get_sale_manager,domain=_get_salesmangers,tracking=True)
+    original_sale_manager_id = fields.Many2one('res.users','Original Sales Manager',readonly=True)
+    original_user_id = fields.Many2one('res.users','Original Sales Person',readonly=True)
+    sale_manager_tracking_ids = fields.One2many('sale.manager.tracking','order_id')
     # kits_abadon_card_order
     next_execution_date = fields.Datetime('Next Execution Date',copy=False)
     abandoned_reason = fields.Char('Reason',compute="_get_reson_message")
@@ -617,13 +619,16 @@ class sale_order(models.Model):
         return super(sale_order,self).unlink()
 
     def write(self,vals):
+        if ('sale_manager_id' in vals) or ('user_id' in vals):
+            old_sales_person = self.user_id.id
+            old_sales_manager = self.sale_manager_id.id
         update = self.env['ir.model']._updated_data_validation(field_list,vals,self._name)
         if update:
             vals.update({'updated_by':self.env.user.id,'updated_on':datetime.today()})
         initial_state = {}
         prev_state = self['state']
         amount_log = False
-        if 'state' in vals:
+        if 'state' in vals and not self._context.get('tracking_disable'):
             #  and vals['state'] in ['draft','salesperson_confirmation','sale','scanned','scan']
             if vals['state'] not in ('draft','sent','received','salesperson_confirmation','sale'):
                 amount_log = True
@@ -634,6 +639,16 @@ class sale_order(models.Model):
                 for track_field in ['picked_qty_order_subtotal','picked_qty_order_discount','picked_qty_order_tax','picked_qty_order_total']:
                     initial_state[track_field] = self[track_field]
         res = super(sale_order,self).write(vals)
+        if ('sale_manager_id' in vals) or ('user_id' in vals):
+            new_sales_person = self.user_id.id
+            new_sales_manager = self.sale_manager_id.id 
+            self.env['sale.manager.tracking'].create({'order_id':self.id,
+                                                    'create_date':datetime.now().strftime("%d-%m-%Y %H:%M:%S"),
+                                                    'user':self.env.user.id,
+                                                    'user_id':old_sales_person,
+                                                    'new_user_id':new_sales_person,
+                                                    'sale_manager_id':old_sales_manager,
+                                                    'new_sale_manager_id':new_sales_manager})
         if vals.get('sale_manager_id'):
             self.invoice_ids.filtered(lambda inv: inv.state != 'cancel')._onchange_user_id()
         if amount_log:
@@ -860,7 +875,7 @@ class sale_order(models.Model):
             amount_untaxed = 0.0
             amount_tax = 0.0
             picked_qty_order_subtotal = 0.00
-            unit_per_tax = 0.00
+            # unit_per_tax = 0.00
             total_discount_per_unit = 0.00
             picked_qty_order_tax = 0.00
             picked_qty_order_discount = 0.00
@@ -870,7 +885,7 @@ class sale_order(models.Model):
             shipping_cost = 0.00
             for line in  range(len(order.order_line)):
                 line =  order.order_line[line]
-                unit_per_tax = 0.0
+                # unit_per_tax = 0.0
                 if line.is_shipping_product:
                     amount_is_shipping_total += line.unit_discount_price * line.product_uom_qty or 0.00
                     shipping_cost += line.price_unit * line.product_uom_qty or 0.00
@@ -884,7 +899,7 @@ class sale_order(models.Model):
                         delivered_qty += line.qty_delivered
                         ordered_qty += line.product_uom_qty
                     if line.price_tax and line.product_uom_qty:
-                        unit_per_tax = round(line.price_tax/line.product_uom_qty,2)
+                        # unit_per_tax = round(line.price_tax/line.product_uom_qty,2) if line.product_uom_qty else 0.0
                         amount_tax = amount_tax + line.picked_qty_subtotal*line.tax_id.amount/100
                         # amount_tax = amount_tax + round(unit_per_tax * line.product_uom_qty,2)
                     amount_untaxed += line.price_subtotal
@@ -900,10 +915,10 @@ class sale_order(models.Model):
                     product_list.append(line.product_id.id)
 
 
-                if line.product_id.type != 'service' and line.picked_qty and line.product_uom_qty:
+                if line.product_id.type != 'service' and line.picked_qty:
                         picked_qty_order_subtotal = picked_qty_order_subtotal + (line.price_unit * line.picked_qty)
 
-                        unit_per_tax = round(line.price_tax/line.product_uom_qty,2)
+                        # unit_per_tax = round(line.price_tax/line.product_uom_qty,2) if line.product_uom_qty else 0.0
                         # picked_qty_order_tax = picked_qty_order_tax + round(unit_per_tax * line.picked_qty,2)
                         picked_qty_order_tax = picked_qty_order_tax + line.picked_qty_subtotal*line.tax_id.amount/100
 
@@ -2987,10 +3002,13 @@ class sale_order(models.Model):
     def action_confirm(self):
         sol_obj = self.env['sale.order.line']
         order_backup_obj = self.env['sale.order.backup.spt']
+        currency_mapping_obj = self.env['kits.b2b.multi.currency.mapping']
         state_list = self.mapped(lambda so : so.state in ['draft','sent','received'])
         if any(state_list):
+            self.original_user_id = self.user_id if self.user_id else None
+            self.original_sale_manager_id = self.sale_manager_id if self.sale_manager_id else None
             for record in self:
-                if not record.order_line:
+                if not record.order_line and not record.package_order_lines:
                     raise UserError(_("Before you confirm the order, kindly add an item."))
                 record._get_unavailable_package_ids()
                 restricted_package_lines = record.package_order_lines.filtered(lambda x: x.availability == 'out_of_stock')
@@ -3008,6 +3026,11 @@ class sale_order(models.Model):
                     }
                 geo_restriction_list = []
                 backup_order_line_list =[]
+                currency_rate = 1
+                if record.b2b_currency_id.name != 'USD':
+                    new_rate = currency_mapping_obj.search([('currency_id','=',record.b2b_currency_id.id)]).currency_rate
+                    if new_rate:
+                        currency_rate = new_rate
                 # Unpack Packed Product Lines
                 for pack_line in (record.package_order_lines-restricted_package_lines) if not self._context.get('package_allow') else record.package_order_lines:
                     for product_line in pack_line.product_id.product_line_ids:
@@ -3020,13 +3043,10 @@ class sale_order(models.Model):
                                 'package_id': pack_line.product_id.id or False,
                                 'is_pack_order_line': True,
                                 'package_line_id': pack_line.id or False,
-                                'price_unit': record.partner_id.b2b_pricelist_id.get_product_price(product_line.product_id,product_line.qty * pack_line.qty,record.partner_id),
+                                'unit_discount_price' : product_line.get_package_price_data(record.partner_id,product_line.usd_price,True) * currency_rate,
+                                'price_unit': product_line.get_package_price_data(record.partner_id,product_line.product_price) * currency_rate,
                                 'sale_type':product_line.product_id.sale_type,
                             })
-                            if record.partner_id.b2b_pricelist_id.currency_id.name == 'CAD':
-                                pack_sale_line.write({'unit_discount_price':product_line.cad_price or 0.00})
-                            else:
-                                pack_sale_line.write({'unit_discount_price':product_line.usd_price or 0.00})
                         pack_sale_line._onchange_unit_discounted_price_spt()
                         pack_sale_lines.append(pack_sale_line.id) if pack_sale_line.id and pack_sale_line.id not in pack_sale_lines else None
                 # backup order line for Packed Product Lines
@@ -3901,3 +3921,25 @@ class sale_order(models.Model):
                 rec.shipping_msg_inv_flag=True
                 rec.shipping_prev_id_flag=rec.shipping_id
                 rec.shipping_prev_cost_flag=shipping_cost
+
+    def cart_update(self):
+        # Method to B2B website quotation to partner's preferred currency.
+        # Must return something, Due to use in RPC.
+        partner_currency_id = self.partner_id.preferred_currency
+        if self.currency_id != partner_currency_id and self.state=='draft' and self.source_spt and self.source_spt.lower() == 'website':
+            self.write({
+                'currency_id': partner_currency_id.id,
+            })
+            product_price_dict = self.env['kits.b2b.multi.currency.mapping'].get_product_price(
+                self.partner_id.id,
+                self.order_line.mapped('product_id').ids
+            )
+            for line in self.order_line.filtered(lambda l: not l.is_admin and not l.is_global_discount and not l.is_shipping_product):
+                line.write({
+                    'price_unit': product_price_dict[line.product_id.id]['price'],
+                    'unit_discount_price': product_price_dict[line.product_id.id]['discounted_unit_price'],
+                    'fix_discount_price': product_price_dict[line.product_id.id]['fix_discount_price'],
+                    'discount': product_price_dict[line.product_id.id]['discount'],
+                })
+                line._compute_amount()
+        return True

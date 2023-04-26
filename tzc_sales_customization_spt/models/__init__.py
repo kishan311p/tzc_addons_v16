@@ -77,3 +77,6 @@ from . import mailing_trace
 from . import campaign_report_contacts
 from . import campaign_monetization_spt
 from . import stock_move_line
+from . import mail_followers
+from . import base_model
+from . import sale_manager_tracking

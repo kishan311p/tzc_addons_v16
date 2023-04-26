@@ -8,8 +8,8 @@
         <field name="priority">200</field>
         <field name="arch" type="xml">
             <field name="function" position="before">
-                <field name="preferred_currency"  options="{'no_create': True}"/>
-                <field name="b2b_pricelist_id"  options="{'no_create': True}"/>
+                <field name="preferred_currency"  options="{'no_create': True}" required="1"/>
+                <field name="b2b_pricelist_id"  options="{'no_create': True}" required="1"/>
             </field>
             
             <xpath expr="//sheet/div[@name='button_box']" position="inside">

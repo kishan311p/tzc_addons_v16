@@ -31,7 +31,10 @@ language_code = [('en','English'),('af','Afrikaans'),('sq','Albanian'),('ar','Ar
 class res_partner(models.Model):
     _inherit = 'res.partner'
 
-    b2b_pricelist_id = fields.Many2one(comodel_name='product.pricelist',string="Pricelist",index = True)
+    def _get_default_pricelist(self):
+        return self.env.ref('tzc_sales_customization_spt.usd_public_pricelist_spt').id
+
+    b2b_pricelist_id = fields.Many2one(comodel_name='product.pricelist',string="Pricelist",index = True,default=_get_default_pricelist)
     internal_id = fields.Char('Internal ID ')
     previous_total_sales = fields.Float('Previous Total Sales')
     customer_sales_rank = fields.Float('Customer Sales Rank')
@@ -662,6 +665,10 @@ class res_partner(models.Model):
             self = self.with_context({'mail_create_nosubscribe':True,'tracking_disable':True})
         
         res = super(res_partner,self).create(vals)
+        if res.country_id and not res.preferred_currency:
+            currency_id = self.env['kits.b2b.multi.currency.mapping'].search([('partner_country_ids','in',res.country_id.ids)],limit=1).currency_id
+            if currency_id:
+                res.preferred_currency = currency_id.id
         if not self.env.user.has_group('base.group_user'):
             res.company_type = 'company'
         # if res.country_id and res.country_id.id != canada_country_id:

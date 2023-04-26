@@ -8,15 +8,15 @@ class mail_template(models.Model):
             email_values = {}
         email_list = [self.env.company.catchall_email]
         if self.model =='stock.picking' and not self._context.get('salesperson_notify'):
-            sale_id = self.env['sale.order'].browse(res_id)
-            verified = sale_id.partner_verification() if sale_id.partner_id.user_ids else False
+            picking_id = self.env['stock.picking'].browse(res_id)
+            verified = picking_id.sale_id.partner_verification() if picking_id.sale_id.partner_id.user_ids else False
             if not verified:
                 res_id = None
                 force_send= False
                 return False
             else:
-                if sale_id:
-                    email_list.append(sale_id.user_id.email) if sale_id else None
+                if picking_id:
+                    email_list.append(picking_id.sale_id.user_id.email) if picking_id else None
                 email_values['reply_to'] = ','.join(email_list)        
                 return super(mail_template,self).send_mail(res_id, force_send, raise_exception, email_values, email_layout_xmlid)
         if self._context.get('active_model') and self._context.get('active_id'):

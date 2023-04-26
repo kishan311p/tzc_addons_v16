@@ -15,6 +15,9 @@ class kits_package_restriction(models.TransientModel):
 
     # process removing packages
     def action_process_without_packages(self):
+        action_open = False
         self.sudo().order_id.package_order_lines.filtered(lambda x: x.product_id in self.package_to_remove).unlink()
-        self.order_id.with_context({'package_allow':False}).action_confirm()
+        action_open =  self.order_id.with_context({'package_allow':False}).action_confirm()
+        if action_open: 
+            return action_open
         return {'type': 'ir.actions.act_window_close'}

@@ -5,7 +5,10 @@ class res_partner(models.Model):
     _inherit = 'res.partner'
 
     # b2b_pricelist_id = fields.Many2one(comodel_name='product.pricelist',string="Pricelist")
-    preferred_currency= fields.Many2one(comodel_name='res.currency',string="Preferred Currency" ,index=True)
+    def _get_currency_id(self):
+        return self.env.ref('base.USD').id
+
+    preferred_currency = fields.Many2one(comodel_name='res.currency',string="Preferred Currency" ,index=True,default=_get_currency_id)
     b2b_wishlist_count = fields.Integer('Wishlist Count',compute='_compute_b2b_wishlist_count')
     b2b_recent_view_count = fields.Integer('Recent View Count',compute='_compute_b2b_wishlist_count')    
     
@@ -13,6 +16,12 @@ class res_partner(models.Model):
         for record in self:
             record.b2b_wishlist_count = len(self.env['kits.b2b.product.wishlist'].search([('partner_id','=',record.id)]))
             record.b2b_recent_view_count = len(self.env['kits.b2b.recent.view'].search([('partner_id','=',record.id)]))
+
+    @api.onchange('country_id')
+    def onchange_currency_id(self):
+        for rec in self:
+            if rec.country_id:
+                rec.preferred_currency = self.env['kits.b2b.multi.currency.mapping'].search([('partner_country_ids','in',rec.country_id.ids)],limit=1).currency_id.id
 
     @api.model
     def create(self, vals):

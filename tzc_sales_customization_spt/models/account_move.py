@@ -167,8 +167,8 @@ class account_move(models.Model):
                 for record in self:
                     users = dict(saleperson=user_obj,manager=user_obj)
                     if record.invoice_user_id:
-                        if record.partner_id.user_ids and record.invoice_user_id.ids != record.partner_id.user_ids.ids:
-                            users['saleperson'] = record.invoice_user_id
+                        # if record.partner_id.user_ids and record.invoice_user_id.ids != record.partner_id.user_ids.ids:
+                        users['saleperson'] = record.invoice_user_id
                     if record.sale_manager_id:
                         users['manager'] = record.sale_manager_id
                     for user in users:

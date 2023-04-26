@@ -68,7 +68,7 @@ class discount_on_sale_order_line_wizard_spt(models.TransientModel):
                 if record.sale_id:
                     order_line_ids = []
                     if record.base_on == 'order_line':
-                        domain = [('order_id','=',record.sale_id.id),('product_id.type','!=','service')]
+                        domain = [('order_id','=',record.sale_id.id),('product_id.type','!=','service'),('package_id','=',False)]
                         if record.categ_ids:
                             domain.append(('product_id.categ_id','in',record.categ_ids.ids))
                         
@@ -77,7 +77,7 @@ class discount_on_sale_order_line_wizard_spt(models.TransientModel):
 
                         order_line_ids = order_line_obj.search(domain)
                     else:
-                        brand_domain = [('order_id','=',record.sale_id.id),('product_id.type','!=','service')]
+                        brand_domain = [('order_id','=',record.sale_id.id),('product_id.type','!=','service'),('package_id','=',False)]
                         if record.categ_ids:
                             brand_domain.append(('product_id.categ_id','in',record.categ_ids.ids))
                         if record.brand_ids:
@@ -95,20 +95,23 @@ class discount_on_sale_order_line_wizard_spt(models.TransientModel):
                     elif self.sale_type == 'all' and self.env.user.has_group('base.group_system'):
                         pass
                     else:
-                        order_line_ids = order_line_ids.filtered(lambda x:x if not x.sale_type else None)
+                        order_line_ids = order_line_ids.filtered(lambda x:x if not x.sale_type and not x.package_id else None)
                     if not record.is_additional_discount:
                         if record.apply_on == 'fix_discount':
-                            order_line_ids.write({
+                            for line in order_line_ids:
+                                line.write({
                                 'fix_discount_price' : record.fix_discount_price
                             })
                             order_line_ids._onchange_fix_discount_price_spt()
                         elif record.apply_on ==  'fix':
-                            order_line_ids.write({
+                            for line in order_line_ids:
+                                line.write({
                                 'unit_discount_price' : record.fix_price
                             })
                             order_line_ids._onchange_unit_discounted_price_spt()
                         else:
-                            order_line_ids.write({
+                            for line in order_line_ids:
+                                line.write({
                                 'discount' : record.discount,
                             })
                             order_line_ids._onchange_discount_spt()

@@ -124,13 +124,18 @@
                 <xpath expr="//button[@name='action_confirm']" position="before">
                     <button string="Merge Quotation" name="action_update_order" type="object" class="oe_highlight" attrs="{'invisible':[('state','in',('scanned','done','cancel','assigned'))]}"/>
                     <!-- <button name="excel_picking_order_report" string="Pick List" type="object" class="oe_highlight" attrs="{ 'invisible':[('state','=','cancel')] }"/> -->
+                    <field name="show_package_scan" invisible="1" />
+                    <button name="button_open_package_scan" type="object" string="Scan Packages" attrs="{'invisible':['|',('show_package_scan','=',False),('state','not in',('in_scanning','confirmed','waiting'))]}" class="oe_highlight" />
+                    <button name="button_open_remove_package" type="object" string="Remove Package Items" attrs="{'invisible':['|',('show_package_scan','=',False),('state','not in',('in_scanning','confirmed','waiting'))]}" class="oe_highlight" />
                     <button name="button_open_quick_scan_spt" string="Scan Order" attrs="{'invisible':[('state','in',('scanned','done','cancel','assigned'))]}" class="oe_highlight" type="object"/>
                     <button name="set_qty_by_script" type="object" string="Update Stock" class="oe_highlight" groups="base.group_system" attrs="{ 'invisible':[('state','not in',['assigned'])] }" confirm="This will adjust product stock according to this delivery."/>
                     <button string="Scanning Completed" name="action_scanned" type="object" class="oe_highlight" attrs="{'invisible':[('state','not in',('in_scanning'))]}"/>
                     <button string="Reset To Inscanning" name="action_reset_to_inscanning" type="object" class="oe_highlight" attrs="{'invisible':[('state','!=','scanned')]}"/>
-                    <button name="update_sale_order_spt" string='Update Order' attrs="{'invisible': ['|',('order_qty_count_spt','=',0),('state','=','cancel')]}" type="object" class="oe_highlight" confirm="This will add extra product to order."/>
+                    <!-- <button name="update_sale_order_spt" string='Update Order' attrs="{'invisible': ['|',('order_qty_count_spt','=',0),('state','=','cancel')]}" type="object" class="oe_highlight" confirm="This will add extra product to order."/> -->
                     <button name="picked_order_qty_spt" attrs="{'invisible':[('state','not in',('confirmed','in_scanning'))]}" string='Fullfil Complete Order' type="object" class="oe_highlight"/>
-                    <button string="REVERT COMPLETE ORDER" name="action_restore_preiviews_scanning" type="object" class="btn-danger" attrs="{ 'invisible':[('state','not in',['in_scanning'])] }" help="Revert Fullfil"/>
+                    <field name="is_fulfiled" invisible="1"/>
+                    <!-- <button string="REVERT COMPLETE ORDER" name="action_restore_preiviews_scanning" type="object" class="btn-danger" attrs="{ 'invisible':[('is_fulfiled','=',False),('state','in',['draft','waiting','confirmed','scanned','assigned','done','cancel'])] }" help="Revert Fullfil"/> -->
+                    <button string="REVERT COMPLETE ORDER" name="action_restore_preiviews_scanning" type="object" class="btn-danger" attrs="{ 'invisible':['|',('is_fulfiled','=',False),('state','in',['draft','waiting','confirmed','scanned','assigned','done','cancel'])] }" help="Revert Fullfil"/>
                 </xpath>
                 <xpath expr="//field[@name='move_ids_without_package']/tree/field[@name='product_id']" position="attributes">
                     <attribute name="options">{'no_create': True}</attribute>
@@ -262,8 +267,8 @@
 
 
             <xpath expr="//field[@name='move_ids_without_package']/tree" position="attributes">
-                <attribute name="decoration-warning">quantity_done &gt; product_uom_qty</attribute>
-                <attribute name="decoration-danger">qty_available &lt; quantity_done</attribute>
+                <!-- <attribute name="decoration-danger">quantity_done &gt; product_uom_qty</attribute> -->
+                <attribute name="decoration-danger">qty_available &lt; quantity_done or quantity_done &gt; product_uom_qty</attribute>
             </xpath>
             <xpath expr="//group[@name='other_infos']" position="attributes">
                 <attribute name="invisible">1</attribute>
@@ -314,7 +319,7 @@
                 <widget name="web_ribbon" class="s-ribbon-right" title="Package" attrs="{'invisible': ['|',('package_order','=',False),'&amp;',('package_order','=',True),('package_order_status','=','out_of_stock')]}" />
             </xpath>
             <xpath expr="//page/field[@name='move_ids_without_package']/tree/field[@name='product_uom_qty']" position="before">
-                <field name="package_id" readonly="1" invisible="1" />
+                <field name="package_id" readonly="1" />
             </xpath>
             
             <xpath expr="//field[@name='origin']" position="attributes">

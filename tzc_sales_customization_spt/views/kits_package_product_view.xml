@@ -7,32 +7,36 @@
             <field name="arch" type="xml">
                 <form>
                     <header>
-                        <button name="action_bulk_price_change" type="object" class="oe_highlight"
-                            string="Bulk Discount" />
+                        <button string="verified" name="verified_product" attrs="{'invisible':[('state','=','verified')]}" type="object" class="oe_highlight" groups="base.group_system"/>
+                        <button string="unverified" name="unverified_product" attrs="{'invisible':[('state','=','unverified')]}" type="object" groups="base.group_system"/>
+
+                        <button name="action_bulk_price_change" type="object" class="oe_highlight" string="Bulk Discount" />
+                        <field name="state" widget="statusbar"/>
                     </header>
+                    <div class="alert alert-danger text-center o_form_header alert-dismissible" role="status" attrs="{'invisible' :[('is_global','=',False)] }">
+                        <div>
+                            <field name="warning_message" readonly="1"/>
+                        </div>
+                    </div>
                     <sheet>
                         <div class="oe_button_box" name="button_box" invisible="1">
                             <field name="is_published" invisible="1" />
-                            <button type="object" name="product_is_publish" style="color:#f06767;"
-                                class="oe_stat_button" icon="fa-product-hunt"
-                                attrs="{'invisible':[('is_published','=',True)]}">
-                                <span>Unpublished</span>
+                            <button type="object" name="product_is_publish" class="oe_stat_button" icon="fa-product-hunt" attrs="{'invisible':[('is_published','=',True)]}">
+                                <span style="color:#f06767;">Unpublished</span>
                             </button>
-                            <button type="object" name="product_is_unpublish" style="color:#00b115;"
-                                class="oe_stat_button" icon="fa-product-hunt"
-                                attrs="{'invisible':[('is_published','=',False)]}">
-                                <span>Published</span>
+                            <button type="object" name="product_is_unpublish" class="oe_stat_button" icon="fa-product-hunt" attrs="{'invisible':[('is_published','=',False)]}">
+                                <span style="color:#00b115;">Published</span>
                             </button>
                         </div>
                         <div class="">
-                            <field name="pack_product_image" widget="image"  options="{'zoom': true,'preview_image':'pack_product_image','size': [128, 120]}"  class="oe_avatar" />
+                            <field name="pack_product_image" widget="image" options="{'zoom': true,'preview_image':'pack_product_image','size': [128, 120]}" class="oe_avatar" />
                         </div>
                         <div class="oe_title">
                             <div name="kits_name">
                                 <div class="col-12">
                                     <label class="oe_edit_only" for="name" string="Package Name" />
                                     <h1>
-                                        <field name="name" placeholder="Package Name" required="1" />
+                                        <field name="name" placeholder="Package Name" attrs="{'readonly':[('state','=','verified')]}" required="1" />
                                     </h1>
                                 </div>
 
@@ -41,32 +45,26 @@
 
                         <group>
                             <group>
-                                <field name="package_seo_name" required="1" />
-                                <field name="pack_product_url" widget="url" />
-                                <field name="sale_price_usd" />
+                                <field name="package_seo_name" attrs="{'readonly':[('state','=','verified')]}" required="1" />
+                                <field name="pack_product_url" attrs="{'readonly':[('state','=','verified')]}" widget="url" />
+                                <field name="sale_price" attrs="{'readonly':[('state','=','verified')]}"/>
                                 <!-- <field name="sale_price_cad" readonly="1" /> -->
-                                <field name="discounted_price_usd" readonly="1" />
+                                <field name="discounted_price" readonly="1" />
                                 <!-- <field name="discounted_price_cad" readonly="1" /> -->
                                 <!-- <field name="is_promotion_required" /> -->
                                 <!-- <field name="promo_code" attrs="{'invisible':[('is_promotion_required','=',False)],'required':[('is_promotion_required','=',True)]}" /> -->
                                 <field name="start_date" />
                                 <field name="end_date" />
-                                <field name="is_global" />
-                                <field name="pack_description" required="1" />
+                                <field name="is_global" invisible="1"/>
+                                <field name="pack_description" attrs="{'readonly':[('state','=','verified')]}" required="1" />
                             </group>
                         </group>
                         <notebook>
                             <page name="product_lines" string="Package Products">
-                                <field name="product_line_ids" mode="tree">
-                                    <tree editable="bottom" create="1" delete="1"
-                                        string="Combo Product Lines" default_order="product_id">
-                                        <field name="image_product_url" class="oe_avatar"
-                                            string="Primary Image" widget="image"
-                                            options="{'zoom': true,'thumb_image':'image_product_url','preview_image':'image_product_url','size': [256, 256]}" />
-                                        <field name="image_product_secondary_url" class="oe_avatar"
-                                            string="Secondary Image" widget="image"
-                                            style="margin-left:10px;"
-                                            options="{'zoom': true,'thumb_image':'image_product_secondary_url','preview_image':'image_product_secondary_url','size': [256, 256]}" />
+                                <field name="product_line_ids" mode="tree" attrs="{'readonly':[('state','=','verified')]}">
+                                    <tree editable="bottom" create="1" delete="1" string="Combo Product Lines" default_order="product_id">
+                                        <field name="image_product_url" class="oe_avatar" string="Primary Image" widget="image" options="{'zoom': true,'thumb_image':'image_product_url','preview_image':'image_product_url','size': [256, 256]}" />
+                                        <field name="image_product_secondary_url" class="oe_avatar" string="Secondary Image" widget="image" style="margin-left:10px;" options="{'zoom': true,'thumb_image':'image_product_secondary_url','preview_image':'image_product_secondary_url','size': [256, 256]}" />
                                         <field name="product_id" />
                                         <field name="sale_type" />
                                         <field name="qty" />
@@ -81,7 +79,7 @@
                             </page>
                             <page name="partner_ids" string="Customers">
                                 <group>
-                                    <field name="select_all" />
+                                    <!-- <field name="select_all" /> -->
                                 </group>
                                 <br />
                                 <field name="partner_ids" />
@@ -96,13 +94,12 @@
             <field name="model">kits.package.product</field>
             <field name="arch" type="xml">
                 <tree>
-                    <field name="pack_product_image" widget="image"
-                        options="{'zoom': true,'preview_image':'pack_product_image','size': [128, 120]}" />
+                    <field name="pack_product_image" widget="image" options="{'zoom': true,'preview_image':'pack_product_image','size': [128, 120]}" />
                     <field name="name" />
-                    <field name="sale_price_usd" />
+                    <field name="sale_price" />
                     <!-- <field name="sale_price_cad" /> -->
                     <!-- <field name="discounted_price_cad" /> -->
-                    <field name="discounted_price_usd" />
+                    <field name="discounted_price" />
 
                 </tree>
             </field>
@@ -114,11 +111,8 @@
             <field name="context">{}</field>
         </record>
         <!-- sales/product -->
-        <menuitem id="kits_menu_combo_products" groups="base.group_system" name="Package Products"
-            action="kits_package_product_action_view" parent='sale.product_menu_catalog' sequence="40"/>
+        <menuitem id="kits_menu_combo_products" groups="base.group_system" name="Package Products" action="kits_package_product_action_view" parent='sale.product_menu_catalog' sequence="40"/>
         <!-- website/ -->
-        <!-- <menuitem id="kits_menu_website_combo_products" groups="base.group_system"
-        name="Package Products" action="kits_package_product_action_view"
-        parent='website_sale.menu_catalog'/> -->
+        <!-- <menuitem id="kits_menu_website_combo_products" groups="base.group_system" name="Package Products" action="kits_package_product_action_view" parent='website_sale.menu_catalog'/> -->
     </data>
 </odoo>

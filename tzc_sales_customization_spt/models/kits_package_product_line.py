@@ -93,3 +93,51 @@ class kits_package_product_lines(models.Model):
                 line_cad_price = round(rec.usd_price * cad_rate,2)
             rec.cad_price = line_cad_price
     
+    def get_package_price_data(self,partner_id,product_price,calculate_discount = False):
+        active_inflation = self.env['kits.inflation'].search([('is_active','=',True)])
+        inflation_rule_ids = self.env['kits.inflation.rule'].search([('country_id','in',partner_id.country_id.ids),('brand_ids','in',self.product_id.brand.ids),('inflation_id','=',active_inflation.id)])
+        inflation_rule = inflation_rule_ids[-1] if inflation_rule_ids else False
+        if inflation_rule:
+            is_inflation = False
+            if active_inflation.from_date and active_inflation.to_date :
+                if active_inflation.from_date <= datetime.now().date() and active_inflation.to_date >= datetime.now().date():
+                    is_inflation = True
+            elif active_inflation.from_date:
+                if active_inflation.from_date <= datetime.now().date():
+                    is_inflation = True
+            elif active_inflation.to_date:
+                if active_inflation.to_date >= datetime.now().date():
+                    is_inflation = True
+            else:
+                if not active_inflation.from_date:
+                    is_inflation = True
+                if not active_inflation.to_date:
+                    is_inflation = True
+
+            if is_inflation:
+                product_price = round(product_price+(product_price*inflation_rule.inflation_rate /100),2)
+        if calculate_discount:
+            active_fest_id = self.env['tzc.fest.discount'].search([('is_active','=',True)])
+            special_disocunt_id = self.env['kits.special.discount'].search([('country_id','in',partner_id.country_id.ids),('brand_ids','in',self.product_id.brand.ids),('tzc_fest_id','=',active_fest_id.id)])
+            price_rule_id = special_disocunt_id[-1] if special_disocunt_id else False
+            if price_rule_id:
+                applicable = False 
+                if active_fest_id.from_date and active_fest_id.to_date :
+                    if active_fest_id.from_date <= datetime.now().date() and active_fest_id.to_date >= datetime.now().date():
+                        applicable = True
+                elif active_fest_id.from_date:
+                    if active_fest_id.from_date <= datetime.now().date():
+                        applicable = True
+                elif active_fest_id.to_date:
+                    if active_fest_id.to_date >= datetime.now().date():
+                        applicable = True
+                else:
+                    if not active_fest_id.from_date:
+                        applicable = True
+                    if not active_fest_id.to_date:
+                        applicable = True
+                    
+                if applicable: 
+                    product_price = round(product_price - (product_price * price_rule_id.discount / 100),2)
+
+        return product_price

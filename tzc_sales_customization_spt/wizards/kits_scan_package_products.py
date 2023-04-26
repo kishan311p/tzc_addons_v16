@@ -80,7 +80,7 @@ class kits_scan_package_products(models.TransientModel):
     def action_process(self):
         for line in self.line_ids:
             self.picking_id.write({'state': 'in_scanning'})
-            self.picking_id.sate_id.write({'state': 'in_scanning'})
+            self.picking_id.sale_id.write({'state': 'in_scanning'})
             move = self.picking_id.move_ids_without_package.filtered(lambda x: x.product_id == line.product_id and x.package_id == line.package_id)
             if move:
                 if move.product_uom_qty >= line.product_qty:

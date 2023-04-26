@@ -33,7 +33,7 @@ class marketing_activity(models.Model):
         res = super(marketing_activity,self.with_context(market_campaign_id=self.campaign_id.id)).execute_on_traces(traces)
         return res
 
-    def action_view_sent(self):
+    def action_kits_view_sent(self):
         self.ensure_one()
         contact_ids = self.env['campaign.report.contacts'].search([('campaign_id', '=', self.campaign_id.id)])
         return {
@@ -45,7 +45,7 @@ class marketing_activity(models.Model):
             'target':'self',
         }
     
-    def action_view_clicked(self):
+    def action_kits_view_clicked(self):
         self.ensure_one()
         contact_ids = self.env['campaign.report.contacts'].search([('campaign_id', '=', self.campaign_id.id)]).filtered(lambda x: x.clicked)
         return {
@@ -57,7 +57,7 @@ class marketing_activity(models.Model):
             'target':'self',
         }
     
-    def action_view_opened(self):
+    def action_kits_view_opened(self):
         self.ensure_one()
         contact_ids = self.env['campaign.report.contacts'].search([('campaign_id', '=', self.campaign_id.id)]).filtered(lambda x: x.opened)
         return {
@@ -69,7 +69,7 @@ class marketing_activity(models.Model):
             'target':'self',
         }
 
-    def action_view_fialed_by_odoo(self):
+    def action_kits_view_fialed_by_odoo(self):
         self.ensure_one()
         trace_ids = self.env['mailing.trace'].search([('campaign_id', '=', self.id),('trace_status','=','error')])
         contact_ids = self.env['campaign.report.contacts'].search([('trace_id', 'in', trace_ids.ids)])
@@ -83,7 +83,7 @@ class marketing_activity(models.Model):
             'target':'self',
         }
 
-    def action_view_fialed_by_mailgun(self):
+    def action_kits_view_fialed_by_mailgun(self):
         self.ensure_one()
         contact_ids = self.env['campaign.report.contacts'].search([('campaign_id', '=', self.campaign_id.id),('state','in',['ignored','failed_mailgun'])])
         # contact_ids = self.env['campaign.report.contacts'].search([('campaign_id', '=', self.campaign_id.id)]).filtered(lambda x: x.failed_by_mailgun)
@@ -96,7 +96,7 @@ class marketing_activity(models.Model):
             'target':'self',
         }
 
-    def action_view_received(self):
+    def action_kits_view_received(self):
         self.ensure_one()
         contact_ids = self.env['campaign.report.contacts'].search([('campaign_id', '=', self.campaign_id.id)]).filtered(lambda x: x.received)
         return {
