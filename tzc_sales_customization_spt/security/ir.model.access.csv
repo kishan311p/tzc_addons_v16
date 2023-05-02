@@ -118,3 +118,7 @@ access_kits_scan_package_products,access.kits.scan.package.products,model_kits_s
 access_kits_scan_package_product_lines,access.kits.scan.package.product.lines,model_kits_scan_package_product_lines,,1,1,1,1
 access_kits_remove_package_products,access.kits.remove.package.products,model_kits_remove_package_products,,1,1,1,1
 access_kits_remove_package_product_lines,access.kits.remove.package.product.lines,model_kits_remove_package_product_lines,,1,1,1,1
+access_kits_return_ordered_items,access.kits.return.ordered.items,model_kits_return_ordered_items,,1,1,1,1
+access_kits_return_ordered_items_line,access.kits.return.ordered.items.line,model_kits_return_ordered_items_line,,1,1,1,1
+access_kits_scan_return_items_wizard,access.kits.scan.return.items.wizard,model_kits_scan_return_items_wizard,,1,1,1,1
+access_kits_scan_return_items_wizard_line,access.kits.scan.return.items.wizard.line,model_kits_scan_return_items_wizard_line,,1,1,1,1

@@ -20,7 +20,7 @@
                         <div class="row">
                             <div class="col-9" style="display:flex">
                                 <label for="product_id" style="font-weight: bold;"/>
-                                <field name="product_id" style="width: 26rem;margin-left: 20px;" options="{'no_create': True, 'no_open': True}" domain="[('id', 'in', product_ids)]"/>
+                                <field name="product_id" style="width: 26rem;margin-left: 20px;" options="{'no_create': True, 'no_open': True}" domain="[('id', 'in', product_ids),('is_case_product','=',False)]"/>
                                 <div class="col-1">
                                     <field name="qty" style="margin-left: 20px;width: 5rem;"/>
                                 </div>

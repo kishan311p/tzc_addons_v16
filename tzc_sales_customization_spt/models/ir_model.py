@@ -16,6 +16,9 @@ class ir_model(models.Model):
                     updated_fields.append(value)
                 if model == 'account.move' or model == 'res.partner':
                     updated_fields.append(value)
+                if model == 'product.product':
+                    updated_fields.append(value)
+                    
             elif self._context.get('params') and self._context.get('params').get('model') == 'sale.order' and self._context.get('active_model') == 'sale.barcode.order.spt':
                 updated_fields.append(value)
 

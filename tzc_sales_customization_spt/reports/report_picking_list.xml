@@ -115,7 +115,8 @@
                     <div class="col-auto mw-100 mb-2">
                         <strong>Total Cases:</strong>
                         <!-- <p class="mx-5" t-esc="int(o.no_of_cases)"/> -->
-                        <t t-if="o.include_cases">
+                        <t t-if="o.no_of_cases > 0">
+                        <!-- <t t-if="o.include_cases"> -->
                             <p class="mx-5" t-esc="int(o.no_of_cases)"/>
                         </t>
                         <t t-else="">

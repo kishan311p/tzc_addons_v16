@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="kits_return_ordered_items_line_view_form" model="ir.ui.view">
+        <field name="name">kits.return.ordered.items.line.view.form</field>
+        <field name="model">kits.return.ordered.items.line</field>
+        <field name="arch" type="xml">
+            <form string="">
+                <sheet>
+                    <group>
+                        <field name="return_order_id" attrs="{'invisible': [('return_order_id', '=', False)]}"/>
+                        <field name="scrap_order_id" attrs="{'invisible': [('scrap_order_id', '=', False)]}"/>
+                        <field name="product_id" />
+                        <field name="product_qty" />
+                        <field name="return_type" />
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+    <record id="kits_return_ordered_items_view_form" model="ir.ui.view">
+        <field name="name">kits.return.ordered.items.view.form</field>
+        <field name="model">kits.return.ordered.items</field>
+        <field name="arch" type="xml">
+            <form string="">
+                <header>
+                    <button name="action_open_scan_items" string="Scan Items" type="object" class="oe_highlight" attrs="{'invisible' : [('state','in',['return','cancel'])]}"/>
+                    <button name="action_return" string="return" type="object" class="oe_highlight" attrs="{'invisible' : [('state','!=','in_scanning')]}"/>
+                    <button name="action_reset_to_draft" string="Reset To Draft" type="object" class="oe_highlight" attrs="{'invisible' : [('state','!=','cancel')]}"/>
+                    <button name="action_cancel" string="Cancel" type="object" attrs="{'invisible' : [('state','!=','return')]}"/>
+                    <field name="state" widget="statusbar"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_view_delivery" type="object" class="oe_stat_button" attrs="{'invisible': [('delivery_count', '=', 0)]}" icon="fa-truck">
+                            <field name="delivery_count" string="" widget="statinfo"/>
+                        </button>
+                    </div>
+                    <div>
+                        <h1>
+                            <field name="name" readonly="1" placeholder="Name"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="partner_id" options="{'no_create_edit':True}" attrs="{'readonly': [('state', '!=', 'draft')]}"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page name="orders" string="Orders">
+                            <field name="order_ids" domain="[('state','in',['shipped','draft_inv','open_inv']),('partner_id','=',partner_id)]" attrs="{'readonly': [('state', '!=', 'draft')]}">
+
+                                <tree string="Sales Orders" create="0" edit="0" decoration-info="invoice_status == 'to invoice'" decoration-muted="state == 'cancel'">
+                                    <field name="name" string="Order Number" optional="show"/>
+                                    <field name="partner_id" optional="show" />
+                                    <field name="create_date" optional="show" />
+                                    <field name="updated_on" optional="show" string="Last Updated On"/>
+                                    <field name="create_uid" optional="show" />
+                                    <field name="updated_by" optional="show" string="Last Updated By"/>
+                                    <field name="shipped_date" optional="show" />
+                                    <field name="user_id" optional="show"/>
+                                    <field name="source_spt" string="Source" optional="show"/>
+                                    <field name="picked_qty" optional="show" />
+                                    <field name="amount_total" string="Order Total" optional="show" />
+                                    <field name="picked_qty_order_total" string="Invoice Total" optional="show" />
+                                    <field name="country_id" optional="hide" />
+                                    <field name="is_picking_set" />
+                                    <field name="date_order" string="Order Date" widget="date" optional="show"/>
+                                    <field name="commitment_date" optional="hide" />
+                                    <field name="expected_date" optional="hide" />
+
+                                    <field name="amount_untaxed" sum="Total Tax Excluded" widget="monetary" optional="show" />
+                                    <field name="amount_tax" sum="Tax Total" widget="monetary" optional="show" />
+                                    <field name="amount_total" sum="Total Tax Included" widget="monetary" optional="show" />
+                                    <field name="delivery_status" optional="hide" widget="badge"/>
+                                    <field name="invoice_status" widget="badge" optional="show"/>
+                                    <field name="b2b_currency_id" optional="show"/>
+                                    <field name="invoice_name" optional="show" />
+                                    <field name="state" optional="show"/>
+                                    <field name="payment_status" />
+                                    <field name="is_payment_link"/>
+                                    <field name="tag_ids" optional="show" widget="many2many_tags" options="{'color_field': 'color'}" />
+                                    <field name="state" />
+                                </tree>
+                            </field>
+                        </page>
+                        <page name="return" string="Return">
+                            <field name="return_line_ids" context="{'default_return_type' : 'return'}" domain="[('return_type','=','return')]" attrs="{'readonly': [('state', '!=', 'draft')]}">
+                                <tree editable="bottom">
+                                    <field name="product_id" required="1" />
+                                    <field name="product_qty" />
+                                </tree>
+                            </field>
+                        </page>
+                        <page name="scrap" string="Scrap">
+                            <field name="scrap_line_ids" context="{'default_return_type' : 'scrap'}" domain="[('return_type','=','scrap')]" attrs="{'readonly': [('state', '!=', 'draft')]}">
+                                <tree editable="bottom">
+                                    <field name="product_id" required="1" />
+                                    <field name="product_qty" />
+                                </tree>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="kits_return_ordered_items_view_tree" model="ir.ui.view">
+        <field name="name">kits.return.ordered.items.view.tree</field>
+        <field name="model">kits.return.ordered.items</field>
+        <field name="arch" type="xml">
+            <tree string="">
+                <field name="partner_id" />
+                <field name="state" />
+            </tree>
+        </field>
+    </record>
+    <record id="kits_return_ordered_items_view_search" model="ir.ui.view">
+        <field name="name">kits.return.ordered.items.view.search</field>
+        <field name="model">kits.return.ordered.items</field>
+        <field name="arch" type="xml">
+            <search string="">
+                <field name="partner_id" />
+                <field name="state" />
+                <filter name="draft" string="Draft" domain="[('state','=','draft')]"/>
+                <filter name="in_scanning" string="In Scanning" domain="[('state','=','in_scanning')]"/>
+                <filter name="return" string="Return" domain="[('state','=','return')]"/>
+                <filter name="cancel" string="Cancel" domain="[('state','=','cancel')]"/>
+                <group expand="0" string="Group By">
+                    <filter string="state" name="State" domain="[]" context="{'group_by': 'state'}"/>
+                    <filter string="sale_orders" name="Sale Order" domain="[]" context="{'group_by': 'order_ids'}"/>
+                    <filter name="customer" string="Customer" domain="[]" context="{'group_by': 'partner_id'}"/>
+                    <!-- <filter string="Order Date" name="order_month" domain="[]" context="{'group_by': 'date_order'}"/> -->
+                </group>
+            </search>
+        </field>
+    </record>
+    <record id="kits_return_ordered_items_action" model="ir.actions.act_window">
+        <field name="name">Return Ordered Items</field>
+        <field name="res_model">kits.return.ordered.items</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+    <menuitem id="kits_return_ordered_items_menu" name="Return Ordered Items" action="kits_return_ordered_items_action" groups="base.group_system" parent="sale.sale_menu_root" sequence="249"/>
+</odoo>

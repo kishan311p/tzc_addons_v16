@@ -80,3 +80,5 @@ from . import stock_move_line
 from . import mail_followers
 from . import base_model
 from . import sale_manager_tracking
+from . import ir_ui_menu
+from . import kits_return_ordered_items

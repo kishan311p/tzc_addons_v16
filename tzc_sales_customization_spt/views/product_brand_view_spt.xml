@@ -36,7 +36,14 @@
                             </h1>
                         </div>
                         <group>
-                            <field name="brand_link" widget="url"/>
+                            <group>
+                                <field name="brand_link" widget="url"/>
+                                <field name="case_image_url" />
+                            </group>
+                            <group>
+                                <!-- <field name="case_type" /> -->
+                                <field name="custom_message" />
+                            </group>
                         </group>
                         <!-- <div groups="website.group_multi_website">
                             <label for="website_id" string="Website" class="col-sm-1 p-0 pt-3" />

@@ -10,6 +10,8 @@ import random
 import requests
 import base64
 import urllib
+from bs4 import BeautifulSoup
+from lxml import etree
 
 class product_template(models.Model):
     _inherit = 'product.product'
@@ -127,7 +129,7 @@ class ProductProduct(models.Model):
     rim_type = fields.Many2one('product.rim.type.spt','Rim Type')
     custom_message = fields.Text(string='Custom Message', default='', translate=True)
     country_of_origin = fields.Many2one('res.country','Country Of Origin')
-    gender = fields.Selection([('male','Male'),('female','Female'),('m/f','M/F')], string='Gender')
+    gender = fields.Selection([('male','Male'),('female','Female'),('m/f','Unisex')], string='Gender')
     bridge_size = fields.Many2one('product.bridge.size.spt','Bridge Size')
     temple_size = fields.Many2one('product.temple.size.spt','Temple Size')
     lense_color_name =  fields.Many2one('product.color.spt','Lense Color Name')
@@ -175,29 +177,9 @@ class ProductProduct(models.Model):
     )
     product_pricelist_item_ids = fields.One2many('product.pricelist.item','product_id')
     
-    # Fields for Product Details IN B2B website For Optimised Query.
-    b2b_product_size_value = fields.Char('B2B Product Size Value', compute="compute_b2b_values", compute_sudo=True, store=True)
-    b2b_name = fields.Char('B2B Name', compute='compute_b2b_values', compute_sudo=True, store=True)
-
-    
     _sql_constraints = [
         ('seo_keyword', 'unique(product_seo_keyword)', 'Seo keyword already exists!')
     ]
-
-    @api.depends('eye_size_compute', 'bridge_size_compute', 'temple_size_compute','eye_size','bridge_size', 'temple_size',
-                 'model','model.name','manufacture_color_code', 'categ_id', 'categ_id.name'
-                 )
-    def compute_b2b_values(self):
-        for product in self:
-            product.b2b_product_size_value = '{} {} {}'.format(product.eye_size_compute or '00',product.bridge_size_compute or '00',product.temple_size_compute or '00')
-            product.b2b_name = '{} {} {} {} {} ({})'.format(
-                product.model.name or '00',
-                product.manufacture_color_code or '00',
-                product.eye_size_compute or '00',
-                product.bridge_size_compute or '00',
-                product.temple_size_compute or '00',
-                product.categ_id.name,
-            )
 
     # @api.depends('clearance_usd','clearance_usd_in_percentage')
     # def _compute_clearance_price(self):
@@ -416,6 +398,12 @@ class ProductProduct(models.Model):
             if not record.variant_name :
                 record.variant_name = record.name
     
+    @api.onchange('variant_name')
+    def onchange_case_variant_name(self):
+        for rec in self:
+            if rec.is_case_product:
+                rec.name = rec.variant_name
+
     @api.onchange('case_image_url')
     def onchange_case_image_url(self):
         for record in self:
@@ -654,11 +642,16 @@ class ProductProduct(models.Model):
     @api.model
     def create(self, vals):
         res = super(ProductProduct, self).create(vals)
-        if res.type == 'product':
-            res.inventory_availability = 'always'
+        # no field as inventory_availability
+        # if res.type == 'product':
+        #     res.inventory_availability = 'always'
         return res
 
     def write(self, vals):
+        field_list = ['variant_name','brand','default_code','image_url','lst_price','case_type','height','width','length','weight','volume']
+        update = self.env['ir.model']._updated_data_validation(field_list,vals,self._name)
+        if update:
+            vals.update({'updated_by':self.env.user.id,'updated_on':datetime.today()})
         if 'active' in vals and (vals['active'] == False or vals['active']) and not self.env.context.get('from_product_import'):
             # if not self.env.user.has_group('base.group_system'):
             raise UserError(_('Due to security restrictions, you are not allowed to "%s" this record.'%('Unarchive' if vals['active'] else 'Archive')))
@@ -766,7 +759,8 @@ class ProductProduct(models.Model):
         color_ids = color_obj.search([('name','ilike','other')]).ids
 
         # publish products
-        product_ids = product_obj.search([])
+        # ignoring case products
+        product_ids = product_obj.search([('is_case_product','=',False)])
         product_ids = product_ids.filtered(lambda x: x.eye_size_compute > 1 and x.available_qty_spt > 0 and not x.is_image_missing)
         product_ids = product_ids.filtered(lambda x: x.product_color_name.id and x.product_color_name.id not in color_ids)
         product_ids = product_ids.filtered(lambda x: x.rim_type.id and x.rim_type.id not in rim_type_ids)
@@ -1472,3 +1466,50 @@ class ProductProduct(models.Model):
                 return {'product_name':product.variant_name ,'product_id':product.id}
             return False
         return False
+
+    def action_open_case_products(self):
+        product_categ_id = self.env.ref('tzc_sales_customization_spt.case_product_category')
+        if product_categ_id:
+            return {
+                'name': _('Case Products'),
+                'view_mode': 'tree,form',
+                'res_model': 'product.product',
+                'views': [(self.env.ref('tzc_sales_customization_spt.case_product_view_tree_spt').id,'tree'),
+                            (self.env.ref('product.product_normal_form_view').id,'form')],
+                'type': 'ir.actions.act_window',
+                'domain': [('is_case_product','=',True)],
+                # 'context' : {"search_default_filter_is_case_product":True,'case_product':True,'default_is_case_product':True,'default_purchase_ok':False,'default_default_code':"test"}
+                'context' : {"search_default_filter_is_case_product":True,'case_product':True,'default_is_case_product':True,'default_purchase_ok':False,'default_categ_id':product_categ_id.id,'default_detailed_type':'product'}
+            }
+    @api.model
+    def _get_view(self, view_id=None, view_type='search', **options):
+        arch, view = super(ProductProduct,self)._get_view(view_id, view_type, **options)
+        if self._context.get('case_product'):
+            if view.type == 'search':
+                doc = arch
+                str_xml = etree.tostring(doc, encoding='unicode')
+                soup = BeautifulSoup(str_xml, "html.parser")
+                filters = soup.find_all('filter')
+                ignore_filter_names = ['product_brand_group_by','categ_id','product_updated_by_group_by']
+                for filter_search in filters:
+                    if filter_search.attrs.get('name') not in ignore_filter_names:
+                        filter_search['invisible']=1
+                arch = etree.fromstring(str(soup))
+            if view.type == 'form':
+                doc = arch
+                str_xml = etree.tostring(doc, encoding='unicode')
+                soup = BeautifulSoup(str_xml, "html.parser")
+                soup.form['edit']=1
+                soup.form['create']=1
+                arch = etree.fromstring(str(soup))
+        return arch, view
+    
+    @api.onchange('brand')
+    def onchange_brand_internal_ref(self):
+        for rec in self:
+            if rec.brand:
+                rec.default_code = '-'.join(rec.brand.name.lower().split(' '))+'-case'
+            else:
+                rec.default_code = ''
+
+    

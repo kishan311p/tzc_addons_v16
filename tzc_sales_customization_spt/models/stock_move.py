@@ -14,6 +14,7 @@ class stock_move(models.Model):
     qty_available = fields.Float('Total Qty',related='product_id.qty_available')
     pro_primary_image_url = fields.Char("Primary Image URL",related='product_id.primary_image_url')
     scan_extra_item = fields.Boolean(default=False)
+    return_order_line_id = fields.Many2one('kits.return.ordered.items.line', string='Return Order Line')
 
     @api.depends('sale_line_id','sale_line_id.package_id')
     def _compute_package_id(self):

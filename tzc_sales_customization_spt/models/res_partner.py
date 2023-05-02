@@ -181,7 +181,7 @@ class res_partner(models.Model):
                     vals['customer_rank'] = 1
             if 'email' in vals:
                 if partner.user_ids:
-                    partner.user_ids[0].login = vals['email']
+                    partner.sudo().user_ids[0].login = vals['email']
             
             if 'user_id' in vals.keys() and not vals['user_id']:
                     del vals['user_id']
@@ -192,7 +192,7 @@ class res_partner(models.Model):
             if vals.get('country_id') or vals.get('state_id'):
                 rec.onchange_country_id()
             if 'email' in vals.keys() and vals['email']:
-                mailing_contact_id = self.env['mailing.contact'].search([('odoo_contact_id','=',self.id)])
+                mailing_contact_id = self.env['mailing.contact'].sudo().search([('odoo_contact_id','=',self.id)])
                 # mailing_contact_id.mailgun_verification = False
                 mailing_contact_id.mailgun_verification_status = 'rejected'
                 # rec.mailgun_verification = False

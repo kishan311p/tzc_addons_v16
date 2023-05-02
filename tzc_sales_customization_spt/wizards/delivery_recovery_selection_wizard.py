@@ -74,34 +74,37 @@ class delivery_recovery_selection_wizard(models.TransientModel):
                         price_unit = self.sale_id.pricelist_id._get_product_price(product_id, cancel_picking_data.get(delivery_data).get('demand'), product_id.uom_id)
                         
                         if product_id.sale_type == 'on_sale' and self.sale_id and self.sale_id.pricelist_id and self.sale_id.pricelist_id.currency_id:
-                            # if self.sale_id.pricelist_id.currency_id.name == 'CAD':
-                            #     price_unit = product_id.on_sale_cad
-                            # if self.sale_id.pricelist_id.currency_id.name == 'USD':
                             price_unit = product_id.on_sale_usd
                         
                         if product_id.sale_type == 'clearance' and self.sale_id and self.sale_id.pricelist_id and self.sale_id.pricelist_id.currency_id:
-                            # if self.sale_id.pricelist_id.currency_id.name == 'CAD':
-                            #     price_unit = product_id.clearance_cad
-                            # if self.sale_id.pricelist_id.currency_id.name == 'USD':
                             price_unit = product_id.clearance_usd
 
                         product_uom_qty = 0.0
-                        if cancel_picking_data.get(delivery_data).get('done') != 0.0 and cancel_picking_data.get(delivery_data).get('demand') != 0.0:
-                            product_uom_qty = cancel_picking_data.get(delivery_data).get('done')
-                        elif cancel_picking_data.get(delivery_data).get('done') == 0.0 and cancel_picking_data.get(delivery_data).get('demand') != 0.0:
-                            product_uom_qty = cancel_picking_data.get(delivery_data).get('demand')
-                        elif cancel_picking_data.get(delivery_data).get('demand') == 0.0 and cancel_picking_data.get(delivery_data).get('done') != 0.0:
-                            product_uom_qty = cancel_picking_data.get(delivery_data).get('done')
-
+                        move_id = self.env['stock.move'].create({
+                                'location_id' : self.picking_id.location_id.id,
+                                'location_dest_id' : self.picking_id.location_dest_id.id,
+                                'product_id' : product_id.id,
+                                'product_uom' : product_id.uom_id.id,
+                                'date' : fields.Datetime.now(),
+                                'company_id': self.picking_id.company_id.id,
+                                'quantity_done' : cancel_picking_data.get(delivery_data).get('done'),
+                                'name':product_id.name,
+                                'product_uom_qty':cancel_picking_data.get(delivery_data).get('demand'),
+                                'picking_id':new_picking_id.id
+                            })
                         new_picking_id.sale_id.write({
                             'order_line':[(0,0,{'product_id':product_id.id,
                                                 'name':product_id.name,
                                                 'product_uom_qty':product_uom_qty,
                                                 'unit_discount_price':price_unit,
                                                 'price_unit': price_unit,
+                                                'sale_type':product_id.sale_type,
                                                 'picked_qty':cancel_picking_data.get(delivery_data).get('done')})]
                         })
+                        move_id.sale_line_id = new_picking_id.sale_id.order_line.filtered(lambda x:x.product_id.id == product_id.id).id
+                        move_id.move_line_ids.write({'qty_done':cancel_picking_data.get(delivery_data).get('done'),'picking_id':self.picking_id.id})
                         new_picking_id.sale_id.order_line.move_ids.filtered(lambda x:x.state != 'cancel' and x.product_id.id == product_id.id).quantity_done = cancel_picking_data.get(delivery_data).get('done')
-                
+                        move_id.sale_line_id.product_id_change()
+
                 new_picking_id.state = 'in_scanning'
                 self.sale_id.state = 'in_scanning'

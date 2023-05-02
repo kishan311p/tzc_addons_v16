@@ -10,7 +10,7 @@
                     <attribute name="invisible">1</attribute>
                 </xpath>
                 <xpath expr="//form" position="attributes">
-                    <attribute name="edit">0</attribute>
+                    <attribute name="edit">1</attribute>
                 </xpath>
                 <xpath expr="//div[hasclass('oe_title')]/h1" position="attributes">
                     <attribute name="invisible">1</attribute>
@@ -20,7 +20,8 @@
                 <xpath expr="//label[@for='name']" position="replace">
                     <div name="name_spt">
                         <div class="col-6">
-                            <label class="oe_edit_only" for="name" string="Product Name" />
+                            <label class="oe_edit_only" for="name" string="Product Name" attrs="{'invisible':[('is_case_product','=',True)]}" />
+                            <label class="oe_edit_only" for="name" string="Case Name" attrs="{'invisible':[('is_case_product','=',False)]}" />
                             <h1>
                                 <field name="name" placeholder="Product Name" />
                             </h1>
@@ -30,26 +31,30 @@
                 <xpath expr="//page[@name='purchase']" position="attributes">
                     <attribute name="invisible">1</attribute>
                 </xpath>
+
                 <xpath expr="//div[@name='options']" position="replace">
                     <div name="options" position="inside">
                         <div>
-                            <field name="sale_ok" />
-                            <label for="sale_ok" />
-                            <br />
-                            <field name="purchase_ok" />
-                            <label for="purchase_ok" />
-                            <br />
-                            <field name="is_shipping_product" />
-                            <label for="is_shipping_product" string="Is Shipping Product" />
-                            <br />
-                            <field name="is_admin" />
-                            <label for="is_admin" string="Is Admin Fee" />
-                            <br />
-                            <field name="is_global_discount" />
-                            <label for="is_global_discount" string="Is Additional Discount" />
-                            <br />
-                            <field name="is_forcefully_unpublished" />
-                            <label for="is_forcefully_unpublished" />
+                            <field name="sale_ok" attrs="{'invisible':[('is_case_product','=',True)]}" />
+                            <label for="sale_ok" attrs="{'invisible':[('is_case_product','=',True)]}" />
+                            <br  attrs="{'invisible':[('is_case_product','=',True)]}" />
+                            <field name="purchase_ok" attrs="{'invisible':[('is_case_product','=',True)]}" />
+                            <label for="purchase_ok" attrs="{'invisible':[('is_case_product','=',True)]}" />
+                            <br  attrs="{'invisible':[('is_case_product','=',True)]}" />
+                            <field name="is_shipping_product" attrs="{'invisible':[('is_case_product','=',True)]}" />
+                            <label for="is_shipping_product" string="Is Shipping Product" attrs="{'invisible':[('is_case_product','=',True)]}" />
+                            <br  attrs="{'invisible':[('is_case_product','=',True)]}" />
+                            <field name="is_admin" attrs="{'invisible':[('is_case_product','=',True)]}" />
+                            <label for="is_admin" string="Is Admin Fee" attrs="{'invisible':[('is_case_product','=',True)]}" />
+                            <br  attrs="{'invisible':[('is_case_product','=',True)]}" />
+                            <field name="is_global_discount" attrs="{'invisible':[('is_case_product','=',True)]}" />
+                            <label for="is_global_discount" string="Is Additional Discount" attrs="{'invisible':[('is_case_product','=',True)]}" />
+                            <br  attrs="{'invisible':[('is_case_product','=',True)]}" />
+                            <field name="is_case_product" readonly='1' invisible='1' />
+                            <label for="is_case_product" string="Is Case Product" invisible='1' />
+                            <br  attrs="{'invisible':[('is_case_product','=',True)]}" />
+                            <field name="is_forcefully_unpublished" attrs="{'invisible':[('is_case_product','=',True)]}" />
+                            <label for="is_forcefully_unpublished" attrs="{'invisible':[('is_case_product','=',True)]}" />
                         </div>
 
                     </div>

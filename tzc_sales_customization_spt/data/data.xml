@@ -21,6 +21,11 @@
             <field name="social_instagram">https://www.instagram.com/everythingoptical</field>
             <field name="social_linkedin">https://www.linkedin.com/company/everything-optical-team-eto</field>
         </record>
+        <record id="kits_return_scrap_location" model="stock.location">
+            <field name="name">Tanzacan:Scrap products</field>
+            <field name="location_id" ref="stock.stock_location_locations_virtual" />
+            <field name="usage">inventory</field>
+        </record>
     </data>
     <data noupdate="0">
 

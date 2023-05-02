@@ -20,8 +20,13 @@ class res_partner(models.Model):
     @api.onchange('country_id')
     def onchange_currency_id(self):
         for rec in self:
-            if rec.country_id:
-                rec.preferred_currency = self.env['kits.b2b.multi.currency.mapping'].search([('partner_country_ids','in',rec.country_id.ids)],limit=1).currency_id.id
+            if not rec.preferred_currency:
+                if rec.country_id:
+                    currency_id = self.env['kits.b2b.multi.currency.mapping'].search([('partner_country_ids','in',rec.country_id.ids)],limit=1).currency_id.id
+                    if currency_id:
+                        rec.preferred_currency = currency_id.id
+                    else:
+                        rec.preferred_currency = self.env['kits.b2b.multi.currency.mapping'].search([('currency_id','=',self.env.ref('base.USD').id)]).currency_id.id
 
     @api.model
     def create(self, vals):

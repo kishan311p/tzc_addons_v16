@@ -27,7 +27,7 @@ from odoo.osv import expression
 
 _logger = logging.getLogger(__name__)
 
-field_list = ['partner_id','date_order','payment_term_id','include_cases','no_of_cases','case_weight_gm','order_line',
+field_list = ['partner_id','date_order','payment_term_id','no_of_cases','case_weight_gm','order_line',
               'note','sale_order_option_ids','user_id','sale_manager_id','team_id','client_order_ref','picking_policy','commitment_date',
               'fiscal_position_id','origin','opportunity_id','campaign_id','medium_id','source_id','next_execution_date','street','street2',
               'country_id','city','postal_code','state_id','mark_as_paid_by_user','payment_link_approved_by','order_approved_by','require_signature',
@@ -86,16 +86,30 @@ class sale_order(models.Model):
     shipping_prev_id_flag = fields.Many2one('shipping.provider.spt',default=False,compute='_compute_shipping_msg_flag',store=True)
     shipping_msg_inv_flag = fields.Boolean('Shipping Msg Flag',compute='_compute_shipping_msg_flag',store=True)
     notify_done = fields.Boolean('Notification (Flag)')
+    
+    # Case
+    def _get_case_product_domain(self):
+        for rec in self:
+            return [('id','in',rec.order_line.filtered(lambda x: x.product_template_id.is_case_product==True).ids)]
+    case_order_line = fields.One2many('sale.order.line','order_id',"Case Order Lines",domain=_get_case_product_domain)
+    def _get_non_case_product_domain(self):
+        for rec in self:
+            return [('id','in',rec.order_line.filtered(lambda x: x.product_template_id.is_case_product!=True).ids)]
+    non_case_order_line = fields.One2many('sale.order.line','order_id',"Case Order Lines",domain=_get_non_case_product_domain)
+    amount_is_case = fields.Monetary(string='Case Total', store=True, readonly=True,compute_sudo=True, compute='_amount_all', tracking=4)
 
-    @api.depends('case_weight_gm','no_of_cases','include_cases')
+
+    @api.depends('case_weight_gm','no_of_cases')
+    # @api.depends('case_weight_gm','no_of_cases','include_cases')
     def _calculate_case_weight_kg(self):
         context = self._context.copy()
         context.update({'custom':True})
         self.env.context = context
         for record in self:
             picking_id = self.env['stock.picking'].search([('id','in',record.picking_ids.ids)])
-            no_of_cases = sum(picking_id.move_ids_without_package.filtered(lambda x:x.product_id.sale_type != 'clearance').mapped('quantity_done'))
-            if record.include_cases:
+            no_of_cases = sum(picking_id.move_ids_without_package.filtered(lambda x:x.product_id.is_case_product == True).mapped('quantity_done'))
+            if no_of_cases >0:
+            # if record.include_cases:
                 record.case_weight_kg = 0.001 * record.case_weight_gm * no_of_cases
             else:
                 record.case_weight_kg = 0.0
@@ -105,7 +119,8 @@ class sale_order(models.Model):
     def _compute_weight_kits(self):
         for record in self:
             total_weight_kg = 0.0
-            if record.include_cases:
+            # if record.include_cases:
+            if record.no_of_cases>0:
                 total_weight_kg += record.case_weight_kg
             lines = record.order_line.filtered(lambda x: x.picked_qty)
             weight = round(sum(list(map(lambda x: x.product_id.weight * x.picked_qty,lines))),2)
@@ -162,6 +177,21 @@ class sale_order(models.Model):
 
         if self.state == 'scanned':
             picking_id = self.picking_ids.filtered(lambda x:x.state != 'cancel')
+            for case_ol in self.case_order_line:
+                move_id = picking_id.move_ids_without_package.create({
+                    'date': fields.date.today(),
+                    'product_id':case_ol.product_id.id,
+                    'product_uom': case_ol.product_id.uom_id.id,
+                    'location_id': self.env['stock.location'].search([('name','=','Stock')]).id,
+                    'location_dest_id': self.env['stock.location'].search([('name','=','Customers')]).id,
+                    'name':case_ol.product_id.name,
+                    'product_uom_qty':case_ol.product_uom_qty,
+                    'quantity_done':case_ol.product_uom_qty,
+                    'sale_line_id':case_ol.id,
+                    'company_id': self.env.user.company_id.id,
+                    'picking_id': picking_id.id
+                })
+                # move_id._set_quantity_done(case_ol.product_uom_qty)
             template_id = self.env.ref('tzc_sales_customization_spt.tzc_picking_ready_notification_to_salesperson_spt')
             template_id.send_mail(self.id,force_send=True,email_layout_xmlid="mail.mail_notification_light")
             ready_to_ship_template_id = self.env.ref('tzc_sales_customization_spt.tzc_email_template_order_ready_to_ship')
@@ -309,7 +339,7 @@ class sale_order(models.Model):
     delivery_state_id = fields.Many2one('res.country.state','State ',related="partner_shipping_id.state_id")
     delivery_country_id = fields.Many2one('res.country','Country ',related="partner_shipping_id.country_id")
 
-    include_cases = fields.Boolean('Include Cases ?',default=True)
+    # include_cases = fields.Boolean('Include Cases ?',default=True)
     no_of_cases = fields.Integer('#Cases',compute="get_no_of_cases",store=True)
     case_weight_gm = fields.Float('Weight for cases (gm)',default=_get_default_case_weight_gm)
     is_confirm_by_saleperson = fields.Boolean()
@@ -343,8 +373,85 @@ class sale_order(models.Model):
         for record in self:
             record._amount_all()
         return True
-        # pass
     
+    @api.onchange('b2b_currency_id','currency_id')
+    def _onchange_order_currency(self):
+        # Special Discount and Inflation validation
+        active_inflation = self.env['kits.inflation'].search([('is_active','=',True)])
+        is_inflation = False
+        if active_inflation.from_date and active_inflation.to_date :
+            if active_inflation.from_date <= datetime.now().date() and active_inflation.to_date >= datetime.now().date():
+                is_inflation = True
+        elif active_inflation.from_date:
+            if active_inflation.from_date <= datetime.now().date():
+                is_inflation = True
+        elif active_inflation.to_date:
+            if active_inflation.to_date >= datetime.now().date():
+                is_inflation = True
+        else:
+            if not active_inflation.from_date:
+                is_inflation = True
+            if not active_inflation.to_date:
+                is_inflation = True
+
+        active_fest_id = self.env['tzc.fest.discount'].search([('is_active','=',True)])
+        applicable = False 
+        if active_fest_id.from_date and active_fest_id.to_date :
+            if active_fest_id.from_date <= datetime.now().date() and active_fest_id.to_date >= datetime.now().date():
+                applicable = True
+        elif active_fest_id.from_date:
+            if active_fest_id.from_date <= datetime.now().date():
+                applicable = True
+        elif active_fest_id.to_date:
+            if active_fest_id.to_date >= datetime.now().date():
+                applicable = True
+        else:
+            if not active_fest_id.from_date:
+                applicable = True
+            if not active_fest_id.to_date:
+                applicable = True
+
+        for rec in self:
+            currency_id = rec.b2b_currency_id
+            for line in rec.order_line:
+                usd_pricelist_id = self.env.ref('tzc_sales_customization_spt.usd_public_pricelist_spt')
+                unit_price = self.env['product.pricelist.item'].search([('product_id','=',line.product_id.id),('pricelist_id','=',usd_pricelist_id.id)],limit=1).fixed_price
+                if currency_id.name.lower() != 'usd':
+                    currency_rate = self.env['kits.b2b.multi.currency.mapping'].search([('currency_id','=',currency_id.id)],limit =1).currency_rate
+                    price_unit = unit_price * currency_rate
+                    fix_discount_price = round((price_unit * line.discount)/100,2)
+                    unit_discount_price = price_unit - fix_discount_price
+                else:
+                    if currency_id.name.lower() == 'usd':
+                        price_unit = unit_price
+                        fix_discount_price = round((price_unit * line.discount)/100,2)
+                        unit_discount_price = price_unit - fix_discount_price
+                
+                # Apply Inflation On Price.
+                if is_inflation:
+                    inflation_rule_ids = self.env['kits.inflation.rule'].search([('country_id','in',rec.partner_id.country_id.ids),('brand_ids','in',line.product_id.brand.ids),('inflation_id','=',active_inflation.id)])
+                    inflation_rule = inflation_rule_ids[-1] if inflation_rule_ids else 0.0
+                    if inflation_rule:
+                        price_unit = round(price_unit+(price_unit*inflation_rule.inflation_rate /100),2)
+                        unit_discount_price = round(unit_discount_price+(unit_discount_price*inflation_rule.inflation_rate /100),2)
+
+                # Apply Special Discount On Price.
+                if applicable:
+                    special_disocunt_id = self.env['kits.special.discount'].search([('country_id','in',rec.partner_id.country_id.ids),('brand_ids','in',line.product_id.brand.ids),('tzc_fest_id','=',active_fest_id.id)])
+                    price_rule_id = special_disocunt_id[-1] if special_disocunt_id else 0.0
+                    if price_rule_id:
+                        unit_discount_price = round((unit_discount_price - (unit_discount_price * price_rule_id.discount * 0.01 )),2)
+                        fix_discount_price = (price_unit - unit_discount_price)
+                
+                line.write({
+                    'price_unit':price_unit,
+                    'unit_discount_price':unit_discount_price,
+                    'fix_discount_price':fix_discount_price
+                })
+
+                line._compute_amount()
+        rec._amount_all()
+
     # def action_confirm(self):
     #     res = super(sale_order, self).action_confirm()
     #     for so in self:
@@ -872,6 +979,7 @@ class sale_order(models.Model):
             amount_without_discount = 0.0
             amount_discount = 0.0
             amount_is_shipping_total = 0.0
+            amount_is_case = 0.0
             amount_untaxed = 0.0
             amount_tax = 0.0
             picked_qty_order_subtotal = 0.00
@@ -893,9 +1001,11 @@ class sale_order(models.Model):
                     global_discount += line.product_uom_qty * line.unit_discount_price
                 elif line.is_admin:
                     amount_is_admin += line.product_uom_qty * line.unit_discount_price
+                elif line.product_id.is_case_product:
+                    amount_is_case += line.product_uom_qty * line.unit_discount_price
                 
                 else:
-                    if line.product_id.type != 'service':
+                    if line.product_id.type != 'service' and not line.product_id.is_case_product:
                         delivered_qty += line.qty_delivered
                         ordered_qty += line.product_uom_qty
                     if line.price_tax and line.product_uom_qty:
@@ -910,12 +1020,12 @@ class sale_order(models.Model):
                 if line.product_id.id not in product_list:
                     picking_ids =picking_line_obj.search([('picking_id.state','!=','cancel'),('picking_id','in',order.picking_ids.ids),('product_id','=',line.product_id.id)])
                     for picking in picking_ids:
-                        if line.product_id.type != 'service':
+                        if line.product_id.type != 'service' and not line.product_id.is_case_product:
                             picked_qty += picking.quantity_done
                     product_list.append(line.product_id.id)
 
 
-                if line.product_id.type != 'service' and line.picked_qty:
+                if line.product_id.type != 'service' and line.picked_qty and not line.product_id.is_case_product:
                         picked_qty_order_subtotal = picked_qty_order_subtotal + (line.price_unit * line.picked_qty)
 
                         # unit_per_tax = round(line.price_tax/line.product_uom_qty,2) if line.product_uom_qty else 0.0
@@ -935,15 +1045,16 @@ class sale_order(models.Model):
                 'amount_without_discount': amount_without_discount,
                 'amount_discount': amount_discount,
                 'amount_tax': round(amount_tax,2),
-                'amount_total': amount_without_discount + amount_tax + amount_is_shipping_total+amount_is_admin-amount_discount,
+                'amount_total': amount_without_discount + amount_tax + amount_is_shipping_total+amount_is_admin+amount_is_case-amount_discount,
                 'amount_is_shipping_total' : amount_is_shipping_total,
                 'shipping_cost' : shipping_cost,
                 'amount_is_admin' : amount_is_admin,
+                'amount_is_case' : amount_is_case,
                 'global_discount' : - global_discount,
                 'picked_qty_order_subtotal' : round(picked_qty_order_subtotal,2),
                 'picked_qty_order_tax' : round(picked_qty_order_tax,2),
                 'picked_qty_order_discount' : round(picked_qty_order_discount,2),
-                'picked_qty_order_total' : round(amount_is_admin + amount_is_shipping_total + picked_qty_order_subtotal + picked_qty_order_tax - picked_qty_order_discount ,2)
+                'picked_qty_order_total' : round(amount_is_admin + amount_is_shipping_total + amount_is_case +picked_qty_order_subtotal + picked_qty_order_tax - picked_qty_order_discount ,2)
             })
 
 
@@ -985,16 +1096,17 @@ class sale_order(models.Model):
             if record.partner_id.id in partner_list:
                 raise UserError(_("Public type users can not be a customer."))
 
-    @api.depends('picked_qty','ordered_qty')
+    @api.depends('picked_qty','ordered_qty','order_line','order_line.product_uom_qty')
     def get_no_of_cases(self):
         for rec in self:
-            rec.no_of_cases = 0
-            if rec.picked_qty:
-                no_of_cases = sum(self.env['stock.picking'].browse(rec.picking_ids.ids).filtered(lambda x:x.state != 'cancel').move_ids_without_package.filtered(lambda x:x.product_id.sale_type != 'clearance').mapped('quantity_done'))
-                rec.no_of_cases = no_of_cases
-            elif rec.ordered_qty:
-                no_of_cases = sum(rec.order_line.filtered(lambda x:x.product_id.sale_type != 'clearance').mapped('product_uom_qty'))
-                rec.no_of_cases = no_of_cases
+            no_of_cases = sum(rec.order_line.filtered(lambda x:x.product_id.is_case_product == True).mapped('product_uom_qty'))
+            rec.no_of_cases = no_of_cases
+            # if rec.picked_qty:
+            #     no_of_cases = sum(self.env['stock.picking'].browse(rec.picking_ids.ids).filtered(lambda x:x.state != 'cancel').move_ids_without_package.filtered(lambda x:x.product_id.is_case_product == True).mapped('quantity_done'))
+            #     rec.no_of_cases = no_of_cases
+            # elif rec.ordered_qty:
+            #     no_of_cases = sum(rec.order_line.filtered(lambda x:x.product_id.is_case_product == True).mapped('product_uom_qty'))
+            #     rec.no_of_cases = no_of_cases
 
     @api.depends('picked_qty','ordered_qty')
     def _compute_extra_qty(self):
@@ -1015,15 +1127,15 @@ class sale_order(models.Model):
                 order.picking_ids = [(4,(picking_id.id))] if picking_id else None
                 order.delivery_count = len(picking_id) if picking_id else 0
 
-    @api.onchange('include_cases')
+    @api.onchange('no_of_cases')
     def _onchange_include_cases(self):
         for record in self:
             weight = self.env['ir.config_parameter'].sudo().get_param('tzc_case_weight_gm')
             picking_id =self.env['stock.picking'].search([('id','in',record.picking_ids.ids)])
             if not record.case_weight_gm:
                 record.case_weight_gm = weight
-            if picking_id:
-                picking_id.include_cases = record.include_cases
+            # if picking_id:
+            #     picking_id.include_cases = record.include_cases
                 
     def fiscal_position_change(self):
         fiscal_position_obj = self.env['account.fiscal.position']
@@ -2449,6 +2561,7 @@ class sale_order(models.Model):
                     if line.product_uom_qty != 0.0 and line.product_uom_qty > line.product_id.available_qty_spt:
                         rec.is_not_product_aval_qty_flag = True
                         break
+            rec.cart_update()
 
     @api.depends('order_line','order_line.product_id.virtual_available','order_line.product_uom_qty','website_id','state')
     def _get_compute_message(self):
@@ -2840,6 +2953,11 @@ class sale_order(models.Model):
 
     def action_revert_to_scanned(self):
         for rec in self:
+            picking_id = self.picking_ids.filtered(lambda x:x.state != 'cancel')
+            non_case_ids = picking_id.non_case_move_ids_without_package
+            case_ids = picking_id.move_ids_without_package - non_case_ids
+            case_ids.unlink()
+            picking_id._get_no_of_cases()
             rec.picking_ids.filtered(lambda x:x.state != 'cancel').write({'state':'scanned'})
             rec.order_approved_by = False
             rec.state = 'scanned'
@@ -3828,67 +3946,6 @@ class sale_order(models.Model):
                 if picking_id.state not in ['done','cancel']:
                     picking_id._origin.shipping_id = rec.shipping_id
 
-    # def get_tracked_fields(self, changes, tracking_value_ids, initial_value):
-
-    #     def get_field_name(f_name):
-    #         field_name = f_name
-    #         if self.state not in ('draft','sent','received','sale'):
-    #             if f_name  == 'amount_without_discount':
-    #                 field_name = 'picked_qty_order_subtotal'
-    #             elif f_name == 'amount_discount':
-    #                 field_name = 'picked_qty_order_discount'
-    #             elif f_name == 'amount_tax':
-    #                 field_name = 'picked_qty_order_tax'
-    #             elif f_name == 'amount_total':
-    #                 field_name = 'picked_qty_order_total'
-    #         return field_name
-
-    #     changes = set(list(changes) + NO_TRACKING_FIELDS)
-    #     tracking_value_ids = []
-    #     for i, changed_field in enumerate(changes):
-    #         field = self.env['ir.model.fields']._get(self._name, changed_field)
-    #         vals = {
-    #             'field': field.id,
-    #             'field_desc': field.field_description,
-    #             'field_type': field.ttype,
-    #             'tracking_sequence': field.tracking,
-    #         }
-
-    #         changed_field = get_field_name(changed_field)
-    #         if field.ttype in ['integer', 'float', 'char', 'text', 'datetime', 'monetary']:
-    #             vals.update({
-    #                 'old_value_%s' % field.ttype : initial_value[changed_field],
-    #                 'new_value_%s' % field.ttype : self[changed_field],
-    #                 'currency_id': self.currency_id.id
-    #             })
-    #         elif field.ttype == 'selection':
-    #             vals.update({
-    #                 'old_value_char': dict(self._fields[changed_field].selection).get(initial_value[changed_field]),
-    #                 'new_value_char': dict(self._fields[changed_field].selection).get(self[changed_field]),
-    #             })
-    #         tracking_value_ids.insert(i, Command.create(vals))
-    #     return changes, tracking_value_ids
-
-    # def _mail_track(self, tracked_fields, initial_values):
-    #     changes, tracking_value_ids = super()._mail_track(tracked_fields, initial_values)
-    #     if 'state' in initial_values:
-    #         initial_value = initial_values['state']
-    #         new_value = self['state']
-
-    #         # OPTIMISE CODE LATER
-    #         if initial_value == 'draft' and new_value in ['sent','recieved','sale']:
-    #             changes, tracking_value_ids = self.get_tracked_fields(changes, tracking_value_ids, initial_values)
-    #         elif initial_value == 'in_scanning' and new_value == 'scanned':
-    #             changes, tracking_value_ids = self.get_tracked_fields(changes, tracking_value_ids, initial_values)
-    #         elif initial_value == 'scanned' and new_value == 'scan':
-    #             changes, tracking_value_ids = self.get_tracked_fields(changes, tracking_value_ids, initial_values)
-    #         elif initial_value == 'scan' and new_value == 'shipped':
-    #             changes, tracking_value_ids = self.get_tracked_fields(changes, tracking_value_ids, initial_values)
-    #         elif initial_value == 'shipped' and new_value == 'draft_inv':
-    #             changes, tracking_value_ids = self.get_tracked_fields(changes, tracking_value_ids, initial_values)
-
-    #     return changes, tracking_value_ids
-
     def draft_states(self):
         return ['draft','sent','received']
 
@@ -3921,25 +3978,87 @@ class sale_order(models.Model):
                 rec.shipping_msg_inv_flag=True
                 rec.shipping_prev_id_flag=rec.shipping_id
                 rec.shipping_prev_cost_flag=shipping_cost
+    @api.onchange('non_case_order_line','case_order_line')
+    def onchange_case_order_line_qty(self):
+        for rec in self:
+            rec._amount_all()
 
     def cart_update(self):
-        # Method to B2B website quotation to partner's preferred currency.
-        # Must return something, Due to use in RPC.
-        partner_currency_id = self.partner_id.preferred_currency
-        if self.currency_id != partner_currency_id and self.state=='draft' and self.source_spt and self.source_spt.lower() == 'website':
-            self.write({
-                'currency_id': partner_currency_id.id,
-            })
-            product_price_dict = self.env['kits.b2b.multi.currency.mapping'].get_product_price(
-                self.partner_id.id,
-                self.order_line.mapped('product_id').ids
-            )
-            for line in self.order_line.filtered(lambda l: not l.is_admin and not l.is_global_discount and not l.is_shipping_product):
-                line.write({
-                    'price_unit': product_price_dict[line.product_id.id]['price'],
-                    'unit_discount_price': product_price_dict[line.product_id.id]['discounted_unit_price'],
-                    'fix_discount_price': product_price_dict[line.product_id.id]['fix_discount_price'],
-                    'discount': product_price_dict[line.product_id.id]['discount'],
+        # Method to update B2B website quotation to partner's preferred currency.
+        active_inflation = self.env['kits.inflation'].search([('is_active','=',True)])
+        is_inflation = False
+        if active_inflation.from_date and active_inflation.to_date :
+            if active_inflation.from_date <= datetime.now().date() and active_inflation.to_date >= datetime.now().date():
+                is_inflation = True
+        elif active_inflation.from_date:
+            if active_inflation.from_date <= datetime.now().date():
+                is_inflation = True
+        elif active_inflation.to_date:
+            if active_inflation.to_date >= datetime.now().date():
+                is_inflation = True
+        else:
+            if not active_inflation.from_date:
+                is_inflation = True
+            if not active_inflation.to_date:
+                is_inflation = True
+
+        active_fest_id = self.env['tzc.fest.discount'].search([('is_active','=',True)])
+        applicable = False 
+        if active_fest_id.from_date and active_fest_id.to_date :
+            if active_fest_id.from_date <= datetime.now().date() and active_fest_id.to_date >= datetime.now().date():
+                applicable = True
+        elif active_fest_id.from_date:
+            if active_fest_id.from_date <= datetime.now().date():
+                applicable = True
+        elif active_fest_id.to_date:
+            if active_fest_id.to_date >= datetime.now().date():
+                applicable = True
+        else:
+            if not active_fest_id.from_date:
+                applicable = True
+            if not active_fest_id.to_date:
+                applicable = True
+
+        for order in self:
+            partner_currency_id = order.partner_id.preferred_currency
+            if order.state == 'draft' and order.source_spt and order.source_spt.lower() == 'website':
+                order.write({
+                    'currency_id': partner_currency_id.id,
+                    'b2b_currency_id': partner_currency_id.id,
+                    'pricelist_id': order.partner_id.b2b_pricelist_id.id,
                 })
-                line._compute_amount()
-        return True
+                # Changed price values per product
+                product_price_dict = order.env['kits.b2b.multi.currency.mapping'].get_product_price(
+                    order.partner_id.id,
+                    order.order_line.mapped('product_id').ids
+                )
+
+                for line in order.order_line.filtered(lambda l: not l.is_admin and not l.is_global_discount and not l.is_shipping_product):
+                    product_price = product_price_dict[line.product_id.id]['price']
+                    unit_discount_price = product_price_dict[line.product_id.id]['discounted_unit_price']
+                    fix_dicount_price = product_price_dict[line.product_id.id]['fix_discount_price']
+
+                    # Apply inflation
+                    if is_inflation:
+                        inflation_rule_ids = self.env['kits.inflation.rule'].search([('country_id','in',order.partner_id.country_id.ids),('brand_ids','in',line.product_id.brand.ids),('inflation_id','=',active_inflation.id)])
+                        inflation_rule = inflation_rule_ids[-1] if inflation_rule_ids else False
+                        if inflation_rule:
+                            product_price = round(product_price+(product_price*inflation_rule.inflation_rate /100),2)
+                            unit_discount_price = round(unit_discount_price+(unit_discount_price*inflation_rule.inflation_rate /100),2)
+
+                    # Apply Special Discount
+                    if applicable:
+                        special_disocunt_id = self.env['kits.special.discount'].search([('country_id','in',order.partner_id.country_id.ids),('brand_ids','in',line.product_id.brand.ids),('tzc_fest_id','=',active_fest_id.id)])
+                        price_rule_id = special_disocunt_id[-1] if special_disocunt_id else False
+                        if price_rule_id:
+                            unit_discount_price = round((unit_discount_price - (unit_discount_price * price_rule_id.discount * 0.01 )),2)
+                            fix_dicount_price = (product_price - unit_discount_price)
+
+                    discount = round((100 - ( (100 * unit_discount_price)/ product_price )), 2)
+                    line.write({
+                        'price_unit': product_price,
+                        'unit_discount_price': unit_discount_price,
+                        'fix_discount_price': fix_dicount_price,
+                        'discount': discount,
+                    })
+                    line._compute_amount()

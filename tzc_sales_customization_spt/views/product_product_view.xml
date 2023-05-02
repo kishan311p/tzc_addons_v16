@@ -17,7 +17,10 @@
             <field name="inherit_id" ref="product.product_normal_form_view" />
             <field name="arch" type="xml">
                 <xpath expr="//field[@name='name']" position="before">
-                    <field name="variant_name" string="Name"/>
+                    <field name="variant_name" string="Name" required='1' />
+                </xpath>
+                <xpath expr="//field[@name='name']" position="before">
+                    <field name="is_case_product" invisible='1' />
                 </xpath>
                 <xpath expr="//field[@name='name']" position="attributes">
                     <attribute name="invisible">1</attribute>
@@ -32,17 +35,17 @@
                     <attribute name="invisible">1</attribute>
                 </xpath>
                 <xpath expr="//field[@name='id']" position="after">
-                    <field name="case_image_url" class="oe_avatar" string="Primary Image"
+                    <field name="case_image_url" class="oe_avatar" string="Primary Image" attrs="{'invisible':[('is_case_product','=',True)]}"
                         widget="image" style="margin-left:10px;"
                         options="{'zoom': true,'thumb_image':'case_image_url','preview_image':'case_image_url','size': [235, 81]}" />
                     <field
-                        name="image_secondary_url" class="oe_avatar" string="Secondary Image"
+                        name="image_secondary_url" class="oe_avatar" string="Secondary Image" attrs="{'invisible':[('is_case_product','=',True)]}"
                         widget="image" style="margin-left:10px;"
                         options="{'zoom': true,'thumb_image':'image_secondary_url','preview_image':'image_secondary_url','size': [173, 173]}" />
                     &#x2063;&#x2063;&#x2063;&#x2063;&#x2063;&#x2063;&#x2063;&#x2063;&#x2063;&#x2063;&#x2063;&#x2063;
                     <field
                         name="image_url" class="oe_avatar" string="Primary Image" widget="image"
-                        options="{'zoom': true,'thumb_image':'image_url','preview_image':'image_url','size': [173, 173]}" />
+                        options="{'zoom': true,'thumb_image':'image_url','preview_image':'image_url','size': [173, 173]}"  readonly='1' />
                 </xpath>
                 <xpath expr="//button[@name='action_view_orderpoints']" position="attributes">
                     <attribute name="invisible">1</attribute>
@@ -66,7 +69,7 @@
                         <span style="color:#00b115;">Published</span>
                     </button>
                     <button name="open_product_variant_spt" type="object" icon="fa-eye"
-                        class="oe_stat_button">
+                        class="oe_stat_button" attrs="{'invisible':[('is_case_product','=',True)]}">
                         <field string="Variants" name="variant_count" widget="statinfo" />
                     </button>
                 </xpath>
@@ -174,6 +177,30 @@
                         </group>
                     </page>
                 </xpath>
+                <xpath expr="//notebook" position="inside">
+                    <page name="case_product" string="Case" attrs="{'invisible':[('is_case_product','=',False)]}">
+                        <group>
+                            <group>
+                                <field name="default_code" required='1'/>
+                                <field name="brand" options="{'no_create': True, 'no_create_edit':True,'no_open':True}"/>
+                                <!-- <field name="primary_image_url"/> -->
+                                <field name="image_url" required='1' />
+                                <field name="lst_price" string='Our Price'/>
+                                <field name="categ_id" options="{'no_create': True, 'no_create_edit':True,'no_open':True}" readonly='1'/>
+                                <field name="case_type" required='1' />
+                            </group>
+                            <group>
+                                <field name="height" />
+                                <field name="width" />
+                                <field name="length" />
+                                <field name="weight" />
+                                <field name="volume" />
+                                <field name="updated_on" string='Updated On' readonly="1"/>
+                                <field name="updated_by" string='Update By'  readonly="1"/>
+                            </group>
+                        </group>
+                    </page>
+                </xpath>
 
                 <xpath expr="//group[@name='group_lots_and_weight']/div[2]" position="after">
                     <field name="length" />
@@ -230,6 +257,25 @@
                         </group>
                     </group>
                 </xpath>
+
+                <xpath expr="//button[@name='action_update_quantity_on_hand']" position="attributes">
+                    <attribute name="attrs">{'invisible':[('type', '!=', 'product')]}</attribute>
+                </xpath>
+                <xpath expr="//page[@name='general_information']" position="attributes">
+                    <attribute name="attrs">{'invisible':[('is_case_product','=',True)]}</attribute>
+                </xpath>
+                <xpath expr="//page[@name='seo']" position="attributes">
+                    <attribute name="attrs">{'invisible':[('is_case_product','=',True)]}</attribute>
+                </xpath>
+                <xpath expr="//page[@name='kits_sales']" position="attributes">
+                    <attribute name="attrs">{'invisible':[('is_case_product','=',True)]}</attribute>
+                </xpath>
+                <xpath expr="//page[@name='inventory']" position="attributes">
+                    <attribute name="attrs">{'invisible':[('is_case_product','=',True)]}</attribute>
+                </xpath>
+                <xpath expr="//page[@name='invoicing']" position="attributes">
+                    <attribute name="attrs">{'invisible':[('is_case_product','=',True)]}</attribute>
+                </xpath>
             </field>
         </record>
         <record id="tzc_product_product_reserve_inherit_form_view_spt" model="ir.ui.view">
@@ -247,6 +293,7 @@
 
                 <xpath expr="//button[@name='action_open_quants']" position="attributes">
                     <attribute name="class">oe_stat_button disabled opacity-100</attribute>
+                    <attribute name="attrs">{'invisible':[('type', 'not in', ['product', 'consu'])]}</attribute>
                 </xpath>
                 <xpath expr="//button[3]" position="attributes">
                     <attribute name="invisible">1</attribute>
@@ -259,6 +306,9 @@
                 <xpath expr="//button[@name='action_view_stock_move_lines']/div[2]" position="attributes">
                     <attribute name="invisible">1</attribute>
                 </xpath> -->
+                <xpath expr="//button[@name='action_view_stock_move_lines']" position="attributes">
+                    <attribute name="attrs">{'invisible':[('type', 'not in', ['product', 'consu'])]}</attribute>
+                </xpath>
                 <button name="action_view_stock_move_lines" position="before">
                     <button type="object" name="action_product_reserv_qty"
                         attrs="{'invisible':[('type', 'not in', ['product', 'consu'])]}"
@@ -513,6 +563,8 @@
                     <separator/>
                     <filter name="flex_hinges_search" string="Flex Hinges" domain="[('flex_hinges', '=', 'yes')]" />
                     <filter name="no_flex_hinges_search" string="Not Flex Hinges" domain="[('flex_hinges', '=', 'no')]" />
+                    <filter name="product_brand_group_by" string="Brand" context="{'group_by':'brand'}" />
+                    <filter name="product_updated_by_group_by" string="Updated By" context="{'group_by':'updated_by'}" />
                 </filter>
             </field>
         </record>

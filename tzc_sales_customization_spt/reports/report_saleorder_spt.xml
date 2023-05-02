@@ -200,7 +200,8 @@
 
     <div class="col-auto mw-100 mb-2 text-center">
         <strong>Total Cases:</strong>
-        <t t-if="doc.include_cases">
+        <t t-if="doc.no_of_cases > 0">
+        <!-- <t t-if="doc.include_cases"> -->
             <p class="m-0" t-esc="int(doc.no_of_cases)"/>
         </t>
         <t t-else="">
@@ -356,7 +357,9 @@
                         <td name="td_quantity" class="text-center">
                             <!-- text calculation -->
                             <t t-set="total_tax_amount" t-value="0"/>
-                            <t t-set="total_tax_amount" t-value="round(line.price_tax/line.product_uom_qty,2)"/>
+                            <t t-if="line.product_uom_qty">
+                                <t t-set="total_tax_amount" t-value="round(line.price_tax/line.product_uom_qty,2)"/>
+                            </t>
                             <!-- <t t-if="is_sales_order_r">
                                 <t t-set="total_for_is_pro_forma_text" t-value="round(total_for_is_pro_forma_text + (total_tax_amount * line.product_uom_qty),2)"/>
                             </t>
@@ -666,7 +669,14 @@
                     <strong>Total Quantity</strong>
                 </td>
                 <td name="td_amount_total" class="text-end">
-                    <span t-esc="int(total_line_qty)"/>
+                    <t t-if="from_original_ord">
+                        <p class="m-0 " t-esc="doc.ordered_qty" />
+                    </t>
+                    <t t-else="">
+                            <p class="m-0 " t-esc="doc.picked_qty" />
+                    </t>
+                    <!-- <span t-esc="int(total_line_qty)"/> -->
+
                 </td>
             </tr>
             <!-- <tr class="border-black o_total">

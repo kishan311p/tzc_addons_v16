@@ -24,4 +24,7 @@
             </xpath>
         </field>
     </record>
+    <record id="case_product_category" model="product.category">
+        <field name="name">Case</field>
+    </record>
 </odoo>

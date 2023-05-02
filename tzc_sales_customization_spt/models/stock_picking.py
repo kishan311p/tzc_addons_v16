@@ -12,7 +12,7 @@ import ast
 import os
 from lxml import etree
 
-field_list = ['move_ids_without_package','partner_id','user_id','scheduled_date','origin','shipping_id','include_cases','no_of_cases','carrier_id','calulate_shipping_cost',
+field_list = ['move_ids_without_package','partner_id','user_id','scheduled_date','origin','shipping_id','no_of_cases','carrier_id','calulate_shipping_cost',
               'tracking_number_spt','package_contain','total_box','weight','weight_unit','package_type_id','height','width','kits_length','ship_date','carriage_value','currency_id',
               'shipment','transportation_to','duties_taxes','notes','customer_ref','shipment_purpose','commercial_invoice','export_export','b13a','exemption','note','ups_no_of_package',
               'general_desc','street','street_2','city','state_id','country_id','zip_code','company_name','phone','phone_ext','fright','state']
@@ -20,11 +20,11 @@ field_list = ['move_ids_without_package','partner_id','user_id','scheduled_date'
 class stock_picking(models.Model):
     _inherit = 'stock.picking'
 
-    def _get_default_include_cases(self):
-        order = self.sale_id
-        if not order:
-            order = self.env['sale.order'].search([('picking_ids','in',self.ids)])
-        return order.include_cases
+    # def _get_default_include_cases(self):
+    #     order = self.sale_id
+    #     if not order:
+    #         order = self.env['sale.order'].search([('picking_ids','in',self.ids)])
+    #     return order.include_cases
     
     # def action_open_return_picking_wizard_kits(self):
     #     return {
@@ -112,8 +112,10 @@ class stock_picking(models.Model):
     delivered_qty = fields.Integer('Picked Quantity',compute="_compute_qty",store=True)
     source_spt =  fields.Char('source',related="sale_id.source_spt")
     order_qty_count_spt = fields.Integer('Order Picked Quantity',compute="_compute_qty",store=True)
-    include_cases = fields.Boolean('Include Cases ?',default=_get_default_include_cases)
-    no_of_cases = fields.Integer('#Cases',default=_get_default_no_of_cases,compute='_get_no_of_cases',store=True)
+    extra_qty = fields.Integer('Extra Quantity ',compute_sudo=True,compute="_compute_extra_qty",store=True)
+    # include_cases = fields.Boolean('Include Cases ?',default=_get_default_include_cases)
+    no_of_cases = fields.Integer('#Cases',compute='_get_no_of_cases',store=True)
+    # no_of_cases = fields.Integer('#Cases',default=_get_default_no_of_cases,compute='_get_no_of_cases',store=True)
     partner_street = fields.Char('Street',related='partner_id.street')
     partner_street2 = fields.Char('Street2',related='partner_id.street2')
     partner_city = fields.Char(" City",related="partner_id.city")
@@ -225,6 +227,13 @@ class stock_picking(models.Model):
 
     is_fulfiled = fields.Boolean('Is Fullfiled (Flag)',default=False)
 
+    # Case Products
+    def _filter_non_case_products(self):
+        for rec in self:
+            return [('id','in',rec.move_ids_without_package.filtered(lambda x:x.product_id.is_case_product==False).ids)]
+    non_case_move_ids_without_package = fields.One2many('stock.move', 'picking_id', string="Non Case Products",domain=_filter_non_case_products)
+
+    return_order_id = fields.Many2one('kits.return.ordered.items', string='Return Order')
     def _compute_sale_order_number(self):
         try:
             for rec in self:
@@ -283,7 +292,8 @@ class stock_picking(models.Model):
                 rec.provider = rec.shipping_id.provider
             rec.sale_id.shipping_id = rec.shipping_id
                 
-    @api.depends('sale_id','sale_id.include_cases','sale_id.no_of_cases','sale_id.case_weight_kg','shipping_weight')
+    @api.depends('sale_id','sale_id.no_of_cases','sale_id.case_weight_kg','shipping_weight')
+    # @api.depends('sale_id','sale_id.include_cases','sale_id.no_of_cases','sale_id.case_weight_kg','shipping_weight')
     def _compute_weight_of_cases(self):
         for record in self:
             order = record.sale_id or self.env['sale.order'].search([('picking_ids','in',record.ids)],limit=1)
@@ -314,11 +324,12 @@ class stock_picking(models.Model):
     @api.depends('ordered_qty','delivered_qty')
     def _get_no_of_cases(self):
         for rec in self:
-            rec.no_of_cases = 0
-            if rec.delivered_qty:
-                rec.no_of_cases = rec.delivered_qty
-            elif rec.ordered_qty:
-                rec.no_of_cases = rec.ordered_qty
+            case_move_ids =  self.move_ids_without_package - self.non_case_move_ids_without_package
+            rec.no_of_cases = sum(case_move_ids.filtered(lambda x:x.product_id.is_case_product==True).mapped('quantity_done'))
+            # if rec.delivered_qty:
+            #     rec.no_of_cases = rec.delivered_qty
+            # elif rec.ordered_qty:
+            #     rec.no_of_cases = rec.ordered_qty
 
     @api.depends('sale_id.picking_ids')
     def _check_order_delivery(self):
@@ -338,8 +349,9 @@ class stock_picking(models.Model):
             for line in range(len(record.move_ids_without_package)):
                 line = record.move_ids_without_package[line]
                 try:
-                    delivered_qty += line.quantity_done
-                    ordered_qty += line.product_uom_qty
+                    if not line.product_id.is_case_product:
+                        delivered_qty += line.quantity_done
+                        ordered_qty += line.product_uom_qty
                     if line.sale_line_id:
                         if line.quantity_done > line.sale_line_id.product_uom_qty:
                             qty_total = 1
@@ -439,10 +451,11 @@ class stock_picking(models.Model):
             brand_list=[]
             brand_ids = record.order_line.mapped('product_id.brand')
             for brand in brand_ids:
-                line_ids = line_obj.search([('product_id.type','!=','service'),('product_id.brand','=',brand.id),('order_id','=',record.id)])
+                line_ids = line_obj.search([('product_id.type','!=','service'),('product_id.brand','=',brand.id),('order_id','=',record.id),('product_id.is_case_product','=',False)])
                 for line in line_ids:
                     categ_dict = {}
                     if line.picked_qty:
+                        case_type = 'original' if self.env['product.product'].search([('is_case_product','=',True),('brand','=',line.product_id.brand.id)]) else 'generic'
                         if line.product_id.brand.name in stock_dict.keys():
                             if line.product_id.categ_id.name  in stock_dict[line.product_id.brand.name].keys():
                                 if line.product_id.sale_type in stock_dict[line.product_id.brand.name][line.product_id.categ_id.name]['sale_type'].keys():
@@ -450,9 +463,9 @@ class stock_picking(models.Model):
                                 else:
                                     stock_dict[line.product_id.brand.name][line.product_id.categ_id.name]['sale_type'].update({line.product_id.sale_type:line.picked_qty})
                             else:
-                                stock_dict[line.product_id.brand.name][line.product_id.categ_id.name] = {'categ_id': line.product_id.categ_id.name, 'sale_type':{line.product_id.sale_type: line.picked_qty}}
+                                stock_dict[line.product_id.brand.name][line.product_id.categ_id.name] = {'categ_id': line.product_id.categ_id.name, 'sale_type':{line.product_id.sale_type: line.picked_qty},'case_type':case_type}
                         else:
-                            categ_dict[line.product_id.categ_id.name] = {'categ_id': line.product_id.categ_id.name,'sale_type':{line.product_id.sale_type: line.picked_qty}}
+                            categ_dict[line.product_id.categ_id.name] = {'categ_id': line.product_id.categ_id.name,'sale_type':{line.product_id.sale_type: line.picked_qty},'case_type':case_type}
                             stock_dict[line.product_id.brand.name] = categ_dict
         
         # --------------------------------------------------------- Header Address end  ---------------------------------------------------------
@@ -485,10 +498,12 @@ class stock_picking(models.Model):
         wrksht.cell(row=14, column=5).border = all_border
         wrksht.cell(row=14, column=6).border = all_border
         wrksht.cell(row=14, column=7).border = all_border
+        wrksht.cell(row=14, column=8).border = all_border
         wrksht.cell(row=14, column=1).font = all_font
         wrksht.cell(row=14, column=5).font = all_font
         wrksht.cell(row=14, column=6).font = all_font
         wrksht.cell(row=14, column=7).font = all_font
+        wrksht.cell(row=14, column=8).font = all_font
 
         row_index = 15
         brand_list = list(stock_dict.keys())
@@ -511,10 +526,11 @@ class stock_picking(models.Model):
                         total_regular += stock_dict[data][brand_data]['sale_type'][sale_type]
                     wrksht.merge_cells('A'+str(row_index)+':D'+str(row_index))
                     wrksht.cell(row=row_index, column=1).value = data
-                    wrksht.cell(row=row_index, column=5).value = stock_dict[data][brand_data]['categ_id']
-                    wrksht.cell(row=row_index, column=6).value = product_sale_type  
-                    wrksht.cell(row=row_index, column=7).value = stock_dict[data][brand_data]['sale_type'][sale_type]
-                    wrksht.cell(row=row_index, column=7).border = right_border
+                    wrksht.cell(row=row_index, column=5).value = stock_dict[data][brand_data]['case_type']
+                    wrksht.cell(row=row_index, column=6).value = stock_dict[data][brand_data]['categ_id']
+                    wrksht.cell(row=row_index, column=7).value = product_sale_type  
+                    wrksht.cell(row=row_index, column=8).value = stock_dict[data][brand_data]['sale_type'][sale_type]
+                    wrksht.cell(row=row_index, column=8).border = right_border
                     row_index += 1
         
         wrksht.cell(row=row_index+1, column=6).value = 'Total Clearance'
@@ -526,10 +542,11 @@ class stock_picking(models.Model):
         wrksht.cell(row=row_index+4, column=6).value = 'Total'
         wrksht.cell(row=row_index+4, column=7).value = total_regular+total_clearance+total_on_sale
 
-        for col in range(1,8):
+        for col in range(1,9):
             wrksht.cell(row=row_index, column=col).border = bottom_border
         wrksht.cell(row=row_index, column=6).border = bottom_border
         wrksht.cell(row=row_index, column=7).border = bottom_border
+        wrksht.cell(row=row_index, column=8).border = bottom_border
 
         fp = BytesIO()
         wb.save(fp)
@@ -801,6 +818,45 @@ class stock_picking(models.Model):
         state_list = self.mapped(lambda picking : picking.state in ['in_scanning'])
         if any(state_list):
             for rec in self:
+                product_move_ids =  self.move_ids_without_package.filtered(lambda x: x.product_id.is_case_product==False and x.product_id.is_shipping_product==False and x.product_id.is_admin==False and x.product_id.is_global_discount==False)
+                brand_ids = product_move_ids.mapped('product_id').mapped('brand')
+                order_line_obj = self.env['sale.order.line']
+                done_brand_ids = []
+                for brand_id in brand_ids:
+                    brand_case_product_id = self.env['product.product'].search([('is_case_product','=',True),('brand','=',brand_id.id),('case_type','=','original')],limit=1)
+                    quantity = sum(product_move_ids.filtered(lambda x: x.product_id.brand==brand_id).mapped('product_uom_qty'))
+                    if brand_case_product_id:
+                        product_data = self.env['kits.b2b.multi.currency.mapping'].get_product_price(rec.partner_id.id,brand_case_product_id.ids).get(brand_case_product_id.id)
+                        order_line_id=order_line_obj.create({
+                                'order_id':rec.order_id.id,
+                                'product_id':brand_case_product_id.id,
+                                'product_uom_qty':quantity,
+                                'picked_qty':quantity,
+                                'price_unit':product_data.get('price'),
+                                'unit_discount_price':product_data.get('sale_type_price'),
+                                'name':brand_case_product_id.name,
+                                'case_type':brand_case_product_id.case_type,
+                            })
+                        order_line_id._onchange_unit_discounted_price_spt()
+                        done_brand_ids.append(brand_id)
+                generic_case_move_ids = product_move_ids.filtered(lambda x: x.product_id.brand not in done_brand_ids)
+                if generic_case_move_ids:
+                    quantity = sum(generic_case_move_ids.mapped('product_uom_qty'))
+                    case_product_id = self.env['product.product'].search([('is_case_product','=',True),('brand','=',False)],limit=1)
+                    if case_product_id:
+                        product_data = self.env['kits.b2b.multi.currency.mapping'].get_product_price(rec.partner_id.id,case_product_id.ids).get(case_product_id.id)
+                        order_line_id = order_line_obj.create({
+                                'order_id':rec.order_id.id,
+                                'product_id':case_product_id.id,
+                                'product_uom_qty':quantity,
+                                'picked_qty':quantity,
+                                'price_unit':product_data.get('price'),
+                                'unit_discount_price':product_data.get('sale_type_price'),
+                                'name':case_product_id.name,
+                                'case_type':'generic',
+                            })
+                        order_line_id._onchange_unit_discounted_price_spt()
+                        
                 for line in range(len(rec.move_ids_without_package)):
                     line = rec.move_ids_without_package[line]
                     rec.check_duplicate_move(line)
@@ -837,10 +893,11 @@ class stock_picking(models.Model):
                 # product record with qty
                 for line in range(len(record.move_ids_without_package)):
                     line = record.move_ids_without_package[line]
-                    if line.product_id in product_dict.keys():
-                        product_dict[line.product_id ] = line.quantity_done + product_dict[line.product_id ]
-                    else:
-                        product_dict[line.product_id ] = line.quantity_done
+                    if not line.product_id.is_case_product:
+                        if line.product_id in product_dict.keys():
+                            product_dict[line.product_id ] = line.quantity_done + product_dict[line.product_id ]
+                        else:
+                            product_dict[line.product_id ] = line.quantity_done
                 # product dict loop
                 for product_id in product_dict.keys():
                     if product_id.type != 'service':
@@ -1271,7 +1328,8 @@ class stock_picking(models.Model):
 
         order = self.env['sale.order'].search([('name','=',vals.get('origin'))],limit=1)
         if order and vals.get('origin'):
-            vals.update(include_cases=order.include_cases,no_of_cases=order.no_of_cases)
+            vals.update(no_of_cases=order.no_of_cases)
+            # vals.update(include_cases=order.include_cases,no_of_cases=order.no_of_cases)
         res = super(stock_picking,self).create(vals)
         res.state = 'confirmed'
         return res
@@ -1334,10 +1392,11 @@ class stock_picking(models.Model):
         for rec in self:
             rec.sale_id.no_of_cases = rec.no_of_cases if rec.sale_id else None
 
-    @api.onchange('include_cases')
-    def _onchange_include_case(self):
-        for rec in self:
-            rec.sale_id.include_cases = rec.include_cases
+    # @api.onchange('no_of_cases')
+    # # @api.onchange('include_cases')
+    # def _onchange_include_case(self):
+    #     for rec in self:
+    #         rec.sale_id.include_cases = rec.include_cases
 
     def _compute_order_qty_count_spt(self):
         for record in self:
@@ -1354,6 +1413,8 @@ class stock_picking(models.Model):
 
 
     def button_validate(self):
+        if self._context.get('is_return_order',False):
+            return super(stock_picking, self).button_validate()
         state_list = self.mapped(lambda picking : picking.state in ['assigned'])
         if any(state_list):
             context = self._context.copy()
@@ -1364,12 +1425,12 @@ class stock_picking(models.Model):
             # shipping_error = []
             website_error_msg = "This order comes from abandoned cart confirmed by %s, please do recount if needed.\n\n"%(self.sale_id.user_id.name)
             for record in self:
-                if not record.tracking_number_spt and record.shipping_id and record.shipping_id.name.lower() != 'pick up':
+                if not record.tracking_number_spt and record.shipping_id and record.shipping_id.name.lower() not in ('pick up','warehouse choose cheapest option','customer pickup','delivered to customer'):
                     raise UserError('Please add tracking number for ship order.')
                 record.update_sale_order_spt()
                 product_dict = {}
                 # product record with qty
-                for line in record.move_ids_without_package.sorted(lambda x: x.product_id.variant_name):
+                for line in record.move_ids_without_package.filtered(lambda x:x.product_id.is_case_product==False).sorted(lambda x: x.product_id.variant_name):
                     if line.product_id in product_dict.keys():
                         product_dict[line.product_id ] = line.quantity_done + product_dict[line.product_id ]
                     else:
@@ -1452,6 +1513,11 @@ class stock_picking(models.Model):
             self._cr.commit()
             self.set_order_status()
             self._cr.commit()
+            case_product_ids =  self.move_ids_without_package - self.non_case_move_ids_without_package
+            for case_id in case_product_ids:
+                # case_id._action_done()
+                case_id.mapped('move_line_ids').sorted()._action_done()
+                case_id.write({'state':'done'})
             return True
         else:
             return {
@@ -1543,7 +1609,7 @@ class stock_picking(models.Model):
             sale_order = record.sale_id
             if not sale_order:
                 sale_order = self.env['sale.order'].search([('picking_ids','in',record.ids)],limit=1)
-            sale_order.include_cases = record.include_cases
+            # sale_order.include_cases = record.include_cases
             sale_order.no_of_cases = record.no_of_cases
 
     def check_duplicate_move(self,line):
@@ -1580,7 +1646,7 @@ class stock_picking(models.Model):
         for rec in self:
             if rec.sale_id:
                 rec.sale_id.write({
-                    'include_cases':rec.include_cases,
+                    # 'include_cases':rec.include_cases,
                     'no_of_cases':rec.no_of_cases,
                     'shipping_id':rec.shipping_id.id,
                     'carrier_id':rec.carrier_id.id,
@@ -1663,3 +1729,21 @@ class stock_picking(models.Model):
     @api.depends('move_type', 'immediate_transfer', 'move_ids.state', 'move_ids.picking_id')
     def _compute_state(self):
         pass
+
+    @api.depends('order_id','order_id.extra_qty')
+    def _compute_extra_qty(self):
+        for rec in self:
+            if rec.order_id:
+                rec.extra_qty = rec.order_id.extra_qty
+            else:
+                rec.extra_qty = 0
+
+    def action_return_order(self):
+        return  {
+            'name':_("Return Order"),
+            'type':'ir.actions.act_window',
+            'res_model':"kits.return.ordered.items",
+            'view_mode':'form',
+            'target':'self',
+            'res_id': self.return_order_id.id
+        }

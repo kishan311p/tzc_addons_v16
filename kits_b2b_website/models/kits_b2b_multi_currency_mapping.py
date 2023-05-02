@@ -72,9 +72,12 @@ class kits_b2b_multi_currency_mapping(models.Model):
 
                 product = self.env['product.product'].browse(product)
 
-                # pricelist_price = self.env['product.pricelist.item'].search([('product_id','in',product.ids),('pricelist_id','=',partner_id.property_product_pricelist.id)],limit=1).fixed_price
-                pricelist_price = self.env.ref('tzc_sales_customization_spt.usd_public_pricelist_spt')
-                pricelist_price = self.env['product.pricelist.item'].search([('product_id','in',product.ids),('pricelist_id','=',pricelist_price.id)],limit=1).fixed_price
+                if product.is_case_product:
+                    pricelist_price = product.lst_price
+                else:
+                    # pricelist_price = self.env['product.pricelist.item'].search([('product_id','in',product.ids),('pricelist_id','=',partner_id.property_product_pricelist.id)],limit=1).fixed_price
+                    pricelist_price = self.env.ref('tzc_sales_customization_spt.usd_public_pricelist_spt')
+                    pricelist_price = self.env['product.pricelist.item'].search([('product_id','in',product.ids),('pricelist_id','=',pricelist_price.id)],limit=1).fixed_price
 
                 
                 if self._context.get('from_order_line') and order_id and not is_currency_match:

@@ -153,17 +153,17 @@
                         <p class="m-0" t-field="o.invoice_origin"/>
                     </div>
                     <t t-set="kits_picking_details" t-value="o.get_invoice_courier()"/>
-                    <div class="col-auto mw-100 mb-2">
+                    <div class="col-auto mw-100 mb-2" style="width:15% !important">
                         <strong>Payment Terms:</strong>
                         <p class="m-0 text-start" t-esc="kits_picking_details[2]"/>
                     </div>
-                    <div class="col-auto mw-100 mb-2 text-center">
-                        <strong>Courier:</strong>
+                    <div class="col-auto mw-100 mb-2 text-center" style="width:15% !important">
+                        <strong>Shipping Provider:</strong>
                         <p class="m-0 text-center" t-esc="kits_picking_details[0]"/>
                     </div>
-                    <div class="col-auto mw-100 mb-2">
+                    <div class="col-auto mw-100 mb-2 text-center" t-attf-style="{{'width:17% !important' if kits_picking_details[1] != '' else ''}}">
                         <strong>Tracking:</strong>
-                        <p class="m-0 text-center" t-esc="kits_picking_details[1]"/>
+                        <p class="m-0" t-esc="kits_picking_details[1]"/>
                     </div>
                     <div class="col-auto mw-100 mb-2 text-center">
                         <strong>Total Qty:</strong>
@@ -171,7 +171,12 @@
                     </div>
                     <div class="col-auto mw-100 mb-2 text-center">
                         <strong>Total Cases:</strong>
-                        <p class="m-0" t-esc="int(request.env['sale.order'].sudo().search([('name','=',o.invoice_origin)]).no_of_cases)"/>
+                        <t t-if="request.env['sale.order'].sudo().search([('name','=',o.invoice_origin)]).include_cases">
+                            <p class="m-0" t-esc="int(request.env['sale.order'].sudo().search([('name','=',o.invoice_origin)]).no_of_cases)"/>
+                        </t>
+                        <t t-else="">
+                            <p>0</p>
+                        </t>
                     </div>
                     <div class="col-auto mw-100 mb-2 text-center">
                         <strong>Currency:</strong>
@@ -348,7 +353,9 @@
                                                                 <strong>Tax</strong>
                                                             </td>
                                                             <td name="td_amount_by_group" class="text-end o_price_total">
-                                                                <span t-esc="o.amount_tax" t-options='{"widget": "monetary", "display_currency": o.currency_id}'/>
+                                                                <span t-esc="o.currency_id.symbol"/>
+                                                                <span t-esc="'{0:.2f}'.format(round(o.kits_amount_tax,2))"/>
+                                                                <!-- <span t-esc="o.amount_tax" t-options='{"widget": "monetary", "display_currency": o.currency_id}'/> -->
                                                             </td>
                                                         </tr>
 
@@ -359,7 +366,8 @@
                                                             <td style="white-space: nowrap;" name="td_amount_by_group" class="text-end o_price_total">
                                                             (                                                                <span t-esc="o.currency_id.name"/>
                                                                 )
-                                                                <span t-options="{&quot;widget&quot;: &quot;monetary&quot;, &quot;display_currency&quot;: o.currency_id}" t-esc="round((sub_total + o.amount_is_shipping_total + o.amount_is_admin  + o.amount_tax) - abs(o.global_discount),2)"/>
+                                                                <!-- <span t-options="{&quot;widget&quot;: &quot;monetary&quot;, &quot;display_currency&quot;: o.currency_id}" t-esc="round((sub_total + o.amount_is_shipping_total + o.amount_is_admin  + o.amount_tax) - abs(o.global_discount),2)"/> -->
+                                                                <span t-esc="'{0:.2f}'.format(round(o.kits_amount_total,2))"/>
                                                             </td>
                                                         </tr>
                                                         <tr class="border-black">
@@ -447,7 +455,9 @@
                                                                 <strong>Tax</strong>
                                                             </td>
                                                             <td name="td_amount_by_group" class="text-right o_price_total">
-                                                                <span t-esc="o.amount_tax" t-options='{"widget": "monetary", "display_currency": o.currency_id}'/>
+                                                                <!-- <span t-esc="o.amount_tax" t-options='{"widget": "monetary", "display_currency": o.currency_id}'/> -->
+                                                                <span t-esc="o.currency_id.symbol"/>
+                                                                <span t-esc="'{0:.2f}'.format(round(o.kits_amount_tax,2))"/>
                                                             </td>
                                                         </tr>
 
@@ -458,7 +468,8 @@
                                                             <td style="white-space: nowrap;" name="td_amount_by_group" class="text-right o_price_total">
                                                             (                                                                <span t-esc="o.currency_id.name"/>
                                                                 )
-                                                                <span t-options="{&quot;widget&quot;: &quot;monetary&quot;, &quot;display_currency&quot;: o.currency_id}" t-esc="round((sub_total + o.amount_is_shipping_total + o.amount_is_admin  + o.amount_tax) - abs(o.global_discount),2)"/>
+                                                                <!-- <span t-options="{&quot;widget&quot;: &quot;monetary&quot;, &quot;display_currency&quot;: o.currency_id}" t-esc="round((sub_total + o.amount_is_shipping_total + o.amount_is_admin  + o.amount_tax) - abs(o.global_discount),2)"/> -->
+                                                                <span t-esc="'{0:.2f}'.format(round(o.kits_amount_total,2))"/>
                                                             </td>
                                                         </tr>
                                                         <tr class="border-black">

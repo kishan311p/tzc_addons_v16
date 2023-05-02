@@ -6,7 +6,8 @@ class stock_move_line(models.Model):
 
     qty_on_hand = fields.Integer(compute="_compute_qty_on_hand",string='Qty On Hand')
     available_qty = fields.Integer(compute="_compute_qty_on_hand",string='Available Qty')
-    status = fields.Selection([('added', 'Added'), ('removed', 'Removed'), ('reserved', 'Reserved'),('shipped','Shipped'),('cancelled','Cancelled')],string='State',compute='_compute_line_status',store=True)
+    status = fields.Selection([('added', 'Added'), ('removed', 'Removed'), ('reserved', 'Reserved'),('shipped','Shipped'),('return','Return'),('scrap','Scrap'),('cancelled','Cancelled')],string='State',compute='_compute_line_status',store=True)
+
 
     @api.depends('state','location_id','location_dest_id')
     def _compute_line_status(self):
@@ -23,6 +24,12 @@ class stock_move_line(models.Model):
                 rec.status = 'added'
             if is_locations and 'virtual locations' in rec.location_dest_id.display_name.lower() and 'wh/stock' in rec.location_id.display_name.lower():
                 rec.status = 'removed'
+            if rec.move_id.return_order_line_id:
+                status = 'scrap' if rec.move_id.return_order_line_id.return_type == 'scrap' else 'return' 
+                if rec.state == 'cancel':
+                    status = 'cancelled'
+                rec.status = status
+                    
 
     @api.depends('location_id','state')
     def _compute_qty_on_hand(self):

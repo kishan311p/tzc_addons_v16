@@ -11,6 +11,7 @@ class ProductTemplate(models.Model):
     # kits_ecom_categ_id = fields.Many2one('product.public.category','Website Product Category')
     is_forcefully_unpublished = fields.Boolean('Forcefully Unpublished')
     product_variant_id = fields.Many2one('product.product', 'Product', compute='_compute_product_variant_id',store=True)
+    is_case_product = fields.Boolean('Is Case Product (Flag)')
 
     brand = fields.Many2one('product.brand.spt','Brand')
     model = fields.Many2one('product.model.spt','Model')

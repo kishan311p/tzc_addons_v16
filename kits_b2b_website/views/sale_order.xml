@@ -7,8 +7,8 @@
         <field name="inherit_id" ref="sale.view_order_form"/>
         <field name="arch" type="xml">
             <xpath expr="//field[@name='currency_id']" position="replace">
-                    <field name="currency_id" invisible="1"/>
-                    <field name="b2b_currency_id"  options="{'no_open': True, 'no_create': True}" required="1"/>
+                    <!-- <field name="currency_id" invisible="1"/> -->
+                    <field name="b2b_currency_id"  options="{'no_open': True, 'no_create': True}" required="1" attrs="{'readonly':[('state','in',['scan','shipped','draft_inv','open_inv','cancel','merged','done'])]}"/>
             </xpath>
         </field>
     </record>

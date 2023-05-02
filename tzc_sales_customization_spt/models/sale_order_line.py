@@ -39,6 +39,7 @@ class SaleOrderLine(models.Model):
     picked_qty_subtotal = fields.Float('Subtotal',compute="_compute_picked_qty",store=True)
     is_special_discount = fields.Boolean("Is Special Discount",help="This is flag for check product is in special discount or not.")
     primary_image_url = fields.Char("Primary Image URL",related='product_id.primary_image_url')
+    case_type = fields.Selection([('original', 'Original'),('generic', 'Generic')],"Case Type",related='product_id.case_type')
 
     def _get_virtual_sources(self):
         return []
@@ -87,7 +88,12 @@ class SaleOrderLine(models.Model):
                     picked_qty_subtotal = picked_qty_subtotal + (record.picked_qty * record.unit_discount_price)
                 if record.product_id.type == 'service': 
                     picked_qty_subtotal =picked_qty_subtotal + (record.product_uom_qty * record.unit_discount_price)
-            record.picked_qty_subtotal = round(picked_qty_subtotal,2)
+            if record.product_id.is_case_product:
+                record.picked_qty_subtotal = round(record.unit_discount_price * record.product_uom_qty,2)
+            else:
+                record.picked_qty_subtotal = round(picked_qty_subtotal,2)
+                
+
 
     @api.onchange('product_id',"product_uom_qty",'price_unit','tax_id','unit_discount_price','discount','picked_qty','fix_discount_price')
     def _onchange_price_total_compute(self):
@@ -98,6 +104,9 @@ class SaleOrderLine(models.Model):
         res = super(SaleOrderLine,self)._compute_amount()
         for record in range(len(self)):
             record = self[record]
+            product_price_dict = (self.env['kits.b2b.multi.currency.mapping'].with_context(from_order_line=True).get_product_price(record.order_id.partner_id.id,record.product_id.ids,order_id=record.order_id) or {}).get(record.product_id.id,{})
+            product_price = product_price_dict.get('price')
+            record.price_unit = product_price
             if record.unit_discount_price:
                 if record.order_id.state not in record.order_id.draft_states():
                     record.price_subtotal = round(record.unit_discount_price * record.picked_qty,2)
@@ -169,8 +178,8 @@ class SaleOrderLine(models.Model):
             record = self[record]
             product_price_dict = (self.env['kits.b2b.multi.currency.mapping'].with_context(from_order_line=True).get_product_price(record.order_id.partner_id.id,record.product_id.ids,order_id=record.order_id) or {}).get(record.product_id.id,{})
             product_price = product_price_dict.get('price')
-            unit_discount_price = product_price_dict.get('discounted_unit_price')
-            fix_discount_price = product_price_dict.get('fix_discount_price')
+            unit_discount_price = product_price_dict.get('discounted_unit_price') if record.product_id.is_case_product == False else product_price_dict.get('price')
+            fix_discount_price = product_price_dict.get('fix_discount_price')  if record.product_id.is_case_product == False else 0
             if record.product_id:
                 update_dict = {'price_unit':round(product_price,2),
                                'unit_discount_price': round(unit_discount_price,2), 
@@ -278,8 +287,10 @@ class SaleOrderLine(models.Model):
 
                 if (record.discount or record.discount == 0.0) and not record._context.get('partner_change'):
                     unit_discount_price = round(product_price - (product_price * record.discount)* 0.01,2)
-                
-                discount = round(100-(unit_discount_price*100/product_price),2)
+                if product_price:
+                    discount = round(100-(unit_discount_price*100/product_price),2)
+                else:
+                    discount = 0
                 fix_discount_price = round((product_price*discount/100),2)
 
                 record.write({'price_unit':round(product_price,2),'unit_discount_price': round(unit_discount_price,2), 'sale_type':product_pricing.get('sale_type') or '','fix_discount_price':round(fix_discount_price,2)})
@@ -304,8 +315,12 @@ class SaleOrderLine(models.Model):
         for line in range(len(self)):
             line = self[line]
             if line.order_id.state in ['sale', 'done','in_scanning','scanned','scan','shipped','draft_inv','open_inv']:
-                if line.product_id.invoice_policy == 'order':
-                    line.qty_to_invoice = line.picked_qty - line.qty_invoiced
+                if line.product_id.is_case_product:
+                    line.qty_to_invoice = line.product_uom_qty
+                    # line.qty_to_invoice = line.picked_qty - line.qty_invoiced
+
+                elif line.product_id.invoice_policy == 'order':
+                    line.qty_to_invoice = line.product_uom_qty - line.qty_invoiced
                 else:
                     line.qty_to_invoice = line.qty_delivered - line.qty_invoiced
             else:

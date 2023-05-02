@@ -50,7 +50,8 @@
                 <!-- <t t-if="o.no_of_cases">
                     <p t-field="o.no_of_cases" />
                 </t> -->
-                <t t-if="o.include_cases">
+                <t t-if="o.no_of_cases > 0">
+                <!-- <t t-if="o.include_cases"> -->
                      <p t-field="o.no_of_cases" />
                 </t>
                 <t t-else="">
@@ -164,11 +165,11 @@
                             <strong >Product</strong>
                         </th>
                         <th name="th_sm_quantity" style="text-align:center;">
-                            <strong>Picked Qty</strong>
+                            <strong>Delivered Qty</strong>
                             <br/>
                         </th>
                         <th name="th_sm_order_quantity" style="text-align:center;">
-                            <strong>Order Qty</strong>
+                            <strong>Ordered Qty</strong>
                             <br/>
                         </th>
                     </tr>
@@ -204,7 +205,7 @@
                             <table class="table table-sm table-borderless">
                                 <tr class="border-black o_subtotal" style="">
                                     <td name="td_shipping_product_total_amount_label">
-                                        <strong>Total Picked Qty</strong>
+                                        <strong>Total Delivered Qty</strong>
                                     </td>
                                     <td name="td_amount_untaxed" class="text-end">
                                     <t t-out="round(total_picking_qty)"/>
@@ -212,7 +213,7 @@
                                 </tr>
                                 <tr class="border-black o_subtotal" style="">
                                     <td name="td_shipping_product_total_amount_label">
-                                        <strong>Total Order Qty</strong>
+                                        <strong>Total Ordered Qty</strong>
                                     </td>
                                     <td name="td_amount_untaxed" class="text-end">
                                     <t t-out="round(total_order_qty)"/>
@@ -245,12 +246,12 @@
                         </th>
 
                         <th style="text-align:center;">
-                            <strong>Order Qty</strong>
+                            <strong>Ordered Qty</strong>
                             <br/>
                         </th>
 
                         <th style="text-align:center;">
-                            <strong>Picked Qty</strong>
+                            <strong>Delivered Qty</strong>
                             <br/>
                         </th>
 
@@ -281,7 +282,7 @@
                             <table class="table table-sm table-borderless">
                                 <tr class="border-black o_subtotal" style="">
                                     <td name="td_shipping_product_total_amount_label">
-                                        <strong>Total Order Qty</strong>
+                                        <strong>Total Ordered Qty</strong>
                                     </td>
                                     <td name="td_amount_untaxed" class="text-end">
                                         <t t-out="round(total_order_qty)"/>
@@ -289,7 +290,7 @@
                                 </tr>
                                 <tr class="border-black o_subtotal" style="">
                                     <td name="td_shipping_product_total_amount_label">
-                                        <strong>Total Picked Qty</strong>
+                                        <strong>Total Delivered Qty</strong>
                                     </td>
                                     <td name="td_amount_untaxed" class="text-end">
                                         <t t-out="round(total_picking_qty)"/>
