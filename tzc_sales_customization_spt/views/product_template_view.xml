@@ -18,6 +18,7 @@
                 <xpath expr="//field[@name='name']" position="replace">
                 </xpath>
                 <xpath expr="//label[@for='name']" position="replace">
+                    <field name="is_case_product" invisible='1' />
                     <div name="name_spt">
                         <div class="col-6">
                             <label class="oe_edit_only" for="name" string="Product Name" attrs="{'invisible':[('is_case_product','=',True)]}" />

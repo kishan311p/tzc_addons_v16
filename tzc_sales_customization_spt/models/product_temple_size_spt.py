@@ -9,7 +9,7 @@ class product_temple_size_spt(models.Model):
     name = fields.Char('Temple Size', index=True)
     # product_ids = fields.One2many('product.template','temple_size',string='Products')
     kits_product_ids = fields.One2many('product.product','temple_size',string='Products')
-
+    templesize_id = fields.Many2one('kits.product.color.code', string='Temple Size')
     products_count = fields.Integer(compute="_compute_temple_size_products")
 
     def _compute_temple_size_products(self):

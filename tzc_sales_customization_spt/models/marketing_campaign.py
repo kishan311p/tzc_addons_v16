@@ -456,7 +456,7 @@ class marketing_campaign(models.Model):
                     campaign.unlink()
         return super(marketing_campaign,self).unlink()
 
-    def execute_activities(self):
-        for campaign in self:
-            # if campaign._context.get('from_bulk_mail'):
-            campaign.marketing_activity_ids.execute()
+    # def execute_activities(self):
+    #     for campaign in self:
+    #         # if campaign._context.get('from_bulk_mail'):
+    #         campaign.marketing_activity_ids.execute()

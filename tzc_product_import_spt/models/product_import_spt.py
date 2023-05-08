@@ -148,7 +148,7 @@ class product_import_spt(models.Model):
             'type': 'ir.actions.act_window',
             'target':'current',
             'domain':[('id','in',self.product_pro_ids.ids)],
-            'context':{'active_test': False, }
+            'context':{'active_test': False, 'pending_price' :True}
         }   
     
     def _get_number_of_product(self):
@@ -209,7 +209,7 @@ class product_import_spt(models.Model):
         for import_line in range(0,len(import_line_ids)):
             print(str(import_line))
             import_line = import_line_ids[import_line]
-            product_pro_id = product_obj.sudo().search([('default_code','=',import_line.default_code),'|',('active','=',False),('active','=',True)],limit=1)
+            product_pro_id = product_obj.with_context(pending_price=True).sudo().search([('default_code','=',import_line.default_code),'|',('active','=',False),('active','=',True)],limit=1)
             try:
                 if len(product_pro_id)>1:
                     if import_line.default_code not in error_default_code_list:
@@ -292,7 +292,7 @@ class product_import_spt(models.Model):
                 if import_line.default_code in error_default_code_list and product_pro_id:
                     product_pro_id.unlink()
                 else:
-                    product_ids = product_obj.search([('brand','=',import_line.brand.id),('model','=',import_line.model.id),('categ_id','=',import_line.categ_id.id)])
+                    product_ids = product_obj.with_context(pending_price=True).search([('brand','=',import_line.brand.id),('model','=',import_line.model.id),('categ_id','=',import_line.categ_id.id)])
                     for product in product_ids:
                         if not product.default_code:
                             self._cr.execute('delete from stock_valuation_layer where product_id = %s'%(product.id))
@@ -319,7 +319,7 @@ class product_import_spt(models.Model):
             self.update_pricelist(wrong_lines)
             
         print('\n\n\n\n')
-        product_id_not_set_ids = product_obj.search([('default_code','in',[False,'',' ',None])])
+        product_id_not_set_ids = product_obj.with_context(pending_price=True).search([('default_code','in',[False,'',' ',None])])
 
         if product_id_not_set_ids:
             for product_id in product_id_not_set_ids:
@@ -370,6 +370,7 @@ class product_import_spt(models.Model):
             out.close()
             self.run_time = base64.b64encode(data)
             self.run_time_file_name = 'wrong_product.xlsx'
+        self.product_pro_ids._compute_pending_price()
         if 'active' in search_filed_list or 'qty' in search_filed_list:
             self.product_pro_ids.product_import_product_published()
 
@@ -398,7 +399,7 @@ class product_import_spt(models.Model):
             for line in file_data:
                 try:
                     print(line[header_dict.get('default_code')])
-                    product_id =  product_obj.search([('default_code','=',line[header_dict.get('default_code')].strip()),'|',('active','=',True),('active','=',False)],limit=1)
+                    product_id =  product_obj.with_context(pending_price=True).search([('default_code','=',line[header_dict.get('default_code')].strip()),'|',('active','=',True),('active','=',False)],limit=1)
                     if product_id:
                         for pricelist in pricelist_name_list:
                             # Fenil
@@ -570,7 +571,7 @@ class product_import_spt(models.Model):
                 id_col = heading.index('Id')
                 for line in file_data:
                     if any(line):
-                        product_id = product_obj.search(['|',('active','=',False),('active','=',True),('default_code','=',line[0].strip())],limit=1)
+                        product_id = product_obj.with_context(pending_price=True).search(['|',('active','=',False),('active','=',True),('default_code','=',line[0].strip())],limit=1)
                         if not product_id:
                             delete_file_list.append([line[id_col],0,0,'Product not found.'])
                             wrong_lines.append([line[id_col],'Product not found.'])
@@ -651,7 +652,7 @@ class product_import_spt(models.Model):
             list(map(lambda data : file_product_id.update({data[0]:delete_file_list.index(data)}),delete_file_list))
             for import_line in import_line_ids:
                 try:
-                    product_id = product_obj.search(['|',('active','=',False),('active','=',True),('default_code','=',import_line.default_code.strip())],limit=1)
+                    product_id = product_obj.with_context(pending_price=True).search(['|',('active','=',False),('active','=',True),('default_code','=',import_line.default_code.strip())],limit=1)
                     if not product_id:
                         wrong_lines.append([import_line.default_code,'Product not found.'])
                     else:
@@ -677,7 +678,7 @@ class product_import_spt(models.Model):
                                     new_barcode = product_id.barcode+self.column_name if self.column_name else product_id.barcode+'_Archive'
                                     new_product_seo_keyword = product_id.product_seo_keyword+self.column_name if self.column_name else  product_id.product_seo_keyword+'_Archive'
                                     new_default_code = product_id.default_code+self.column_name if self.column_name else product_id.default_code+'_Archive'
-                                    du_product_id = product_obj.search(['|','|',('barcode','=',new_barcode),('product_seo_keyword','=',new_product_seo_keyword),('default_code','=',new_default_code),'|',('active','=',True),('active','=',False)])
+                                    du_product_id = product_obj.with_context(pending_price=True).search(['|','|',('barcode','=',new_barcode),('product_seo_keyword','=',new_product_seo_keyword),('default_code','=',new_default_code),'|',('active','=',True),('active','=',False)])
                                     if du_product_id:
                                         new_barcode = du_product_id.barcode+self.column_name if self.column_name else du_product_id.barcode+'_Archive'
                                         new_product_seo_keyword = du_product_id.product_seo_keyword+self.column_name if self.column_name else du_product_id.product_seo_keyword+'_Archive'
@@ -705,7 +706,7 @@ class product_import_spt(models.Model):
                                 new_barcode = product_id.barcode+self.column_name if self.column_name else product_id.barcode+'_Archive'
                                 new_product_seo_keyword = product_id.product_seo_keyword+self.column_name if self.column_name else  product_id.product_seo_keyword+'_Archive'
                                 new_default_code = product_id.default_code+self.column_name if self.column_name else product_id.default_code+'_Archive'
-                                du_product_id = product_obj.search(['|','|','|',('barcode','=',new_barcode),('product_seo_keyword','=',new_product_seo_keyword),('default_code','=',new_default_code),('active','=',True),('active','=',False),('id','!=',product_id.id)])
+                                du_product_id = product_obj.with_context(pending_price=True).search(['|','|','|',('barcode','=',new_barcode),('product_seo_keyword','=',new_product_seo_keyword),('default_code','=',new_default_code),('active','=',True),('active','=',False),('id','!=',product_id.id)])
                                 if du_product_id:
                                     new_barcode = du_product_id.barcode+self.column_name if self.column_name else du_product_id.barcode+'_Archive'
                                     new_product_seo_keyword = du_product_id.product_seo_keyword+self.column_name if self.column_name else du_product_id.product_seo_keyword+'_Archive'
@@ -911,7 +912,8 @@ class product_import_spt(models.Model):
                         continue
                     new_header_dict[fields_dict[col.strip()]]= file_data[0].index(col)
                 else:
-                    not_heading_list.append(str(col))
+                    if col:
+                        not_heading_list.append(str(col))
         if not_heading_list:
             raise UserError(_('Incorrect %s headers found,first remove headers then process will be done.'%(','.join(not_heading_list))))
         heading = file_data[0] if file_data else []
@@ -1257,6 +1259,7 @@ class product_import_spt(models.Model):
                     
                     file_column = wrong_lines[0][fields_dict.get('brand')] if fields_dict.get('brand') else None 
                     brand = 0
+                    brand_id = brand_obj
                     get_brand_index = fields_dict.get('brand') if fields_dict.get('brand') and int(fields_dict.get('brand')) else False
                     if get_brand_index and line[get_brand_index] not in ('','N/A','n/a',' ','#N/A  '):
                         brand_id = brand_obj.search([('name','=',str(int(line[get_brand_index])).strip() if isinstance( line[get_brand_index],float) else  line[get_brand_index].strip())])
@@ -1267,11 +1270,14 @@ class product_import_spt(models.Model):
 
                     file_column = wrong_lines[0][fields_dict.get('model')] if fields_dict.get('model') else None                         
                     model = 0
+                    model_id = model_obj
                     get_model_index = fields_dict.get('model') if fields_dict.get('model') and int(fields_dict.get('model')) else False
                     if get_model_index and line[get_model_index] not in ('','N/A','n/a',' ','#N/A  '):
-                        model_id = model_obj.search([('name','=',str(int(line[get_model_index])).strip() if isinstance( line[get_model_index],float) else  line[get_model_index].strip())])
+                        model_id = model_obj.search([('brand_id','=',brand_id.id),('name','=',str(int(line[get_model_index])).strip() if isinstance( line[get_model_index],float) else  line[get_model_index].strip())])
                         if not model_id:
                             model_id = model_obj.create({'name': str(int(line[get_model_index])).strip() if isinstance( line[get_model_index],float) else  line[get_model_index].strip()})
+                        if brand_id:
+                            model_id.brand_id = brand_id.id
                         model_name = model_id.name
                         model= model_id.id
 
@@ -1282,18 +1288,21 @@ class product_import_spt(models.Model):
                         html_color = line[get_html_color_index].strip()
 
                     file_column = wrong_lines[0][fields_dict.get('color')] if fields_dict.get('color') else None                             
-                    color_code = None 
+                    color_code = color_code_obj 
                     if fields_dict.get('color') and line[fields_dict.get('color')] not in ['',' ','0','N/A','n/a']:
                         kits_color_code = str(int(line[fields_dict.get('color')])) if isinstance(line[fields_dict.get('color')],int) or isinstance(line[fields_dict.get('color')],float) else str(line[fields_dict.get('color')])
                         kits_color_code =kits_color_code.split('-')[0] if '-' in kits_color_code else kits_color_code
-                        color_code = color_code_obj.search([('name','=',kits_color_code)])
+                        color_code = color_code_obj.search([('name','=',kits_color_code),('model_id','=',model_id.id)])
                         if not color_code:
                             color_code = color_code_obj.create({
                                 'name':  kits_color_code,
                                 'color': html_color
                             })
-                        
+                        if model_id:
+                            color_code.model_id = model_id.id
                         color_code = color_code.id
+                    if not color_code:
+                        color_code = 0
 
                     material = []
                     # file_column = wrong_lines[0][fields_dict.get('material_ids')] if fields_dict.get('material_ids') else None 
@@ -1326,9 +1335,11 @@ class product_import_spt(models.Model):
                     bridge_size = 0
                     get_bridge_size_index = fields_dict.get('bridge_size') if fields_dict.get('bridge_size') and int(fields_dict.get('bridge_size')) else False
                     if self.based_on_categories != 'case' and  get_bridge_size_index and line[get_bridge_size_index] not in ('','N/A','n/a',' ','#N/A  '):
-                        bridge_size_id = bridge_size_obj.search([('name','=',str(int(line[get_bridge_size_index])).strip() if isinstance(line[get_bridge_size_index],float) else line[get_bridge_size_index].strip())])
+                        bridge_size_id = bridge_size_obj.search([('bridgesize_id','=',color_code),('name','=',str(int(line[get_bridge_size_index])).strip() if isinstance(line[get_bridge_size_index],float) else line[get_bridge_size_index].strip())])
                         if not bridge_size_id:
                             bridge_size_id = bridge_size_obj.create({'name': str(int(line[get_bridge_size_index])).strip() if isinstance(line[get_bridge_size_index],float) else line[get_bridge_size_index].strip()})
+                        if color_code and bridge_size_id.bridgesize_id.id != color_code:
+                            bridge_size_id.bridgesize_id = color_code
                         bridge_size= bridge_size_id.id
                     
 
@@ -1336,9 +1347,11 @@ class product_import_spt(models.Model):
                     temple_size = 0
                     get_temple_size_index = fields_dict.get('temple_size') if fields_dict.get('temple_size') and int(fields_dict.get('temple_size')) else False
                     if self.based_on_categories != 'case' and  get_temple_size_index and line[get_temple_size_index] not in ('','N/A','n/a',' ','#N/A  '):
-                        temple_size_id = temple_size_obj.search([('name','=',str(int(line[get_temple_size_index])).strip() if isinstance(line[get_temple_size_index],float) else line[get_temple_size_index].strip())])
+                        temple_size_id = temple_size_obj.search([('templesize_id','=',color_code),('name','=',str(int(line[get_temple_size_index])).strip() if isinstance(line[get_temple_size_index],float) else line[get_temple_size_index].strip())])
                         if not temple_size_id:
                             temple_size_id = temple_size_obj.create({'name': str(int(line[get_temple_size_index])).strip() if isinstance(line[get_temple_size_index],float) else line[get_temple_size_index].strip()})
+                        if temple_size_id and temple_size_id.templesize_id.id != color_code:
+                            temple_size_id.templesize_id=color_code
                         temple_size= temple_size_id.id
                     
                     file_column = wrong_lines[0][fields_dict.get('geo_restriction')] if fields_dict.get('geo_restriction') else None                         
@@ -1408,9 +1421,11 @@ class product_import_spt(models.Model):
                     eye_size = False
                     get_seye_size_index = fields_dict.get('eye_size') if fields_dict.get('eye_size') and int(fields_dict.get('eye_size')) else False
                     if self.based_on_categories != 'case' and  get_seye_size_index and line[get_seye_size_index] not in ('','N/A','n/a',' ','#N/A'):
-                        eye_size = size_obj.search([('name','=', str(int(line[get_seye_size_index])).strip() if isinstance( line[get_seye_size_index],float) else  line[get_seye_size_index].strip())])
+                        eye_size = size_obj.search([('eyesize_id','=',color_code),('name','=', str(int(line[get_seye_size_index])).strip() if isinstance( line[get_seye_size_index],float) else  line[get_seye_size_index].strip())])
                         if not eye_size:
                             eye_size = size_obj.create({'name':  str(int(line[get_seye_size_index])).strip() if isinstance( line[get_seye_size_index],float) else  line[get_seye_size_index].strip()})
+                        if color_code and eye_size.eyesize_id.id != color_code:
+                            eye_size.eyesize_id = color_code
                         eye_size= eye_size.id
                     
                     file_column = wrong_lines[0][fields_dict.get('barcode')] if fields_dict.get('barcode') else None                         
@@ -1725,7 +1740,7 @@ class product_import_spt(models.Model):
                     barcode = False
                     products_seo_id = False
                     import_line_seo_id = False
-                    product_id = product_obj.sudo().search([('default_code','=', line[fields_dict.get('default_code')].strip()),'|',('active','=',True),('active','=',False)])
+                    product_id = product_obj.with_context(pending_price=True).sudo().search([('default_code','=', line[fields_dict.get('default_code')].strip()),'|',('active','=',True),('active','=',False)])
                     if len(product_id)>1:
                         line.append("Duplicate sku found, so can't %s a product."%(self.data_on))
                         wrong_lines.append(line)
@@ -1739,14 +1754,14 @@ class product_import_spt(models.Model):
                     
                     if product_values_dict['barcode'] not in ('',None,False,'N/A','#N/A'):
                         barcode_spt = product_values_dict['barcode']
-                        barcode = product_obj.sudo().search([('barcode','=',barcode_spt),'|',('active','=',True),('active','=',False),'|',('active','=',True),('active','=',False)])
+                        barcode = product_obj.with_context(pending_price=True).sudo().search([('barcode','=',barcode_spt),'|',('active','=',True),('active','=',False),'|',('active','=',True),('active','=',False)])
                         if not barcode:
                             barcode =  import_line_obj.search([('import_id','=',self.id),('barcode','=',barcode_spt),'|',('active','=',True),('active','=',False)])
                         if barcode.default_code == line[fields_dict.get('default_code')].strip():
                             barcode = False
                         barcode = barcode_list.count(barcode_spt) if  barcode_list.count(barcode_spt) >1 else barcode if barcode else False
                     if product_values_dict['product_seo_keyword'] not in ('',None,False,'N/A','#N/A'):
-                        products_seo_id =  product_obj.search([('product_seo_keyword','=',product_values_dict['product_seo_keyword']),'|',('active','=',True),('active','=',False)])
+                        products_seo_id =  product_obj.with_context(pending_price=True).search([('product_seo_keyword','=',product_values_dict['product_seo_keyword']),'|',('active','=',True),('active','=',False)])
                         import_line_seo_id = import_line_obj.search([('product_seo_keyword','=',product_values_dict['product_seo_keyword']),('import_id','=',self.id),'|',('active','=',True),('active','=',False)])
                         if products_seo_id.default_code == line[fields_dict.get('default_code')].strip() or import_line_seo_id.default_code == line[fields_dict.get('default_code')].strip():
                             products_seo_id = import_line_seo_id = False
@@ -1840,7 +1855,7 @@ class product_import_spt(models.Model):
                     e = []
                     try:
                         if line[fields_dict.get('old_image_file_name',False)] and line[fields_dict.get('new_image_file_name',False)]:
-                            product_id = product_obj.search([('default_code','=',line[fields_dict.get('id',False)]),'|',('active','=',False),('active','=',True)])
+                            product_id = product_obj.with_context(pending_price=True).search([('default_code','=',line[fields_dict.get('id',False)]),'|',('active','=',False),('active','=',True)])
                             if product_id:
                                 if isinstance(fields_dict.get('old_primary_image'),int) or line[fields_dict.get('old_image_file_name')]:
                                     os.chdir(folder_path)

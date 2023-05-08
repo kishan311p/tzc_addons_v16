@@ -6,12 +6,18 @@ from urllib.request import urlopen
 import pandas as pd
 import math
 import re
+import os
 import random
 import requests
 import base64
 import urllib
 from bs4 import BeautifulSoup
 from lxml import etree
+from io import BytesIO
+import openpyxl
+from openpyxl import Workbook,load_workbook
+from openpyxl.styles import Border, Side, Alignment, Font
+import xlsxwriter
 
 class product_template(models.Model):
     _inherit = 'product.product'
@@ -176,7 +182,25 @@ class ProductProduct(models.Model):
         help="Standardized code for international shipping and goods declaration. At the moment, only used for the FedEx shipping provider.",
     )
     product_pricelist_item_ids = fields.One2many('product.pricelist.item','product_id')
+    is_pending_price = fields.Boolean( string='Is Pending Price (Flag)',compute='_compute_pending_price',store=True)
     
+    @api.depends('lst_price','price_wholesale','price_msrp','product_pricelist_item_ids')
+    def _compute_pending_price(self):
+        for record in self:
+            is_pending_price =False
+            if record.type== 'product' and (not record.lst_price or not record.price_wholesale or not record.price_msrp or  any(record.product_pricelist_item_ids.mapped(lambda pp : not pp.fixed_price))):
+                is_pending_price = True
+            if is_pending_price:
+                record.is_published_spt = False
+            record.is_pending_price = is_pending_price
+    
+    @api.model
+    def search(self, args, offset=0, limit=None, order=None, count=False):
+        args.append(('is_pending_price','!=',True))
+        if self._context.get('pending_price'):
+            args.remove(('is_pending_price','!=',True))
+        return super(ProductProduct, self).search(args,offset,limit,order,count)
+            
     _sql_constraints = [
         ('seo_keyword', 'unique(product_seo_keyword)', 'Seo keyword already exists!')
     ]
@@ -1513,3 +1537,62 @@ class ProductProduct(models.Model):
                 rec.default_code = ''
 
     
+    def print_pending_price_product(self):
+        header = ['','','Id','Wholesale Price','MSRP Price']
+        pricelist_name = self.env['product.pricelist'].search([]).mapped('name')
+        header.extend(pricelist_name)
+        product_list = []
+        for record in self:
+            record_list = [record.primary_image_url,record.sec_image_url,record.default_code,record.price_wholesale,record.price_msrp ]
+            for pricelist in pricelist_name:
+                record_list.append(record.product_pricelist_item_ids.filtered(lambda pl : pl.pricelist_id.name == pricelist).fixed_price)
+            product_list.append(record_list)
+        
+        workbook = Workbook()
+        sheet = workbook.create_sheet(title='Product', index=0)
+        bd = Side(style='thin', color="000000")
+        top_bottom_border = Border(top=bd, bottom=bd)
+        heading_font = Font(name="Garamond", size="10", bold=True)
+        image_style = openpyxl.styles.Alignment(horizontal="center", vertical="center", wrapText=True)
+        row_n = 1
+        col = 1
+        for heading_data in header:
+            sheet.cell(row =row_n,column = col).value = heading_data
+            col+=1
+        row_n+=1
+        for worksheet_line in product_list:
+            col_n = 65 
+            col = 1
+            for worksheet_line_data in worksheet_line:
+                sheet.column_dimensions[chr(col_n)].width = 15
+                try:
+                    if worksheet_line_data and worksheet_line.index(worksheet_line_data) in [0,1]:
+                        sheet.row_dimensions[row_n].height = 60
+                        img = BytesIO()
+                        img.flush()
+                        img.write(requests.get(worksheet_line_data).content)
+                        image = openpyxl.drawing.image.Image(img)
+                        image.width = 128
+                        image.height = 65
+                        sheet.add_image(image, chr(col_n)+str(row_n))
+                        sheet[chr(col_n)+str(row_n)].alignment = image_style
+                    else:
+                        sheet.cell(row_n,col).value = worksheet_line_data
+                    col_n += 1  
+                    col += 1  
+                except:
+                    pass
+            row_n +=1
+        fp = BytesIO()
+        workbook.save(fp)
+        img.close()
+        fp.seek(0)
+        data = fp.read()
+        fp.close()
+        wiz_id = self.env['warning.spt.wizard'].create({'file':base64.b64encode(data)})
+
+        return {
+            'type': 'ir.actions.act_url',
+            'url': 'web/content/?model=warning.spt.wizard&download=true&field=file&id=%s&filename=%s.xlsx' % (wiz_id.id, 'pending_price'),
+            'target': 'self',
+        }

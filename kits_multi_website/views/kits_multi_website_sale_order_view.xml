@@ -98,7 +98,7 @@ days
                             <page name="sale_order_lines" string="Order Lines">
                                 <field name="sale_order_line_ids" attrs="{'readonly': [('state', '!=', 'quotation')]}">
                                     <tree>
-                                        <field name="product_id" options="{'no_edit': True,'no_create': True}" domain="[('website_ids','=',website_id)]" required="1" />
+                                        <field name="product_id" options="{'no_edit': True,'no_create': True}" domain="[('website_ids','=',website_id),('is_pending_price','!=',True)]" required="1" />
                                         <field name="quantity" />
                                         <field name="unit_price" />
                                         <field name="discounted_unit_price" />
@@ -136,7 +136,7 @@ days
                                             <h1>
                                                 <field name="sale_order_id" readonly="1"/>
                                                 <br/>
-                                                <field name="product_id" options="{'no_create': True,'no_edit': True}" domain="[('website_ids','=',website_id)]" required="1" />
+                                                <field name="product_id" options="{'no_create': True,'no_edit': True}" domain="[('website_ids','=',website_id),('is_pending_price','!=',True)]" required="1" />
                                             </h1>
                                             <group>
                                                 <group name="pricing" string="Pricing">

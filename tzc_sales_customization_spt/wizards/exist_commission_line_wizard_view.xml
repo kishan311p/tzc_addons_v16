@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="exist_commission_line_wizard" model="ir.ui.view">
+        <field name="name">exist.commission.line.wizard.form</field>
+        <field name="model">exist.commission.line.wizard</field>
+        <field name="arch" type="xml">
+            <form string="">
+                <sheet>
+                    <h3>
+                        These Commissions are already exists in invoice.
+                    </h3>
+                    <field name="commission_lines_ids" >
+                        <tree >
+                            <field name="kits_order_id"/>
+                            <field name="name"/>
+                            <field name="user_id"/>
+                            <field name="commission_for"/>
+                            <field name="amount"/>
+                        </tree>
+                    </field>
+                </sheet>
+                <footer>
+                    <button special="cancel" type="object" string="Ok"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+</odoo>

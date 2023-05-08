@@ -9,7 +9,7 @@
                     <group>
                         <field name="return_order_id" attrs="{'invisible': [('return_order_id', '=', False)]}"/>
                         <field name="scrap_order_id" attrs="{'invisible': [('scrap_order_id', '=', False)]}"/>
-                        <field name="product_id" />
+                        <field name="product_id" domain="[('is_pending_price','!=',True)]"/>
                         <field name="product_qty" />
                         <field name="return_type" />
                     </group>
@@ -86,7 +86,7 @@
                         <page name="return" string="Return">
                             <field name="return_line_ids" context="{'default_return_type' : 'return'}" domain="[('return_type','=','return')]" attrs="{'readonly': [('state', '!=', 'draft')]}">
                                 <tree editable="bottom">
-                                    <field name="product_id" required="1" />
+                                    <field name="product_id" domain="[('is_pending_price','!=',True)]" required="1" />
                                     <field name="product_qty" />
                                 </tree>
                             </field>
@@ -94,7 +94,7 @@
                         <page name="scrap" string="Scrap">
                             <field name="scrap_line_ids" context="{'default_return_type' : 'scrap'}" domain="[('return_type','=','scrap')]" attrs="{'readonly': [('state', '!=', 'draft')]}">
                                 <tree editable="bottom">
-                                    <field name="product_id" required="1" />
+                                    <field name="product_id" domain="[('is_pending_price','!=',True)]" required="1" />
                                     <field name="product_qty" />
                                 </tree>
                             </field>

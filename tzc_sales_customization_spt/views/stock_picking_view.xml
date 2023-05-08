@@ -225,7 +225,7 @@
                 </xpath>
                 <xpath expr="//field[@name='move_ids_without_package']/tree" position="after">
                     <kanban class="o_kanban_mobile" default_order='product_id'>
-                        <field name="product_id"/>
+                        <field name="product_id" domain="[('is_pending_price','!=',True)]"/>
                         <field name="show_details_visible"/>
                         <field name="product_uom_qty"/>
                         <field name="quantity_done"/>
@@ -298,7 +298,7 @@
                             <field name="has_tracking" invisible="1"/>
                             <field name="display_assign_serial" invisible="1"/>
                             <field name="pro_primary_image_url" widget="image" options="{'zoom': true,'thumb_image':'pro_primary_image_url','preview_image':'pro_primary_image_url','size': [100, 90]}"/>
-                            <field name="product_id" required="1" context="{'default_detailed_type': 'product'}" attrs="{'readonly': ['|', '&amp;', ('state', '!=', 'draft'), ('additional', '=', False), ('move_lines_count', '&gt;', 0)]}"/>
+                            <field name="product_id" domain="[('is_pending_price','!=',True)]" required="1" context="{'default_detailed_type': 'product'}" attrs="{'readonly': ['|', '&amp;', ('state', '!=', 'draft'), ('additional', '=', False), ('move_lines_count', '&gt;', 0)]}"/>
                             <field name="description_picking" string="Description" optional="hide"/>
                             <field name="date" optional="hide"/>
                             <field name="qty_available" optional="hide"/>

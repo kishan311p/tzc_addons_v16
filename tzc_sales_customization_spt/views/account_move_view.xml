@@ -96,6 +96,102 @@
                         <field name="product_uom_id" invisible="1"/>
                     </tree>
                 </xpath>
+                <xpath expr="//field[@name='invoice_line_ids']" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </xpath>
+                <xpath expr="//page[@name='invoice_tab']/field[@name='invoice_line_ids']" position="before">
+
+                    <!-- <group name='non_case_invoice_line_group' string=''>
+                    </group>                -->
+                    <field name="non_case_invoice_line_ids" readonly='1'>
+                        <tree editable="bottom" string="Journal Items" decoration-muted="is_shipping_product==True or is_admin == True or is_global_discount == True" default_order="product_id">
+                            <control>
+                                <create name="add_line_control" string="Add a line"/>
+                                <create name="add_section_control" string="Add a section" context="{'default_display_type': 'line_section'}"/>
+                                <create name="add_note_control" string="Add a note" context="{'default_display_type': 'line_note'}"/>
+                            </control>
+
+                            <!-- Displayed fields -->
+                            <field name="sequence" widget="handle"/>
+                            <field name="product_id" options="{'no_create': True}" optional="show" domain="context.get('default_move_type') in ('out_invoice', 'out_refund', 'out_receipt') and [('sale_ok', '=', True), '|', ('company_id', '=', False), ('company_id', '=', parent.company_id)] or [('purchase_ok', '=', True), '|', ('company_id', '=', False), ('company_id', '=', parent.company_id)]"/>
+                            <field name="is_shipping_product" invisible="1"/>
+                            <field name="is_admin" invisible="1"/>
+                            <field name="is_global_discount" invisible="1"/>
+                            <!-- <field name="name" widget="section_and_note_text" optional="show"/> -->
+                            <!-- <field name="is_fs"/> -->
+                            <field name="sale_type"/>
+                            <!-- <field name="is_promotion_applied" invisible="1" /> -->
+                            <field name="product_categ_id" string="Category"/>
+                            <field name="account_id" context="{'partner_id': partner_id, 'move_type': parent.move_type}" groups="account.group_account_manager" options="{'no_create': True}" domain="[('deprecated', '=', False), ('account_type', 'not in', ('asset_receivable', 'liability_payable')), ('company_id', '=', parent.company_id), ('is_off_balance', '=', False)]" attrs="{'required': [('display_type', 'not in', ('line_note', 'line_section'))]}"/>
+                            <field name="analytic_distribution" widget="analytic_distribution" groups="analytic.group_analytic_accounting" optional="show" options="{'product_field': 'product_id', 'account_field': 'account_id'}" business_domain_compute="parent.move_type in ['out_invoice', 'out_refund', 'out_receipt'] and 'invoice' or parent.move_type in ['in_invoice', 'in_refund', 'in_receipt'] and 'bill' or 'general'"/>
+                            <field name="quantity" optional="show"/>
+                            <field name="product_uom_category_id" invisible="1"/>
+                            <field name="product_uom_id" string="UoM" groups="uom.group_uom" optional="show"/>
+                            <field name="price_unit" string="Price"/>
+                            <field name="discount_unit_price"/>
+                            <field name="tax_ids" widget="many2many_tags" domain="[('type_tax_use', '=?', parent.invoice_filter_type_domain), ('company_id', '=', parent.company_id), ('country_id', '=', parent.tax_country_id)]" context="{'append_type_to_tax_name': not parent.invoice_filter_type_domain}" options="{'no_create': True}" optional="show"/>
+                            <field name="discount" string="Disc.%" optional="show"/>
+                            <field name="unit_discount_price"/>
+                            <field name="price_subtotal" string="Subtotal" groups="account.group_show_line_subtotals_tax_excluded"/>
+                            <field name="price_total" string="Total" groups="account.group_show_line_subtotals_tax_included"/>
+
+                            <!-- Others fields -->
+                            <field name="partner_id" invisible="1"/>
+                            <field name="currency_id" invisible="1"/>
+                            <field name="company_id" invisible="1"/>
+                            <field name="company_currency_id" invisible="1"/>
+                            <field name="display_type" force_save="1" invisible="1"/>
+                            <!-- /l10n_in_edi.test_edi_json -->
+                            <!-- required for @api.onchange('product_id') -->
+                            <field name="product_uom_id" invisible="1"/>
+                        </tree>
+                    </field>     
+                    <group name='case_invoice_line_group' string='Cases'>
+                    </group>               
+                    <field name="case_invoice_line_ids" readonly='1'>
+                        <tree editable="bottom" string="Journal Items" decoration-muted="is_shipping_product==True or is_admin == True or is_global_discount == True" default_order="product_id">
+                            <control>
+                                <create name="add_line_control" string="Add a line"/>
+                                <create name="add_section_control" string="Add a section" context="{'default_display_type': 'line_section'}"/>
+                                <create name="add_note_control" string="Add a note" context="{'default_display_type': 'line_note'}"/>
+                            </control>
+
+                            <!-- Displayed fields -->
+                            <field name="sequence" widget="handle"/>
+                            <field name="product_id" options="{'no_create': True}" optional="show" domain="context.get('default_move_type') in ('out_invoice', 'out_refund', 'out_receipt') and [('sale_ok', '=', True), '|', ('company_id', '=', False), ('company_id', '=', parent.company_id)] or [('purchase_ok', '=', True), '|', ('company_id', '=', False), ('company_id', '=', parent.company_id)]"/>
+                            <field name="is_shipping_product" invisible="1"/>
+                            <field name="is_admin" invisible="1"/>
+                            <field name="is_global_discount" invisible="1"/>
+                            <!-- <field name="name" widget="section_and_note_text" optional="show"/> -->
+                            <!-- <field name="is_fs"/> -->
+                            <field name="sale_type"/>
+                            <!-- <field name="is_promotion_applied" invisible="1" /> -->
+                            <field name="product_categ_id" string="Category"/>
+                            <field name="account_id" context="{'partner_id': partner_id, 'move_type': parent.move_type}" groups="account.group_account_manager" options="{'no_create': True}" domain="[('deprecated', '=', False), ('account_type', 'not in', ('asset_receivable', 'liability_payable')), ('company_id', '=', parent.company_id), ('is_off_balance', '=', False)]" attrs="{'required': [('display_type', 'not in', ('line_note', 'line_section'))]}"/>
+                            <field name="analytic_distribution" widget="analytic_distribution" groups="analytic.group_analytic_accounting" optional="show" options="{'product_field': 'product_id', 'account_field': 'account_id'}" business_domain_compute="parent.move_type in ['out_invoice', 'out_refund', 'out_receipt'] and 'invoice' or parent.move_type in ['in_invoice', 'in_refund', 'in_receipt'] and 'bill' or 'general'"/>
+                            <field name="quantity" optional="show"/>
+                            <field name="product_uom_category_id" invisible="1"/>
+                            <field name="product_uom_id" string="UoM" groups="uom.group_uom" optional="show"/>
+                            <field name="price_unit" string="Price"/>
+                            <field name="discount_unit_price"/>
+                            <field name="tax_ids" widget="many2many_tags" domain="[('type_tax_use', '=?', parent.invoice_filter_type_domain), ('company_id', '=', parent.company_id), ('country_id', '=', parent.tax_country_id)]" context="{'append_type_to_tax_name': not parent.invoice_filter_type_domain}" options="{'no_create': True}" optional="show"/>
+                            <field name="discount" string="Disc.%" optional="show"/>
+                            <field name="unit_discount_price"/>
+                            <field name="price_subtotal" string="Subtotal" groups="account.group_show_line_subtotals_tax_excluded"/>
+                            <field name="price_total" string="Total" groups="account.group_show_line_subtotals_tax_included"/>
+
+                            <!-- Others fields -->
+                            <field name="partner_id" invisible="1"/>
+                            <field name="currency_id" invisible="1"/>
+                            <field name="company_id" invisible="1"/>
+                            <field name="company_currency_id" invisible="1"/>
+                            <field name="display_type" force_save="1" invisible="1"/>
+                            <!-- /l10n_in_edi.test_edi_json -->
+                            <!-- required for @api.onchange('product_id') -->
+                            <field name="product_uom_id" invisible="1"/>
+                        </tree>
+                    </field>                    
+                </xpath>
                 <xpath expr="//div[hasclass('oe_title')]/h1/field[@name='name']" position="attributes">
                     <attribute name="readonly">1</attribute>
                 </xpath>
@@ -314,6 +410,7 @@
                     <field name="amount_without_discount" />
                     <field name="amount_is_shipping_total" string="Shipping Cost"/>
                     <field name="amount_is_admin" string="Admin Fee"/>
+                    <field name="amount_is_case"/>
                     <field name="amount_discount"/>
                     <field name="kits_amount_tax" readonly="1"/>
                     <field name="kits_amount_total" class="oe_subtotal_footer_separator" colspan="2" readonly="1"/>

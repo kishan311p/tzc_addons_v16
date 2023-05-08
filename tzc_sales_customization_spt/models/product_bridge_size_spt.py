@@ -9,7 +9,7 @@ class ProductBridgeSizeSpt(models.Model):
     name = fields.Char('Bridge Size', index=True)
     # product_ids = fields.One2many('product.template','bridge_size',string='Products')
     kits_product_ids = fields.One2many('product.product','bridge_size',string='Products')
-
+    bridgesize_id = fields.Many2one('kits.product.color.code', string='Bridge Size')
     products_count = fields.Integer(compute="_compute_bridge_size_spt")
 
     def _compute_bridge_size_spt(self):

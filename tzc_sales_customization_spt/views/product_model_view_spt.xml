@@ -27,6 +27,11 @@
                             </group>
 
                         </group>
+                        <notebook>
+                            <page name="manufacturing_code" string="Manufacturing Code">
+                                <field name="manufacturing_code_ids" />
+                            </page>
+                        </notebook>
 
                     </sheet>
                 </form>

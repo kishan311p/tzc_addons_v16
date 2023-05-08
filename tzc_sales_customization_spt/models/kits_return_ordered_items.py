@@ -66,7 +66,7 @@ class kits_return_ordered_items(models.Model):
     partner_id = fields.Many2one('res.partner', string='Customer')
     state = fields.Selection([
         ('draft', 'Draft'),('in_scanning', 'In Scanning'),('return', 'Return'),('cancel', 'Cancel'),
-    ], string='State')
+    ], string='State',default='draft')
     return_line_ids = fields.One2many('kits.return.ordered.items.line', 'return_order_id', string='Return Order Line')
     scrap_line_ids = fields.One2many('kits.return.ordered.items.line', 'scrap_order_id', string='Scrap Order Line')
     delivery_count = fields.Integer(string='Return Orders', compute='_compute_picking_ids')    

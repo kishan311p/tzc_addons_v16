@@ -61,7 +61,7 @@
             <field name="target">new</field>
         </record>
 
-        <menuitem name="Sales Commission Report" action="action_sales_commission_report" id="menu_action_sales_commission_report" parent="sale.menu_sale_report" sequence="4" groups="base.group_system,tzc_sales_customization_spt.group_sales_manager_spt,tzc_sales_customization_spt.group_partner_access_salesperson"/>
+        <menuitem name="Sales Commission Report" action="action_sales_commission_report" id="menu_action_sales_commission_report" parent="tzc_sales_customization_spt.commission_menu" sequence="2" groups="base.group_system,tzc_sales_customization_spt.group_sales_manager_spt,tzc_sales_customization_spt.group_partner_access_salesperson"/>
 
         <!-- <record id="inherit_sales_commission_report_for_sales_manager_wizard_form_view" model="ir.ui.view">
             <field name="name">inherit.sales.commission.report.for.sales.manager.wizard.form.view</field>

@@ -24,6 +24,57 @@ class python_script_runner(models.Model):
                 raise Warning('Python code is not able to run ! message : %s' %(e))
                 
         return True
+    # def execute_script(self):
+    #     color_code_obj = self.env['kits.product.color.code']
+    #     model_obj = self.env['product.model.spt']
+    #     bridge_size_obj = self.env['product.bridge.size.spt']
+    #     temple_size_obj = self.env['product.temple.size.spt']
+    #     eye_size_obj = self.env['product.size.spt']
+        
+    #     product_ids = self.env['product.product'].search([])
+        
+    #     for product in product_ids:
+    #         model_id = model_obj.search([('brand_id','=',product.brand.id),('name','=',product.model.name)])
+    #         if not model_id:
+    #             model_id = model_obj.create({
+    #                 'name' : product.model.name,
+    #             })
+    #         model_id.brand_id =  product.brand.id
+    #         product.model = model_id.id
+            
+    #         color_code = color_code_obj.search([('color','=',product.color_code.color),('model_id','=',product.model.id),('name','=',product.color_code.name)])
+    #         if not color_code:
+    #             color_code = color_code_obj.create({
+    #                 'name' : product.color_code.name,
+    #                 'color' : product.color_code.color,
+    #             })
+    #         product.color_code = color_code.id
+    #         color_code.model_id = model_id.id
+            
+    #         bridge_size = bridge_size_obj.search([('name','=',product.bridge_size.name),('bridgesize_id','=',product.color_code.id)])
+    #         if not bridge_size:
+    #             bridge_size = bridge_size_obj.create({
+    #                 'name' : product.bridge_size.name,
+    #                 'bridgesize_id' : product.color_code.id
+    #             })
+    #         product.bridge_size = bridge_size.id
+
+    #         temple_size = temple_size_obj.search([('name','=',product.temple_size.name),('templesize_id','=',product.color_code.id)])
+    #         if not temple_size:
+    #             temple_size = temple_size_obj.create({
+    #                 'name' : product.temple_size.name,
+    #                 'templesize_id' : product.color_code.id
+    #             })
+    #         product.temple_size = temple_size.id
+                
+    #         eye_size = eye_size_obj.search([('name','=',product.eye_size.name),('eyesize_id','=',product.color_code.id)])
+    #         if not eye_size:
+    #             eye_size = eye_size_obj.create({
+    #                 'name' : product.eye_size.name,
+    #                 'eyesize_id' : product.color_code.id
+    #             })
+    #         product.eye_size = eye_size.id
+            
 
     # def execute_script(self):
     #     for rec in self.env['res.partner'].search([]):

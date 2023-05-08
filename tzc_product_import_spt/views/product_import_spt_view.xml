@@ -111,6 +111,7 @@
 			<field name="name">Product Import</field>
 			<field name="res_model">product.import.spt</field>
 			<field name="view_mode">tree,form</field>
+			<field name="context">{'pending_price' :True}</field>
 		</record>
 
 		<menuitem id="menu_main_product_import_spt" groups="base.group_system" name="Product Import" action="action_product_import_spt" parent='sale.product_menu_catalog' sequence="35"/>

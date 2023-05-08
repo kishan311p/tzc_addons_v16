@@ -20,7 +20,7 @@
                         <div class="row">
                             <div class="col-9" style="display:flex">
                                 <label for="product_id" style="font-weight: bold;"/>
-                                <field name="product_id" style="width: 26rem;margin-left: 20px;" options="{'no_create': True, 'no_open': True}" domain="[('id', 'in', product_ids),('is_case_product','=',False)]"/>
+                                <field name="product_id" style="width: 26rem;margin-left: 20px;" options="{'no_create': True, 'no_open': True}" domain="[('id', 'in', product_ids),('is_pending_price','!=',True),('is_case_product','=',False)]"/>
                                 <div class="col-1">
                                     <field name="qty" style="margin-left: 20px;width: 5rem;"/>
                                 </div>
@@ -37,10 +37,10 @@
                         <!-- <div class="row">
                             <div class="col-9" style="display:flex">
                                 <label for="product_id" style="font-weight: bold;"/>
-                                <field name="product_id" style="width: 26rem;margin-left: 20px;" options="{'no_create': True, 'no_open': True}"/>
+                                <field name="product_id" domain="[('is_pending_price','!=',True)]" style="width: 26rem;margin-left: 20px;" options="{'no_create': True, 'no_open': True}"/>
                             </div>
                             <div>
-                                <field name="product_id" style="width: 26rem;" options="{'no_create': True, 'no_open': True}" />
+                                <field name="product_id" domain="[('is_pending_price','!=',True)]" style="width: 26rem;" options="{'no_create': True, 'no_open': True}" />
                             </div>
                             <div class="col-1">
                                 <field name="qty" style="margin-left: 20px;width: 5rem;"/>
@@ -56,7 +56,7 @@
                             <field name="line_ids" widget="one2many" nolable="1">
                                 <tree no_open="1" editable="bottom" default_order="sequence" limit="1000000" create="0" edit="0">
                                     <field name="sequence" widget="handle" />
-                                    <field name="product_id" readonly="1" force_save="1"/>
+                                    <field name="product_id" domain="[('is_pending_price','!=',True)]" readonly="1" force_save="1"/>
                                     <field name="product_qty" readonly="1" force_save="1"/>
                                     <button icon="fa-solid fa-pencil" name="action_product_selection" type="object" />
                                 </tree>

@@ -65,7 +65,7 @@
                                     <tree editable="bottom" create="1" delete="1" string="Combo Product Lines" default_order="product_id">
                                         <field name="image_product_url" class="oe_avatar" string="Primary Image" widget="image" options="{'zoom': true,'thumb_image':'image_product_url','preview_image':'image_product_url','size': [256, 256]}" />
                                         <field name="image_product_secondary_url" class="oe_avatar" string="Secondary Image" widget="image" style="margin-left:10px;" options="{'zoom': true,'thumb_image':'image_product_secondary_url','preview_image':'image_product_secondary_url','size': [256, 256]}" />
-                                        <field name="product_id" />
+                                        <field name="product_id" options="{'no_create' : True, 'no_edit' : True}" domain="[('is_pending_price','!=',True)]" />
                                         <field name="sale_type" />
                                         <field name="qty" />
                                         <field name="product_price" />

@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="add_commission_wizard_form_view" model="ir.ui.view">
+            <field name="name">add.commission.wizard.form.view</field>
+            <field name="model">add.commission.wizard</field>
+            <field name="arch" type="xml">
+               <form>
+                    <sheet>
+                        <group>
+                            <group>
+                                <field name="commission_on" widget='radio' required='1'/>
+                                <field name="start_date" attrs="{'invisible':[('commission_on','!=','on_date')]}"/>
+                                <field name="end_date" attrs="{'invisible':[('commission_on','!=','on_date')]}"/>
+                                <field name="order_ids" widget='many2many_tags' domain="[('state','=','open_inv')]" options="{'no_open': True,'no_create': True}" attrs="{'invisible':[('commission_on','!=','on_sale_order')],'required':[('commission_on','=','on_sale_order')]}"/>
+                            </group>
+                            <group>
+                                <field name="commission_for" widget="radio" required='1'/>
+                                <field name="user_id" />
+                            </group>
+                        </group>
+                    </sheet>
+                    <footer>
+                        <button string="Process" name="action_process" type="object" class="oe_highlight"/>
+                        <button special="cancel" type="object" string="Cancel"/>
+                    </footer>
+               </form>
+            </field>
+        </record>
+        <record id="action_add_commision_wizard" model="ir.actions.act_window">
+            <field name="name">Add Commission</field>
+            <field name="res_model">add.commission.wizard</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+        </record>
+        <menuitem
+            id="add_commission_wizard_menu"
+            name="Add Commission"
+            action="action_add_commision_wizard"
+            parent="tzc_sales_customization_spt.commission_menu"
+            sequence="1"/>
+    </data>
+</odoo>

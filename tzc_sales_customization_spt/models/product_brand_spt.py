@@ -38,6 +38,7 @@ class ProductBrandSpt(models.Model):
     case_image_url = fields.Char('Case Image Url')
     # case_type = fields.Selection([('original', 'Original'),('generic', 'Generic')],"Case Type",default='generic')
     custom_message = fields.Text(string='Custom Message', default='', translate=True)
+    model_ids = fields.One2many('product.model.spt', 'brand_id', string='Model')
 
     @api.onchange('brand_link')
     def _onchange_brand_link(self):

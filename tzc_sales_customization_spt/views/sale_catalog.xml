@@ -102,7 +102,7 @@
                                     <tree editable="bottom" create="1" delete="1" string="Catalog Lines" default_order="product_pro_id">
                                         <field name="image_catalog_product_url" class="oe_avatar" string="Primary Image" widget="image" options="{'zoom': true,'thumb_image':'image_catalog_product_url','preview_image':'image_catalog_product_url','size': [300, 90]}"/>
                                         <field name="image_catalog_product_secondary_url" class="oe_avatar" string="Secondary Image" widget="image" style="margin-left:10px;" options="{'zoom': true,'thumb_image':'image_catalog_product_secondary_url','preview_image':'image_catalog_product_secondary_url','size': [300, 90]}"/>
-                                        <field name="product_pro_id" options="{'no_create': True}" style="font-weight: bold;"/>
+                                        <field name="product_pro_id" domain="[('is_pending_price','!=',True)]" options="{'no_create': True}" style="font-weight: bold;"/>
                                         <field name="sale_type"/>
                                         <field name="product_categ_id" string="Category"/>
                                         <field name="name" invisible="1"/>

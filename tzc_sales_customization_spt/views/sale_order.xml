@@ -97,9 +97,11 @@
         <xpath expr="//field[@name='order_line']/tree/field[@name='product_uom_qty']" position="attributes">
             <attribute name="attrs">{'readonly':['|',('parent.state', 'in', ('sale', 'done','in_scanning','scanned','scan','shipped','draft_inv','open_inv','cancel')),'|',('is_shipping_product','!=',False),'|',('is_admin','!=',False),('is_global_discount','!=',False)]}</attribute>
             <attribute name="force_save">1</attribute>
+            <attribute name="string">Ordered Qty</attribute>
         </xpath>
         <xpath expr="//field[@name='order_line']/tree/field[@name='price_unit']" position="attributes">
             <attribute name="readonly">1</attribute>
+            <attribute name="force_save">1</attribute>
             <!-- <attribute name="attrs">{'readonly':['|','|',('is_admin','=',True),('is_shipping_product','=',True),('is_global_discount','!=',True),('state','not in',['draft','sent','received'])]}</attribute> -->
         </xpath>
         <xpath expr="//field[@name='order_line']/tree/field[@name='tax_id']" position="attributes">
@@ -109,6 +111,7 @@
         </xpath>
         <xpath expr="//field[@name='order_line']/tree/field[@name='product_id']" position="attributes">
             <attribute name="attrs">{'readonly':['|','|',('is_admin','=',True),('is_shipping_product','=',True),('state','not in',['draft','sent','received'])]}</attribute>
+            <attribute name="domain">[('is_pending_price','!=',True)]</attribute>
         </xpath>
         <xpath expr="//field[@name='order_line']/tree/field[@name='product_id']" position="before">
             <field name="primary_image_url" string="Image" widget="image" options="{'zoom': true,'thumb_image':'primary_image_url','preview_image':'primary_image_url','size': [300, 90]}"/>
@@ -270,13 +273,13 @@
             <xpath expr="//tree/field[@name='discount']" position="after">
                <field name="fix_discount_price" groups="product.group_discount_per_so_line" attrs="{'readonly':['|','|',('is_admin','=',True),('is_shipping_product','=',True),('state','not in',['draft','sent','received','in_scanning','sale','scanned'])]}" />
             </xpath>
-                <xpath expr="//field[@name='order_line']/tree/field[@name='product_uom_qty']"
+                <!-- <xpath expr="//field[@name='order_line']/tree/field[@name='product_uom_qty']"
                     position="attributes">
                     <attribute name="attrs">
                         {'readonly':['|',('parent.state', 'in', ('sale',
                         'done','in_scanning','scanned','scan','shipped','draft_inv','open_inv','cancel')),'|',('is_shipping_product','!=',False),'|',('is_admin','!=',False),('is_global_discount','!=',False)]}</attribute>
                     <attribute name="force_save">1</attribute>
-                </xpath>
+                </xpath> -->
                 <xpath expr="//field[@name='order_line']/tree/field[@name='discount']" position="attributes">
                     <attribute name="attrs">{'readonly':['|','|',('is_admin','=',True),('is_shipping_product','=',True),('state','not in',['draft','sent','received','in_scanning','sale','scanned'])]}</attribute>
                 </xpath>
@@ -552,7 +555,7 @@
                 <xpath expr="//page[@name='order_lines']/field[@name='order_line']/tree/control" position="replace">
                 </xpath>
                 <!-- <xpath expr="//page[@name='order_lines']/field[@name='order_line']/tree/field[@name='product_template_id']" position="replace">
-                    <field name="product_id" options="{'no_open': True, 'no_create': True}" attrs = "{'readonly':['|','|',('is_admin','=',True),('is_shipping_product','=',True),('state','not in',['draft','sent','received'])]}"/>
+                    <field name="product_id" domain="[('is_pending_price','!=',True)]" options="{'no_open': True, 'no_create': True}" attrs = "{'readonly':['|','|',('is_admin','=',True),('is_shipping_product','=',True),('state','not in',['draft','sent','received'])]}"/>
                 </xpath> -->
                 <xpath expr="//page[@name='order_lines']/field[@name='order_line']/tree/field[@name='product_packaging_id']" position="attributes">
                     <attribute name="invisible">1</attribute>
@@ -717,7 +720,7 @@
             </xpath>
 
             <xpath expr="//button[@name='action_quotation_send']" position="before">
-                <button name="action_view_sale_advance_payment_inv" string="Create Invoice" type="object" context="{'default_advance_payment_method': 'delivered'}" class='oe_highlight' attrs="{'invisible': [('state','not in',['shipped'])]}" groups="account.group_account_invoice" />
+                <button name="action_view_sale_advance_payment_inv" string="Create Invoice" type="object" context="{'default_advance_payment_method': 'delivered'}" class='oe_highlight' attrs="{'invisible': [('state','not in',['shipped'])]}" groups="account.group_account_manager" />
                 <button name="button_open_quick_scan" type="object" attrs="{'invisible':[('state','in',['merged','sale','scan','cancel','shipped','draft_inv','open_inv','paid','in_scanning','scanned'])]}" string="Add Items to Quotation" class="oe_highlight" />
                 <button name="action_confirm" class="oe_highlight" string="Confirm Quotation" type="object" attrs="{'invisible': [('state', 'not in', ['draft','sent','received'])]}" />
                 <button name="action_discount_wizard" type="object" string="Bulk Discount" class="oe_highlight" attrs="{'invisible': [('state','in',('scan','shipped','cancel','draft_inv','open_inv','merged'))]}" />
@@ -810,7 +813,7 @@
             <xpath expr="//page[@name='order_lines']/field[@name='order_line']" position="attributes">
                 <attribute name="invisible">1</attribute>
             </xpath>
-            <xpath expr="//page[@name='order_lines']" position="after">
+            <!-- <xpath expr="//page[@name='order_lines']" position="after">
                 <page name="case" string="Case" attrs="{'invisible':[('state','in',['draft','sent','received','sale','in_scanning'])]}">
                     <field name="case_order_line" attrs="{'readonly':[('state','not in','scanned')]}">
                         <tree editable='bottom'  default_order="product_id">
@@ -819,14 +822,13 @@
                             <field name="product_uom_category_id" invisible="1"/>
                             <field name="product_type" on_change="1" invisible="1"/>
                             <field name="product_updatable" invisible="1"/>
-                            <field name="primary_image_url" string="Image" widget="image" options="{'zoom': true,'thumb_image':'primary_image_url','preview_image':'primary_image_url','size': [300, 90]}" readonly="1"/>
-                            <field name="product_id" force_save="1" attrs="{'readonly':['|','|',('is_admin','=',True),('is_shipping_product','=',True),('state','not in',['draft','sent','received'])]}" domain="[('is_case_product','=',True)]"/>
+                            <field name="primary_image_url" string="Image" widget="image" options="{'zoom': true,'thumb_image':'primary_image_url','preview_image':'primary_image_url','size': [100, 100]}" style='width:100px !important' readonly="1"/>
+                            <field name="product_id" force_save="1" attrs="{'readonly':['|','|',('is_admin','=',True),('is_shipping_product','=',True),('state','not in',['draft','sent','received'])]}" domain="[('is_case_product','=',True),('is_pending_price','!=',True)]"/>
                             <field name="case_type" readonly="1" />
                             <field name="is_shipping_product" invisible="1"/>
                             <field name="is_admin" invisible="1"/>
                             <field name="is_global_discount" invisible="1"/>
                             <field name="package_id" readonly="1" invisible="1" />
-                            <!-- <field name="is_promotion_applied" readonly="1" force_save="1" invisible="1"/> -->
                             <field name="product_template_id" string="Product" invisible="1"/>
                             <field name="product_uom_qty" decoration-info="(not display_type and invoice_status == 'to invoice')" decoration-bf="(not display_type and invoice_status == 'to invoice')" attrs="{'readonly':['|',('parent.state', 'not in', ('scanned')),'|',('is_shipping_product','!=',False),'|',('is_admin','!=',False),('is_global_discount','!=',False)]}" />
                             <field name="qty_delivered" invisible="1"/>
@@ -843,7 +845,6 @@
                             <widget name="qty_at_date_widget" width="20px"/>
                             <field name="qty_delivered_method" on_change="1" invisible="1"/>
                             <field name="qty_invoiced" decoration-info="(not display_type and invoice_status == 'to invoice')" decoration-bf="(not display_type and invoice_status == 'to invoice')" string="Invoiced" optional="show" on_change="1" invisible="1"/>
-                            <!-- <field name="picked_qty" on_change="1" readonly="1"/> -->
                             <field name="is_special_discount" invisible="1"/>
                             <field name="qty_to_invoice" on_change="1" invisible="1"/>
                             <field name="product_uom_readonly" invisible="1"/>
@@ -853,7 +854,6 @@
                             <field name="is_delivery" on_change="1" invisible="1"/>
                             <field name="price_unit" on_change="1" readonly="1"/>
                             <field name="unit_discount_price" force_save="1" attrs="{'readonly':['|','|',('is_admin','=',True),('is_global_discount','=',True),('state','not in',['draft','sent','received','in_scanning','sale','scanned'])]}" />
-                            <!-- <field name="tax_id" widget="many2many_tags" options="{'no_create': True}" domain="[('type_tax_use','=','sale'),('company_id','=',parent.company_id), ('country_id', '=', parent.tax_country_id)]" context="{'active_test': True}" optional="show" force_save="1" on_change="1" modifiers="{&quot;readonly&quot;: true}" can_create="true" can_write="true"/> -->
                             <field name="discount" string="Disc.%" optional="show" widget="sol_discount" on_change="1" attrs="{'readonly':['|','|',('is_admin','=',True),('is_shipping_product','=',True),('state','not in',['draft','sent','received','in_scanning','sale','scanned'])]}" />
                             <field name="fix_discount_price" force_save="1" on_change="1" readonly="1"/>
                             <field name="picked_qty_subtotal" readonly="1"/>
@@ -867,65 +867,10 @@
                         </tree>
                     </field>
                 </page>
-                <!-- <page name="non_case" string="Non Case">
-                    <field name="non_case_order_line">
-                        <tree editable='bottom' default_order="product_id" create="0" delete="0">
-                            <field name="sequence" widget="handle"/>
-                            <field name="display_type" on_change="1" invisible="1"/>
-                            <field name="product_uom_category_id" invisible="1"/>
-                            <field name="product_type" on_change="1" invisible="1"/>
-                            <field name="product_updatable" invisible="1"/>
-                            <field name="primary_image_url" string="Image" widget="image" options="{'zoom': true,'thumb_image':'primary_image_url','preview_image':'primary_image_url','size': [300, 90]}" readonly="1"/>
-                            <field name="product_id" force_save="1" attrs="{'readonly':['|','|',('is_admin','=',True),('is_shipping_product','=',True),('state','not in',['draft','sent','received'])]}" domain="[('is_case_product','=',True)]"/>
-                            <field name="sale_type" readonly="1" />
-                            <field name="product_categ_id" readonly="1" />
-                            <field name="is_shipping_product" invisible="1"/>
-                            <field name="is_admin" invisible="1"/>
-                            <field name="is_global_discount" invisible="1"/>
-                            <field name="package_id" readonly="1" invisible="1" />
-                            <field name="is_promotion_applied" readonly="1" force_save="1" invisible="1"/>
-                            <field name="product_template_id" string="Product" invisible="1"/>
-                            <field name="product_uom_qty" decoration-info="(not display_type and invoice_status == 'to invoice')" decoration-bf="(not display_type and invoice_status == 'to invoice')" attrs="{'readonly':['|',('parent.state', 'not in', ('scanned')),'|',('is_shipping_product','!=',False),'|',('is_admin','!=',False),('is_global_discount','!=',False)]}" />
-                            <field name="qty_delivered" invisible="1"/>
-                            <field name="virtual_available_at_date" invisible="1"/>
-                            <field name="qty_available_today" invisible="1"/>
-                            <field name="free_qty_today" invisible="1"/>
-                            <field name="scheduled_date" invisible="1"/>
-                            <field name="forecast_expected_date" invisible="1"/>
-                            <field name="warehouse_id" invisible="1"/>
-                            <field name="move_ids" on_change="1" invisible="1"/>
-                            <field name="qty_to_deliver" invisible="1"/>
-                            <field name="is_mto" invisible="1"/>
-                            <field name="display_qty_widget" invisible="1"/>
-                            <widget name="qty_at_date_widget" width="20px"/>
-                            <field name="qty_delivered_method" on_change="1" invisible="1"/>
-                            <field name="qty_invoiced" decoration-info="(not display_type and invoice_status == 'to invoice')" decoration-bf="(not display_type and invoice_status == 'to invoice')" string="Invoiced" optional="show" on_change="1" invisible="1"/>
-                            <field name="picked_qty" on_change="1" readonly="1"/>
-                            <field name="is_special_discount" invisible="1"/>
-                            <field name="qty_to_invoice" on_change="1" invisible="1"/>
-                            <field name="product_uom_readonly" invisible="1"/>
-                            <field name="product_uom" on_change="1" invisible="1"/>
-                            <field name="customer_lead" optional="hide" attrs="{'readonly': [('parent.state', 'not in', ['draft', 'sent', 'sale'])]}"/>
-                            <field name="recompute_delivery_price" invisible="1" />
-                            <field name="is_delivery" on_change="1" invisible="1"/>
-                            <field name="price_unit" on_change="1" readonly="1"/>
-                            <field name="unit_discount_price" force_save="1" attrs="{'readonly':['|','|',('is_admin','=',True),('is_global_discount','=',True),('state','not in',['draft','sent','received','in_scanning','sale','scanned'])]}" />
-                            <field name="tax_id" widget="many2many_tags" options="{'no_create': True}" domain="[('type_tax_use','=','sale'),('company_id','=',parent.company_id), ('country_id', '=', parent.tax_country_id)]" context="{'active_test': True}" optional="show" force_save="1" on_change="1" modifiers="{&quot;readonly&quot;: true}" can_create="true" can_write="true"/>
-                            <field name="discount" string="Disc.%" optional="show" widget="sol_discount" on_change="1" attrs="{'readonly':['|','|',('is_admin','=',True),('is_shipping_product','=',True),('state','not in',['draft','sent','received','in_scanning','sale','scanned'])]}" />
-                            <field name="fix_discount_price" force_save="1" on_change="1" readonly="1"/>
-                            <field name="picked_qty_subtotal" readonly="1"/>
-                            <field name="is_downpayment" on_change="1" invisible="1"/>
-                            <field name="price_subtotal" widget="monetary" on_change="1" invisible="1"/>
-                            <field name="state" on_change="1" invisible="1"/>
-                            <field name="invoice_status" on_change="1" invisible="1"/>
-                            <field name="currency_id" invisible="1"/>
-                            <field name="price_tax" on_change="1" invisible="1"/>
-                            <field name="company_id" invisible="1"/>
-                        </tree>
-                    </field>
-                </page> -->
-            </xpath>
+            </xpath> -->
             <xpath expr="//page[@name='order_lines']/field[@name='order_line']" position="after">
+                <group name="non_case_product_lines" string="Order Lines">
+                </group>
                 <field name="non_case_order_line">
                     <tree editable='bottom' default_order="product_id" create="0" delete="0">
                         <field name="sequence" widget="handle"/>
@@ -933,8 +878,8 @@
                         <field name="product_uom_category_id" invisible="1"/>
                         <field name="product_type" on_change="1" invisible="1"/>
                         <field name="product_updatable" invisible="1"/>
-                        <field name="primary_image_url" string="Image" widget="image" options="{'zoom': true,'thumb_image':'primary_image_url','preview_image':'primary_image_url','size': [300, 90]}" readonly="1"/>
-                        <field name="product_id" force_save="1" attrs="{'readonly':['|','|',('is_admin','=',True),('is_shipping_product','=',True),('state','not in',['draft','sent','received'])]}" domain="[('is_case_product','=',True)]"/>
+                        <field name="primary_image_url" string="Image" widget="image" options="{'zoom': true,'thumb_image':'primary_image_url','preview_image':'primary_image_url','size': [100, 100]}" readonly="1" />
+                        <field name="product_id" force_save="1" attrs="{'readonly':['|','|',('is_admin','=',True),('is_shipping_product','=',True),('state','not in',['draft','sent','received'])]}" domain="[('is_case_product','=',True),('is_pending_price','!=',True)]"/>
                         <field name="sale_type" readonly="1" />
                         <field name="product_categ_id" readonly="1" />
                         <field name="is_shipping_product" invisible="1"/>
@@ -969,6 +914,62 @@
                         <field name="price_unit" on_change="1" readonly="1"/>
                         <field name="unit_discount_price" force_save="1" attrs="{'readonly':['|','|',('is_admin','=',True),('is_global_discount','=',True),('state','not in',['draft','sent','received','in_scanning','sale','scanned'])]}" />
                         <field name="tax_id" widget="many2many_tags" options="{'no_create': True}" domain="[('type_tax_use','=','sale'),('company_id','=',parent.company_id), ('country_id', '=', parent.tax_country_id)]" context="{'active_test': True}" optional="show" force_save="1" on_change="1" modifiers="{&quot;readonly&quot;: true}" can_create="true" can_write="true"/>
+                        <field name="discount" string="Disc.%" optional="show" widget="sol_discount" on_change="1" attrs="{'readonly':['|','|',('is_admin','=',True),('is_shipping_product','=',True),('state','not in',['draft','sent','received','in_scanning','sale','scanned'])]}" />
+                        <field name="fix_discount_price" force_save="1" on_change="1" readonly="1"/>
+                        <field name="picked_qty_subtotal" readonly="1"/>
+                        <field name="is_downpayment" on_change="1" invisible="1"/>
+                        <field name="price_subtotal" widget="monetary" on_change="1" invisible="1"/>
+                        <field name="state" on_change="1" invisible="1"/>
+                        <field name="invoice_status" on_change="1" invisible="1"/>
+                        <field name="currency_id" invisible="1"/>
+                        <field name="price_tax" on_change="1" invisible="1"/>
+                        <field name="company_id" invisible="1"/>
+                    </tree>
+                </field>
+                <group name="case_product_lines" string="Cases" attrs="{'invisible':[('state','in',['draft','sent','received','sale','in_scanning'])]}">
+                </group>
+                <field name="case_order_line" attrs="{'readonly':[('state','not in','scanned')],'invisible':[('state','in',['draft','sent','received','sale','in_scanning'])]}">
+                    <tree editable='bottom'  default_order="product_id">
+                        <field name="sequence" widget="handle"/>
+                        <field name="display_type" on_change="1" invisible="1"/>
+                        <field name="product_uom_category_id" invisible="1"/>
+                        <field name="product_type" on_change="1" invisible="1"/>
+                        <field name="product_updatable" invisible="1"/>
+                        <field name="primary_image_url" string="Image" widget="image" options="{'zoom': true,'thumb_image':'primary_image_url','preview_image':'primary_image_url','size': [100, 100]}" max-height="100px" max-width="100px" readonly="1"/>
+                        <field name="product_id" force_save="1" attrs="{'readonly':['|','|',('is_admin','=',True),('is_shipping_product','=',True),('state','not in',['draft','sent','received'])]}" domain="[('is_case_product','=',True),('is_pending_price','!=',True)]"/>
+                        <field name="case_type" readonly="1" />
+                        <field name="is_shipping_product" invisible="1"/>
+                        <field name="is_admin" invisible="1"/>
+                        <field name="is_global_discount" invisible="1"/>
+                        <field name="package_id" readonly="1" invisible="1" />
+                        <!-- <field name="is_promotion_applied" readonly="1" force_save="1" invisible="1"/> -->
+                        <field name="product_template_id" string="Product" invisible="1"/>
+                        <field name="product_uom_qty" decoration-info="(not display_type and invoice_status == 'to invoice')" decoration-bf="(not display_type and invoice_status == 'to invoice')" attrs="{'readonly':['|',('parent.state', 'not in', ('scanned')),'|',('is_shipping_product','!=',False),'|',('is_admin','!=',False),('is_global_discount','!=',False)]}" />
+                        <field name="qty_delivered" invisible="1"/>
+                        <field name="virtual_available_at_date" invisible="1"/>
+                        <field name="qty_available_today" invisible="1"/>
+                        <field name="free_qty_today" invisible="1"/>
+                        <field name="scheduled_date" invisible="1"/>
+                        <field name="forecast_expected_date" invisible="1"/>
+                        <field name="warehouse_id" invisible="1"/>
+                        <field name="move_ids" on_change="1" invisible="1"/>
+                        <field name="qty_to_deliver" invisible="1"/>
+                        <field name="is_mto" invisible="1"/>
+                        <field name="display_qty_widget" invisible="1"/>
+                        <widget name="qty_at_date_widget" width="20px"/>
+                        <field name="qty_delivered_method" on_change="1" invisible="1"/>
+                        <field name="qty_invoiced" decoration-info="(not display_type and invoice_status == 'to invoice')" decoration-bf="(not display_type and invoice_status == 'to invoice')" string="Invoiced" optional="show" on_change="1" invisible="1"/>
+                        <!-- <field name="picked_qty" on_change="1" readonly="1"/> -->
+                        <field name="is_special_discount" invisible="1"/>
+                        <field name="qty_to_invoice" on_change="1" invisible="1"/>
+                        <field name="product_uom_readonly" invisible="1"/>
+                        <field name="product_uom" on_change="1" invisible="1"/>
+                        <field name="customer_lead" optional="hide" attrs="{'readonly': [('parent.state', 'not in', ['draft', 'sent', 'sale'])]}"/>
+                        <field name="recompute_delivery_price" invisible="1" />
+                        <field name="is_delivery" on_change="1" invisible="1"/>
+                        <field name="price_unit" on_change="1" readonly="1"/>
+                        <field name="unit_discount_price" force_save="1" attrs="{'readonly':['|','|',('is_admin','=',True),('is_global_discount','=',True),('state','not in',['draft','sent','received','in_scanning','sale','scanned'])]}" />
+                        <!-- <field name="tax_id" widget="many2many_tags" options="{'no_create': True}" domain="[('type_tax_use','=','sale'),('company_id','=',parent.company_id), ('country_id', '=', parent.tax_country_id)]" context="{'active_test': True}" optional="show" force_save="1" on_change="1" modifiers="{&quot;readonly&quot;: true}" can_create="true" can_write="true"/> -->
                         <field name="discount" string="Disc.%" optional="show" widget="sol_discount" on_change="1" attrs="{'readonly':['|','|',('is_admin','=',True),('is_shipping_product','=',True),('state','not in',['draft','sent','received','in_scanning','sale','scanned'])]}" />
                         <field name="fix_discount_price" force_save="1" on_change="1" readonly="1"/>
                         <field name="picked_qty_subtotal" readonly="1"/>
@@ -1087,6 +1088,7 @@
         active="True" />
     <menuitem id="refresh_product_images_menu" name="Refresh Images" action="refresh_product_image"
         parent="sale.sale_menu_root" sequence="400" groups="base.group_system" />
+    <menuitem id="commission_menu" name="Commission" parent="sale.sale_menu_root"  sequence="500" groups="base.group_system" />
     
     <record id="view_sale_order_tree_with_onboarding_inherit_tzc" model="ir.ui.view">
         <field name="name">view.sale.order.tree.with.onboarding.inherit.tzc</field>

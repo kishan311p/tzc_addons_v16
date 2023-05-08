@@ -427,21 +427,22 @@ class sale_order(models.Model):
                         fix_discount_price = round((price_unit * line.discount)/100,2)
                         unit_discount_price = price_unit - fix_discount_price
                 
-                # Apply Inflation On Price.
-                if is_inflation:
-                    inflation_rule_ids = self.env['kits.inflation.rule'].search([('country_id','in',rec.partner_id.country_id.ids),('brand_ids','in',line.product_id.brand.ids),('inflation_id','=',active_inflation.id)])
-                    inflation_rule = inflation_rule_ids[-1] if inflation_rule_ids else 0.0
-                    if inflation_rule:
-                        price_unit = round(price_unit+(price_unit*inflation_rule.inflation_rate /100),2)
-                        unit_discount_price = round(unit_discount_price+(unit_discount_price*inflation_rule.inflation_rate /100),2)
+                if not rec.partner_id.b2b_pricelist_id.is_pricelist_excluded:
+                    # Apply Inflation On Price.
+                    if is_inflation:
+                        inflation_rule_ids = self.env['kits.inflation.rule'].search([('country_id','in',rec.partner_id.country_id.ids),('brand_ids','in',line.product_id.brand.ids),('inflation_id','=',active_inflation.id)])
+                        inflation_rule = inflation_rule_ids[-1] if inflation_rule_ids else 0.0
+                        if inflation_rule:
+                            price_unit = round(price_unit+(price_unit*inflation_rule.inflation_rate /100),2)
+                            unit_discount_price = round(unit_discount_price+(unit_discount_price*inflation_rule.inflation_rate /100),2)
 
-                # Apply Special Discount On Price.
-                if applicable:
-                    special_disocunt_id = self.env['kits.special.discount'].search([('country_id','in',rec.partner_id.country_id.ids),('brand_ids','in',line.product_id.brand.ids),('tzc_fest_id','=',active_fest_id.id)])
-                    price_rule_id = special_disocunt_id[-1] if special_disocunt_id else 0.0
-                    if price_rule_id:
-                        unit_discount_price = round((unit_discount_price - (unit_discount_price * price_rule_id.discount * 0.01 )),2)
-                        fix_discount_price = (price_unit - unit_discount_price)
+                    # Apply Special Discount On Price.
+                    if applicable:
+                        special_disocunt_id = self.env['kits.special.discount'].search([('country_id','in',rec.partner_id.country_id.ids),('brand_ids','in',line.product_id.brand.ids),('tzc_fest_id','=',active_fest_id.id)])
+                        price_rule_id = special_disocunt_id[-1] if special_disocunt_id else 0.0
+                        if price_rule_id:
+                            unit_discount_price = round((unit_discount_price - (unit_discount_price * price_rule_id.discount * 0.01 )),2)
+                            fix_discount_price = (price_unit - unit_discount_price)
                 
                 line.write({
                     'price_unit':price_unit,
@@ -726,56 +727,57 @@ class sale_order(models.Model):
         return super(sale_order,self).unlink()
 
     def write(self,vals):
-        if ('sale_manager_id' in vals) or ('user_id' in vals):
-            old_sales_person = self.user_id.id
-            old_sales_manager = self.sale_manager_id.id
-        update = self.env['ir.model']._updated_data_validation(field_list,vals,self._name)
-        if update:
-            vals.update({'updated_by':self.env.user.id,'updated_on':datetime.today()})
-        initial_state = {}
-        prev_state = self['state']
-        amount_log = False
-        if 'state' in vals and not self._context.get('tracking_disable'):
-            #  and vals['state'] in ['draft','salesperson_confirmation','sale','scanned','scan']
-            if vals['state'] not in ('draft','sent','received','salesperson_confirmation','sale'):
-                amount_log = True
-                for track_field in ['amount_without_discount','amount_discount','amount_tax','amount_total']:
-                    initial_state[track_field] = self[track_field]
-            else:
-                amount_log = True
-                for track_field in ['picked_qty_order_subtotal','picked_qty_order_discount','picked_qty_order_tax','picked_qty_order_total']:
-                    initial_state[track_field] = self[track_field]
-        res = super(sale_order,self).write(vals)
-        if ('sale_manager_id' in vals) or ('user_id' in vals):
-            new_sales_person = self.user_id.id
-            new_sales_manager = self.sale_manager_id.id 
-            self.env['sale.manager.tracking'].create({'order_id':self.id,
-                                                    'create_date':datetime.now().strftime("%d-%m-%Y %H:%M:%S"),
-                                                    'user':self.env.user.id,
-                                                    'user_id':old_sales_person,
-                                                    'new_user_id':new_sales_person,
-                                                    'sale_manager_id':old_sales_manager,
-                                                    'new_sale_manager_id':new_sales_manager})
-        if vals.get('sale_manager_id'):
-            self.invoice_ids.filtered(lambda inv: inv.state != 'cancel')._onchange_user_id()
-        if amount_log:
-            tracking_value_ids = []
-            for i,tracking_field in enumerate(initial_state):
-                f_id = self.env['ir.model.fields'].search([('name','=',tracking_field),('model','=','sale.order')])
+        for rec in self:
+            if ('sale_manager_id' in vals) or ('user_id' in vals):
+                old_sales_person = rec.user_id.id
+                old_sales_manager = rec.sale_manager_id.id
+            update = self.env['ir.model']._updated_data_validation(field_list,vals,rec._name)
+            if update:
+                vals.update({'updated_by':self.env.user.id,'updated_on':datetime.today()})
+            initial_state = {}
+            # prev_state = self['state']
+            amount_log = False
+            if 'state' in vals and not rec._context.get('tracking_disable'):
+                #  and vals['state'] in ['draft','salesperson_confirmation','sale','scanned','scan']
+                if vals['state'] not in ('draft','sent','received','salesperson_confirmation','sale'):
+                    amount_log = True
+                    for track_field in ['amount_without_discount','amount_discount','amount_tax','amount_total']:
+                        initial_state[track_field] = rec[track_field]
+                else:
+                    amount_log = True
+                    for track_field in ['picked_qty_order_subtotal','picked_qty_order_discount','picked_qty_order_tax','picked_qty_order_total']:
+                        initial_state[track_field] = rec[track_field]
+            res = super(sale_order,rec).write(vals)
+            if ('sale_manager_id' in vals) or ('user_id' in vals):
+                new_sales_person = rec.user_id.id
+                new_sales_manager = rec.sale_manager_id.id 
+                self.env['sale.manager.tracking'].create({'order_id':rec.id,
+                                                        'create_date':datetime.now().strftime("%d-%m-%Y %H:%M:%S"),
+                                                        'user':self.env.user.id,
+                                                        'user_id':old_sales_person,
+                                                        'new_user_id':new_sales_person,
+                                                        'sale_manager_id':old_sales_manager,
+                                                        'new_sale_manager_id':new_sales_manager})
+            if vals.get('sale_manager_id'):
+                rec.invoice_ids.filtered(lambda inv: inv.state != 'cancel')._onchange_user_id()
+            if amount_log:
+                tracking_value_ids = []
+                for i,tracking_field in enumerate(initial_state):
+                    f_id = self.env['ir.model.fields'].search([('name','=',tracking_field),('model','=','sale.order')])
 
-                tracking_value_ids.insert(i, Command.create({
-                    'field': f_id.id,
-                    'field_type': f_id.ttype,
-                    'field_desc': f_id.field_description,
-                    'tracking_sequence': f_id.tracking,
-                    'old_value_%s' % (f_id.ttype): initial_state[tracking_field],
-                    'new_value_%s' % (f_id.ttype): self[tracking_field],
-                }))
-            
-            if len(tracking_value_ids):
-                self.message_post(
-                    tracking_value_ids=tracking_value_ids
-                )
+                    tracking_value_ids.insert(i, Command.create({
+                        'field': f_id.id,
+                        'field_type': f_id.ttype,
+                        'field_desc': f_id.field_description,
+                        'tracking_sequence': f_id.tracking,
+                        'old_value_%s' % (f_id.ttype): initial_state[tracking_field],
+                        'new_value_%s' % (f_id.ttype): rec[tracking_field],
+                    }))
+                
+                if len(tracking_value_ids):
+                    rec.message_post(
+                        tracking_value_ids=tracking_value_ids
+                    )
         return res
 
     # def action_confirm(self):
@@ -1688,6 +1690,17 @@ class sale_order(models.Model):
             'url': 'web/content/?model=warning.spt.wizard&download=true&field=file&id=%s&filename=%s.xlsx' % (wiz_id.id, f_name),
             'target': 'self',
         }
+    
+    def get_data_report(self,data):
+        return_dict = {}
+        for d in data:
+            if d[-1] != None:
+                if d[-1] in return_dict:
+                    return_dict.get(d[-1]).update({'qty':return_dict.get(d[-1]).get('qty') + d[-2],'subtotal':return_dict.get(d[-1]).get('subtotal') + d[-3]})
+                else:
+                    return_dict[d[-1]] = {'qty':d[-2],'subtotal':d[-3]}
+        
+        return return_dict
 
     def excel_report_line(self):
         
@@ -1792,11 +1805,10 @@ class sale_order(models.Model):
         table_header = date_person_row+2
 
         query = f'''SELECT SO.NAME,
-                    SUM(SOL.UNIT_DISCOUNT_PRICE * SOL.PICKED_QTY) / SUM(SOL.PRODUCT_UOM_QTY) AS TOTAL_AMOUNT,
-                    ROUND(SUM(SOL.FIX_DISCOUNT_PRICE) / SUM(SOL.PRODUCT_UOM_QTY)) AS TOTAL_DISCOUNT,
-                    SUM(SOL.UNIT_DISCOUNT_PRICE * SOL.PICKED_QTY) AS TOTAL_PRICE,
-                    SUM((SOL.PRICE_TAX / SOL.PRODUCT_UOM_QTY) * SOL.PICKED_QTY) AS TAX,
-                    SUM(SOL.PICKED_QTY) AS QTY,
+                    CASE WHEN SOL.PRODUCT_UOM_QTY != 0 THEN SUM(SOL.UNIT_DISCOUNT_PRICE * SOL.PICKED_QTY) / SUM(SOL.PRODUCT_UOM_QTY) ELSE 0 END AS "TOTAL_AMOUNT",
+                    CASE WHEN SOL.PRODUCT_UOM_QTY != 0 THEN ROUND(SUM(SOL.FIX_DISCOUNT_PRICE) / SUM(SOL.PRODUCT_UOM_QTY)) ELSE 0 END AS "TOTAL_DISCOUNT",
+                    SUM(SOL.UNIT_DISCOUNT_PRICE * SOL.PICKED_QTY) AS "TOTAL_PRICE",
+                    SUM(SOL.PICKED_QTY) AS "QTY",
                     CASE
                                     WHEN PC.NAME = 'E'
                                                         AND PT.TYPE != 'service' THEN 'Assorted Eyeglasses'
@@ -1804,7 +1816,7 @@ class sale_order(models.Model):
                                                         AND PT.TYPE != 'service' THEN 'Assorted Sunglasses'
                                     WHEN PC.NAME not in ('E','S')
                                                         AND PT.TYPE != 'service' THEN 'Assorted Other'
-                    END AS TYPE
+                    END AS "TYPE"
                 FROM SALE_ORDER AS SO
                 LEFT JOIN SALE_ORDER_LINE AS SOL ON SO.ID = SOL.ORDER_ID
                 LEFT JOIN PRODUCT_PRODUCT AS PP ON PP.ID = SOL.PRODUCT_ID
@@ -1813,7 +1825,9 @@ class sale_order(models.Model):
                 WHERE SO.ID = {self.id}
                 GROUP BY TYPE,
                     SO.NAME,
-                    PC.NAME'''
+                    PC.NAME,
+                    SOL.PRODUCT_UOM_QTY'''
+
         self.env.cr.execute(query)
         record_data = self.env.cr.fetchall()
         if record_data:
@@ -1821,50 +1835,51 @@ class sale_order(models.Model):
             sub_total = 0.00
             tax = 0.00
             total_quantity = 0
+            record_data = self.get_data_report(record_data)
             for data in record_data:
-                if (data[6] == None):
-                    pass
-                else:
-                    total_quantity += data[5]
-                    height = int((3*len(data[6]))/2) if len(data) > 20 else 20
-                    wrksht.row_dimensions[row_index].height = height
+                # if (data[5] == None):
+                #     pass
+                # else:
+                total_quantity += record_data.get(data).get('qty')
+                height = int((3*len(data))/2) if data and len(data) > 20 else 20
+                wrksht.row_dimensions[row_index].height = height
 
-                    wrksht.merge_cells("A"+str(row_index)+":E"+str(row_index))
-                    wrksht.cell(row=row_index, column=1).value = data[6]
-                    wrksht.cell(row=row_index, column=1).font = table_font
-                    wrksht.cell(row=row_index, column=1).border = bottom_border
-                    wrksht.cell(row=row_index, column=2).border = bottom_border
-                    wrksht.cell(row=row_index, column=3).border = bottom_border
-                    wrksht.cell(row=row_index, column=4).border = bottom_border
-                    wrksht.cell(row=row_index, column=5).border = bottom_border
-                    
-                    wrksht.cell(row=row_index, column=6).value = data[5]
-                    wrksht.cell(row=row_index, column=6).font = table_font
-                    wrksht.cell(row=row_index, column=6).border = bottom_border
+                wrksht.merge_cells("A"+str(row_index)+":E"+str(row_index))
+                wrksht.cell(row=row_index, column=1).value = data
+                wrksht.cell(row=row_index, column=1).font = table_font
+                wrksht.cell(row=row_index, column=1).border = bottom_border
+                wrksht.cell(row=row_index, column=2).border = bottom_border
+                wrksht.cell(row=row_index, column=3).border = bottom_border
+                wrksht.cell(row=row_index, column=4).border = bottom_border
+                wrksht.cell(row=row_index, column=5).border = bottom_border
+                
+                wrksht.cell(row=row_index, column=6).value = record_data.get(data).get('qty')
+                wrksht.cell(row=row_index, column=6).font = table_font
+                wrksht.cell(row=row_index, column=6).border = bottom_border
 
-                    
-                    wrksht.merge_cells("G"+str(row_index)+":H"+str(row_index))
-                    wrksht.cell(row=row_index, column=7).value = "$ {:,.2f}".format(round(data[3]/data[5],2))
-                    wrksht.cell(row=row_index, column=7).font = table_font
-                    wrksht.cell(row=row_index, column=7).border = bottom_border
-                    wrksht.cell(row=row_index, column=8).border = bottom_border
+                
+                wrksht.merge_cells("G"+str(row_index)+":H"+str(row_index))
+                wrksht.cell(row=row_index, column=7).value = "$ {:,.2f}".format(round(record_data.get(data).get('subtotal')/record_data.get(data).get('qty'),2))
+                wrksht.cell(row=row_index, column=7).font = table_font
+                wrksht.cell(row=row_index, column=7).border = bottom_border
+                wrksht.cell(row=row_index, column=8).border = bottom_border
 
-                    wrksht.merge_cells("I"+str(row_index)+":J"+str(row_index))
-                    wrksht.cell(row=row_index, column=9).value = "$ {:,.2f}".format(round(data[3] , 2))
-                    wrksht.cell(row=row_index, column=9).font = table_font
-                    wrksht.cell(row=row_index, column=9).border = bottom_border
-                    wrksht.cell(row=row_index, column=10).border = bottom_border
-                    
-                    sub_total += round(data[3], 2)
-                    tax = round(data[4], 2) + tax
+                wrksht.merge_cells("I"+str(row_index)+":J"+str(row_index))
+                wrksht.cell(row=row_index, column=9).value = "$ {:,.2f}".format(round(record_data.get(data).get('subtotal') , 2))
+                wrksht.cell(row=row_index, column=9).font = table_font
+                wrksht.cell(row=row_index, column=9).border = bottom_border
+                wrksht.cell(row=row_index, column=10).border = bottom_border
+                
+                # sub_total += round(data[3], 2)
+                # tax = round(data[4], 2) + tax
 
-                    wrksht.cell(row=row_index, column=1).alignment = alignment_left
-                    wrksht.cell(row=row_index, column=6).alignment = alignment
-                    wrksht.cell(row=row_index, column=7).alignment = alignment_right
-                    wrksht.cell(row=row_index, column=8).alignment = alignment_right
-                    wrksht.cell(row=row_index, column=9).alignment = alignment_right
+                wrksht.cell(row=row_index, column=1).alignment = alignment_left
+                wrksht.cell(row=row_index, column=6).alignment = alignment
+                wrksht.cell(row=row_index, column=7).alignment = alignment_right
+                wrksht.cell(row=row_index, column=8).alignment = alignment_right
+                wrksht.cell(row=row_index, column=9).alignment = alignment_right
 
-                    row_index += 1
+                row_index += 1
 
             # ========================= Table end =========================
             # wrksht.merge_cells("D"+str(date_person_row)+":D"+str(date_person_row+1))
@@ -3161,8 +3176,8 @@ class sale_order(models.Model):
                                 'package_id': pack_line.product_id.id or False,
                                 'is_pack_order_line': True,
                                 'package_line_id': pack_line.id or False,
-                                'unit_discount_price' : product_line.get_package_price_data(record.partner_id,product_line.usd_price,True) * currency_rate,
-                                'price_unit': product_line.get_package_price_data(record.partner_id,product_line.product_price) * currency_rate,
+                                'unit_discount_price' : product_line.get_package_price_data(record.partner_id,product_line.usd_price,True,is_pricelist_excluded=record.partner_id.b2b_pricelist_id.is_pricelist_excluded) * currency_rate,
+                                'price_unit': product_line.get_package_price_data(record.partner_id,product_line.product_price,is_pricelist_excluded=record.partner_id.b2b_pricelist_id.is_pricelist_excluded) * currency_rate,
                                 'sale_type':product_line.product_id.sale_type,
                             })
                         pack_sale_line._onchange_unit_discounted_price_spt()
@@ -3304,14 +3319,18 @@ class sale_order(models.Model):
 
     def line_ordering_by_product(self):
         product_list = []
-        product_list = self.order_line.mapped(lambda x:x and x.product_id.name_get()[0][1].strip()) if  self.order_line else []
+        if self._context.get('is_case'):
+            product_list = self.case_order_line.mapped(lambda x:x and x.product_id.name_get()[0][1].strip()) if  self.case_order_line else []
+            product_list.sort()
+            return product_list
+        product_list = self.non_case_order_line.mapped(lambda x:x and x.product_id.name_get()[0][1].strip()) if  self.non_case_order_line else []
+        return product_list
+
         # for line in range(len(self.order_line)):
         #     line = self.order_line[line]
         #     product_name = line.product_id.name_get()[0][1].split('(')
         #     product_list.append(product_name[0])
         # product_list = list(set(product_list))
-        product_list.sort()
-        return product_list
 
     def line_product_dict(self,product_name):
         product_dict = {}
@@ -3699,65 +3718,66 @@ class sale_order(models.Model):
                 values['discount'] = round(100 - (pricelist_price / sale_price) * 100, 2)
                 values['fix_discount_price'] = round((sale_price * values['discount'])/100, 2)
 
-            active_inflation = self.env['kits.inflation'].search([('is_active','=',True)])
-            inflation_id = self.env['kits.inflation.rule'].search([('country_id','in',self.env.user.partner_id.country_id.ids),('brand_ids','in',product.brand.ids),('inflation_id','=',active_inflation.id)])
-            inflation_rule_id = inflation_id[-1] if inflation_id else False
-            is_inflation = False
+            if not self.partner_id.b2b_pricelist_id.is_pricelist_excluded:
+                active_inflation = self.env['kits.inflation'].search([('is_active','=',True)])
+                inflation_id = self.env['kits.inflation.rule'].search([('country_id','in',self.env.user.partner_id.country_id.ids),('brand_ids','in',product.brand.ids),('inflation_id','=',active_inflation.id)])
+                inflation_rule_id = inflation_id[-1] if inflation_id else False
+                is_inflation = False
 
-            if inflation_rule_id:
-                if active_inflation.from_date and active_inflation.to_date:
-                    if active_inflation.from_date <= datetime.now().date() and active_inflation.to_date >= datetime.now().date():
-                        is_inflation = True
-                elif active_inflation.from_date:
-                    if active_inflation.from_date <= datetime.now().date():
-                        is_inflation = True
-                elif active_inflation.to_date:
-                    if active_inflation.to_date >= datetime.now().date():
-                        is_inflation = True
-                else:
-                    if not active_inflation.from_date:
-                        is_inflation = True
-                    if not active_inflation.to_date:
-                        is_inflation = True
-                
-                if is_inflation:
-                    inflation_discount_price = round(values['unit_discount_price'] + (values['unit_discount_price'] * inflation_rule_id.inflation_rate / 100),2)
-                    price_unit = round(values['price_unit'] + (values['price_unit'] * inflation_rule_id.inflation_rate / 100),2)
-                    fix_discount_price = round((100 * (values['price_unit'] - inflation_discount_price) / values['price_unit']),2)
-                    values['unit_discount_price'] = inflation_discount_price
-                    values['price_unit'] = price_unit
-                    values['fix_discount_price'] = round(values['price_unit'] - inflation_discount_price,2)
-                    if product.sale_type:
+                if inflation_rule_id:
+                    if active_inflation.from_date and active_inflation.to_date:
+                        if active_inflation.from_date <= datetime.now().date() and active_inflation.to_date >= datetime.now().date():
+                            is_inflation = True
+                    elif active_inflation.from_date:
+                        if active_inflation.from_date <= datetime.now().date():
+                            is_inflation = True
+                    elif active_inflation.to_date:
+                        if active_inflation.to_date >= datetime.now().date():
+                            is_inflation = True
+                    else:
+                        if not active_inflation.from_date:
+                            is_inflation = True
+                        if not active_inflation.to_date:
+                            is_inflation = True
+                    
+                    if is_inflation:
+                        inflation_discount_price = round(values['unit_discount_price'] + (values['unit_discount_price'] * inflation_rule_id.inflation_rate / 100),2)
+                        price_unit = round(values['price_unit'] + (values['price_unit'] * inflation_rule_id.inflation_rate / 100),2)
+                        fix_discount_price = round((100 * (values['price_unit'] - inflation_discount_price) / values['price_unit']),2)
+                        values['unit_discount_price'] = inflation_discount_price
+                        values['price_unit'] = price_unit
+                        values['fix_discount_price'] = round(values['price_unit'] - inflation_discount_price,2)
+                        if product.sale_type:
+                            values['discount'] = fix_discount_price
+
+                active_fest_id = self.env['tzc.fest.discount'].search([('is_active','=',True)])
+                special_disocunt_id = self.env['kits.special.discount'].search([('country_id','in',self.env.user.partner_id.country_id.ids),('brand_ids','in',product.brand.ids),('tzc_fest_id','=',active_fest_id.id)])
+                price_rule_id = special_disocunt_id[-1] if special_disocunt_id else False
+                applicable = False
+
+                if price_rule_id:
+                    if active_fest_id.from_date and active_fest_id.to_date:
+                        if active_fest_id.from_date <= datetime.now().date() and active_fest_id.to_date >= datetime.now().date():
+                            applicable = True
+                    elif active_fest_id.from_date:
+                        if active_fest_id.from_date <= datetime.now().date():
+                            applicable = True
+                    elif active_fest_id.to_date:
+                        if active_fest_id.to_date >= datetime.now().date():
+                            applicable = True
+                    else:
+                        if not active_fest_id.from_date:
+                            applicable = True
+                        if not active_fest_id.to_date:
+                            applicable = True
+                    
+                    if applicable:
+                        special_discount_price = round(values['unit_discount_price'] - (values['unit_discount_price'] * price_rule_id.discount / 100),2)
+                        fix_discount_price = round((100 * (values['price_unit'] - special_discount_price) / values['price_unit']),2)
+                        values['unit_discount_price'] = special_discount_price
                         values['discount'] = fix_discount_price
-
-            active_fest_id = self.env['tzc.fest.discount'].search([('is_active','=',True)])
-            special_disocunt_id = self.env['kits.special.discount'].search([('country_id','in',self.env.user.partner_id.country_id.ids),('brand_ids','in',product.brand.ids),('tzc_fest_id','=',active_fest_id.id)])
-            price_rule_id = special_disocunt_id[-1] if special_disocunt_id else False
-            applicable = False
-
-            if price_rule_id:
-                if active_fest_id.from_date and active_fest_id.to_date:
-                    if active_fest_id.from_date <= datetime.now().date() and active_fest_id.to_date >= datetime.now().date():
-                        applicable = True
-                elif active_fest_id.from_date:
-                    if active_fest_id.from_date <= datetime.now().date():
-                        applicable = True
-                elif active_fest_id.to_date:
-                    if active_fest_id.to_date >= datetime.now().date():
-                        applicable = True
-                else:
-                    if not active_fest_id.from_date:
-                        applicable = True
-                    if not active_fest_id.to_date:
-                        applicable = True
-                
-                if applicable:
-                    special_discount_price = round(values['unit_discount_price'] - (values['unit_discount_price'] * price_rule_id.discount / 100),2)
-                    fix_discount_price = round((100 * (values['price_unit'] - special_discount_price) / values['price_unit']),2)
-                    values['unit_discount_price'] = special_discount_price
-                    values['discount'] = fix_discount_price
-                    values['fix_discount_price'] = round(values['price_unit'] - special_discount_price,2)
-                    values['is_special_discount'] = True
+                        values['fix_discount_price'] = round(values['price_unit'] - special_discount_price,2)
+                        values['is_special_discount'] = True
 
             order_line.write(values)
             # self.recompute_coupon_lines()
@@ -4038,21 +4058,22 @@ class sale_order(models.Model):
                     unit_discount_price = product_price_dict[line.product_id.id]['discounted_unit_price']
                     fix_dicount_price = product_price_dict[line.product_id.id]['fix_discount_price']
 
+                    if not order.partner_id.b2b_pricelist_id.is_pricelist_excluded:
                     # Apply inflation
-                    if is_inflation:
-                        inflation_rule_ids = self.env['kits.inflation.rule'].search([('country_id','in',order.partner_id.country_id.ids),('brand_ids','in',line.product_id.brand.ids),('inflation_id','=',active_inflation.id)])
-                        inflation_rule = inflation_rule_ids[-1] if inflation_rule_ids else False
-                        if inflation_rule:
-                            product_price = round(product_price+(product_price*inflation_rule.inflation_rate /100),2)
-                            unit_discount_price = round(unit_discount_price+(unit_discount_price*inflation_rule.inflation_rate /100),2)
+                        if is_inflation:
+                            inflation_rule_ids = self.env['kits.inflation.rule'].search([('country_id','in',order.partner_id.country_id.ids),('brand_ids','in',line.product_id.brand.ids),('inflation_id','=',active_inflation.id)])
+                            inflation_rule = inflation_rule_ids[-1] if inflation_rule_ids else False
+                            if inflation_rule:
+                                product_price = round(product_price+(product_price*inflation_rule.inflation_rate /100),2)
+                                unit_discount_price = round(unit_discount_price+(unit_discount_price*inflation_rule.inflation_rate /100),2)
 
-                    # Apply Special Discount
-                    if applicable:
-                        special_disocunt_id = self.env['kits.special.discount'].search([('country_id','in',order.partner_id.country_id.ids),('brand_ids','in',line.product_id.brand.ids),('tzc_fest_id','=',active_fest_id.id)])
-                        price_rule_id = special_disocunt_id[-1] if special_disocunt_id else False
-                        if price_rule_id:
-                            unit_discount_price = round((unit_discount_price - (unit_discount_price * price_rule_id.discount * 0.01 )),2)
-                            fix_dicount_price = (product_price - unit_discount_price)
+                        # Apply Special Discount
+                        if applicable:
+                            special_disocunt_id = self.env['kits.special.discount'].search([('country_id','in',order.partner_id.country_id.ids),('brand_ids','in',line.product_id.brand.ids),('tzc_fest_id','=',active_fest_id.id)])
+                            price_rule_id = special_disocunt_id[-1] if special_disocunt_id else False
+                            if price_rule_id:
+                                unit_discount_price = round((unit_discount_price - (unit_discount_price * price_rule_id.discount * 0.01 )),2)
+                                fix_dicount_price = (product_price - unit_discount_price)
 
                     discount = round((100 - ( (100 * unit_discount_price)/ product_price )), 2)
                     line.write({

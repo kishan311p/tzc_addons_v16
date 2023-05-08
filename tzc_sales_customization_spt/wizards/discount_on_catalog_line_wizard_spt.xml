@@ -14,7 +14,7 @@
                                 <field name="catalog_id" invisible="1"/>
                                 <!-- <field name="sale_type" groups="base.group_system" required="1"/> -->
                                 <field name="sale_type" required="1"/>
-                                <field name="product_ids" widget="many2many_tags" options="{'no_create': True}" attrs="{'invisible':[('base_on','!=','products')]}"/>
+                                <field name="product_ids" domain="[('is_pending_price','!=',True)]" widget="many2many_tags" options="{'no_create': True}" attrs="{'invisible':[('base_on','!=','products')]}"/>
                                 <field name="brand_ids" widget="many2many_tags" options="{'no_create': True}"  attrs="{'invisible':[('base_on','!=','brand')]}"/>
                                 <field name="categ_ids" widget="many2many_tags" options="{'no_create': True}"  />
                             </group>

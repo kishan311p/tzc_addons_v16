@@ -167,16 +167,11 @@
                     </div>
                     <div class="col-auto mw-100 mb-2 text-center">
                         <strong>Total Qty:</strong>
-                        <p class="m-0" t-esc="int(sum(request.env['account.move.line'].sudo().search([('move_id','=',o.id),('product_id.type','!=','service')]).mapped('quantity')))"/>
+                        <p class="m-0" t-esc="int(sum(request.env['account.move.line'].sudo().search([('move_id','=',o.id),('product_id.type','!=','service'),('product_id.is_case_product','=',False)]).mapped('quantity')))"/>
                     </div>
                     <div class="col-auto mw-100 mb-2 text-center">
                         <strong>Total Cases:</strong>
-                        <t t-if="request.env['sale.order'].sudo().search([('name','=',o.invoice_origin)]).include_cases">
-                            <p class="m-0" t-esc="int(request.env['sale.order'].sudo().search([('name','=',o.invoice_origin)]).no_of_cases)"/>
-                        </t>
-                        <t t-else="">
-                            <p>0</p>
-                        </t>
+                        <p class="m-0" t-esc="int(request.env['sale.order'].sudo().search([('name','=',o.invoice_origin)]).no_of_cases)"/>
                     </div>
                     <div class="col-auto mw-100 mb-2 text-center">
                         <strong>Currency:</strong>
@@ -201,7 +196,7 @@
                     <t t-set="discount" t-value="abs(o.global_discount)"/>
                     <tbody class="sale_tbody">
                         <t t-foreach="o.invoice_line_ids" t-as="line">
-                            <t t-if="not line.product_id.is_admin and not line.product_id.is_shipping_product and not line.product_id.is_global_discount">
+                            <t t-if="not line.product_id.is_admin and not line.product_id.is_shipping_product and not line.product_id.is_global_discount and not line.product_id.is_case_product">
                                 <t t-set="discount" t-value="discount + line.unit_discount_price"/>
                                 <tr class="text-center" style="border-bottom:1px solid lightgrey;">
                                     <t t-if="line.sale_type">
@@ -278,6 +273,88 @@
                                 </tr>
                             </t>
                         </t>
+                        <tr style="border-bottom:1px solid lightgrey">
+                            <td style='font-weight:600' colspan='8' >Cases</td>
+                        </tr>
+                        <t t-foreach="o.invoice_line_ids" t-as="line">
+                            <t t-if="not line.product_id.is_admin and not line.product_id.is_shipping_product and not line.product_id.is_global_discount and line.product_id.is_case_product">
+                                <t t-set="discount" t-value="discount + line.unit_discount_price"/>
+                                <tr class="text-center" style="border-bottom:1px solid lightgrey;">
+                                    <t t-if="line.sale_type">
+                                        <td>
+                                            <style>
+                                                .te_ribbon-wrapper #style_3.label_div {
+                                                    display: inline-block;
+                                                    width: auto;
+                                                    font-size: 0.8125rem;
+                                                    background-color: #353e47;
+                                                    position: absolute;
+                                                    top: 10px;
+                                                    right: unset;
+                                                    bottom: unset;
+                                                    left: 0px;
+                                                    z-index: 1;
+                                                    overflow: hidden;
+                                                    @media (max-width:767px){
+                                                        font-size: 0.0125rem;
+                                                    }
+                                                }
+                                                .te_ribbon-wrapper #style_3.label_div .te_label_name.te_label_name_wish {
+                                                    padding: 2px 4px !important;
+                                                }
+                                                .te_ribbon-wrapper #style_3.label_div .te_label_name.te_label_name_wish:before {
+                                                    //content: "\f02b";
+                                                    font-family: FontAwesome;
+                                                    margin-right: 5px;
+                                                    font-size: 8px;
+                                                }
+                                            </style>
+                                            <div class="te_ribbon-wrapper" style="color:white">
+                                                <div class="style_3 label_div" id="style_3" t-attf-style="background-color:#{'#e50000' if line.sale_type == 'on_sale' else '#990000' if line.sale_type == 'clearance' else ''};font-weight: bold;top: auto !important;left: 20px !important;font-size: 9px;">
+                                                    <div class="p-1 te_label_name te_label_name_wish">
+                                                        <span t-esc="dict(line._fields['sale_type'].selection).get(line.sale_type)"/>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td name="td_name" class="text-start">
+                                            <span t-esc="line.product_id.variant_name"/>
+                                        </td>
+                                    </t>
+                                    <t t-else="">
+                                        <td name="td_name" class="text-start" colspan="2">
+                                            <!-- <span t-if="line.product_id.display_name" t-esc="line.product_id.display_name"/> -->
+                                            <!-- <span t-else="">N/A</span> -->
+                                            <span t-esc="line.product_id.variant_name"/>
+                                        </td>
+                                    </t>
+                                    <td name="td_name">
+                                        <span t-if="line.product_id.categ_id" t-esc="line.product_id.categ_id.name"/>
+                                        <span t-else="">N/A</span>
+                                    </td>
+                                    <td colspan='2'></td>
+                                    <!-- <td name="td_name">
+                                        <span t-if="line.product_id.material_id" t-esc="', '.join(line.product_id.material_id.mapped('name'))"/>
+                                        <span t-else="">N/A</span>
+                                    </td>
+                                    <td name="td_name">
+                                        <span t-if="line.product_id.hs_code" t-esc="line.product_id.hs_code"/>
+                                        <span t-else="">N/A</span>
+                                    </td> -->
+                                    <td name="td_name">
+                                        <span t-if="line.quantity" t-esc="int(line.quantity)"/>
+                                        <span t-else="">N/A</span>
+                                    </td>
+                                    <td name="td_name" class="text-end">
+                                        <span t-field="line.discount_unit_price" t-options="{&quot;widget&quot;: &quot;monetary&quot;, &quot;display_currency&quot;: o.currency_id}"/>
+                                    </td>
+                                    <td name="td_name" class="text-end">
+                                        <!-- <t t-set="sub_total" t-value="sub_total + line.price_subtotal"/> -->
+                                        <span t-field="line.price_subtotal" t-options="{&quot;widget&quot;: &quot;monetary&quot;, &quot;display_currency&quot;: o.currency_id}"/>
+                                    </td>
+                                </tr>
+                            </t>
+                        </t>
                     </tbody>
                     <div class="clearfix" name="so_total_summary">
                         <div id="total" class="row" name="total" style="page-break-inside: auto">
@@ -338,6 +415,14 @@
                                                                 <span t-field="o.amount_is_admin" t-options='{"widget": "monetary", "display_currency": o.currency_id}'/>
                                                             </td>
                                                         </tr>
+                                                        <tr class="border-black">
+                                                            <td name="td_case_total_product_total_amount_label">
+                                                                <strong>Case Total</strong>
+                                                            </td>
+                                                            <td name="td_case_total" class="text-end">
+                                                                <span t-field="o.amount_is_case" t-options='{"widget": "monetary", "display_currency": o.currency_id}'/>
+                                                            </td>
+                                                        </tr>
                                                         <t t-if="o.global_discount">
                                                             <tr class="border-black">
                                                                 <td name="td_amount_discount_label">
@@ -375,7 +460,7 @@
                                                                 <strong>Total Quantity</strong>
                                                             </td>
                                                             <td style="white-space: nowrap;" name="td_amount_by_group" class="text-end o_price_total">
-                                                                <span t-esc="int(sum(request.env['account.move.line'].sudo().search([('move_id','=',o.id),('product_id.type','!=','service')]).mapped('quantity')))"/>
+                                                                <span t-esc="int(sum(request.env['account.move.line'].sudo().search([('move_id','=',o.id),('product_id.type','!=','service'),('product_id.is_case_product','=',False)]).mapped('quantity')))"/>
                                                             </td>
                                                         </tr>
                                                     </table>
@@ -477,7 +562,7 @@
                                                                 <strong>Total Quantity</strong>
                                                             </td>
                                                             <td style="white-space: nowrap;" name="td_amount_by_group" class="text-right o_price_total">
-                                                                <span t-esc="int(sum(request.env['account.move.line'].sudo().search([('move_id','=',o.id),('product_id.type','!=','service')]).mapped('quantity')))"/>
+                                                                <span t-esc="int(sum(request.env['account.move.line'].sudo().search([('move_id','=',o.id),('product_id.type','!=','service'),('product_id.is_case_product','=',False)]).mapped('quantity')))"/>
                                                             </td>
                                                         </tr>
                                                     </table>

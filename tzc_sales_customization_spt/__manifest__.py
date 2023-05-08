@@ -112,6 +112,8 @@
         'views/res_partner_view.xml',
         'views/mail_wizard_invite_view.xml',
         'views/kits_return_ordered_items_view.xml',
+        'views/product_pricelist_view.xml',
+        'views/kits_product_color_code_view.xml',
 
         # Wizard
         'wizards/kits_warning_wizard_view.xml',
@@ -182,6 +184,8 @@
         'wizards/kits_message_update_picking_wizard_view.xml',
         'wizards/kits_remove_package_products_view.xml',
         'wizards/kits_scan_return_items_view.xml',
+        'wizards/add_commission_wizard.xml',
+        'wizards/exist_commission_line_wizard_view.xml',
 
         # Reports
         'reports/kits_commission_report.xml',

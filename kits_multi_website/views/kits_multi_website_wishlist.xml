@@ -28,7 +28,7 @@
                     <field name="create_date"  string="View On"/>
                     <field name="image_2_url" options="{'zoom': true,'preview_image':'favicon', 'size':[100,100]}" />
                     <field name="image_1_url" options="{'zoom': true,'preview_image':'favicon', 'size':[100,100]}" />
-                    <field name="product_id" />
+                    <field name="product_id" domain="[('is_pending_price','!=',True)]"/>
                     <field name="website_id"  invisible="context.get('show_website_id',False)" />
                 </tree>
             </field>

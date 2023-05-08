@@ -8,6 +8,9 @@ class ProductModelSpt(models.Model):
     name = fields.Char('Model', index=True)
     # product_ids = fields.One2many('product.template','model',string='Products ')
     kits_product_ids = fields.One2many('product.product','model',string='Products ')
+    brand_id = fields.Many2one('product.brand.spt', string='brand')
+    product_count = fields.Integer("Products",compute="_compute_product_count")
+    manufacturing_code_ids = fields.One2many('kits.product.color.code', 'model_id', string='Manufacturing Code')
     
     product_count = fields.Integer("Products",compute="_compute_product_count")
     def _compute_product_count(self):

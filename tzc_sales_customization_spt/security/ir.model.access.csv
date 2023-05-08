@@ -122,3 +122,5 @@ access_kits_return_ordered_items,access.kits.return.ordered.items,model_kits_ret
 access_kits_return_ordered_items_line,access.kits.return.ordered.items.line,model_kits_return_ordered_items_line,,1,1,1,1
 access_kits_scan_return_items_wizard,access.kits.scan.return.items.wizard,model_kits_scan_return_items_wizard,,1,1,1,1
 access_kits_scan_return_items_wizard_line,access.kits.scan.return.items.wizard.line,model_kits_scan_return_items_wizard_line,,1,1,1,1
+access_add_commission_wizard,access.add.commission.wizard,model_add_commission_wizard,,1,1,1,1
+access_exist_commission_line_wizard,access.exist.commission.line.wizard,model_exist_commission_line_wizard,base.group_system,1,1,1,1

@@ -82,3 +82,4 @@ from . import base_model
 from . import sale_manager_tracking
 from . import ir_ui_menu
 from . import kits_return_ordered_items
+from . import product_pricelist

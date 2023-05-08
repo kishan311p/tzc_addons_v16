@@ -37,6 +37,7 @@ class account_move(models.Model):
     sequence_name = fields.Char('Name Sequence')
     amount_is_admin = fields.Monetary(string='Admin Fee',store=True,compute_sudo=True,compute='_compute_amount')
     amount_is_shipping_total = fields.Monetary(string='Shipping Cost',store=True,compute_sudo=True,compute='_compute_amount')
+    amount_is_case = fields.Monetary(string='Case Total',store=True,compute_sudo=True,compute='_compute_case_total')
     ordered_qty = fields.Integer('Ordered Quantity',compute="_compute_qty")
     delivered_qty = fields.Integer('Delivered Quantity',compute="_compute_qty")
     # picked_qty = fields.Integer('Picked Quantity',compute="_compute_qty")
@@ -66,6 +67,24 @@ class account_move(models.Model):
     kits_amount_tax = fields.Float('Tax')
     kits_amount_total = fields.Float('Total')
     # kits_amount_residual = fields.Float('Amount Due')
+
+    def _filter_non_case_line(self):
+        for rec in self:
+            return [('id','in',rec.invoice_line_ids.filtered(lambda x: x.product_id.is_case_product == False).ids)]
+    
+    def _filter_case_line(self):
+        for rec in self:
+            return [('id','in',rec.invoice_line_ids.filtered(lambda x: x.product_id.is_case_product == True).ids)]
+
+    non_case_invoice_line_ids = fields.One2many('account.move.line','move_id',string='Non Case Invoice lines',copy=False,readonly=True,domain=_filter_non_case_line,states={'draft': [('readonly', False)]})
+    case_invoice_line_ids = fields.One2many('account.move.line','move_id',string='Case Invoice lines',copy=False,readonly=True,domain=_filter_case_line,states={'draft': [('readonly', False)]})
+
+    @api.depends('invoice_line_ids','case_invoice_line_ids','invoice_line_ids.discount_unit_price','invoice_line_ids.quantity')
+    def _compute_case_total(self):
+        for rec in self:
+            if rec.case_invoice_line_ids:
+                rec.amount_is_case = sum(rec.case_invoice_line_ids.mapped('price_subtotal'))
+
 
     def _compute_is_admin(self):
         for record in self:
@@ -318,6 +337,7 @@ class account_move(models.Model):
             total, total_currency = 0.0, 0.0
             total_amount_is_shipping_total = 0.0
             total_amount_is_admin = 0.0
+            total_amount_is_case = 0.0
             global_discount = 0.0
             amount_without_discount = 0.0
             amount_discount = 0.0
@@ -354,7 +374,9 @@ class account_move(models.Model):
                     total_amount_is_admin += line.price_subtotal
                 if line.product_id.is_global_discount:
                     global_discount += line.price_subtotal
-                if line.product_id.type != 'service':
+                # if line.product_id.is_case_product:
+                #     total_amount_is_case += line.price_subtotal
+                if line.product_id.type != 'service' and not line.product_id.is_case_product:
                     amount_discount +=  round(((line.quantity * line.price_unit) - line.price_subtotal),2)
                     amount_without_discount = round(amount_without_discount +( line.quantity * line.price_unit),2)
                     
