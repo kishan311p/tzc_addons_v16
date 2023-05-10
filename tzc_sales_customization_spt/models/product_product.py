@@ -124,8 +124,8 @@ class ProductProduct(models.Model):
 
     manufacture_color_code = fields.Char('Manufacture Color Code',compute="_compute_eye_size",store=True)
     in_future_archive = fields.Boolean('In Future Archive (Flag)')
-    case_type = fields.Selection([('original', 'Original'),('generic', 'Generic')],"Case Type")
-    case_image_url = fields.Char('Case Image Url')
+    case_type = fields.Selection([('original', 'Original'),('generic', 'Generic')],"Case Type",store=True)
+    case_image_url = fields.Char('Case Image Url',store=True)
     case_image_url_1920 = fields.Image("Case Image 1920", max_width=1920, max_height=1920, store=True)
     case_image_url_1024 = fields.Image("Case Image 1024", max_width=1024, max_height=1024, store=True)
     case_image_url_512 = fields.Image("Case Image 512", max_width=512, max_height=512, store=True)
@@ -205,6 +205,9 @@ class ProductProduct(models.Model):
         ('seo_keyword', 'unique(product_seo_keyword)', 'Seo keyword already exists!')
     ]
 
+    # Case
+    case_product_id = fields.Many2one('product.product','Case')
+
     # @api.depends('clearance_usd','clearance_usd_in_percentage')
     # def _compute_clearance_price(self):
     #     ir_config_parameter_on_sale_usd = float(self.env['ir.config_parameter'].sudo().get_param('tzc_sales_customization_spt.on_sale_cad_spt', default=0))
@@ -228,6 +231,18 @@ class ProductProduct(models.Model):
                 rec.primary_image_url = rec.image_url
             if rec.image_secondary_url:
                 rec.sec_image_url = rec.image_secondary_url
+
+    # @api.depends('case_product_id')
+    # def _compute_case_product(self):
+    #     for rec in self._origin:
+    #         rec.case_type = rec.case_product_id.case_type
+    #         rec.case_image_url = rec.case_product_id.image_url
+
+    @api.constrains("case_product_id")
+    def _check_case_product(self):
+        for s in self:
+            s.case_type = s.case_product_id.case_type
+            s.case_image_url = s.case_product_id.image_url
 
     @api.onchange('image_url','image_secondary_url','case_image_url')
     def get_image(self):
@@ -1531,10 +1546,21 @@ class ProductProduct(models.Model):
     @api.onchange('brand')
     def onchange_brand_internal_ref(self):
         for rec in self:
-            if rec.brand:
-                rec.default_code = '-'.join(rec.brand.name.lower().split(' '))+'-case'
-            else:
-                rec.default_code = ''
+            if rec.is_case_product:
+                if rec.brand:
+                    rec.default_code = '-'.join(rec.brand.name.lower().split(' '))+'-case'
+                    rec.barcode = rec.default_code
+                else:
+                    rec.default_code = ''
+                if not rec.variant_name and rec.brand:
+                    rec.variant_name = rec.brand.name + ' Case'
+                rec.barcode = rec.default_code
+
+    @api.onchange('default_code')
+    def onchange_default_code_barcode(self):
+        for rec in self:
+            if rec.is_case_product:
+                rec.barcode = rec.default_code
 
     
     def print_pending_price_product(self):

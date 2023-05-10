@@ -313,7 +313,14 @@ class res_users(models.Model):
                     template.with_context(lang=user.lang,url=url).send_mail(portal_user.id, force_send=True, raise_exception=True,email_values={'recipient_ids':[(6,0,user.partner_id.ids)]})
                     _logger.info("Invitation email sent for user <%s> to <%s>", user.login, user.email)
                 else:
-                    template.with_context(lang=user.lang).send_mail(user.id, force_send=force_send, raise_exception=True)
+                    template.with_context(lang=user.partner_id.lang).send_mail(user.partner_id.id, force_send=force_send, raise_exception=True)
+                    values = template.generate_email(
+                                user.partner_id.id,
+                                ['body_html']
+                            )
+                    if values.get('body_html'):
+                        html_cont = values.get('body_html')
+                        user.partner_id.message_post(body=html_cont)
                     _logger.info("Password reset email sent for user <%s> to <%s>", user.login, user.email)
 
 

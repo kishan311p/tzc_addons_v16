@@ -3,9 +3,9 @@
     <data noupdate="0">
         <record id="auth_signup.reset_password_email" model="mail.template">
             <field name="name">Auth Signup: Reset Password</field>
-            <field name="model_id" ref="base.model_res_users"/>
+            <field name="model_id" ref="base.model_res_partner"/>
             <field name="subject">Password Reset Request for {{object.name}}</field>
-            <field name="email_from">"ETO-Support" &lt;{{(object.company_id.catchall_email or user.email)}}&gt;</field>
+            <field name="email_from">"ETO-Support" &lt;{{(object.company_id.catchall_email or object.user_ids[0].email)}}&gt;</field>
             <field name="email_to">{{object.email_formatted }}</field>
             <field name="body_html" type="html">
                 <table border="0" cellpadding="0" cellspacing="0" style="padding-top: 16px; background-color: #F1F1F1; font-family:Verdana, Arial,sans-serif; color: #454748; width: 100%; border-collapse:separate;">

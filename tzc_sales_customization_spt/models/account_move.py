@@ -380,8 +380,10 @@ class account_move(models.Model):
                     amount_discount +=  round(((line.quantity * line.price_unit) - line.price_subtotal),2)
                     amount_without_discount = round(amount_without_discount +( line.quantity * line.price_unit),2)
                     
-            move.amount_is_admin = total_amount_is_admin
-            move.amount_is_shipping_total = total_amount_is_shipping_total
+            move.amount_is_admin = move.order_id.amount_is_admin
+            # move.amount_is_admin = total_amount_is_admin
+            move.amount_is_shipping_total = move.order_id.amount_is_shipping_total
+            # move.amount_is_shipping_total = total_amount_is_shipping_total
             move.amount_without_discount = amount_without_discount
             move.global_discount = - global_discount
             move.amount_discount = move.order_id.picked_qty_order_discount

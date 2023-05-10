@@ -68,7 +68,7 @@ class discount_on_sale_order_line_wizard_spt(models.TransientModel):
                 if record.sale_id:
                     order_line_ids = []
                     if record.base_on == 'order_line':
-                        domain = [('order_id','=',record.sale_id.id),('product_id.type','!=','service'),('package_id','=',False)]
+                        domain = [('order_id','=',record.sale_id.id),('product_id.type','!=','service'),('product_id.is_case_product','=',False)]
                         if record.categ_ids:
                             domain.append(('product_id.categ_id','in',record.categ_ids.ids))
                         
@@ -77,7 +77,7 @@ class discount_on_sale_order_line_wizard_spt(models.TransientModel):
 
                         order_line_ids = order_line_obj.search(domain)
                     else:
-                        brand_domain = [('order_id','=',record.sale_id.id),('product_id.type','!=','service'),('package_id','=',False)]
+                        brand_domain = [('order_id','=',record.sale_id.id),('product_id.type','!=','service'),('product_id.is_case_product','=',False)]
                         if record.categ_ids:
                             brand_domain.append(('product_id.categ_id','in',record.categ_ids.ids))
                         if record.brand_ids:
@@ -91,7 +91,7 @@ class discount_on_sale_order_line_wizard_spt(models.TransientModel):
                             pass
                         order_line_ids = order_line_obj.search(brand_domain)
                     if self.sale_type in ('on_sale','clearance') and self.env.user.has_group('base.group_system'):
-                        order_line_ids = order_line_ids.filtered(lambda x: x.sale_type == self.sale_type )
+                        order_line_ids = order_line_ids.filtered(lambda x: x.sale_type == self.sale_type and x.product_id.is_case_product == False)
                     elif self.sale_type == 'all' and self.env.user.has_group('base.group_system'):
                         pass
                     else:

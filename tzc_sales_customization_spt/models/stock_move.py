@@ -245,3 +245,9 @@ class stock_move(models.Model):
         if not self.env.context.get('bypass_entire_pack'):
             self.mapped('picking_id')._check_entire_pack()
         StockMove.browse(moves_to_redirect).move_line_ids._apply_putaway_strategy()
+
+    @api.onchange('product_id')
+    def onchange_product_case(self):
+        for rec in self:
+            if rec.product_id in rec.picking_id.case_move_ids_without_package._origin.mapped('product_id'):
+                raise UserError("Product already added")

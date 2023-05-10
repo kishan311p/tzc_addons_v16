@@ -57,7 +57,8 @@ class python_script_runner(models.Model):
     #                 'name' : product.bridge_size.name,
     #                 'bridgesize_id' : product.color_code.id
     #             })
-    #         product.bridge_size = bridge_size.id
+    #         bridge_size.color_code = color_code.id
+    #         product.bridgesize_id = bridge_size.id
 
     #         temple_size = temple_size_obj.search([('name','=',product.temple_size.name),('templesize_id','=',product.color_code.id)])
     #         if not temple_size:
@@ -66,7 +67,8 @@ class python_script_runner(models.Model):
     #                 'templesize_id' : product.color_code.id
     #             })
     #         product.temple_size = temple_size.id
-                
+    #         temple_size.templesize_id = color_code.id
+            
     #         eye_size = eye_size_obj.search([('name','=',product.eye_size.name),('eyesize_id','=',product.color_code.id)])
     #         if not eye_size:
     #             eye_size = eye_size_obj.create({
@@ -74,7 +76,7 @@ class python_script_runner(models.Model):
     #                 'eyesize_id' : product.color_code.id
     #             })
     #         product.eye_size = eye_size.id
-            
+    #         eye_size.eyesize_id = color_code.id
 
     # def execute_script(self):
     #     for rec in self.env['res.partner'].search([]):

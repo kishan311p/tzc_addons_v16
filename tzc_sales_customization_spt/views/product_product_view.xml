@@ -181,13 +181,15 @@
                     <page name="case_product" string="Case" attrs="{'invisible':[('is_case_product','=',False)]}">
                         <group>
                             <group>
-                                <field name="default_code" required='1'/>
                                 <field name="brand" options="{'no_create': True, 'no_create_edit':True,'no_open':True}"/>
+                                <field name="default_code" required='1'/>
+                                <field name="case_type" required='1' />
                                 <!-- <field name="primary_image_url"/> -->
                                 <field name="image_url" required='1' />
                                 <field name="lst_price" string='Our Price'/>
+                                <field name="taxes_id" string='Tax' widget="many2many_tags" readonly="1"/>
                                 <field name="categ_id" options="{'no_create': True, 'no_create_edit':True,'no_open':True}" readonly='1'/>
-                                <field name="case_type" required='1' />
+                                <!-- <field name="case_product_id" domain="[('is_case_product','=',True)]" options="{'no_create': True, 'no_create_edit':True,'no_open':True}" /> -->
                             </group>
                             <group>
                                 <field name="height" />
@@ -242,6 +244,7 @@
                                 attrs="{'invisible':[('sale_type','!=','clearance')]}" />
                             <field name="clearance_usd_in_percentage"
                                 attrs="{'invisible':[('sale_type','!=','clearance')]}" />
+                            <field name="case_product_id" domain="[('is_case_product','=',True),'|',('brand','=',brand),('brand','=',False)]" options="{'no_create': True, 'no_create_edit':True,'no_open':True}" />
                             <field name="case_type" />
                             <field name="new_arrival_update" />
                             <field name="new_arrivals" string="New Arrivals" />

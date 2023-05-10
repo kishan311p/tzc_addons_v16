@@ -1,7 +1,7 @@
 from odoo import api, fields, models, _
 from dateutil.relativedelta import relativedelta
 from odoo.exceptions import UserError
-from datetime import datetime
+from datetime import datetime,timedelta
 from pytz import utc
 import pandas
 from odoo.addons.resource.models.resource import Intervals, sum_intervals, string_to_datetime
@@ -76,51 +76,28 @@ class project_task(models.Model):
     def _set_date_end_deadline(self):
         for record in self:
             if record.estimated_days and record.planned_date_begin:
-                if not record.user_id.resource_calendar_id:
-                    raise UserError(f"Please Set Resource Calendar for user {record.user_id.name}") 
-                if not record.user_id.resource_ids:
-                    raise UserError(f"Please Set Resource Resource for user {record.user_id.name}") 
-                total_estimated_days = record.estimated_days
-                planned_date_end = (record.planned_date_begin - relativedelta(days= 1)) + relativedelta(days= total_estimated_days)
-                from_datetime = timezone_datetime(datetime.combine(record.planned_date_begin,datetime.max.time()))
-                to_datetime = timezone_datetime(datetime.combine(planned_date_end,datetime.max.time()))
-                if from_datetime == to_datetime:
-                    from_datetime = from_datetime - relativedelta(days=1)
-                leave_date_list = []
-                data_date_list =  [(date.date_from.date(),date.date_to.date()) for date in record.user_id.resource_calendar_id.global_leave_ids if date.date_from.date() >= from_datetime.date() or date.date_to.date() <= to_datetime.date()] 
-                
-                for date_tuple in data_date_list:
-                    leave_date_list.append(date_tuple[0])
-                    leave_date_list.append(date_tuple[1])
-                    for count  in range(0,(date_tuple[1]-date_tuple[0]).days):
+                # Input start date in YYYY-MM-DD format
+                start_date = str(timezone_datetime(datetime.combine(record.planned_date_begin,datetime.max.time())).date())
 
-                        date = date_tuple[0]+  relativedelta(days= count+1)
-                        leave_date_list.append(date)
-                
-                total_day_count = 0
-                while total_day_count < total_estimated_days:
-                    if total_day_count:
-                        to_datetime = to_datetime + relativedelta(days = record.estimated_days-total_day_count)
-                    total_day_count,date = self.calculate_days_list(from_datetime,to_datetime,record.user_id,leave_date_list)
-                
-                if record.estimated_days == 1:
-                    record.planned_date_end = record.planned_date_begin
-                elif record.estimated_days in [2,3,4]:
-                    all_dates = pandas.date_range(from_datetime,to_datetime,freq='d')
-                    is_holiday = []
-                    for d in all_dates:
-                        day = d.date().strftime('%A')
-                        if day in ('Sunday','Saturday'):
-                            is_holiday.append(d)
-                    if is_holiday:
-                        record.planned_date_end = timezone_datetime(datetime.combine(date,datetime.max.time()))
-                    else:
-                        if (timezone_datetime(datetime.combine(date,datetime.max.time())) - from_datetime).days != total_estimated_days:
-                            record.planned_date_end = timezone_datetime(datetime.combine(date,datetime.max.time()))
-                        else:
-                            record.planned_date_end = timezone_datetime(datetime.combine(date,datetime.max.time())) - relativedelta(days=1)
-                else:
-                    record.planned_date_end = timezone_datetime(datetime.combine(date,datetime.max.time()))
+                # Input number of days to include
+                num_days = record.estimated_days
+
+                # Convert start date string to datetime object
+                start = datetime.strptime(start_date, "%Y-%m-%d")
+
+                # Define a function to check if a date is a weekend day
+                def is_weekend(date):
+                    return date.weekday() >= 5  # Saturday has weekday() value of 5, Sunday has value of 6
+
+                # Loop through each date in the range
+                date_list = []
+                delta = timedelta(days=1)
+                while len(date_list) < num_days:
+                    if not is_weekend(start):
+                        date_list.append(start.strftime("%Y-%m-%d"))  # Add date to the list in YYYY-MM-DD format
+                    start += delta
+
+                record.planned_date_end = datetime.strptime(max(date_list), '%Y-%m-%d')
 
     @api.onchange('estimated_days')
     def _onchange_estimated_days(self):

@@ -83,3 +83,5 @@ from . import sale_manager_tracking
 from . import ir_ui_menu
 from . import kits_return_ordered_items
 from . import product_pricelist
+from . import create_homepage_html
+from . import tzc_homepage_banner

@@ -40,6 +40,7 @@ class SaleOrderLine(models.Model):
     is_special_discount = fields.Boolean("Is Special Discount",help="This is flag for check product is in special discount or not.")
     primary_image_url = fields.Char("Primary Image URL",related='product_id.primary_image_url')
     case_type = fields.Selection([('original', 'Original'),('generic', 'Generic')],"Case Type",related='product_id.case_type')
+    restrict_case_order_line = fields.Boolean('Restrict Flag')
 
     def _get_virtual_sources(self):
         return []
@@ -88,10 +89,10 @@ class SaleOrderLine(models.Model):
                     picked_qty_subtotal = picked_qty_subtotal + (record.picked_qty * record.unit_discount_price)
                 if record.product_id.type == 'service': 
                     picked_qty_subtotal =picked_qty_subtotal + (record.product_uom_qty * record.unit_discount_price)
-            if record.product_id.is_case_product:
-                record.picked_qty_subtotal = round(record.unit_discount_price * record.product_uom_qty,2)
-            else:
-                record.picked_qty_subtotal = round(picked_qty_subtotal,2)
+            # if record.product_id.is_case_product:
+            #     record.picked_qty_subtotal = round(record.unit_discount_price * record.product_uom_qty,2)
+            # else:
+            record.picked_qty_subtotal = round(picked_qty_subtotal,2)
                 
 
 
@@ -293,12 +294,12 @@ class SaleOrderLine(models.Model):
         for line in range(len(self)):
             line = self[line]
             if line.order_id.state in ['sale', 'done','in_scanning','scanned','scan','shipped','draft_inv','open_inv']:
-                if line.product_id.is_case_product:
-                    line.qty_to_invoice = line.product_uom_qty
+                # if line.product_id.is_case_product:
+                #     line.qty_to_invoice = line.product_uom_qty
                     # line.qty_to_invoice = line.picked_qty - line.qty_invoiced
 
-                elif line.product_id.invoice_policy == 'order':
-                    line.qty_to_invoice = line.product_uom_qty - line.qty_invoiced
+                if line.product_id.invoice_policy == 'order':
+                    line.qty_to_invoice = line.picked_qty - line.qty_invoiced
                 else:
                     line.qty_to_invoice = line.qty_delivered - line.qty_invoiced
             else:
@@ -349,3 +350,42 @@ class SaleOrderLine(models.Model):
                 rec.qty_delivered = rec.picked_qty
             else:
                 pass
+
+    @api.onchange('price_unit')
+    def onchange_price_unit_case(self):
+        for rec in self:
+            rec.price_unit = rec.price_unit
+            # self._cr.commit() 
+
+    @api.depends('product_id', 'product_uom', 'product_uom_qty')
+    def _compute_price_unit(self):
+        for line in self:
+            # as case product doesn't have pricelist so we use lst_price else it will become 0
+            if line.product_id.is_case_product:
+                product_price_dict = (self.env['kits.b2b.multi.currency.mapping'].with_context(from_order_line=True).get_product_price(line.order_id.partner_id.id,line.product_id.ids,order_id=line.order_id) or {}).get(line.product_id.id,{})
+                product_price = product_price_dict.get('price')
+                line.price_unit = product_price
+            # check if there is already invoiced amount. if so, the price shouldn't change as it might have been
+            # manually edited
+            # if line.qty_invoiced > 0:
+            #     continue
+            # if not line.product_uom or not line.product_id or not line.order_id.pricelist_id:
+            #     line.price_unit = 0.0
+            # else:
+                # else:
+                #     price = line.with_company(line.company_id)._get_display_price()
+                # line.price_unit = line.product_id._get_tax_included_unit_price(
+                #     line.company_id,
+                #     line.order_id.currency_id,
+                #     line.order_id.date_order,
+                #     'sale',
+                #     fiscal_position=line.order_id.fiscal_position_id,
+                #     product_price_unit=price,
+                #     product_currency=line.currency_id
+                # )
+
+    @api.onchange('order_id.state','state','price_unit','unit_discount_price','product_id','product_uom_qty')
+    def onchange_restrict_case(self):
+        for rec in self:
+            if self._context.get('from_sale_order') and rec.order_id.state not in ['draft','sent','received']:
+                raise UserError('You cannot add case')

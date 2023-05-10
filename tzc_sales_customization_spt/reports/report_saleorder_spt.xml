@@ -154,7 +154,7 @@
 </xpath>
 <xpath expr="//div[@id='informations']/div[@t-if='doc.user_id.name']" position="after">
     <div class="col-auto mw-100 mb-2 text-center" >
-        <strong>Total Quantity:</strong>
+        <strong>Total Products:</strong>
         <t t-if="env.context.get('proforma', False) or is_pro_forma" >
             <t t-if="doc.state not in ('draft','sent','received')">
                 <t t-if="doc.picked_qty">
@@ -201,9 +201,14 @@
     <div class="col-auto mw-100 mb-2 text-center">
         <strong>Total Cases:</strong>
         <t t-if="doc.no_of_cases > 0">
-        <!-- <t t-if="doc.include_cases"> -->
-            <p class="m-0" t-esc="int(doc.no_of_cases)"/>
+            <t t-if="from_original_ord">
+                <p class="m-0" t-esc="int(sum(doc.case_order_line.mapped('product_uom_qty')))"/>
+            </t>
+            <t t-else=''>
+                <p class="m-0" t-esc="int(doc.no_of_cases)"/>
+            </t>
         </t>
+
         <t t-else="">
             <p>0</p>
         </t>
@@ -252,7 +257,13 @@
     <t t-set="custom_current_subtotal" t-value="0"/>
     <t t-set="total_for_is_pro_forma" t-value="0"/>
     <t t-set="total_for_is_pro_forma_text" t-value="0"/>
-    <t t-set="product_name_list" t-value="doc.line_ordering_by_product()"/>
+    <t t-set="total_for_case" t-value="0"/>
+    <t t-if="from_original_ord">
+        <t t-set="product_name_list" t-value="doc.with_context(original_order = True).line_ordering_by_product()"/>
+    </t>
+    <t t-else="">
+        <t t-set="product_name_list" t-value="doc.line_ordering_by_product()"/>
+    </t>
     <!-- sorting products -->
     <t t-foreach="range(len(product_name_list))" t-as="product_name">
         <t t-value="product_name_list[product_name]" t-set="product_name"/>
@@ -263,7 +274,8 @@
                 <t t-if="is_pro_forma or env.context.get('proforma', False) or doc.state in ['in_scanning','scanned','scan','shipped','draft_inv','open_inv','paid']">
                     <t t-set="is_pro_forma" t-value="True"/>
                     <!-- <t t-if="line.picked_qty and not line.product_id.is_admin and not line.product_id.is_shipping_product and not line.product_id.is_global_discount"> -->
-                    <t t-if="line.picked_qty and not line.product_id.is_admin and not line.product_id.is_shipping_product and not line.product_id.is_global_discount and not line.product_id.is_case_product">
+                    <t t-if="not line.product_id.is_admin and not line.product_id.is_shipping_product and not line.product_id.is_global_discount and not line.product_id.is_case_product">
+                    <!-- <t t-if="line.picked_qty and not line.product_id.is_admin and not line.product_id.is_shipping_product and not line.product_id.is_global_discount and not line.product_id.is_case_product"> -->
                         <!-- pro-forma line print -->
                         <td name="td_image" class="text-center">
                             <t t-set="special_discount" t-value="line.product_id._get_black_special_friday_sale()"/>
@@ -535,9 +547,14 @@
                             <span t-field="line.price_unit" style="white-space: nowrap;" t-options='{"widget": "monetary", "display_currency":  line.currency_id}'/>
                         </td>
                         <td name="td_subtotal" class="text-end o_price_total">
-
-                            <span t-field="line.price_subtotal" t-options='{"widget": "monetary", "display_currency": doc.pricelist_id.currency_id}' groups="account.group_show_line_subtotals_tax_excluded"/>
-                            <span t-field="line.price_total" t-options='{"widget": "monetary", "display_currency": doc.pricelist_id.currency_id}' groups="account.group_show_line_subtotals_tax_included"/>
+                            <t t-if="from_original_ord">
+                                <span t-esc="line.product_uom_qty * line.unit_discount_price" t-options='{"widget": "monetary", "display_currency": doc.pricelist_id.currency_id}' groups="account.group_show_line_subtotals_tax_excluded"/>
+                                <span t-esc="line.product_uom_qty * line.unit_discount_price" t-options='{"widget": "monetary", "display_currency": doc.pricelist_id.currency_id}' groups="account.group_show_line_subtotals_tax_included"/>
+                            </t>
+                            <t t-else="">
+                                <span t-field="line.price_subtotal" t-options='{"widget": "monetary", "display_currency": doc.pricelist_id.currency_id}' groups="account.group_show_line_subtotals_tax_excluded"/>
+                                <span t-field="line.price_total" t-options='{"widget": "monetary", "display_currency": doc.pricelist_id.currency_id}' groups="account.group_show_line_subtotals_tax_included"/>
+                            </t>
 
                         </td>
                         <t t-set="custom_current_subtotal" t-value="round(custom_current_subtotal + (line.price_unit * line.product_uom_qty),2)" groups="account.group_show_line_subtotals_tax_excluded"/>
@@ -550,7 +567,13 @@
     <tr style="border-bottom:1px solid lightgrey">
         <td style='font-weight:600' colspan='8' >Cases</td>
     </tr>
-    <t t-set="product_name_list" t-value="doc.with_context(is_case = True).line_ordering_by_product()"/>
+    <t t-set="case_original_qty" t-value="0"/>
+    <t t-if="from_original_ord">
+        <t t-set="product_name_list" t-value="doc.with_context(is_case = True,original_order = True).line_ordering_by_product()"/>
+    </t>
+    <t t-else="">
+        <t t-set="product_name_list" t-value="doc.with_context(is_case = True).line_ordering_by_product()"/>
+    </t>
     <t t-foreach="range(len(product_name_list))" t-as="product_name">
             <t t-value="product_name_list[product_name]" t-set="product_name"/>
             <!-- get product data in py file -->
@@ -597,16 +620,7 @@
                                 </t>
 
                             </td>
-                            <td name="td_image_secondary" class="text-center">
-                                <t t-if="line.product_id.image_secondary_url">
-                                    <span>
-                                        <t t-esc="line.product_id.image_secondary_url"/>
-                                    </span>
-                                </t>
-                                <t t-else="">
-                                    <span>https://www.teameto.com/web/static/src/img/placeholder.png</span>
-                                </t>
-                            </td>
+                            <td name="td_image_secondary" class="text-center">-</td>
                             <td name="td_name" class="text-center">
                                 <div>
                                     <span t-esc="line.product_id.variant_name"/>
@@ -637,11 +651,11 @@
                                 <!-- <t t-if="is_sales_order_r or from_original_ord"> -->
                                 <t t-if="from_original_ord">
                                     <span t-field="line.product_uom_qty"/>
-                                    <t t-set="total_line_qty" t-value="total_line_qty + line.product_uom_qty"/>
+                                    <t t-set="total_line_qty" t-value="total_line_qty + line.picked_qty"/>
                                 </t>
                                 <t t-else="">
-                                    <t t-set="total_line_qty" t-value="total_line_qty + line.product_uom_qty"/>
-                                    <span t-field="line.product_uom_qty"/>
+                                    <t t-set="total_line_qty" t-value="total_line_qty + line.picked_qty"/>
+                                    <span t-field="line.picked_qty"/>
                                 </t>
                             </td>
 
@@ -668,11 +682,13 @@
                                 <!-- <t t-if="is_sales_order_r or from_original_ord"> -->
                                 <t t-if="from_original_ord">
                                     <t t-set="subtotal_spt" t-value="round((line.price_unit * line.product_uom_qty),2)"/>
+                                    <t t-set="total_for_case" t-value="total_for_case + round((line.unit_discount_price * line.product_uom_qty),2)"/>
                                     <span t-esc="round(line.unit_discount_price * line.product_uom_qty,2)" t-options='{"widget": "monetary", "display_currency": doc.pricelist_id.currency_id}'/>
                                 </t>
                                 <t t-else="">
-                                    <t t-set="subtotal_spt" t-value="round((line.price_unit * line.product_uom_qty),2)"/>
-                                    <span t-esc="round(line.unit_discount_price * line.product_uom_qty,2)" t-options='{"widget": "monetary", "display_currency": doc.pricelist_id.currency_id}'/>
+                                    <t t-set="subtotal_spt" t-value="round((line.price_unit * line.picked_qty),2)"/>
+                                    <span t-esc="round(line.unit_discount_price * line.picked_qty,2)" t-options='{"widget": "monetary", "display_currency": doc.pricelist_id.currency_id}'/>
+                                    <t t-set="total_for_case" t-value="total_for_case + round((line.unit_discount_price * line.picked_qty),2)"/>
                                 </t>
                                 <!-- <t t-set="total_for_is_pro_forma" t-value="total_for_is_pro_forma + subtotal_spt"/> -->
                                 
@@ -719,19 +735,11 @@
                                 </t>
 
                             </td>
-                            <td name="td_image_secondary" class="text-center">
-                                <t t-if="line.product_id.image_secondary_url">
-                                    <span>
-                                        <t t-esc="line.product_id.image_secondary_url"/>
-                                    </span>
-                                </t>
-                                <t t-else="">
-                                    <span>https://www.teameto.com/web/static/src/img/placeholder.png</span>
-                                </t>
-                            </td>
+                            <td name="td_image_secondary" class="text-center">-</td>
                             <td name="td_name" class="text-center">
                                 <div>
-                                    <span t-esc="line.product_id.variant_name"/>
+                        
+                                <span t-esc="line.product_id.variant_name"/>
 
                                 </div>
                                 <br/>
@@ -778,16 +786,24 @@
                                 <span t-field="line.price_unit" style="white-space: nowrap;" t-options='{"widget": "monetary", "display_currency":  line.currency_id}'/>
                             </td>
                             <td name="td_subtotal" class="text-end o_price_total">
-
-                                <span t-field="line.price_subtotal" t-options='{"widget": "monetary", "display_currency": doc.pricelist_id.currency_id}' groups="account.group_show_line_subtotals_tax_excluded"/>
-                                <span t-field="line.price_total" t-options='{"widget": "monetary", "display_currency": doc.pricelist_id.currency_id}' groups="account.group_show_line_subtotals_tax_included"/>
-
+                                <t t-if="from_original_ord">
+                                    <span t-esc="line.product_uom_qty * line.unit_discount_price" t-options='{"widget": "monetary", "display_currency": doc.pricelist_id.currency_id}' groups="account.group_show_line_subtotals_tax_excluded"/>
+                                    <span t-esc="line.product_uom_qty * line.unit_discount_price" t-options='{"widget": "monetary", "display_currency": doc.pricelist_id.currency_id}' groups="account.group_show_line_subtotals_tax_included"/>
+                                    <t t-set="total_for_case" t-value='total_for_case + round((line.unit_discount_price * line.product_uom_qty),2)'/>
+                                </t>
+                                <t t-else="">
+                                    <span t-field="line.price_subtotal" t-options='{"widget": "monetary", "display_currency": doc.pricelist_id.currency_id}' groups="account.group_show_line_subtotals_tax_excluded"/>
+                                    <span t-field="line.price_total" t-options='{"widget": "monetary", "display_currency": doc.pricelist_id.currency_id}' groups="account.group_show_line_subtotals_tax_included"/>
+                                </t>
                             </td>
                             <!-- <t t-set="custom_current_subtotal" t-value="round(custom_current_subtotal + (line.price_unit * line.product_uom_qty),2)" groups="account.group_show_line_subtotals_tax_excluded"/> -->
 
                         <!-- </t> -->
                     </t>
                 </tr>
+                <t t-if="from_original_ord">
+                    <t t-set="case_original_qty" t-value="case_original_qty + line.product_uom_qty"/>
+                </t>
             </t>
         </t>
 </xpath>
@@ -842,7 +858,7 @@
                     <strong>Case Total</strong>
                 </td>
                 <td name="td_case" class="text-end">
-                    <span t-field="doc.amount_is_case" t-options='{"widget": "monetary", "display_currency": doc.pricelist_id.currency_id}'/>
+                    <span t-esc="total_for_case" t-options='{"widget": "monetary", "display_currency": doc.pricelist_id.currency_id}'/>
                 </td>
             </tr>
 
@@ -884,11 +900,20 @@
                 <td name="td_tax_totals_label">
                     <strong>Tax</strong>
                 </td>
-                <td name="td_tax_totals" class="text-end o_price_total">
-                    <span t-esc="round(doc.picked_qty_order_tax,2)" t-options='{"widget": "monetary", "display_currency": doc.pricelist_id.currency_id}'/>
-                    <!-- <span t-esc="round(total_for_is_pro_forma_text,2)" t-options='{"widget": "monetary", "display_currency": doc.pricelist_id.currency_id}'/> -->
+                <t t-if="from_original_ord">
+                    <td name="td_tax_totals" class="text-end o_price_total">
+                        <span t-esc="round(doc.amount_tax,2)" t-options='{"widget": "monetary", "display_currency": doc.pricelist_id.currency_id}'/>
+                        <!-- <span t-esc="round(total_for_is_pro_forma_text,2)" t-options='{"widget": "monetary", "display_currency": doc.pricelist_id.currency_id}'/> -->
 
-                </td>
+                    </td>
+                </t>
+                <t t-else="">
+                    <td name="td_tax_totals" class="text-end o_price_total">
+                        <span t-esc="round(doc.picked_qty_order_tax,2)" t-options='{"widget": "monetary", "display_currency": doc.pricelist_id.currency_id}'/>
+                        <!-- <span t-esc="round(total_for_is_pro_forma_text,2)" t-options='{"widget": "monetary", "display_currency": doc.pricelist_id.currency_id}'/> -->
+
+                    </td>
+                </t>
             </tr>
             <tr class='o_total'>
                 <td name="td_tax_totals_label">
@@ -897,35 +922,41 @@
                 <td name="td_amount_total" style="white-space: nowrap;" class="text-end d-line-block">
                     <t t-if="env.context.get('proforma', False) or is_pro_forma">
                      <!-- <t t-if="not is_sales_order_r and not from_original_ord"> -->
-                     <t t-if="not from_original_ord">
-                         ( <span t-esc="doc.currency_id.name"/>
-                         )
-                            <span t-esc="round(total_for_is_pro_forma + doc.amount_is_case + doc.amount_is_shipping_total+ doc.amount_is_admin + doc.picked_qty_order_tax - abs(doc.global_discount) - total_discount,2)" t-options='{"widget": "monetary", "display_currency": doc.pricelist_id.currency_id}'/>
-                        
-                     </t>
-                     <t t-else="">
-                        <span t-esc="doc.amount_total" t-options='{"widget": "monetary", "display_currency": doc.pricelist_id.currency_id}' />
-                     </t>
+                        <t t-if="not from_original_ord">
+                            ( <span t-esc="doc.currency_id.name"/>
+                            )
+                                <span t-esc="round(total_for_is_pro_forma + doc.amount_is_case + doc.amount_is_shipping_total+ doc.amount_is_admin + doc.picked_qty_order_tax - abs(doc.global_discount) - total_discount,2)" t-options='{"widget": "monetary", "display_currency": doc.pricelist_id.currency_id}'/>
+                            
+                        </t>
+                        <t t-else="">
+                            <span t-esc="doc.amount_total" t-options='{"widget": "monetary", "display_currency": doc.pricelist_id.currency_id}' />
+                        </t>
                     </t>
 
                     <t t-else="" class="col-12 d-flex-row">
     (                        <span t-esc="doc.currency_id.name"/>
-    )
-                        <span t-esc="doc.amount_total" t-options='{"widget": "monetary", "display_currency": doc.pricelist_id.currency_id}' />
+    )                   
+                        <t t-if="from_original_ord and doc.state not in ['draft','sent','received']">
+                            <span t-esc="doc.amount_total" t-options='{"widget": "monetary", "display_currency": doc.pricelist_id.currency_id}' />                    
+                        </t>
+                        <t t-else="">
+                            <span t-esc="doc.amount_total" t-options='{"widget": "monetary", "display_currency": doc.pricelist_id.currency_id}' />
+                        </t>
+                        
                     </t>
 
                 </td>
             </tr>
             <tr class="border-black o_total">
-                <td name="td_amount_total_qty">
-                    <strong>Total Quantity</strong>
+                <td name="td_amount_total_items">
+                    <strong>Total Items</strong>
                 </td>
                 <td name="td_amount_total" class="text-end">
                     <t t-if="from_original_ord">
-                        <p class="m-0 " t-esc="doc.ordered_qty" />
+                        <p class="m-0 " t-esc="doc.ordered_qty + case_original_qty" />
                     </t>
                     <t t-else="">
-                            <p class="m-0 " t-esc="doc.picked_qty" />
+                            <p class="m-0 " t-esc="doc.picked_qty + doc.no_of_cases" />
                     </t>
                     <!-- <span t-esc="int(total_line_qty)"/> -->
 

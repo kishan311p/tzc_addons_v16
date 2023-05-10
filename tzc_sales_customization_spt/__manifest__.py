@@ -114,6 +114,7 @@
         'views/kits_return_ordered_items_view.xml',
         'views/product_pricelist_view.xml',
         'views/kits_product_color_code_view.xml',
+        'views/create_homepage_html_view.xml',
 
         # Wizard
         'wizards/kits_warning_wizard_view.xml',

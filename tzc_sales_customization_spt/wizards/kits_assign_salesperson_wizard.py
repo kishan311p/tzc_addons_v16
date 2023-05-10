@@ -124,8 +124,8 @@ class kits_assign_salesperson_wizard(models.TransientModel):
                         if self.new_manager_id:
                             order_vals.update(sale_manager_id=self.new_manager_id.id)
                             invoice_vals.update(sale_manager_id=self.new_manager_id.id)
-                        partner.sale_order_ids.with_context(bulk_salesperson_update=True).write(order_vals)
-                        partner.invoice_ids.with_context(bulk_salesperson_update=True).write(invoice_vals)
+                        partner.sale_order_ids.with_context(bulk_salesperson_update=True).write(order_vals) if partner.sale_order_ids else None
+                        partner.invoice_ids.with_context(bulk_salesperson_update=True).write(invoice_vals) if partner.invoice_ids else None
             # for old_salesperson in old_salespersons:
                 # old_countries = old_salesperson.country_ids.ids
                 # old_contact_allowed_countries = old_salesperson.contact_allowed_countries.ids

@@ -232,6 +232,10 @@ class stock_picking(models.Model):
         for rec in self:
             return [('id','in',rec.move_ids_without_package.filtered(lambda x:x.product_id.is_case_product==False).ids)]
     non_case_move_ids_without_package = fields.One2many('stock.move', 'picking_id', string="Non Case Products",domain=_filter_non_case_products)
+    def _filter_case_products(self):
+        for rec in self:
+            return [('id','in',rec.move_ids_without_package.filtered(lambda x:x.product_id.is_case_product==True).ids)]
+    case_move_ids_without_package = fields.One2many('stock.move', 'picking_id', string="Case Products",domain=_filter_case_products)
 
     return_order_id = fields.Many2one('kits.return.ordered.items', string='Return Order')
     def _compute_sale_order_number(self):
@@ -394,6 +398,10 @@ class stock_picking(models.Model):
                                 }
                             )
                     stock_picking.delivery_data = picking_data
+                invoice_id = stock_picking.order_id.invoice_ids.filtered(lambda x:x.state != 'cancel')
+                if invoice_id:
+                    invoice_id.button_draft() if invoice_id.state == 'posted' else None
+                    invoice_id.button_cancel()
                 stock_picking.state = 'cancel'
                 stock_picking.sale_id.write(
                     {'state': 'received' if stock_picking.sale_id.source_spt != 'Manually' else 'draft'})
@@ -818,44 +826,45 @@ class stock_picking(models.Model):
         state_list = self.mapped(lambda picking : picking.state in ['in_scanning'])
         if any(state_list):
             for rec in self:
-                product_move_ids =  self.move_ids_without_package.filtered(lambda x: x.product_id.is_case_product==False and x.product_id.is_shipping_product==False and x.product_id.is_admin==False and x.product_id.is_global_discount==False)
-                brand_ids = product_move_ids.mapped('product_id').mapped('brand')
-                order_line_obj = self.env['sale.order.line']
-                done_brand_ids = []
-                for brand_id in brand_ids:
-                    brand_case_product_id = self.env['product.product'].search([('is_case_product','=',True),('brand','=',brand_id.id),('case_type','=','original')],limit=1)
-                    quantity = sum(product_move_ids.filtered(lambda x: x.product_id.brand==brand_id).mapped('product_uom_qty'))
-                    if brand_case_product_id:
-                        product_data = self.env['kits.b2b.multi.currency.mapping'].get_product_price(rec.partner_id.id,brand_case_product_id.ids).get(brand_case_product_id.id)
-                        order_line_id=order_line_obj.create({
-                                'order_id':rec.order_id.id,
-                                'product_id':brand_case_product_id.id,
-                                'product_uom_qty':quantity,
-                                'picked_qty':quantity,
-                                'price_unit':product_data.get('price'),
-                                'unit_discount_price':product_data.get('sale_type_price'),
-                                'name':brand_case_product_id.name,
-                                'case_type':brand_case_product_id.case_type,
-                            })
-                        order_line_id._onchange_unit_discounted_price_spt()
-                        done_brand_ids.append(brand_id)
-                generic_case_move_ids = product_move_ids.filtered(lambda x: x.product_id.brand not in done_brand_ids)
-                if generic_case_move_ids:
-                    quantity = sum(generic_case_move_ids.mapped('product_uom_qty'))
-                    case_product_id = self.env['product.product'].search([('is_case_product','=',True),('brand','=',False)],limit=1)
-                    if case_product_id:
-                        product_data = self.env['kits.b2b.multi.currency.mapping'].get_product_price(rec.partner_id.id,case_product_id.ids).get(case_product_id.id)
-                        order_line_id = order_line_obj.create({
-                                'order_id':rec.order_id.id,
-                                'product_id':case_product_id.id,
-                                'product_uom_qty':quantity,
-                                'picked_qty':quantity,
-                                'price_unit':product_data.get('price'),
-                                'unit_discount_price':product_data.get('sale_type_price'),
-                                'name':case_product_id.name,
-                                'case_type':'generic',
-                            })
-                        order_line_id._onchange_unit_discounted_price_spt()
+                # rec.order_id.case_order_line.unlink()
+                # product_move_ids =  self.move_ids_without_package.filtered(lambda x: x.product_id.is_case_product==False and x.product_id.is_shipping_product==False and x.product_id.is_admin==False and x.product_id.is_global_discount==False)
+                # brand_ids = product_move_ids.mapped('product_id').mapped('brand')
+                # order_line_obj = self.env['sale.order.line']
+                # done_brand_ids = []
+                # for brand_id in brand_ids:
+                #     brand_case_product_id = self.env['product.product'].search([('is_case_product','=',True),('brand','=',brand_id.id),('case_type','=','original')],limit=1)
+                #     quantity = sum(product_move_ids.filtered(lambda x: x.product_id.brand==brand_id).mapped('product_uom_qty'))
+                #     if brand_case_product_id:
+                #         product_data = self.env['kits.b2b.multi.currency.mapping'].get_product_price(rec.partner_id.id,brand_case_product_id.ids).get(brand_case_product_id.id)
+                #         order_line_id=order_line_obj.create({
+                #                 'order_id':rec.order_id.id,
+                #                 'product_id':brand_case_product_id.id,
+                #                 'product_uom_qty':quantity,
+                #                 'picked_qty':quantity,
+                #                 'price_unit':product_data.get('price'),
+                #                 'unit_discount_price':product_data.get('sale_type_price'),
+                #                 'name':brand_case_product_id.name,
+                #                 'case_type':brand_case_product_id.case_type,
+                #             })
+                #         order_line_id._onchange_unit_discounted_price_spt()
+                #         done_brand_ids.append(brand_id)
+                # generic_case_move_ids = product_move_ids.filtered(lambda x: x.product_id.brand not in done_brand_ids)
+                # if generic_case_move_ids:
+                #     quantity = sum(generic_case_move_ids.mapped('product_uom_qty'))
+                #     case_product_id = self.env['product.product'].search([('is_case_product','=',True),('brand','=',False)],limit=1)
+                #     if case_product_id:
+                #         product_data = self.env['kits.b2b.multi.currency.mapping'].get_product_price(rec.partner_id.id,case_product_id.ids).get(case_product_id.id)
+                #         order_line_id = order_line_obj.create({
+                #                 'order_id':rec.order_id.id,
+                #                 'product_id':case_product_id.id,
+                #                 'product_uom_qty':quantity,
+                #                 'picked_qty':quantity,
+                #                 'price_unit':product_data.get('price'),
+                #                 'unit_discount_price':product_data.get('sale_type_price'),
+                #                 'name':case_product_id.name,
+                #                 'case_type':'generic',
+                #             })
+                #         order_line_id._onchange_unit_discounted_price_spt()
                         
                 for line in range(len(rec.move_ids_without_package)):
                     line = rec.move_ids_without_package[line]
@@ -893,11 +902,11 @@ class stock_picking(models.Model):
                 # product record with qty
                 for line in range(len(record.move_ids_without_package)):
                     line = record.move_ids_without_package[line]
-                    if not line.product_id.is_case_product:
-                        if line.product_id in product_dict.keys():
-                            product_dict[line.product_id ] = line.quantity_done + product_dict[line.product_id ]
-                        else:
-                            product_dict[line.product_id ] = line.quantity_done
+                    # if not line.product_id.is_case_product:
+                    if line.product_id in product_dict.keys():
+                        product_dict[line.product_id ] = line.quantity_done + product_dict[line.product_id ]
+                    else:
+                        product_dict[line.product_id ] = line.quantity_done
                 # product dict loop
                 for product_id in product_dict.keys():
                     if product_id.type != 'service':
@@ -1430,7 +1439,7 @@ class stock_picking(models.Model):
                 record.update_sale_order_spt()
                 product_dict = {}
                 # product record with qty
-                for line in record.move_ids_without_package.filtered(lambda x:x.product_id.is_case_product==False).sorted(lambda x: x.product_id.variant_name):
+                for line in record.move_ids_without_package.sorted(lambda x: x.product_id.variant_name):
                     if line.product_id in product_dict.keys():
                         product_dict[line.product_id ] = line.quantity_done + product_dict[line.product_id ]
                     else:
@@ -1513,11 +1522,12 @@ class stock_picking(models.Model):
             self._cr.commit()
             self.set_order_status()
             self._cr.commit()
-            case_product_ids =  self.move_ids_without_package - self.non_case_move_ids_without_package
-            for case_id in case_product_ids:
-                # case_id._action_done()
-                case_id.mapped('move_line_ids').sorted()._action_done()
-                case_id.write({'state':'done'})
+            # case_product_ids =  self.move_ids_without_package - self.non_case_move_ids_without_package
+            # for case_id in case_product_ids:
+            #     # case_id._action_done()
+            #     case_id.mapped('move_line_ids').sorted()._action_done()
+            #     case_id.write({'state':'done'})
+                # case_id.write({'state':'done'})
             return True
         else:
             return {
@@ -1690,6 +1700,8 @@ class stock_picking(models.Model):
         update = self.env['ir.model']._updated_data_validation(field_list,vals,self._name)
         if update:
             vals.update({'updated_by':self.env.user.id,'updated_on':datetime.now()})
+        if vals.get('no_of_cases'):
+            self.update_sale_order_spt()
         return super(stock_picking,self).write(vals)
 
     def name_get(self):

@@ -6,9 +6,22 @@
             <field name="model">project.task</field>
             <field name="inherit_id" ref="project.view_task_form2"/>
             <field name="arch" type="xml">
+
+                <xpath expr="//form/sheet/group/group[2]/field[@name='sale_line_id'][1]" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </xpath>
+                <xpath expr="//form/sheet/group/group[2]/field[@name='sale_line_id'][2]" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </xpath>
+                <xpath expr="//form/sheet/group/group[2]/label[@for='planned_date_begin']" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </xpath>
+                <xpath expr="//form/sheet/group/group[2]/div" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </xpath>
                 <xpath expr="//field[@name='tag_ids']" position="after">
                     <field name="follow_up_by" />
-                    <field name="task_follow_up" />
+                    <field name="task_follow_up" invisible="1"/>
                     <field name="task_type" required="1"/>
                     <field name="is_bug" />
                     <field name="task_priority" required="1"/>
