@@ -422,8 +422,8 @@
                     <field name="aging" optional="show" invisible="1" />
                     <field name="product_color_name" optional="show" />
                     <field name="rim_type" optional="show" />
-                    <field name="shape_id" optional="show" />
-                    <field name="material_id" optional="show" />
+                    <field name="shape_id" string="Shape" optional="show" />
+                    <field name="material_id" string="Material" optional="show" />
                     <field name="flex_hinges" optional="show" />
                     <field name="gender" optional="show" />
                     <field name="new_arrival_update" optional="show" />
@@ -447,7 +447,7 @@
                     <field name="price_wholesale" optional="show" />
                     <field name="price_msrp" optional="show" />
 
-                    <field name="lst_price" optional="show" />
+                    <field name="lst_price" string="Our Price" optional="show" />
                     <field name="reversed_qty_spt" groups='stock.group_stock_user' optional="show" />
                     <field name="available_qty_spt" optional="show" />
                     <field name="is_select_for_lenses" optional="hide" />

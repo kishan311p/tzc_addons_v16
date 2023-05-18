@@ -109,7 +109,7 @@
                         <p class="m-0" t-field="o.sudo().user_id"/>
                     </div>
                     <div class="col-auto mw-100 mb-2">
-                        <strong>Total Products:</strong>
+                        <strong>Total Quantity:</strong>
                         <p class="mx-5" t-esc="o.ordered_qty"/>
                     </div>
                     <div class="col-auto mw-100 mb-2">

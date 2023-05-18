@@ -20,6 +20,7 @@
         <field name="report_file">tzc_sales_customization_spt.catalog_report_template_spt</field>
         <field name="print_report_name">'Catalog - %s' % (object.catalog_id.name)</field>
         <field name="binding_type">report</field>
+        <field name="paperformat_id" ref="tzc_sales_customization_spt.kits_quotations_and_order"/>
     </record>
 
     <record id="report_product_label" model="ir.actions.report">

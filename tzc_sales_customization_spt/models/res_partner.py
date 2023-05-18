@@ -47,7 +47,8 @@ class res_partner(models.Model):
     business_type = fields.Char('Type of Business')
     contact_name_spt = fields.Char('Contact Name')
     
-    last_logged_on = fields.Datetime('Last Logged On',compute="_get_partner_data")
+    # last_logged_on = fields.Datetime('Last Logged On',compute="_get_partner_data")
+    last_logged_on = fields.Datetime('Last Logged On')
 
     last_order_date = fields.Datetime('Last Order Date',compute="_compute_info_fields",store=True)
     last_order_id = fields.Many2one('sale.order','Last Order',compute="_compute_info_fields",store=True)
@@ -85,7 +86,7 @@ class res_partner(models.Model):
     is_user_internal = fields.Boolean("Is User Internal",store=True,compute="_compute_is_user_internal")
     # is_internal_user = fields.Boolean(string="Is Internal User")
     signup_from_website = fields.Boolean(string='Sinup From Website')
-    mailgun_verification_status = fields.Selection([('approved','Mg Approved'),('rejected','MG Rejected')],'MG Status')
+    mailgun_verification_status = fields.Selection([('approved','Mg Approved'),('rejected','MG Rejected')],'MG Status',default="rejected")
     is_default_shipping= fields.Boolean('Default Shipping Address')
     # wk_website_loyalty_points = fields.Float(
     #     string='Website Loyalty Points',
@@ -582,12 +583,13 @@ class res_partner(models.Model):
     @api.constrains('email')
     def _check_email(self):
         partner_obj = self.env['res.partner']
-        for partner in self:
-            if partner.email:
-                partners = partner_obj.search([('email','=',partner.email.lower()),('id','!=',partner.id)])
-                if len(partners) >0:
-                    message = "This email is already assigned to "+ partners[0].display_name
-                    raise UserError(_(message))
+        if not self._context.get('force_email'):
+            for partner in self:
+                if partner.email:
+                    partners = partner_obj.search([('email','=',partner.email.lower()),('id','!=',partner.id)])
+                    if len(partners) >0:
+                        message = "This email is already assigned to "+ partners[0].display_name
+                        raise UserError(_(message))
 
     @api.constrains('email')
     def _check_email_validation(self):
@@ -894,7 +896,7 @@ class res_partner(models.Model):
     def action_contact_mailgun_verification(self):
         mailing_contact_obj = self.env['mailing.contact']
         # for rec in self.filtered(lambda x:x.email and not x.mailgun_verification):
-        for rec in self.filtered(lambda x:x.email and x.mailgun_verification_status == 'rejected'):
+        for rec in self.filtered(lambda x:x.email and x.mailgun_verification_status != 'approved'):
             rec.fail_reason = False
             rec.result = False
             rec.mail_risk = False
@@ -1573,14 +1575,17 @@ class res_partner(models.Model):
             if file_type == 'excel' and model == 'sale.order':
                 get_dict = self.env['ir.model'].generate_report_access_link('sale.order',res_id,'',self.id,'excel')
             else:
-                get_dict = self.env['ir.model'].generate_report_access_link('sale.order',res_id,'sale.action_report_saleorder',self.id,'pdf')
+                order_id = self.env['sale.order'].sudo().browse(res_id)
+                report_name = 'tzc_sales_customization_spt.action_report_salesorder'
+                if order_id in ('sent','received'):
+                    report_name = 'sale.action_report_saleorder'
+                get_dict = self.env['ir.model'].generate_report_access_link('sale.order',res_id,report_name,self.id,'pdf')
         elif model in ['sale.catalog'] and res_id: 
             catalog_id = self.env['sale.catalog'].browse(res_id)
             catalog_id.customer_id = self.id
             if file_type == 'excel' and model == 'sale.catalog':
                 get_dict = self.env['ir.model'].generate_report_access_link('sale.catalog',res_id,'',self.id,'excel')
             else:
-               
                 get_dict = self.env['ir.model'].generate_report_access_link('sale.catalog',res_id,'tzc_sales_customization_spt.action_catalog_report_pdf',self.id,'pdf')
         return get_dict
 

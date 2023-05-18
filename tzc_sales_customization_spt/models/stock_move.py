@@ -62,10 +62,8 @@ class stock_move(models.Model):
         for move in moves:
             if move.state == 'cancel' or (move.quantity_done <= 0 and not move.is_inventory):
                 continue
-            
-            # Checking context and see if order is shipping then there is no requirement to create move for product. As it will update demand qty.
-            if not self._context.get('order_shipped'):
-                moves_ids_todo |= move._create_extra_move().ids
+
+            moves_ids_todo |= move._create_extra_move().ids
 
         moves_todo = self.browse(moves_ids_todo)
         moves_todo._check_company()
@@ -251,3 +249,32 @@ class stock_move(models.Model):
         for rec in self:
             if rec.product_id in rec.picking_id.case_move_ids_without_package._origin.mapped('product_id'):
                 raise UserError("Product already added")
+
+    def _create_extra_move(self):
+        """ If the quantity done on a move exceeds its quantity todo, this method will create an
+        extra move attached to a (potentially split) move line. If the previous condition is not
+        met, it'll return an empty recordset.
+
+        The rationale for the creation of an extra move is the application of a potential push
+        rule that will handle the extra quantities.
+        """
+        extra_move = self
+        rounding = self.product_uom.rounding
+        # moves created after the picking is assigned do not have `product_uom_qty`, but we shouldn't create extra moves for them
+        if float_compare(self.quantity_done, self.product_uom_qty, precision_rounding=rounding) > 0 and not self._context.get('order_shipped'):
+            # create the extra moves
+            extra_move_quantity = float_round(
+                self.product_uom_qty,
+                precision_rounding=rounding,
+                rounding_method='HALF-UP')
+            extra_move_vals = self._prepare_extra_move_vals(extra_move_quantity)
+            extra_move = self.copy(default=extra_move_vals).with_context(avoid_putaway_rules=True)
+
+            merge_into_self = all(self[field] == extra_move[field] for field in self._prepare_merge_moves_distinct_fields())
+
+            if merge_into_self:
+                extra_move = extra_move._action_confirm(merge_into=self)
+                return extra_move
+            else:
+                extra_move = extra_move._action_confirm()
+        return extra_move | self

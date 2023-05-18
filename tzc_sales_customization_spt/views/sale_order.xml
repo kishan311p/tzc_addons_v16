@@ -64,6 +64,13 @@
                     type="object"
                     confirm="This will cancel current order and restore the Original quotation." /> -->
         </xpath>
+        <xpath expr="//field[@name='order_line']/tree/field[@name='discount']" position="replace">
+
+        </xpath>
+        <xpath expr="//tree/field[@name='tax_id']" position="before">
+            <field name="discount" string="Disc.%" optional="show" groups="product.group_discount_per_so_line" widget="sol_discount"/>
+            <field name="unit_discount_price" force_save="1" attrs="{'readonly':['|','|',('is_admin','=',True),('is_global_discount','=',True),('state','not in',['draft','sent','received','in_scanning','sale','scanned'])]}" />
+        </xpath>
         <xpath expr="//button[@name='action_quotation_send'][4]" position="after">
             <button string="Revert Pricing" type="object" name="order_revert" class="oe_highlight" attrs="{'invisible': [('state','not in',('draft','sent','received','sale','in_scanning','scanned','scanned','scan'))]}" />
             <button string="FREIGHT INVOICE" name="excel_order_report" type="object" class="oe_highlight" sequence="100" attrs="{'invisible': [('state', 'not in', ('in_scanning','scan','shipped','draft_inv','open_inv','paid','scanned'))]}" />
@@ -123,7 +130,10 @@
             <field name="unit_discount_price" force_save="1" attrs="{'readonly':['|','|','|',('is_admin','=',True),('is_global_discount','=',True),('state','not in',['draft','sent','received','in_scanning','sale','scanned']),('package_id','!=',False)]}" />
         </xpath>
         <xpath expr="//tree/field[@name='discount']" position="after">
-            <field name="fix_discount_price" readonly="1" attrs="{'readonly':['|','|',('is_admin','=',True),('is_shipping_product','=',True),('state','not in',['draft','sent','received','in_scanning','sale','scanned'])]}" groups="product.group_discount_per_so_line" force_save="1"/>
+            <field name="fix_discount_price" attrs="{'readonly':['|','|',('is_admin','=',True),('is_shipping_product','=',True),('state','not in',['draft','sent','received','in_scanning','sale','scanned'])]}" groups="product.group_discount_per_so_line" force_save="1"/>
+            <!-- <field name="picked_qty_subtotal" readonly="1" /> -->
+        </xpath>
+        <xpath expr="//tree/field[@name='tax_id']" position="after">
             <field name="picked_qty_subtotal" readonly="1" />
         </xpath>
 
@@ -162,10 +172,10 @@
                             attrs="{'invisible':[('state','in',['draft','sent','received'])]}" col="2">
                             <field name="amount_untaxed" invisible="1" widget='monetary' options="{'currency_field': 'currency_id'}"/>
                             <field name="amount_without_discount" string="Subtotal" widget='monetary' options="{'currency_field': 'currency_id'}"/>
-                            <field name="shipping_cost" string="Original Shipping Cost" widget='monetary' options="{'currency_field': 'currency_id'}"/>
-                            <field name="amount_is_shipping_total" string="Shipping Cost"/>
-                            <field name="amount_is_admin" string="Admin Fee" />
                             <field name="amount_discount" widget='monetary' options="{'currency_field': 'currency_id'}"/>
+                            <field name="shipping_cost" string="Original Shipping Fee" widget='monetary' options="{'currency_field': 'currency_id'}"/>
+                            <field name="amount_is_shipping_total" string="Shipping Fee"/>
+                            <field name="amount_is_admin" string="Admin Fee" />
                             <field name="amount_tax" string='Tax' widget='monetary' options="{'currency_field': 'currency_id'}"/>
                             <div class="oe_inline o_td_label">
                                 <label for="amount_total" string="Total" attrs="{'invisible':[('state','not in',['draft','sent','received'])]}"/>
@@ -178,11 +188,11 @@
                     <group class="oe_subtotal_footer oe_right" attrs="{'invisible':[('state','not in',['draft','sent','received'])]}" colspan="2" name="orignal_sale_total">
                         <field name="amount_untaxed" invisible="1" widget='monetary' options="{'currency_field': 'currency_id'}"/>
                         <field name="amount_without_discount" string="Subtotal" widget='monetary' options="{'currency_field': 'currency_id'}"/>
-                        <field name="shipping_cost" string="Original Shipping Cost" widget='monetary' options="{'currency_field': 'currency_id'}"/>
-                        <field name="amount_is_shipping_total" string="Shipping Cost"/>
+                        <field name="amount_discount" widget='monetary' options="{'currency_field': 'currency_id'}"/>
+                        <field name="shipping_cost" string="Original Shipping Fee" widget='monetary' options="{'currency_field': 'currency_id'}"/>
+                        <field name="amount_is_shipping_total" string="Shipping Fee"/>
                         <field name="amount_is_admin" string="Admin Fee" />
                         <field name="amount_is_case" string="Case Total" />
-                        <field name="amount_discount" widget='monetary' options="{'currency_field': 'currency_id'}"/>
                         <field name="amount_tax" string='Tax' widget='monetary' options="{'currency_field': 'currency_id'}"/>
                         <div class="oe_subtotal_footer_separator oe_inline o_td_label">
                             <label for="amount_total" string="Total" attrs="{'invisible':[('state','not in',['draft','sent','received'])]}"/>
@@ -195,11 +205,11 @@
                     <group class="oe_subtotal_footer oe_right" attrs="{'invisible':[('state','in',['draft','sent','received'])]}" colspan="2" name="sale_total">
                         <field name="amount_without_discount" invisible="1"/>
                         <field name="picked_qty_order_subtotal" string="Subtotal"/>
-                        <field name="shipping_cost" string="Original Shipping Cost" widget='monetary' options="{'currency_field': 'currency_id'}"/>
-                        <field name="amount_is_shipping_total" string="Shipping Cost"/>
+                        <field name="picked_qty_order_discount" readonly="1" string="Discount"/>
+                        <field name="shipping_cost" string="Original Shipping Fee" widget='monetary' options="{'currency_field': 'currency_id'}"/>
+                        <field name="amount_is_shipping_total" string="Shipping Fee"/>
                         <field name="amount_is_admin" string="Admin Fee" />
                         <field name="amount_is_case" string="Case Total" />                        
-                        <field name="picked_qty_order_discount" readonly="1" string="Discount"/>
                         <field name="picked_qty_order_tax"/>
                         <div class="oe_subtotal_footer_separator oe_inline o_td_label">
                             <label for="picked_qty_order_total" string="Total" attrs="{'invisible':[('state','not in',['draft','sent','received'])]}"/>
@@ -583,7 +593,9 @@
                 </xpath>
                 <xpath expr="//field[@name='partner_id']" position="attributes">
                     <attribute name="context">{'res_partner_search_mode': 'customer', 'show_address': 1, 'show_vat': True}</attribute>
-                    <attribute name="attrs">{'readonly':[('state','not in',['draft','sent'])]}</attribute>
+                    <!-- <attribute name="attrs">{'readonly':[('state','not in',['draft','sent'])]}</attribute> -->
+                    <attribute name="force_save">1</attribute>
+                    <attribute name="attrs">{'readonly':[('partner_id','!=',False)]}</attribute>
                     <!-- <attribute name="context">{'res_partner_search_mode': 'customer', 'show_address': 1, 'show_vat': True,'default_name':True}</attribute> -->
                 </xpath>
                 <xpath expr="//field[@name='partner_shipping_id']" position="after">
@@ -779,7 +791,7 @@
             <xpath expr="//button[@name='action_cancel']" position="before">
                 <button name="action_create_credit_note_kits" type="object" string="Credit Note"
                     class="oe_highlight"
-                    attrs="{'invisible':[('state','not in',['open_inv','paid'])]}" />
+                    attrs="{'invisible':[('state','not in',['open_inv','paid'])]}" invisible='1'/>
             </xpath>
             <xpath expr="//sheet/notebook/page[@name='other_information']/group[1]/group[@name='sales_person']/label[@for='require_signature']" position="attributes">
                 <attribute name="invisible">1</attribute>

@@ -37,10 +37,6 @@ class mail_thread(models.AbstractModel):
             kwargs.update({'email_layout_xmlid': 'mail.mail_notification_light'})
         return super(mail_thread, self).message_post(**kwargs)
 
-    # def create(self,vals):
-    #     ctx = self.env.context.copy()
-    #     ctx.update({'mail_create_nosubscribe':True})
-    #     self.env.context = ctx
 
     def _notify_get_recipients(self, message, msg_vals, **kwargs):
         """ Compute recipients to notify based on subtype and followers. This
@@ -91,16 +87,18 @@ class mail_thread(models.AbstractModel):
                 continue
             if pdata['active'] is False:
                 continue
+            # Not add in follower which is tag in chatter.
             if pdata.get('id') in msg_sudo.partner_ids.ids:
                 if not pdata.get('is_follower'):
                     if pdata.get('id') not in msg_sudo.partner_ids.ids:
+                        recipients_data.append(pdata)
+                    if self._context.get('quotation_send') and  pdata not in recipients_data:
                         recipients_data.append(pdata)
                 else:
                     if pdata.get('id') in msg_sudo.partner_ids.ids:
                         recipients_data.append(pdata)
             if sub_partner_id and pdata.get('id') == sub_partner_id and pdata not in recipients_data:
                 recipients_data.append(pdata)
-
         # avoid double notification (on demand due to additional queries)
         if kwargs.pop('skip_existing', False):
             pids = [r['id'] for r in recipients_data]

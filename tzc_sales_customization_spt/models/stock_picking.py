@@ -400,7 +400,7 @@ class stock_picking(models.Model):
                     stock_picking.delivery_data = picking_data
                 invoice_id = stock_picking.order_id.invoice_ids.filtered(lambda x:x.state != 'cancel')
                 if invoice_id:
-                    invoice_id.button_draft() if invoice_id.state == 'posted' else None
+                    # invoice_id.button_draft() if invoice_id.state == 'posted' else None
                     invoice_id.button_cancel()
                 stock_picking.state = 'cancel'
                 stock_picking.sale_id.write(
@@ -575,21 +575,41 @@ class stock_picking(models.Model):
         context_spt.update({'no_create_spt':True})
         order_line_obj = self.env['sale.order.line'].with_context(context_spt)
         state_list = self.mapped(lambda picking : picking.state in  ['confirmed','in_scanning','scanned','assigned'])
+
+        # applicable = False 
+        # is_inflation = False
+
         if any(state_list):
             for record in self:
                 for line in range(len(record.move_ids_without_package)):
                     line = record.move_ids_without_package[line]
+
+                    # Convert price based on currency.
                     product_prices = self.env['kits.b2b.multi.currency.mapping'].get_product_price(line.picking_id.partner_id.id,line.product_id.ids)
                     product_data = product_prices.get(line.product_id.id)
+
+                    # Call method for extra pricing.
+                    extra_pricing = line.product_id.inflation_special_discount(line.picking_id.sale_id.partner_id.country_id.ids)
                     if line.sale_line_id:
+
                         #update the quontity in related sale order line
                         if line.quantity_done > line.product_uom_qty:
                             # We don't want to update demand qty if there is an extra qty added.
                             # line.product_uom_qty = line.quantity_done
+                            price_unit = product_data.get('price')
+                            unit_discount_price = product_data.get('sale_type_price')
                             line.sale_line_id.qty_to_invoice = line.quantity_done
-                            line.sale_line_id.price_unit = round(product_data.get('price'),2)
-                            line.sale_line_id.unit_discount_price = round(product_data.get('sale_type_price'),2)
-                            line.sale_line_id.product_id_change()
+
+                            if extra_pricing.get('is_inflation'):
+                                price_unit = price_unit+(price_unit*extra_pricing.get('inflation_rate') /100)
+                                unit_discount_price = unit_discount_price+(unit_discount_price*extra_pricing.get('inflation_rate') /100)
+
+                            if extra_pricing.get('is_special_discount'):
+                                unit_discount_price = (unit_discount_price - unit_discount_price * extra_pricing.get('special_disc_rate') / 100)
+
+                            line.sale_line_id.price_unit = round(price_unit,2)
+                            line.sale_line_id.unit_discount_price = round(unit_discount_price,2)
+                            # line.sale_line_id.product_id_change() if not line._context.get('order_ship') else None
                             line.sale_line_id._onchange_discount_spt()
                             line.sale_line_id._onchange_unit_discounted_price_spt()
                     else:
@@ -598,6 +618,16 @@ class stock_picking(models.Model):
 
                         for product in product_prices:
                             if line.quantity_done:
+                                price_unit = product_prices.get(product).get('price')
+                                unit_discount_price = product_prices.get(product).get('sale_type_price')
+
+                                if extra_pricing.get('is_inflation'):
+                                    price_unit = price_unit+(price_unit * extra_pricing.get('inflation_rate') /100)
+                                    unit_discount_price = unit_discount_price+(unit_discount_price * extra_pricing.get('inflation_rate') /100)
+
+                                if extra_pricing.get('is_special_discount'):
+                                    unit_discount_price = (unit_discount_price - unit_discount_price * extra_pricing.get('special_disc_rate') / 100)
+
                                 # create new sale order line
                                 order_line_id = order_line_obj.sudo().create({
                                     'order_id': record.sale_id.id,
@@ -605,12 +635,12 @@ class stock_picking(models.Model):
                                     'product_uom_qty': 0,
                                     'product_uom': line.product_id.uom_id.id,
                                     'name': line.product_id.display_name,
-                                    'price_unit': product_prices.get(product).get('price'),
+                                    'price_unit': round(price_unit,2),
                                     'sale_type':  product_prices.get(product).get('sale_type'),
-                                    'unit_discount_price':product_prices.get(product).get('sale_type_price')
+                                    'unit_discount_price': round(unit_discount_price,2)
                                 })
                                 if order_line_id:
-                                    order_line_id.product_id_change()
+                                    # order_line_id.product_id_change() if not line._context.get('order_ship') else None
                                     order_line_id._onchange_discount_spt()
                                     order_line_id._onchange_unit_discounted_price_spt()
                                     line.write({'sale_line_id':order_line_id.id,'product_uom_qty':0})
@@ -632,22 +662,20 @@ class stock_picking(models.Model):
         state_list = self.mapped(lambda picking : picking.state in  ['in_scanning','confirmed'])
         if any(state_list):
             for record in self:
-                if not record.sale_id:
-                    record.sale_id = record.get_order_id(self)
-                record.preiviews_scanning_products_data = record.get_scanned_product()
-                # if record.ordered_qty >= record.delivered_qty:
-                line_ids = []
-                for line in range(len(record.move_ids_without_package)):
-                    line = record.move_ids_without_package[line]
-                    if line.product_uom_qty > line.quantity_done:
-                        line.quantity_done = line.product_uom_qty
-                        line_ids.append(line.id)
-                record.sale_id.write({'state':'in_scanning'})
-                record.write({'state': 'in_scanning','is_fulfiled':True if line_ids else False})
-                # record.sale_id.with_context(fulfilled=True).send_shipment_ready_email_to_salesperson_spt()
-                record.sale_id._amount_all()
-                # else:
-                #     raise UserError(_('If user clicks when fulfilled is higher than ordered qty.'))
+                    if not record.sale_id:
+                        record.sale_id = record.get_order_id(self)
+                    record.preiviews_scanning_products_data = record.get_scanned_product()
+                    if record.ordered_qty >= record.delivered_qty:
+                        for line in range(len(record.move_ids_without_package)):
+                            line = record.move_ids_without_package[line]
+                            if line.product_uom_qty > line.quantity_done:
+                                line.quantity_done = line.product_uom_qty
+                        record.sale_id.write({'state':'in_scanning'})
+                        record.write({'state': 'in_scanning','is_fulfiled':True})
+                        # record.sale_id.with_context(fulfilled=True).send_shipment_ready_email_to_salesperson_spt()
+                        record.sale_id._amount_all()
+                    # else:
+                    #     raise UserError(_('If user clicks when fulfilled is higher than ordered qty.'))
         else:
             return {
                 'type': 'ir.actions.client',
@@ -1436,7 +1464,7 @@ class stock_picking(models.Model):
             for record in self:
                 if not record.tracking_number_spt and record.shipping_id and record.shipping_id.name.lower() not in ('pick up','warehouse choose cheapest option','customer pickup','delivered to customer'):
                     raise UserError('Please add tracking number for ship order.')
-                record.update_sale_order_spt()
+                # record.with_context(order_ship=True).update_sale_order_spt()
                 product_dict = {}
                 # product record with qty
                 for line in record.move_ids_without_package.sorted(lambda x: x.product_id.variant_name):

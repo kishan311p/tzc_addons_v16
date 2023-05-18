@@ -77,11 +77,11 @@
                         <field name="quantity" optional="show"/>
                         <field name="product_uom_category_id" invisible="1"/>
                         <field name="product_uom_id" string="UoM" groups="uom.group_uom" optional="show"/>
-                        <field name="price_unit" string="Price"/>
+                        <field name="price_unit" string="Unit Price"/>
+                        <field name="discount" string="Disc.%" optional="show"/>
+                        <field name="unit_discount_price" string="Disc.$"/>
                         <field name="discount_unit_price"/>
                         <field name="tax_ids" widget="many2many_tags" domain="[('type_tax_use', '=?', parent.invoice_filter_type_domain), ('company_id', '=', parent.company_id), ('country_id', '=', parent.tax_country_id)]" context="{'append_type_to_tax_name': not parent.invoice_filter_type_domain}" options="{'no_create': True}" optional="show"/>
-                        <field name="discount" string="Disc.%" optional="show"/>
-                        <field name="unit_discount_price"/>
                         <field name="price_subtotal" string="Subtotal" groups="account.group_show_line_subtotals_tax_excluded"/>
                         <field name="price_total" string="Total" groups="account.group_show_line_subtotals_tax_included"/>
 
@@ -408,10 +408,10 @@
 
                 <xpath expr="//field[@name='tax_totals']" position="replace">
                     <field name="amount_without_discount" />
-                    <field name="amount_is_shipping_total" string="Shipping Cost"/>
+                    <field name="amount_discount"/>
+                    <field name="amount_is_shipping_total" string="Shipping Fee"/>
                     <field name="amount_is_admin" string="Admin Fee"/>
                     <field name="amount_is_case"/>
-                    <field name="amount_discount"/>
                     <field name="kits_amount_tax" readonly="1"/>
                     <field name="kits_amount_total" class="oe_subtotal_footer_separator" colspan="2" readonly="1"/>
                     <!-- <field name="kits_amount_residual" class="oe_subtotal_footer_separator" readonly="1" attrs="{'invisible': [('state', '=', 'draft')]}"/> -->

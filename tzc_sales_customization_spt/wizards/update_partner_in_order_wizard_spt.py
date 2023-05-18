@@ -20,11 +20,17 @@ class update_partner_in_order_wizard_spt(models.TransientModel):
                 record.sale_id.onchange_partner_shipping_id_kits()
                 if record.sale_id.pricelist_id.id != record.sale_id.partner_id.id :
                     for line in record.sale_id.order_line:
+                        discount = line.discount
+                        line.discount = 0.0
+                        line.product_id_change()
+                        line._onchange_discount_spt()
+                        line._onchange_fix_discount_price_spt()
+                        line._onchange_unit_discounted_price_spt()
                         if not line.product_id.is_shipping_product and not line.product_id.is_admin and not line.product_id.is_global_discount:
-                            if self.disc_options =='change_discount':
-                                line.with_context(partner_change=True).product_uom_change()
-                            else:
-                                line.product_uom_change()
+                            if self.disc_options =='keep_discount':
+                                if discount:
+                                    line.discount = discount
+                                    line._onchange_discount_spt()
                     
                 for picking in record.sale_id.picking_ids:
                     if picking.state != 'cancel':

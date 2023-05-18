@@ -19,8 +19,8 @@ class PublicReport(http.Controller):
             pass
 
         token = data.get('access_token', False)
-        # if not token or not record.ids or (hasattr(record, 'report_token') and token != record.report_token):
-        #     return werkzeug.exceptions.HTTPException(description='Access Denied !')
+        if not token or not record.ids or (hasattr(record, 'report_token') and token != record.report_token):
+            return werkzeug.exceptions.HTTPException(description='Access Denied !')
 
         pdf = request.env['ir.actions.report'].with_context(context).sudo()._render_qweb_pdf(
             reportname, docid)[0]
@@ -32,22 +32,21 @@ class PublicReport(http.Controller):
         if modalname == 'sale.order':
             order_obj = request.env['sale.order'].sudo()
             order = order_obj.browse(docid) if docid else order_obj
+            # order = order.with_user(1)
             if order and (hasattr(order, 'report_token') and order.report_token != token):
                 return werkzeug.exceptions.HTTPException(description='Access Denied !')
 
-            vals = {'with_img': False, 'order_id': docid}
-            if order.download_image_sent:
-                vals.update({'with_img': True})
+            vals = {'with_img': True, 'order_id': docid}
             wiz = request.env['order.report.with.image.wizard'].sudo().create(
                 vals)
             wiz.action_process_report()
-            file_ext = '.xlsx' if not order.download_image_sent else '.xlsm'
+            # file_ext = '.xlsx' if not order.download_image_sent else '.xlsm'
             return request.make_response(
-                base64.b64decode(wiz.report_file),
+                base64.b64decode(wiz.sudo().report_file),
                 headers=[
                     ('Content-Type', 'application/vnd.ms-excel'),
                     ('Content-Disposition',
-                     content_disposition('Product Iamge.%s' % (file_ext)))
+                     content_disposition('%s.xlsm' % (order.sudo().display_name)))
                 ]
             )
         elif modalname == 'sale.catalog':
@@ -72,5 +71,5 @@ class PublicReport(http.Controller):
                 headers=[
                     ('Content-Type', 'application/vnd.ms-excel'),
                     ('Content-Disposition',
-                        content_disposition(wizard_id.display_name + '.xlsx'))
+                        content_disposition(catalog_id.sudo().display_name + '.xlsm'))
                 ])

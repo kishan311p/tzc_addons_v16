@@ -105,15 +105,49 @@ class SaleOrderLine(models.Model):
         res = super(SaleOrderLine,self)._compute_amount()
         for record in range(len(self)):
             record = self[record]
-            product_price_dict = (self.env['kits.b2b.multi.currency.mapping'].with_context(from_order_line=True).get_product_price(record.order_id.partner_id.id,record.product_id.ids,order_id=record.order_id) or {}).get(record.product_id.id,{})
-            product_price = product_price_dict.get('price')
+            product_price = record.price_unit
+            unit_discount_price = record.unit_discount_price
+            if not record.product_id.is_shipping_product and not record.product_id.is_global_discount and not record.product_id.is_admin:
+            # Convert price based on currency.
+                product_price_dict = (self.env['kits.b2b.multi.currency.mapping'].with_context(from_order_line=True).get_product_price(record.order_id.partner_id.id,record.product_id.ids,order_id=record.order_id) or {}).get(record.product_id.id,{})
+                
+                product_price = product_price_dict.get('price')
+                unit_discount_price = product_price_dict.get('discounted_unit_price')
+
+            # Call method for extra pricing.
+            extra_pricing = record.product_id.inflation_special_discount(record.order_id.partner_id.country_id.ids)
+            if extra_pricing.get('is_inflation'):
+                product_price = product_price_dict.get('price')+(product_price_dict.get('price')*extra_pricing.get('inflation_rate') /100)
+                unit_discount_price = unit_discount_price+(unit_discount_price*extra_pricing.get('inflation_rate') /100)
+            if extra_pricing.get('is_special_discount'):
+                unit_discount_price = (unit_discount_price - unit_discount_price * extra_pricing.get('special_disc_rate') / 100)
+            
             record.price_unit = product_price
-            if product_price_dict.get('discounted_unit_price'):
-                if record.order_id.state not in record.order_id.draft_states():
-                    record.price_subtotal = round(product_price_dict.get('discounted_unit_price') * record.picked_qty,2)
-                else:
-                    record.price_subtotal = round(product_price_dict.get('discounted_unit_price') * record.product_uom_qty,2)
+            # if unit_discount_price:
+            if record.order_id.state not in record.order_id.draft_states():
+                record.price_subtotal = round(record.unit_discount_price * record.picked_qty,2)
+            else:
+                record.price_subtotal = round(record.unit_discount_price * record.product_uom_qty,2)
         return res
+
+    def _convert_to_tax_base_line_dict(self):
+        """ Convert the current record to a dictionary in order to use the generic taxes computation method
+        defined on account.tax.
+
+        :return: A python dictionary.
+        """
+        self.ensure_one()
+        return self.env['account.tax']._convert_to_tax_base_line_dict(
+            self,
+            partner=self.order_id.partner_id,
+            currency=self.order_id.currency_id,
+            product=self.product_id,
+            taxes=self.tax_id,
+            price_unit=self.price_unit,
+            quantity=self.picked_qty or self.product_uom_qty,
+            discount=self.discount,
+            price_subtotal=self.price_subtotal,
+        )
     
     @api.constrains('price_subtotal')
     def _check_pricesubtotal_spt(self):
@@ -179,64 +213,65 @@ class SaleOrderLine(models.Model):
             record = self[record]
             product_price_dict = (self.env['kits.b2b.multi.currency.mapping'].with_context(from_order_line=True).get_product_price(record.order_id.partner_id.id,record.product_id.ids,order_id=record.order_id) or {}).get(record.product_id.id,{})
             product_price = product_price_dict.get('price')
-            unit_discount_price = product_price_dict.get('discounted_unit_price') if record.product_id.is_case_product == False else product_price_dict.get('price')
-            fix_discount_price = product_price_dict.get('fix_discount_price')  if record.product_id.is_case_product == False else 0
+            unit_discount_price = product_price_dict.get('discounted_unit_price')
+            fix_discount_price = product_price_dict.get('fix_discount_price')
+            extra_pricing = record.product_id.inflation_special_discount(record.order_id.partner_id.country_id.ids,bypass_flag=record.order_id.partner_id.b2b_pricelist_id.is_pricelist_excludedb2b_pricelist_id.is_pricelist_excluded)
             if record.product_id:
                 update_dict = {'price_unit':round(product_price,2),
                                'unit_discount_price': round(unit_discount_price,2), 
                             #    'fix_discount_price':round(record.fix_discount_price,2),
                                'fix_discount_price':round(fix_discount_price,2),
                                'sale_type':record.product_id.sale_type if record.product_id.sale_type else ''}
-                if not record.order_id.partner_id.b2b_pricelist_id.is_pricelist_excluded:
-                    active_inflation = self.env['kits.inflation'].search([('is_active','=',True)])
-                    inflation_rule_ids = self.env['kits.inflation.rule'].search([('country_id','in',self.order_id.partner_id.country_id.ids),('brand_ids','in',record.product_id.brand.ids),('inflation_id','=',active_inflation.id)])
-                    inflation_rule = inflation_rule_ids[-1] if inflation_rule_ids else False
-                    if inflation_rule:
-                        is_inflation = False
-                        if active_inflation.from_date and active_inflation.to_date :
-                            if active_inflation.from_date <= datetime.now().date() and active_inflation.to_date >= datetime.now().date():
-                                is_inflation = True
-                        elif active_inflation.from_date:
-                            if active_inflation.from_date <= datetime.now().date():
-                                is_inflation = True
-                        elif active_inflation.to_date:
-                            if active_inflation.to_date >= datetime.now().date():
-                                is_inflation = True
-                        else:
-                            if not active_inflation.from_date:
-                                is_inflation = True
-                            if not active_inflation.to_date:
-                                is_inflation = True
-                            
-                        if is_inflation:
-                            product_price = round(product_price+(product_price*inflation_rule.inflation_rate /100),2)
-                            unit_discount_price = round(unit_discount_price+(unit_discount_price*inflation_rule.inflation_rate /100),2)
-                            update_dict.update({'price_unit':product_price,'unit_discount_price':unit_discount_price})
 
-                    active_fest_id = self.env['tzc.fest.discount'].search([('is_active','=',True)])
-                    special_disocunt_id = self.env['kits.special.discount'].search([('country_id','in',self.order_id.partner_id.country_id.ids),('brand_ids','in',record.product_id.brand.ids),('tzc_fest_id','=',active_fest_id.id)])
-                    price_rule_id = special_disocunt_id[-1] if special_disocunt_id else False
-                    if price_rule_id:
-                        applicable = False 
-                        if active_fest_id.from_date and active_fest_id.to_date :
-                            if active_fest_id.from_date <= datetime.now().date() and active_fest_id.to_date >= datetime.now().date():
-                                applicable = True
-                        elif active_fest_id.from_date:
-                            if active_fest_id.from_date <= datetime.now().date():
-                                applicable = True
-                        elif active_fest_id.to_date:
-                            if active_fest_id.to_date >= datetime.now().date():
-                                applicable = True
-                        else:
-                            if not active_fest_id.from_date:
-                                applicable = True
-                            if not active_fest_id.to_date:
-                                applicable = True
-                            
-                        if applicable: 
-                            special_discount_price = round((update_dict.get('unit_discount_price') - update_dict.get('unit_discount_price') * price_rule_id.discount / 100),2)
-                            fix_discount_price_spt = round(product_price - special_discount_price,2)
-                            update_dict.update({'fix_discount_price':fix_discount_price_spt,'unit_discount_price': special_discount_price}) #,'is_special_discount':applicable
+                # active_inflation = self.env['kits.inflation'].search([('is_active','=',True)])
+                # inflation_rule_ids = self.env['kits.inflation.rule'].search([('country_id','in',self.order_id.partner_id.country_id.ids),('brand_ids','in',record.product_id.brand.ids),('inflation_id','=',active_inflation.id)])
+                # inflation_rule = inflation_rule_ids[-1] if inflation_rule_ids else False
+                # if inflation_rule:
+                #     is_inflation = False
+                #     if active_inflation.from_date and active_inflation.to_date :
+                #         if active_inflation.from_date <= datetime.now().date() and active_inflation.to_date >= datetime.now().date():
+                #             is_inflation = True
+                #     elif active_inflation.from_date:
+                #         if active_inflation.from_date <= datetime.now().date():
+                #             is_inflation = True
+                #     elif active_inflation.to_date:
+                #         if active_inflation.to_date >= datetime.now().date():
+                #             is_inflation = True
+                #     else:
+                #         if not active_inflation.from_date:
+                #             is_inflation = True
+                #         if not active_inflation.to_date:
+                #             is_inflation = True
+                        
+                if extra_pricing.get('is_inflation'):
+                    product_price = round(product_price+(product_price*extra_pricing.get('inflation_rate') /100),2)
+                    unit_discount_price = round(unit_discount_price+(unit_discount_price*extra_pricing.get('inflation_rate') /100),2)
+                    update_dict.update({'price_unit':product_price,'unit_discount_price':unit_discount_price})
+
+                # active_fest_id = self.env['tzc.fest.discount'].search([('is_active','=',True)])
+                # special_disocunt_id = self.env['kits.special.discount'].search([('country_id','in',self.order_id.partner_id.country_id.ids),('brand_ids','in',record.product_id.brand.ids),('tzc_fest_id','=',active_fest_id.id)])
+                # price_rule_id = special_disocunt_id[-1] if special_disocunt_id else False
+                # if price_rule_id:
+                #     applicable = False 
+                #     if active_fest_id.from_date and active_fest_id.to_date :
+                #         if active_fest_id.from_date <= datetime.now().date() and active_fest_id.to_date >= datetime.now().date():
+                #             applicable = True
+                #     elif active_fest_id.from_date:
+                #         if active_fest_id.from_date <= datetime.now().date():
+                #             applicable = True
+                #     elif active_fest_id.to_date:
+                #         if active_fest_id.to_date >= datetime.now().date():
+                #             applicable = True
+                #     else:
+                #         if not active_fest_id.from_date:
+                #             applicable = True
+                #         if not active_fest_id.to_date:
+                #             applicable = True
+                        
+                if extra_pricing.get('is_special_discount'):
+                    special_discount_price = update_dict.get('unit_discount_price') - update_dict.get('unit_discount_price') * extra_pricing.get('special_disc_rate') / 100
+                    fix_discount_price_spt = product_price - special_discount_price
+                    update_dict.update({'fix_discount_price':fix_discount_price_spt,'unit_discount_price': special_discount_price}) #,'is_special_discount':applicable
 
                 record.write(update_dict)
                 # record._onchange_fix_discount_price_spt()
@@ -252,29 +287,7 @@ class SaleOrderLine(models.Model):
         for record in range(len(self)):
             record = self[record]
             if record.product_id:
-                unit_discount_price = 0.0
-                product_details = self.env['kits.b2b.multi.currency.mapping'].with_context(from_order_line=True).get_product_price(record.order_id.partner_id.id,record.product_id.ids,order_id=record.order_id)
-                product_pricing = product_details.get(record.product_id.id)
-                product_price = product_pricing.get('price')
-                
-                if product_pricing.get('sale_type') and product_pricing.get('sale_type_price'):
-                    unit_discount_price = product_pricing.get('sale_type_price')
-                else:
-                    unit_discount_price = product_pricing.get('discounted_unit_price')
-
-                # if (record.discount or record.discount == 0.0) and not record._context.get('partner_change'):
-                #     unit_discount_price = round(product_price - (product_price * record.discount)* 0.01,2)
-                # if product_price:
-                #     discount = round(100-(unit_discount_price*100/product_price),2)
-                # else:
-                #     discount = 0
-
-                fix_discount_price = round((product_price - unit_discount_price),2)
-                discount = (100*fix_discount_price)/product_price
-
-                record.write({'price_unit':round(product_price,2),'unit_discount_price': round(unit_discount_price,2), 'sale_type':product_pricing.get('sale_type') or '','fix_discount_price':round(fix_discount_price,2),'discount':discount})
-                # record._onchange_unit_discounted_price_spt()
-        # return res
+                record._compute_picked_qty()
 
     def _compute_qty_at_date(self):
         res = super(SaleOrderLine, self)._compute_qty_at_date()
@@ -285,7 +298,7 @@ class SaleOrderLine(models.Model):
 
         return res
 
-    @api.depends('qty_invoiced', 'qty_delivered', 'product_uom_qty', 'order_id.state')
+    @api.depends('qty_invoiced', 'qty_delivered', 'picked_qty', 'order_id.state')
     def _compute_qty_to_invoice(self):
         """
         Compute the quantity to invoice. If the invoice policy is order, the quantity to invoice is
@@ -294,14 +307,10 @@ class SaleOrderLine(models.Model):
         for line in range(len(self)):
             line = self[line]
             if line.order_id.state in ['sale', 'done','in_scanning','scanned','scan','shipped','draft_inv','open_inv']:
-                # if line.product_id.is_case_product:
-                #     line.qty_to_invoice = line.product_uom_qty
-                    # line.qty_to_invoice = line.picked_qty - line.qty_invoiced
-
-                if line.product_id.invoice_policy == 'order':
-                    line.qty_to_invoice = line.picked_qty - line.qty_invoiced
-                else:
-                    line.qty_to_invoice = line.qty_delivered - line.qty_invoiced
+                # if line.product_id.invoice_policy == 'order':
+                line.qty_to_invoice = line.picked_qty - line.qty_invoiced
+                # else:
+                #     line.qty_to_invoice = line.qty_delivered - line.qty_invoiced
             else:
                 line.qty_to_invoice = 0
 

@@ -40,7 +40,7 @@
         </xpath>
         <xpath expr="//div[hasclass('page')]/div[1]/div[@name='div_origin']" position="after">
             <div class="col-auto text-center" name="div_qty">
-                <strong>Total Products:</strong>
+                <strong>Total Qty:</strong>
                 <t t-if="o.delivered_qty">
                     <p t-field="o.delivered_qty" />
                 </t>

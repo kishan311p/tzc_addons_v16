@@ -115,7 +115,7 @@
                                         <field name="product_qty" />
                                         <field name="product_qty_available" string="On Hand QTY"/>
                                         <field name="qty_available_spt" />
-                                        <field name="discount" />
+                                        <field name="discount" string="Disc %"/>
                                         <field name="is_special_discount" invisible="1"/>
                                         <field name="price_subtotal" sum="Subtotal"/>
                                     </tree>

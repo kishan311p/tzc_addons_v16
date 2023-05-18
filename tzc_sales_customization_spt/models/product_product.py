@@ -1506,6 +1506,70 @@ class ProductProduct(models.Model):
             return False
         return False
 
+    # Method for check Inflation & Special Discount.
+    ''' :param : list ID's - Country of customer,
+                 Boolean - Bypass Inflation & Special Discount
+    
+        return {
+                    'Infaltion': True or False,
+                    'Special Discount': True or False,
+                    'Infaltion Rate': in %,
+                    'Special Discount': in %
+                } '''
+    def inflation_special_discount(self,country_ids,bypass_flag=False):
+        is_special_discount = False 
+        is_inflation = False
+
+        # Check Inflation.
+        active_inflation = self.env['kits.inflation'].search([('is_active','=',True)])
+        inflation_rule_ids = self.env['kits.inflation.rule'].search([('country_id','in',country_ids),('brand_ids','in',self.brand.ids),('inflation_id','=',active_inflation.id)])
+        inflation_rule = inflation_rule_ids[-1] if inflation_rule_ids else False
+            
+        # Validation of Inflation Rule.
+        if inflation_rule:
+            if active_inflation.from_date and active_inflation.to_date :
+                if active_inflation.from_date <= datetime.now().date() and active_inflation.to_date >= datetime.now().date():
+                    is_inflation = True
+            elif active_inflation.from_date:
+                if active_inflation.from_date <= datetime.now().date():
+                    is_inflation = True
+            elif active_inflation.to_date:
+                if active_inflation.to_date >= datetime.now().date():
+                    is_inflation = True
+            else:
+                if not active_inflation.from_date:
+                    is_inflation = True
+                if not active_inflation.to_date:
+                    is_inflation = True
+            
+        # Check Discount.
+        active_fest_id = self.env['tzc.fest.discount'].search([('is_active','=',True)])
+        special_disocunt_id = self.env['kits.special.discount'].search([('country_id','in',country_ids),('brand_ids','in',self.brand.ids),('tzc_fest_id','=',active_fest_id.id)])
+        price_rule_id = special_disocunt_id[-1] if special_disocunt_id else False
+        if price_rule_id:
+            # Validation of Special Discount Rule.
+            if active_fest_id.from_date and active_fest_id.to_date :
+                if active_fest_id.from_date <= datetime.now().date() and active_fest_id.to_date >= datetime.now().date():
+                    is_special_discount = True
+            elif active_fest_id.from_date:
+                if active_fest_id.from_date <= datetime.now().date():
+                    is_special_discount = True
+            elif active_fest_id.to_date:
+                if active_fest_id.to_date >= datetime.now().date():
+                    is_special_discount = True
+            else:
+                if not active_fest_id.from_date:
+                    is_special_discount = True
+                if not active_fest_id.to_date:
+                    is_special_discount = True
+
+        return {
+            'is_inflation':is_inflation,
+            'inflation_rate':inflation_rule.inflation_rate if inflation_rule else 0,
+            'is_special_discount':is_special_discount,
+            'special_disc_rate':price_rule_id.discount if price_rule_id else 0,
+        }
+
     def action_open_case_products(self):
         product_categ_id = self.env.ref('tzc_sales_customization_spt.case_product_category')
         if product_categ_id:
@@ -1518,7 +1582,7 @@ class ProductProduct(models.Model):
                 'type': 'ir.actions.act_window',
                 'domain': [('is_case_product','=',True)],
                 # 'context' : {"search_default_filter_is_case_product":True,'case_product':True,'default_is_case_product':True,'default_purchase_ok':False,'default_default_code':"test"}
-                'context' : {'pending_price': True,"search_default_filter_is_case_product":True,'case_product':True,'default_is_case_product':True,'default_purchase_ok':False,'default_categ_id':product_categ_id.id,'default_detailed_type':'product'}
+                'context' : {"search_default_filter_is_case_product":True,'case_product':True,'default_is_case_product':True,'default_purchase_ok':False,'default_categ_id':product_categ_id.id,'default_detailed_type':'product'}
             }
     @api.model
     def _get_view(self, view_id=None, view_type='search', **options):

@@ -26,48 +26,46 @@ class sale_barcode_order_spt(models.TransientModel):
     def action_process(self):
         self.ensure_one()
         sale_order_line_obj = self.env['sale.order.line']
-        line_list = []
-        product_list = []
+        # line_list = []
+        # product_list = []
 
-        for data_line in self.line_ids:
-            if data_line.product_id.id in product_list:
-                line_id = list(filter(lambda line: line.product_id.id == data_line.product_id.id,line_list))[0]
-                line_id.product_qty = data_line.product_qty + line_id.product_qty
-            else:
-                product_list.append(data_line.product_id.id)
-                line_list.append(data_line)
+        # for data_line in self.line_ids:
+        #     if data_line.product_id.id in product_list:
+        #         line_id = list(filter(lambda line: line.product_id.id == data_line.product_id.id,line_list))[0]
+        #         line_id.product_qty = data_line.product_qty + line_id.product_qty
+        #     else:
+        #         product_list.append(data_line.product_id.id)
+        #         line_list.append(data_line)
                 
-        product_prices = self.env['kits.b2b.multi.currency.mapping'].get_product_price(self.partner_id.id,[i.product_id.id for i in line_list])
-        for product in product_prices:
-            line_id = self.line_ids.search([('product_id','=',product),('barcode_order_id','=',self.id)])
-            vals = {
-                'product_id' : product,
-                'product_uom_qty' : line_id.product_qty,
-                'order_id' : self.sale_id.id,
-                'price_unit': round(product_prices.get(product).get('price'),2),
-                'sale_type': product_prices.get(product).get('sale_type'),
-                'unit_discount_price':round(product_prices.get(product).get('sale_type_price'),2)
-            }
+        product_prices = self.env['kits.b2b.multi.currency.mapping'].get_product_price(self.partner_id.id,[i.product_id.id for i in self.line_ids])
+        for line in self.line_ids:
+            order_line_id = self.sale_id.order_line.filtered(lambda x:x.product_id.id == line.product_id.id)
+            if order_line_id:
+                order_line_id.product_uom_qty += line.product_qty
+            else:
+                product_data = product_prices.get(line.product_id.id)
+                extra_pricing = line.product_id.inflation_special_discount(self.sale_id.partner_id.country_id.ids)
+                price_unit = product_data.get('price')
+                unit_discount_price = product_data.get('discounted_unit_price')
 
-            sale_order_line = sale_order_line_obj.create(vals)
-            sale_order_line.product_id_change()
-            sale_order_line._onchange_fix_discount_price_spt()
-
-            case_product_id = self.env['product.product'].browse(product).case_product_id.id
-            case_product_price = self.env['kits.b2b.multi.currency.mapping'].get_product_price(self.partner_id.id,[case_product_id])
-            if case_product_id:
+                if extra_pricing.get('is_inflation'):
+                    price_unit = price_unit+(price_unit*extra_pricing.get('inflation_rate') /100)
+                    unit_discount_price = unit_discount_price+(unit_discount_price*extra_pricing.get('inflation_rate') /100)
+                if extra_pricing.get('is_special_discount'):
+                    unit_discount_price = (unit_discount_price - unit_discount_price * extra_pricing.get('special_disc_rate') / 100)
+                
                 vals = {
-                    'product_id' : case_product_id,
-                    'product_uom_qty' : line_id.product_qty,
+                    'product_id' : line.product_id.id,
+                    'product_uom_qty' : line.product_qty,
                     'order_id' : self.sale_id.id,
-                    'price_unit': round(case_product_price.get(case_product_id).get('price'),2),
-                    'sale_type': case_product_price.get(case_product_id).get('sale_type'),
-                    'unit_discount_price':round(case_product_price.get(case_product_id).get('sale_type_price'),2)
+                    'price_unit': round(price_unit,2),
+                    'sale_type': product_data.get('sale_type'),
+                    'unit_discount_price':round(unit_discount_price,2)
                 }
+
                 sale_order_line = sale_order_line_obj.create(vals)
                 sale_order_line.product_id_change()
                 sale_order_line._onchange_fix_discount_price_spt()
-
         self.sale_id.merge_order_lines()
         self.sale_id._amount_all()
         

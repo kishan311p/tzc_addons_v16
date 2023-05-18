@@ -385,15 +385,23 @@
                                                                 <strong>Subtotal</strong>
                                                             </td>
                                                             <td name="td_admin" class="text-end">
-                                                                <span t-esc="round(sub_total,2)" t-options='{"widget": "monetary", "display_currency": o.currency_id}'/>
+                                                                <span t-esc="round(o.amount_without_discount,2)" t-options='{"widget": "monetary", "display_currency": o.currency_id}'/>
+                                                            </td>
+                                                        </tr>
+                                                        <tr class="border-black">
+                                                            <td name="td_amount_discount_label">
+                                                                <strong>Discount</strong>
+                                                            </td>
+                                                            <td name="td_amount_discount" class="text-end o_price_total">
+                                                                <span t-esc="o.amount_discount" t-options="{&quot;widget&quot;: &quot;monetary&quot;, &quot;display_currency&quot;: o.currency_id}"/>
                                                             </td>
                                                         </tr>
                                                         <tr class="border-black">
                                                             <td name="td_shipping_product_total_amount_label">
-                                                                <strong>Shipping</strong>
+                                                                <strong>Shipping Fee</strong>
                                                             </td>
                                                             <td name="td_amount_untaxed" class="text-end">
-                                                                <t t-if="o.order_id.shipping_cost != o.order_id.amount_is_shipping_total">
+                                                                <!-- <t t-if="o.order_id.shipping_cost != o.order_id.amount_is_shipping_total">
                                                                     <span style="white-space: nowrap;color:red;text-decoration:line-through;">
                                                                         <span style='color:black;' t-field="o.order_id.shipping_cost" t-options='{"widget": "monetary", "display_currency": o.currency_id}'/>
                                                                     </span>
@@ -402,9 +410,9 @@
                                                                         <span style="color:red;" t-field="o.order_id.amount_is_shipping_total" t-options='{"widget": "monetary", "display_currency": o.currency_id}'/>
                                                                     </span>
                                                                 </t>
-                                                                <t t-else="">
+                                                                <t t-else=""> -->
                                                                     <span t-field="o.amount_is_shipping_total" t-options='{"widget": "monetary", "display_currency": o.currency_id}'/>
-                                                                </t>
+                                                                <!-- </t> -->
                                                             </td>
                                                         </tr>
                                                         <tr class="border-black">
@@ -415,24 +423,9 @@
                                                                 <span t-field="o.amount_is_admin" t-options='{"widget": "monetary", "display_currency": o.currency_id}'/>
                                                             </td>
                                                         </tr>
-                                                        <tr class="border-black">
-                                                            <td name="td_case_total_product_total_amount_label">
-                                                                <strong>Case Total</strong>
-                                                            </td>
-                                                            <td name="td_case_total" class="text-end">
-                                                                <span t-field="o.amount_is_case" t-options='{"widget": "monetary", "display_currency": o.currency_id}'/>
-                                                            </td>
-                                                        </tr>
-                                                        <t t-if="o.global_discount">
-                                                            <tr class="border-black">
-                                                                <td name="td_amount_discount_label">
-                                                                    <strong>Discount</strong>
-                                                                </td>
-                                                                <td name="td_amount_discount" class="text-end o_price_total">
-                                                                    <span t-esc="o.global_discount" t-options="{&quot;widget&quot;: &quot;monetary&quot;, &quot;display_currency&quot;: o.currency_id}"/>
-                                                                </td>
-                                                            </tr>
-                                                        </t>
+                                                        <!-- <t t-if="o.global_discount"> -->
+                                                        
+                                                        <!-- </t> -->
                                                         <tr class="border-black">
                                                             <td name="td_amount_by_group_label">
                                                                 <strong>Tax</strong>
@@ -494,7 +487,7 @@
                                                                 <strong>Subtotal</strong>
                                                             </td>
                                                             <td name="td_admin" class="text-right">
-                                                                <span t-esc="round(sub_total,2)" t-options='{"widget": "monetary", "display_currency": o.currency_id}'/>
+                                                                <span t-esc="round(o.amount_without_discount,2)" t-options='{"widget": "monetary", "display_currency": o.currency_id}'/>
                                                             </td>
                                                         </tr>
                                                         <tr class="border-black">
@@ -502,7 +495,7 @@
                                                                 <strong>Shipping</strong>
                                                             </td>
                                                             <td name="td_amount_untaxed" class="text-right">
-                                                                <t t-if="o.order_id.shipping_cost != o.order_id.amount_is_shipping_total">
+                                                                <!-- <t t-if="o.order_id.shipping_cost != o.order_id.amount_is_shipping_total">
                                                                     <span style="white-space: nowrap;color:red;text-decoration:line-through;">
                                                                         <span style='color:black;' t-field="o.order_id.shipping_cost" t-options='{"widget": "monetary", "display_currency": o.pricelist_id.currency_id}'/>
                                                                     </span>
@@ -510,10 +503,10 @@
                                                                     <span>
                                                                         <span style="color:red;" t-field="o.order_id.amount_is_shipping_total" t-options='{"widget": "monetary", "display_currency": o.pricelist_id.currency_id}'/>
                                                                     </span>
-                                                                </t>
-                                                                <t t-else="">
+                                                                </t> -->
+                                                                <!-- <t t-else=""> -->
                                                                     <span t-field="o.amount_is_shipping_total" t-options='{"widget": "monetary", "display_currency": o.currency_id}'/>
-                                                                </t>
+                                                                <!-- </t> -->
                                                             </td>
                                                         </tr>
                                                         <tr class="border-black">
@@ -524,16 +517,16 @@
                                                                 <span t-field="o.amount_is_admin" t-options='{"widget": "monetary", "display_currency": o.currency_id}'/>
                                                             </td>
                                                         </tr>
-                                                        <t t-if="o.global_discount">
-                                                            <tr class="border-black">
-                                                                <td name="td_amount_discount_label">
-                                                                    <strong>Discount</strong>
-                                                                </td>
-                                                                <td name="td_amount_discount" class="text-right o_price_total">
-                                                                    <span t-esc="o.global_discount" t-options="{&quot;widget&quot;: &quot;monetary&quot;, &quot;display_currency&quot;: o.currency_id}"/>
-                                                                </td>
-                                                            </tr>
-                                                        </t>
+                                                        <!-- <t t-if="o.global_discount"> -->
+                                                        <tr class="border-black">
+                                                            <td name="td_amount_discount_label">
+                                                                <strong>Discount</strong>
+                                                            </td>
+                                                            <td name="td_amount_discount" class="text-right o_price_total">
+                                                                <span t-esc="o.amount_discount" t-options="{&quot;widget&quot;: &quot;monetary&quot;, &quot;display_currency&quot;: o.currency_id}"/>
+                                                            </td>
+                                                        </tr>
+                                                        <!-- </t> -->
 
                                                         <tr class="border-black">
                                                             <td name="td_amount_by_group_label">

@@ -122,12 +122,13 @@ class mailing_contact(models.Model):
 
     @api.constrains('email')
     def _check_email(self):
-        for partner in self:
-            if partner.email:
-                partners = partner.search([('email','=',partner.email.lower()),('id','!=',partner.id)])
-                if len(partners) >0:
-                    message = "This email is already assigned to "+ partners[0].display_name
-                    raise UserError(_(message))
+        if not self._context.get('force_email'):
+            for partner in self:
+                if partner.email:
+                    partners = partner.search([('email','=',partner.email.lower()),('id','!=',partner.id)])
+                    if len(partners) >0:
+                        message = "This email is already assigned to "+ partners[0].display_name
+                        raise UserError(_(message))
     
     @api.constrains('internal_id')
     def _check_internal_id(self):

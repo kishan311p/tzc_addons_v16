@@ -154,7 +154,7 @@
 </xpath>
 <xpath expr="//div[@id='informations']/div[@t-if='doc.user_id.name']" position="after">
     <div class="col-auto mw-100 mb-2 text-center" >
-        <strong>Total Products:</strong>
+        <strong>Total Quantity:</strong>
         <t t-if="env.context.get('proforma', False) or is_pro_forma" >
             <t t-if="doc.state not in ('draft','sent','received')">
                 <t t-if="doc.picked_qty">
@@ -240,10 +240,10 @@
 
 <xpath expr="//table[hasclass('table','table-sm','o_main_table','mt-4')]/thead/tr/th[3]" position="replace">
     <th name="th_quantity" class="text-center">Qty</th>
-    <th name="th_discount" class="text-end">
-        <span>Disc.%</span>
-    </th>
     <th name="th_priceunit" class="text-end">Price</th>
+    <th name="th_discount" class="text-end">
+        <span>Disc.$</span>
+    </th>
     <th name="th_subtotal" class="text-end">
         <t groups="account.group_show_line_subtotals_tax_excluded">Subtotal</t>
         <t groups="account.group_show_line_subtotals_tax_included">Subtotal</t>
@@ -367,22 +367,18 @@
 
 
                         <td name="td_quantity" class="text-center">
-                            <!-- text calculation -->
+                            <!-- tax calculation -->
                             <t t-set="total_tax_amount" t-value="0"/>
                             <t t-if="line.product_uom_qty">
                                 <t t-set="total_tax_amount" t-value="round(line.price_tax/line.product_uom_qty,2)"/>
                             </t>
-                            <!-- <t t-if="is_sales_order_r">
-                                <t t-set="total_for_is_pro_forma_text" t-value="round(total_for_is_pro_forma_text + (total_tax_amount * line.product_uom_qty),2)"/>
-                            </t>
-                            <t t-else=""> -->
-                                <t t-set="total_for_is_pro_forma_text" t-value="round(total_for_is_pro_forma_text + (total_tax_amount * line.picked_qty),2)"/>
-                            <!-- </t> -->
-                            <!-- discount calculation -->
 
+                            <t t-set="total_for_is_pro_forma_text" t-value="round((total_for_is_pro_forma_text + line.price_tax),2)"/>
+                            <!-- <t t-set="total_for_is_pro_forma_text" t-value="round(total_for_is_pro_forma_text + (total_tax_amount * line.picked_qty),2)"/> -->
+
+                            <!-- discount calculation -->
                             <t t-set="total_discount" t-value="round(total_discount + ((line.price_unit * line.picked_qty) - (line.unit_discount_price * line.picked_qty)),2)"/>
                             
-                            <!-- <t t-if="is_sales_order_r or from_original_ord"> -->
                             <t t-if="from_original_ord">
                                 <span t-field="line.product_uom_qty"/>
                                 <t t-set="total_line_qty" t-value="total_line_qty + line.product_uom_qty"/>
@@ -393,9 +389,6 @@
                             </t>
                         </td>
 
-                        <td name="display_discount" class="text-end">
-                            <span t-field="line.discount"/>
-                        </td>
                         <td name="td_priceunit" class="text-end" t-if="line.price_unit != line.unit_discount_price">
                             <t t-if="not line.discount">
                                 <span t-field="line.price_unit" t-options='{"widget": "monetary", "display_currency":  line.currency_id}'/>
@@ -410,6 +403,9 @@
                         </td>
                         <td name="td_priceunit" class="text-end" t-if="line.price_unit == line.unit_discount_price">
                             <span t-field="line.price_unit" style="white-space: nowrap;" t-options='{"widget": "monetary", "display_currency":  line.currency_id}'/>
+                        </td>
+                        <td name="display_discount" class="text-end">
+                            $ <span t-field="line.fix_discount_price" />
                         </td>
                         <td name="td_subtotal" class="text-end o_price_total">
                             <!-- pro-forma total calculation -->
@@ -525,9 +521,6 @@
                             <t t-set="total_line_qty" t-value="total_line_qty + line.product_uom_qty"/>
 
                         </td>
-                        <td name="display_discount" class="text-center">
-                            <span t-field="line.discount"/>
-                        </td>
                         <td name="td_priceunit" class="text-end" t-if="line.price_unit != line.unit_discount_price">
                             <t t-if="not line.unit_discount_price">
                                 <span t-field="line.price_unit" t-options='{"widget": "monetary", "display_currency":  line.currency_id}'/>
@@ -546,15 +539,13 @@
                         <td name="td_priceunit" class="text-end" t-if="line.price_unit == line.unit_discount_price">
                             <span t-field="line.price_unit" style="white-space: nowrap;" t-options='{"widget": "monetary", "display_currency":  line.currency_id}'/>
                         </td>
+                        <td name="display_discount" class="text-end">
+                            $ <span t-field="line.fix_discount_price"/>
+                        </td>
                         <td name="td_subtotal" class="text-end o_price_total">
-                            <t t-if="from_original_ord">
-                                <span t-esc="line.product_uom_qty * line.unit_discount_price" t-options='{"widget": "monetary", "display_currency": doc.pricelist_id.currency_id}' groups="account.group_show_line_subtotals_tax_excluded"/>
-                                <span t-esc="line.product_uom_qty * line.unit_discount_price" t-options='{"widget": "monetary", "display_currency": doc.pricelist_id.currency_id}' groups="account.group_show_line_subtotals_tax_included"/>
-                            </t>
-                            <t t-else="">
-                                <span t-field="line.price_subtotal" t-options='{"widget": "monetary", "display_currency": doc.pricelist_id.currency_id}' groups="account.group_show_line_subtotals_tax_excluded"/>
-                                <span t-field="line.price_total" t-options='{"widget": "monetary", "display_currency": doc.pricelist_id.currency_id}' groups="account.group_show_line_subtotals_tax_included"/>
-                            </t>
+
+                            <span t-field="line.price_subtotal" t-options='{"widget": "monetary", "display_currency": doc.pricelist_id.currency_id}' groups="account.group_show_line_subtotals_tax_excluded"/>
+                            <span t-field="line.price_total" t-options='{"widget": "monetary", "display_currency": doc.pricelist_id.currency_id}' groups="account.group_show_line_subtotals_tax_included"/>
 
                         </td>
                         <t t-set="custom_current_subtotal" t-value="round(custom_current_subtotal + (line.price_unit * line.product_uom_qty),2)" groups="account.group_show_line_subtotals_tax_excluded"/>
@@ -812,7 +803,7 @@
         <table class="table table-sm table-borderless">
             <tr class="border-black o_subtotal" style="">
                 <td name="td_shipping_product_total_amount_label">
-                    <strong>Sub Total</strong>
+                    <strong>Subtotal</strong>
                 </td>
                 <td name="td_amount_untaxed" class="text-end">
                     <t t-if="env.context.get('proforma', False) or is_pro_forma and not from_original_ord">
@@ -824,44 +815,6 @@
                     </t>
                 </td>
             </tr>
-            <tr class="border-black o_subtotal" style="">
-                <td name="td_shipping_product_total_amount_label">
-                    <strong>Shipping Cost</strong>
-                </td>
-                <td name="td_amount_untaxed" class="text-end">
-                    <t t-if="doc.shipping_cost != doc.amount_is_shipping_total">
-                        <span style="white-space: nowrap;color:red;text-decoration:line-through;">
-                            <span style='color:black;' t-field="doc.shipping_cost" t-options='{"widget": "monetary", "display_currency": doc.pricelist_id.currency_id}'/>
-                        </span>
-                /
-                        <span>
-                            <span style="color:red;" t-field="doc.amount_is_shipping_total" t-options='{"widget": "monetary", "display_currency": doc.pricelist_id.currency_id}'/>
-                        </span>
-                    </t>
-                    <t t-else="">
-                        <span t-field="doc.amount_is_shipping_total" t-options='{"widget": "monetary", "display_currency": doc.pricelist_id.currency_id}'/>
-                    </t>
-                    <!-- <span t-esc="total_is_shipping_product" t-options='{"widget": "monetary", "display_currency": doc.pricelist_id.currency_id}'/> -->
-                </td>
-            </tr>
-
-            <tr class="border-black o_subtotal" style="">
-                <td name="td_admin_product_total_amount_label">
-                    <strong>Admin Fee</strong>
-                </td>
-                <td name="td_admin" class="text-end">
-                    <span t-field="doc.amount_is_admin" t-options='{"widget": "monetary", "display_currency": doc.pricelist_id.currency_id}'/>
-                </td>
-            </tr>
-            <tr class="border-black o_subtotal" style="">
-                <td name="td_case_product_total_amount_label">
-                    <strong>Case Total</strong>
-                </td>
-                <td name="td_case" class="text-end">
-                    <span t-esc="total_for_case" t-options='{"widget": "monetary", "display_currency": doc.pricelist_id.currency_id}'/>
-                </td>
-            </tr>
-
             <tr class="border-black o_subtotal" t-if="not is_pro_forma">
                 <td name="td_amount_discount_label">
                     <strong>Discount</strong>
@@ -886,6 +839,45 @@
                 </td>
 
             </tr>
+            <tr class="border-black o_subtotal" style="">
+                <td name="td_shipping_product_total_amount_label">
+                    <strong>Shipping Fee</strong>
+                </td>
+                <td name="td_amount_untaxed" class="text-end">
+                    <!-- <t t-if="doc.shipping_cost != doc.amount_is_shipping_total">
+                        <span style="white-space: nowrap;color:red;text-decoration:line-through;">
+                            <span style='color:black;' t-field="doc.shipping_cost" t-options='{"widget": "monetary", "display_currency": doc.pricelist_id.currency_id}'/>
+                        </span>
+                /
+                        <span>
+                            <span style="color:red;" t-field="doc.amount_is_shipping_total" t-options='{"widget": "monetary", "display_currency": doc.pricelist_id.currency_id}'/>
+                        </span>
+                    </t>
+                    <t t-else=""> -->
+                        <span t-field="doc.amount_is_shipping_total" t-options='{"widget": "monetary", "display_currency": doc.pricelist_id.currency_id}'/>
+                    <!-- </t> -->
+                    <!-- <span t-esc="total_is_shipping_product" t-options='{"widget": "monetary", "display_currency": doc.pricelist_id.currency_id}'/> -->
+                </td>
+            </tr>
+
+            <tr class="border-black o_subtotal" style="">
+                <td name="td_admin_product_total_amount_label">
+                    <strong>Admin Fee</strong>
+                </td>
+                <td name="td_admin" class="text-end">
+                    <span t-field="doc.amount_is_admin" t-options='{"widget": "monetary", "display_currency": doc.pricelist_id.currency_id}'/>
+                </td>
+            </tr>
+            <tr class="border-black o_subtotal" style="">
+                <td name="td_case_product_total_amount_label">
+                    <strong>Case Total</strong>
+                </td>
+                <td name="td_case" class="text-end">
+                    <span t-esc="total_for_case" t-options='{"widget": "monetary", "display_currency": doc.pricelist_id.currency_id}'/>
+                </td>
+            </tr>
+
+            
 
             <tr class="border-black o_subtotal" style="" t-if="not doc.tax_totals and not is_pro_forma">
                 <td name="td_tax_totals_label">
@@ -896,25 +888,28 @@
                 </td>
 
             </tr>
-            <tr class="border-black o_subtotal" t-if="is_pro_forma">
-                <td name="td_tax_totals_label">
-                    <strong>Tax</strong>
-                </td>
-                <t t-if="from_original_ord">
+            <t t-if="from_original_ord">
+                <tr class="border-black o_subtotal">
+                    <td name="td_tax_totals_label">
+                        <strong>Tax</strong>
+                    </td>
                     <td name="td_tax_totals" class="text-end o_price_total">
                         <span t-esc="round(doc.amount_tax,2)" t-options='{"widget": "monetary", "display_currency": doc.pricelist_id.currency_id}'/>
-                        <!-- <span t-esc="round(total_for_is_pro_forma_text,2)" t-options='{"widget": "monetary", "display_currency": doc.pricelist_id.currency_id}'/> -->
 
                     </td>
-                </t>
-                <t t-else="">
+                </tr>
+            </t>
+            <t t-else="">
+                <tr class="border-black o_subtotal" t-if="is_pro_forma">
+                    <td name="td_tax_totals_label">
+                        <strong>Tax</strong>
+                    </td>
                     <td name="td_tax_totals" class="text-end o_price_total">
-                        <span t-esc="round(doc.picked_qty_order_tax,2)" t-options='{"widget": "monetary", "display_currency": doc.pricelist_id.currency_id}'/>
-                        <!-- <span t-esc="round(total_for_is_pro_forma_text,2)" t-options='{"widget": "monetary", "display_currency": doc.pricelist_id.currency_id}'/> -->
+                        <span t-esc="round(total_for_is_pro_forma_text,2)" t-options='{"widget": "monetary", "display_currency": doc.pricelist_id.currency_id}'/>
 
                     </td>
-                </t>
-            </tr>
+                </tr>
+            </t>
             <tr class='o_total'>
                 <td name="td_tax_totals_label">
                     <strong>Total</strong>
@@ -935,21 +930,15 @@
 
                     <t t-else="" class="col-12 d-flex-row">
     (                        <span t-esc="doc.currency_id.name"/>
-    )                   
-                        <t t-if="from_original_ord and doc.state not in ['draft','sent','received']">
-                            <span t-esc="doc.amount_total" t-options='{"widget": "monetary", "display_currency": doc.pricelist_id.currency_id}' />                    
-                        </t>
-                        <t t-else="">
-                            <span t-esc="doc.amount_total" t-options='{"widget": "monetary", "display_currency": doc.pricelist_id.currency_id}' />
-                        </t>
-                        
+    )
+                        <span t-esc="doc.amount_total" t-options='{"widget": "monetary", "display_currency": doc.pricelist_id.currency_id}' />
                     </t>
 
                 </td>
             </tr>
             <tr class="border-black o_total">
-                <td name="td_amount_total_items">
-                    <strong>Total Items</strong>
+                <td name="td_amount_total_qty">
+                    <strong>Total Quantity</strong>
                 </td>
                 <td name="td_amount_total" class="text-end">
                     <t t-if="from_original_ord">

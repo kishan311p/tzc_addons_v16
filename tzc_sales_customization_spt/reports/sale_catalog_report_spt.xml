@@ -54,8 +54,9 @@
             menu="False"
 
         />
-
-
+        <record id="action_catalog_report_pdf" model="ir.actions.report">
+            <field name="paperformat_id" ref="tzc_sales_customization_spt.kits_quotations_and_order"/>
+        </record>
         <report 
             id="action_abbreviate_report_spt"
             string="Abbreviate Report"

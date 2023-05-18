@@ -16,19 +16,17 @@ class create_homepage_html(models.Model):
     unsubscribe_redirect_url = fields.Char('Unsubscribe Redirect Url')
 
     def generate_html(self):
-        self.body_html=''
-        
+        self.body_html=''        
         if self.header_url:
+            web_url = self.env['kits.b2b.website'].search([],limit=1).url
             header=f'''
-            <div style="width:75%;margin: auto;">
-                <a href={self.header_redirect_url if self.header_redirect_url else ''} style="text-decoration:none;background-color:transparent;color:rgb(0,135,132)" target="_blank">
-                    <img src={self.header_url} style="border-style:none;vertical-align:middle;text-decoration:none;display:inline-block!important;border:none;height:auto;float:none;width:100%;"  border="0" align="middle"> </img>
+                <a href="{web_url}" tyle="text-decoration:none;background-color:transparent;color:rgb(0,135,132)" target="_blank">
+                    <img src={self.header_url} class="header-img" border="0" align="middle" loading="" style="box-sizing:border-box;vertical-align:middle;width: 80%;height: auto;">
                 </a>
-            </div>
             '''
         if self.product_ids:
             product_table=''
-            product_table+='''<div style="width: 75%;margin: auto;">'''
+            product_table+='''<div>'''
             row=0
             banner=0
             all_products=self.product_list()
@@ -37,15 +35,15 @@ class create_homepage_html(models.Model):
                 if self.banner_ids:
                     if row in banner_sequence :
                         product_table=product_table+f'''
-                        <div class="" style='width:100%;'>
-                            <a href={self.banner_ids[banner].banner_redirect_url if self.banner_ids[banner].banner_redirect_url else ''} style="text-decoration:none;background-color:transparent;color:rgb(0,135,132)" target="_blank">
-                                <img src={self.banner_ids[banner].banner_url} style="border-style:none;vertical-align:middle;text-decoration:none;display:inline-block!important;border:none;height:auto;float:none;width:100%;height:100%"  border="0" align="middle"> </img>
+                        <div style="">
+                            <a href="{self.banner_ids[banner].banner_redirect_url if self.banner_ids[banner].banner_redirect_url else ''}" style="text-decoration:none;background-color:transparent;color:rgb(0,135,132)" target="_blank">
+                                <img src={self.banner_ids[banner].banner_url} border="0" style="border-style:none;box-sizing:border-box;vertical-align:middle;text-decoration:none;border:none;float:none;width: 80%;height: auto;display:inline-block" align="middle" loading=""> 
                             </a>
                         </div>
                         '''
                         banner+=1
-                # product_table=product_table+'''<div class="" style='width:100%;display:flex'>'''
-                product_table=product_table+'''<div class="row">'''
+                # product_table=product_table+'''<table class="" style='width:100%;display:flex'>'''
+                product_table=product_table+'''<table> <tr style="background-color: #FDFDFD;">'''
                 for product in products:
                     style='color:white'
                     product_type=''
@@ -64,38 +62,42 @@ class create_homepage_html(models.Model):
                             style='width:50%;'
                         
                     product_table=product_table+f'''
-                        <div class="col-12 col-lg-4 col-md-4 col-sm-12">
-                            <div style='margin:20px 15px 20px 15px;border: 1px solid rgba(31,123,111,.2);padding: 10px;background-color: var(--white-color);border-radius: 20px;transition: .3s;overflow: hidden;position: relative!important;'>
-                                    <div class="">
-                                        <div>
-                                           <img src={product_type} style="{style}"> </img>
+                        <td style="width: 33.3333%;">
+                            <a href="{self.product_ids[product].product_seo_url if self.product_ids[product].product_seo_url else ''}">
+                                <div style='margin:20px 15px 20px 15px;border: 1px solid rgba(31,123,111,.2);padding: 10px;background-color: var(--white-color);border-radius: 20px;transition: .3s;overflow: hidden;position: relative!important;'>
+                                        <div class="">
+                                            <div>
+                                            <img src={product_type} style="{style}"> </img>
+                                            </div>
+                                            <a >
+                                                <img src={self.product_ids[product].primary_image_url} style="border-style:none;box-sizing:border-box;vertical-align:middle;text-decoration:none;border:none;float:none;width:380px;height: auto !important;display:inline-block;"  border="0" align="middle"> </img>
+                                            </a>
                                         </div>
-                                        <a href={self.product_ids[product].product_seo_url if self.product_ids[product].product_seo_url else ''}>
-                                            <img src={self.product_ids[product].primary_image_url} style="border-style:none;vertical-align:middle;text-decoration:none;display:inline-block!important;border:none;float:none;width:100%;"  border="0" align="middle"> </img>
-                                        </a>
-                                    </div>
-                                    <div align='center' style='margin-bottom:10px;margin-top:10px'>
-                                        <h6><a style='font-weight:bold;font-size: 120%;color:#1C7468'>{self.product_ids[product].brand_name if self.product_ids[product].brand_name else ''}</a></h6>
-                                        <p style='color:#1C7468;font-size: 120%;'>{self.product_ids[product].b2b_name if self.product_ids[product].b2b_name else '   '}</p>
-                                    </div>
-                            </div>
-                        </div>
+                                        <div align='center' style='margin-bottom:10px;margin-top:10px'>
+                                            <h6><a style='font-weight:bold;font-size: 120%;color:#1C7468'>{self.product_ids[product].brand_name if self.product_ids[product].brand_name else ''}</a></h6>
+                                            <p style='color:#1C7468;font-size: 120%;'>{self.product_ids[product].b2b_name if self.product_ids[product].b2b_name else '   '}</p>
+                                        </div>
+                                </div>
+                            </a>
+                        </td>
                     '''
-                product_table=product_table+'''</div>'''
+                product_table=product_table+'''</tr></table>'''
                 row+=1
             product_table+='''</div>'''
             
        
         button=f'''
-        <div align="center" style="padding-bottom:40px;padding-top:30px">
-            <a href={self.view_more_redirect_url if self.view_more_redirect_url else 'https://teameto.com'} target="_blank" style="padding-bottom:10px;background-color: rgb(233,254,250); padding: 12px 20px 12px 20px; text-decoration: none; color: #1C7468; border-radius: 500px; font-size:16px;    border: 1px solid #1C7468;" >
-                View More
-            </a>
-        </div>
+            <div style="padding-bottom:40px;padding-top:30px;width: 90%;height: auto;" class="row">
+                <div class="col-12" align="center">
+                    <a href="{self.view_more_redirect_url if self.view_more_redirect_url else 'https://teameto.com'}" target="_blank" style="padding-bottom:10px;background-color: rgb(233,254,250); padding: 12px 20px 12px 20px; text-decoration: none; color: #1C7468; border-radius: 500px; font-size:16px;    border: 1px solid #1C7468;" >
+                        View More
+                    </a>
+                </div>
+            </div>
         '''
 
         footer=f'''
-        <div style="border-style:solid;box-sizing:border-box;border-left-width:0px;border-bottom-width:0px;border-right-width:0px;border-top-width:0px;border-left-color:inherit;border-bottom-color:inherit;border-right-color:inherit;border-top-color:inherit;word-break:break-word;padding:0px 10px 28px;font-family:'Cabin',sans-serif" align="left">
+        <div style="width: 90%;height: auto;border-style:solid;box-sizing:border-box;border-left-width:0px;border-bottom-width:0px;border-right-width:0px;border-top-width:0px;border-left-color:inherit;border-bottom-color:inherit;border-right-color:inherit;border-top-color:inherit;word-break:break-word;padding:0px 10px 28px;font-family:'Cabin',sans-serif" align="left">
             <table style="border-style:solid none none none;width: 55%;box-sizing:border-box;border-top-color:#1c7468;border-top-width:2px;caption-side:bottom;border-collapse:collapse;table-layout:fixed;border-spacing:0;vertical-align:top;border-top:2px solid #1c7468" width="79%" height="0px" cellspacing="0" cellpadding="0" border="0" align="center">
                 <tbody style="border-style:solid;box-sizing:border-box;border-left-width:0px;border-bottom-width:0px;border-right-width:0px;border-top-width:0px;border-left-color:inherit;border-bottom-color:inherit;border-right-color:inherit;border-top-color:inherit">
                     <tr style="border-style:solid;box-sizing:border-box;border-width:0px;border-color:inherit;vertical-align:top;width:100%">
@@ -107,7 +109,7 @@ class create_homepage_html(models.Model):
             </table>
         </div>
 
-        <div style="border-style:solid;box-sizing:border-box;border-left-width:0px;border-bottom-width:0px;border-right-width:0px;border-top-width:0px;border-left-color:inherit;border-bottom-color:inherit;border-right-color:inherit;border-top-color:inherit;word-break:break-word;padding:25px 10px 10px;font-family:'Cabin',sans-serif" align="left">
+        <div style="width: 90%;height: auto;border-style:solid;box-sizing:border-box;border-left-width:0px;border-bottom-width:0px;border-right-width:0px;border-top-width:0px;border-left-color:inherit;border-bottom-color:inherit;border-right-color:inherit;border-top-color:inherit;word-break:break-word;padding:25px 10px 10px;font-family:'Cabin',sans-serif" align="left">
             <table style="box-sizing:border-box;border-collapse:collapse;caption-side:bottom" width="100%" cellspacing="0" cellpadding="0" border="0">
                 <tbody style="border-style:solid;box-sizing:border-box;border-left-width:0px;border-bottom-width:0px;border-right-width:0px;border-top-width:0px;border-left-color:inherit;border-bottom-color:inherit;border-right-color:inherit;border-top-color:inherit">
                     <tr style="border-style:solid;box-sizing:border-box;border-width:0px;border-color:inherit;width:100%">
@@ -121,7 +123,7 @@ class create_homepage_html(models.Model):
             </table>
         </div>
         <br/>
-        <div style="color:black" align="center">
+        <div style="color:black;width: 90%;height: auto;" align="center">
             {self.env.company.street if self.env.company.street else ''}
             <br/>
             <br/>
@@ -133,17 +135,17 @@ class create_homepage_html(models.Model):
             {self.env.company.zip if self.env.company.zip else ''}
             <br/>
             <br/>
-            <a href={self.env.company.website if self.env.company.website else ''} style="text-decoration:none ;color: black;">{self.env.company.website if self.env.company.website else ''}</a>
+            <a href="{self.env.company.website if self.env.company.website else ''}" style="text-decoration:none ;color: black;">{self.env.company.website if self.env.company.website else ''}</a>
             <br/>
             <br/>
             <a href="tel:+1%20905%20944%209786" rel="noopener" style="text-decoration:none;background-color:transparent;color:#000000" target="_blank">
             {self.env.company.phone if self.env.company.phone else ''}
             </a>
             |
-            <a href={self.env.company.email if self.env.company.email else ''} style="text-decoration:none ; color: black;" >{self.env.company.email if self.env.company.email else ''}</a>
+            <a href="{self.env.company.email if self.env.company.email else ''}" style="text-decoration:none ; color: black;" >{self.env.company.email if self.env.company.email else ''}</a>
         </div>
-        <div style="width:75%;margin:auto;background-color:#E9ECEF;padding: 30px 0px 20px 140px;">
-            <a href={self.unsubscribe_redirect_url if self.unsubscribe_redirect_url else 'https://teameto.com'}>
+        <div style="width: 90%;height: auto;background-color:#E9ECEF;padding: 30px 0px 20px 140px;">
+            <a href="{self.unsubscribe_redirect_url if self.unsubscribe_redirect_url else 'https://teameto.com'}">
                 Unsubscribe
             </a>
             <br/>
@@ -155,52 +157,23 @@ class create_homepage_html(models.Model):
         '''
 
         if self.env.user.signature:
-            signature = f'''
-            <p style="width:75%;padding-top:30px">
+            signature = f''' 
+            <p style="width: 80%;height: auto;;padding-top:30px">
                 {self.env.user.signature}
             </p>
             '''
         style_css= '''
         <style>
-            .row{
-                display: -webkit-box;
-                display: -webkit-flex;
-                display: flex;
-                -webkit-flex-wrap: wrap;
-                flex-wrap: wrap;
-                margin-top: calc(-1 * 0);
-                margin-right: calc(-.5 * 1.5rem);
-                margin-left: calc(-.5 *  1.5rem);
-            }
-            .col-auto {
-                -webkit-box-flex: 0;
-                -webkit-flex: 0 0 auto;
-                flex: 0 0 auto;
-                width: auto;
-            }
-            .col-12 {
-                -webkit-box-flex: 0;
-                -webkit-flex: 0 0 auto;
-                flex: 0 0 auto;
-                width: 100%;
-            }
-            @media (min-width: 992px) {
-                .col-lg-4 {
-                    -webkit-box-flex: 0;
-                    -webkit-flex: 0 0 auto;
-                    flex: 0 0 auto;
-                    width: 33.33333333%;
+            @media (max-width: 575.98px) {
+                .name-font{
+                    font-size: 150%;
                 }
             }
-            @media (min-width: 768px) {
-                .col-md-4 {
-                    -webkit-box-flex: 0;
-                    -webkit-flex: 0 0 auto;
-                    flex: 0 0 auto;
-                    width: 33.33333333%;
+            @media (max-width: 767.98px) {
+                .name-font{
+                    font-size: 200%;
                 }
             }
-            <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
         </style>
         '''
         # give a html code to self.body_html
