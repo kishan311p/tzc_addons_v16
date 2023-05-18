@@ -278,6 +278,7 @@ class sale_order(models.Model):
             'proforma': self.env.context.get('proforma', False),
             'force_email': True,
             'model_description': self.with_context(lang=lang).type_name,
+            'quotation_send' :True
         }
         return {
             'type': 'ir.actions.act_window',
@@ -3925,6 +3926,7 @@ class sale_order(models.Model):
                 'default_template_id': template_id,
                 'website_sale_send_recovery_email': True,
                 'active_ids': self.ids,
+                'quotation_send' : True,
             },
         }
 

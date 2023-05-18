@@ -20,6 +20,8 @@
         'data/seq.xml',
         'data/ir_server_action.xml',
         'views/product_import_spt_view.xml',
+        'views/product_import_on_barcode_view.xml',
+        'views/res_config_settings_view.xml',
         # 'views/stock_move_line_view.xml',
         'wizard/product_import_by_sku_wizard_view.xml',
         'wizard/kits_read_file_error_message.xml',

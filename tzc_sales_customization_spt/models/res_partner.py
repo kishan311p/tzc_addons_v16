@@ -437,6 +437,7 @@ class res_partner(models.Model):
                     'default_template_id': template_id,
                     'custom_layout': 'mail.mail_notification_light',
                     'force_email': True,
+                    'quotation_send': True,
                 })
 
             return {

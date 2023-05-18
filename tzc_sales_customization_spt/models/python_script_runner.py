@@ -57,8 +57,8 @@ class python_script_runner(models.Model):
     #                 'name' : product.bridge_size.name,
     #                 'bridgesize_id' : product.color_code.id
     #             })
-    #         bridge_size.color_code = color_code.id
-    #         product.bridgesize_id = bridge_size.id
+    #         bridge_size.bridgesize_id = color_code.id
+    #         product.bridge_size = bridge_size.id
 
     #         temple_size = temple_size_obj.search([('name','=',product.temple_size.name),('templesize_id','=',product.color_code.id)])
     #         if not temple_size:

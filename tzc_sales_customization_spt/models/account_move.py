@@ -640,7 +640,8 @@ class account_move(models.Model):
             model_description=self.with_context(lang=lang).type_name,
             force_email=True,
             default_is_print=False,
-            signature=self.invoice_user_id.signature
+            signature=self.invoice_user_id.signature,
+            quotation_send = True
         )
         return {
             'name': _('Send Invoice'),

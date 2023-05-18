@@ -29,7 +29,7 @@
         <field name="name">kits.b2b.recent.view.view.tree</field>
         <field name="model">kits.b2b.recent.view</field>
         <field name="arch" type="xml">
-            <tree string="">
+            <tree default_order="create_date desc">
                 <field name="write_date" string="Date"/>
                 <field name="product_id" />
                 <field name="partner_id" />
@@ -48,7 +48,7 @@
                 <field name="website_id" />
                 <group expand="0" string="Group By">
                     <filter string="Product" name="product_id" domain="" context="{'group_by':'product_id'}"/>
-                    <filter string="Customer" name="partner_id" domain="" context="{'group_by':'partner_id'}"/>
+                    <filter string="Customer" name="grp_partner_id" domain="" context="{'group_by':'partner_id'}"/>
                     <filter string="Website" name="website_id" domain="" context="{'group_by':'website_id'}"/>
                     <filter string="Recently Viewed" name="recentviewdate" context="{'group_by': 'write_date'}"/> 
                 </group>
@@ -60,6 +60,7 @@
         <field name="name">Recent view</field>
         <field name="res_model">kits.b2b.recent.view</field>
         <field name="view_mode">tree,form</field>
+        <field name="context">{'search_default_grp_partner_id':1}</field>
     </record>
 
 

@@ -1518,7 +1518,7 @@ class ProductProduct(models.Model):
                 'type': 'ir.actions.act_window',
                 'domain': [('is_case_product','=',True)],
                 # 'context' : {"search_default_filter_is_case_product":True,'case_product':True,'default_is_case_product':True,'default_purchase_ok':False,'default_default_code':"test"}
-                'context' : {"search_default_filter_is_case_product":True,'case_product':True,'default_is_case_product':True,'default_purchase_ok':False,'default_categ_id':product_categ_id.id,'default_detailed_type':'product'}
+                'context' : {'pending_price': True,"search_default_filter_is_case_product":True,'case_product':True,'default_is_case_product':True,'default_purchase_ok':False,'default_categ_id':product_categ_id.id,'default_detailed_type':'product'}
             }
     @api.model
     def _get_view(self, view_id=None, view_type='search', **options):

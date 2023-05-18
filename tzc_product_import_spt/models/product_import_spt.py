@@ -531,7 +531,7 @@ class product_import_spt(models.Model):
 
                         begin
                             
-                            insert into product_template (default_code,name,detailed_type,active,categ_id,uom_id,uom_po_id,tracking,sale_line_warn,sale_ok,purchase_ok) values (default_code,pname,'product',active,categ_id,1,1,'none','no-message','t','t');
+                            insert into product_template (default_code,name,detailed_type,active,categ_id,uom_id,uom_po_id,tracking,sale_line_warn,sale_ok,purchase_ok,invoice_policy) values (default_code,pname,'product',active,categ_id,1,1,'none','no-message','t','t','delivery');
                             
                             insert into product_product (product_tmpl_id,active,categ_id,default_code,updated_by,updated_on) values (currval('product_template_id_seq'),active,categ_id,default_code,UserId,Now());
                             

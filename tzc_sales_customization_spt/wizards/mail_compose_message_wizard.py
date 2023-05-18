@@ -1,7 +1,9 @@
-from odoo import _, api, fields, models, tools
+from odoo import _, api, fields, models, tools, Command
 from odoo.exceptions import UserError
 from datetime import datetime
 from odoo.tools.safe_eval import safe_eval
+
+import ast
 
 def _reopen(self, res_id, model, context=None):
         context = dict(context or {}, default_model=model)
@@ -41,6 +43,10 @@ class mail_compose_message_wizard(models.TransientModel):
                 rec.campaign_name = ''
 
     def action_send_mail(self):
+        if self._context.get('quotation_send'):
+            ctx = self._context.copy()
+            ctx.update({'mail_notify_author': True})
+            self.env.context = ctx
         if self._context.get('active_model') and self._context.get('active_model') == 'kits.generate.payment.link.wizard':
             ctx = self._context.copy()
             ctx.update({'order_id':self.res_id})
@@ -48,7 +54,7 @@ class mail_compose_message_wizard(models.TransientModel):
         if self._context.get('cart_recovery') and self._context.get('next_execution_date'):
             order_id = self.env[self._context.get('default_model')].search([('id','=',self._context.get('default_res_id'))])
             order_id.write({'next_execution_date':self._context.get('next_execution_date')})
-        self.send_mail()
+        self._action_send_mail()
         if self._context.get('active_model') == 'mail.template':
             mail_context=self._context.copy()
             partner_ids = self.partner_ids.filtered(lambda x: x.mailgun_verification_status == 'approved' and x.email).ids
@@ -110,7 +116,7 @@ class mail_compose_message_wizard(models.TransientModel):
         else:
             return {'type': 'ir.actions.act_window_close', 'infos': 'mail_sent'}
 
-    def send_mail(self,auto_commit=False):
+    def _action_send_mail(self,auto_commit=False):
         if not self._context.get('campaign'):
             ctx = self.env.context.copy()
             if self.env.context.get('user_bulk_mail'):
@@ -121,6 +127,7 @@ class mail_compose_message_wizard(models.TransientModel):
                 self.env.context = ctx
             notif_layout = self._context.get('default_email_layout_xmlid')
             model_description = self._context.get('model_description')
+            result_mails_su, result_messages = self.env['mail.mail'].sudo(), self.env['mail.message']
             for wizard in self:
                 if wizard.attachment_ids and wizard.composition_mode != 'mass_mail' and wizard.template_id:
                     new_attachment_ids = []
@@ -130,16 +137,16 @@ class mail_compose_message_wizard(models.TransientModel):
                         else:
                             new_attachment_ids.append(attachment.id)
                     new_attachment_ids.reverse()
-                    wizard.write({'attachment_ids': [(6, 0, new_attachment_ids)]})
+                    wizard.write({'attachment_ids': [Command.set(new_attachment_ids)]})
 
                 mass_mode = wizard.composition_mode in ('mass_mail', 'mass_post')
 
-                Mail = self.env['mail.mail']
+                # Mail = self.env['mail.mail']
                 ActiveModel = self.env[wizard.model] if wizard.model and hasattr(self.env[wizard.model], 'message_post') else self.env['mail.thread']
                 if wizard.composition_mode == 'mass_post':
                     ActiveModel = ActiveModel.with_context(mail_notify_force_send=False, mail_create_nosubscribe=True)
                 if mass_mode and wizard.use_active_domain and wizard.model:
-                    res_ids = self.env[wizard.model].search(safe_eval(wizard.active_domain)).ids
+                    res_ids = self.env[wizard.model].search(ast.literal_eval(wizard.active_domain)).ids
                 elif mass_mode and wizard.model and self._context.get('active_ids'):
                     res_ids = self._context['active_ids']
                 else:
@@ -153,10 +160,10 @@ class mail_compose_message_wizard(models.TransientModel):
                 elif wizard.subtype_id:
                     subtype_id = wizard.subtype_id.id
                 else:
-                    subtype_id = self.env['ir.model.data'].xmlid_to_res_id('mail.mt_comment')
+                    subtype_id = self.env['ir.model.data']._xmlid_to_res_id('mail.mt_comment')
 
                 for res_ids in sliced_res_ids:
-                    batch_mails = Mail
+                    batch_mails_sudo = self.env['mail.mail'].sudo()
                     all_mail_values = wizard.get_mail_values(res_ids)
                     if self.composition_mode == 'mass_mail' and all_mail_values:
                         for values in all_mail_values:
@@ -182,14 +189,13 @@ class mail_compose_message_wizard(models.TransientModel):
                             mail_values['reply_to'] = mail_values.get('email_from')
 
                         if wizard.composition_mode == 'mass_mail':
-                            batch_mails |= Mail.create(mail_values)
+                            batch_mails_sudo |= batch_mails_sudo.create(mail_values)
                         else:
                             post_params = dict(
-                                message_type=wizard.message_type,
                                 subtype_id=subtype_id,
-                                email_layout_xmlid=notif_layout,
-                                add_sign=not bool(wizard.template_id),
-                                mail_auto_delete=wizard.template_id.auto_delete if wizard.template_id else True,
+                                email_layout_xmlid=notif_layout or wizard.email_layout_xmlid,
+                                email_add_signature=not bool(wizard.template_id) and wizard.email_add_signature,
+                                mail_auto_delete=wizard.template_id.auto_delete if wizard.template_id else self._context.get('mail_auto_delete', True),
                                 model_description=model_description)
                             post_params.update(mail_values)
                             if ActiveModel._name == 'mail.thread':
@@ -197,6 +203,7 @@ class mail_compose_message_wizard(models.TransientModel):
                                     post_params['model'] = wizard.model
                                     post_params['res_id'] = res_id
                                 if not ActiveModel.message_notify(**post_params):
+                                    # if message_notify returns an empty record set, no recipients where found.
                                     raise UserError(_("No recipient found."))
                             else:
                                 email_list = [self.env.company.catchall_email]
@@ -207,8 +214,10 @@ class mail_compose_message_wizard(models.TransientModel):
                                     if order_id and (self._context.get('active_model') or self._context.get('default_model')) == 'sale.order':
                                         email_list.append(order_id.user_id.email)
                                 post_params['reply_to'] = ','.join(email_list)
-                                ActiveModel.browse(res_id).with_context(res_id=res_id).message_post(**post_params)
-
+                                # ActiveModel.browse(res_id).with_context(res_id=res_id).message_post(**post_params)
+                                result_messages += ActiveModel.browse(res_id).with_context(res_id=res_id).message_post(**post_params)
+                    
+                    result_mails_su += batch_mails_sudo
                     if wizard.composition_mode == 'mass_mail':
                         # if self._context.get('create_log'):
                         #     mail_server_id = eval(self.env['ir.config_parameter'].sudo().get_param('mass_mailing.mail_server_id'))
@@ -229,7 +238,8 @@ class mail_compose_message_wizard(models.TransientModel):
                         #                 'state':'fail',
                         #                 }
                         #             log_id = self.env['mailgun.email.logs'].create(rec_vals)
-                        batch_mails.send(auto_commit=auto_commit)
+                        batch_mails_sudo.send(auto_commit=auto_commit)
+            return result_mails_su, result_messages
         else:
             campaign_obj = self.env['marketing.campaign']
             mailing_obj = self.env['mailing.mailing']

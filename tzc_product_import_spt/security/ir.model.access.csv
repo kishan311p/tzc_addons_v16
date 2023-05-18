@@ -3,4 +3,6 @@ access_all_product_import_line_spt,access.all.product.import.line.spt,model_prod
 access_all_product_import_spt,access.all.product.import.spt,model_product_import_spt,,1,1,1,1
 access_kits_read_file_error_message,access.kits.read.file.error.message,model_kits_read_file_error_message,,1,1,1,1
 access_product_import_by_sku_wizard,access.product.import.by.sku.wizard,model_product_import_by_sku_wizard,,1,1,1,1
+access_product_import_on_barcode,access.product.import.on.barcode,model_product_import_on_barcode,,1,1,1,1
+access_product_import_on_barcode_line,access.product.import.on.barcode.line,model_product_import_on_barcode_line,,1,1,1,1
 

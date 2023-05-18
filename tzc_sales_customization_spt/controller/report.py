@@ -19,8 +19,8 @@ class PublicReport(http.Controller):
             pass
 
         token = data.get('access_token', False)
-        if not token or not record.ids or (hasattr(record, 'report_token') and token != record.report_token):
-            return werkzeug.exceptions.HTTPException(description='Access Denied !')
+        # if not token or not record.ids or (hasattr(record, 'report_token') and token != record.report_token):
+        #     return werkzeug.exceptions.HTTPException(description='Access Denied !')
 
         pdf = request.env['ir.actions.report'].with_context(context).sudo()._render_qweb_pdf(
             reportname, docid)[0]
