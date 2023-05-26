@@ -55,7 +55,7 @@ class campaign_report_contacts(models.Model):
     mailing_tag_ids = fields.Many2many('res.partner.category',string="Tags",compute="_compute_mailing_contact",store=True,compute_sudo=True)
     mailing_source = fields.Selection([('imported','Imported'),('odoo_contact','Odoo Contact'),('newsletter','Newsletter'),('mixed','Mixed')],compute="_compute_mailing_contact",string="Source",compute_sudo=True)
     mailing_prospect_level = fields.Selection([('zero','0'),('one','1')],compute="_compute_mailing_contact",string="Prospect Level",compute_sudo=True)
-    mailing_status_type = fields.Selection([('b2c','B2C'),('b2b_regular','B2B-Regular	'),('b2b_fs','B2B-Fs')],compute="_compute_mailing_contact",string="Status Type",compute_sudo=True)
+    mailing_status_type = fields.Selection([('b2c','Pending'),('b2b_regular','Verified')],compute="_compute_mailing_contact",string="Status Type",compute_sudo=True)
     mailing_action_type = fields.Selection([('confirmed','Confirmed'),('not_connected','Not Connected')],compute="_compute_mailing_contact",string="Action Type",compute_sudo=True)
     mailing_write_date = fields.Datetime('Last Updated On',compute="_compute_mailing_contact",store=True,compute_sudo=True)
     mailing_orders = fields.Integer(compute="_compute_mailing_contact",string="#Orders",store=True,compute_sudo=True)

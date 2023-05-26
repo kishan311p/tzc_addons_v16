@@ -37,6 +37,8 @@
                                 <field name="production_hash_value_usd" attrs="{'invisible':[('account_type','!=','production')]}"/>
                                 <field name="production_merchant_id_cad" attrs="{'invisible':[('account_type','!=','production')]}"/>
                                 <field name="production_hash_value_cad" attrs="{'invisible':[('account_type','!=','production')]}"/>
+
+                                <field name="journal_id" options="{'no_open': True, 'no_create': True}" />
                             </group>
                         </group>
                     </page>

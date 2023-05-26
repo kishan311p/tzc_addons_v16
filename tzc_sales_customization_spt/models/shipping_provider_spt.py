@@ -10,6 +10,9 @@ class shipping_provider_spt(models.Model):
 
     provider = fields.Selection(selection="_get_provider",string="Provider",required=True)
     sequence = fields.Integer()
+    carrier_id = fields.Many2one('delivery.carrier','Service Type')
+    is_tracking_req_flag = fields.Boolean('Tracking No. Required ?')
+
     @api.model
     def _get_provider(self):
         return list(self.env['delivery.carrier']._fields['delivery_type'].selection)

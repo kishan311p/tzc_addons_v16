@@ -215,6 +215,14 @@
                             <span style="color:#017e84;">Picked Quantity</span>
                         </div>
                     </button>
+                    <button name="ordered_qty_button" readonly="1" type="object" class="oe_stat_button disabled opacity-100" attrs="{'invisible' : [('return_order_id','!=',False)]}">
+                        <div class="col-12 text-center">
+                            <field name="no_of_delivery_package" style="color:#017e84;"/>
+                        </div>
+                        <div class="col-12 text-center">
+                            <span style="color:#017e84;">Package</span>
+                        </div>
+                    </button>
                 </xpath>
                 <xpath expr="//field[@name='move_ids_without_package']/tree" position="attributes">
                     <attribute name="default_order">product_id</attribute>
@@ -366,7 +374,7 @@
                     <group name="case_product_group_heading" string="Cases"></group>
                     <field name="case_move_ids_without_package"
                     widget="stock_move_one2many"
-                    context="{'default_company_id': company_id, 'default_date': scheduled_date, 'default_date_deadline': date_deadline, 'picking_type_code': picking_type_code, 'default_picking_id': id, 'form_view_ref':'stock.view_move_form', 'address_in_id': partner_id, 'default_picking_type_id': picking_type_id, 'default_location_id': location_id, 'default_location_dest_id': location_dest_id, 'default_partner_id': partner_id}"
+                    context="{'default_company_id': company_id, 'default_date': scheduled_date, 'default_date_deadline': date_deadline, 'picking_type_code': picking_type_code, 'default_picking_id': id, 'form_view_ref':'stock.view_move_form', 'address_in_id': partner_id, 'default_picking_type_id': picking_type_id, 'default_location_id': location_id, 'default_location_dest_id': location_dest_id, 'default_partner_id': partner_id,'case_order_extra':True}"
                     attrs="{'readonly': [('state', 'in', ['scanned','assigned','done','cancel'])]}"                    
                     >
                         <tree decoration-danger="qty_available &lt; quantity_done" decoration-warning="quantity_done &gt; product_uom_qty" decoration-muted="scrapped == True or state == 'cancel' or (state == 'done' and is_locked == True)" string="Stock Moves" delete="0" default_order="product_id" editable='bottom' >
@@ -600,7 +608,11 @@
                 <attribute name="invisible">1</attribute>
             </xpath>
             <xpath expr="//group[@name='carrier_data']/label[@for='shipping_weight']" position="attributes">
-                <attribute name="string">Calculated Weight for items (kg)</attribute>
+                <attribute name="invisible">1</attribute>
+                <!-- <attribute name="string">Calculated Weight for items (kg)</attribute> -->
+            </xpath>
+            <xpath expr="//group[@name='carrier_data']/div[3]" position="attributes">
+                <attribute name="invisible">1</attribute>
             </xpath>
             <xpath expr="//button[@name='send_to_shipper']" position="attributes">
                 <attribute name="class">oe_highlight</attribute>
@@ -621,30 +633,30 @@
                     <field name="shipping_weight" class="oe_inline"/>
                     <field name="weight_uom_name" nolabel="1" class="oe_inline" style="margin-left:5px"/>
                 </div> -->
-                <label for="weight_of_cases" />
+                <!-- For now this field is in no use so hiding it. -->
+                <!-- <label for="weight_of_cases" />
                 <div>
                     <field name="weight_of_cases" class="oe_inline"/> kg
-                </div>
+                </div> -->
                 <label for="weight_total_kg" />
                 <div>
                     <field name="weight_total_kg" class="oe_inline"/> kg
                 </div>
-                <label for="actual_weight" />
+                <!-- <label for="actual_weight" />
                 <div>
                     <field name="actual_weight" readonly="1" force_save="1" class="oe_inline"/> kg
-                </div>
+                </div> -->
             </xpath>
             <xpath expr="//group[@name='other_infos']" position="after">
                 <field name="file_name" invisible="1"/>
                 <field name="is_provider_pick_up" invisible="1"/>
                 <div>
-                    <div class="o_row d-flex">
+                    <!-- <div class="o_row d-flex">
                         <label for="carrier_id" style="font-weight: bold;" attrs="{'readonly':[('state','in',['done','cancel'])]}">Service Type</label>
                         <div class="col-12">
                             <field name="carrier_id" string="Service Type" force_save="1" attrs="{'readonly':[('state','in',['done','cancel'])]}" domain="[('delivery_type','=',provider),('is_freight','=',False)]" options="{ 'no_open': True}"/>
-                            <!-- <field name="calulate_shipping_cost" widget="monetary" force_save="1" attrs="{'invisible':[('state','in',('cancel','merged'))],'readonly':[('state','in',['done','cancel','assigned'])]}"/> -->
                         </div>
-                    </div>
+                    </div> -->
                     <div class="o_row d-flex" groups="stock.group_stock_manager">
                         <label for="calulate_shipping_cost" style="font-weight: bold;" attrs="{'invisible':[('state','in',('cancel','merged'))]}" />
                         <div class="col-12">
@@ -661,12 +673,12 @@
                                 Get Rate
                         </button>
                     </div>
-                    <div class="o_row d-flex">
+                    <!-- <div class="o_row d-flex">
                         <label for="shipping_label" style="font-weight:bold;"/>
                         <div class="col-12">
                             <field name="shipping_label" readonly="1" filename="file_name"/>
                         </div>
-                    </div>
+                    </div> -->
                     <div>
                         <button name="get_label" type="object" attrs="{'invisible':[('state','in',('done','cancel','merged'))]}">
                             <i class="fa fa-arrow-right mr-1" />
@@ -737,7 +749,7 @@
                     <field name="total_box" attrs="{'readonly':[('state','in',['done','cancel'])],'invisible':[('is_fedex','=',False)]}" />
                     <field name="weight" attrs="{'readonly':[('state','in',['done','cancel'])],'required':[('state','=','assigned'),('is_fedex','=',True)],'invisible':[('is_fedex','=',False),('is_ups','=',False)]}" />
                     <field name="weight_unit" attrs="{'readonly':[('state','in',['done','cancel'])],'required':[('state','=','assigned'),('is_fedex','=',True)],'invisible':[('is_fedex','=',False),('is_ups','=',False)]}" />
-
+                    <field name="provider" invisible="1" />
                     <field name="package_type_id" options="{'no_create':True}" domain="[('package_carrier_type', '=',provider)]" attrs="{'readonly':[('state','in',['done','cancel'])],'required':[('state','=','assigned'),('is_fedex','=',True),('is_ups','=',True)],'invisible':[('is_fedex','=',False),('is_ups','=',False)]}" />
                     <field name="height" attrs="{'readonly':[('state','in',['done','cancel'])],'invisible':[('is_fedex','=',False),('is_ups','=',False)],'required':[('state','=','assigned'),('is_ups','=',True)]}" />
                     <field name="width" attrs="{'readonly':[('state','in',['done','cancel'])],'invisible':[('is_fedex','=',False),('is_ups','=',False)],'required':[('state','=','assigned'),('is_ups','=',True)]}" />
@@ -767,6 +779,7 @@
                 </group>
             </xpath>
             <xpath expr="//sheet" position="before">
+                <field name="show_update_button" invisible="1" />
                 <div role="alert" class="alert alert-info" attrs="{'invisible':['|',('state','in',('done','cancel')),('show_update_button','=',False)]}">
                     Make sure you update cases in order.
                 </div>
@@ -789,6 +802,37 @@
             <xpath expr="//button[@name='cancel_shipment']" position="attributes">
                 <attribute name="invisible">1</attribute>
             </xpath>
+            <xpath expr="//group[@name='carrier_data']" position="before">
+                <field name="delivery_box_line_ids">
+                    <tree editable='bottom'>
+                        <field name="deliver_box_id" width='15%' required='1' options="{'no_create': True}"/>
+                        <field name="weight"/>
+                        <field name="qty" />
+                        <!-- <field name="extra_case_qty" /> -->
+                    </tree>
+                </field>
+                <field name="delivery_package_line_ids">
+                    <tree editable='bottom'>
+                        <field name="name" required='1' />
+                        <field name="deliver_box_domain_ids" invisible="1" force_save='1' />
+                        <field name="delivery_box_ids"  options="{'create':False,'edit':False}"  widget="many2many_tags" domain="[('id','in',deliver_box_domain_ids)]" required='1'/>
+                        <field name="categ_ids" invisible='1' force_save='1' />
+                        <field name="commodity_ids" domain="[('id','in',categ_ids)]" widget="many2many_tags" required='1' options="{'no_create': True}"/>
+                        <field name="height" required='1' />
+                        <field name="width" required='1' />
+                        <field name="length" required='1' />
+                        <field name="weight" readonly='1' force_save='1'/>
+                        <field name="qty" readonly='1' force_save='1' />
+                        <field name="tracking_number" readonly='1' force_save='1' />
+                        <!-- <div class="col-12">
+                            <field name="package_label" readonly="1" filename="file_name"/>
+                        </div> -->
+                        <field name="package_label" readonly='1'  widget="download_link" filename="file_name" />
+                        <field name="file_name" invisible="1" />
+                    </tree>
+                </field>
+            </xpath>
+
         </field>
     </record>
     

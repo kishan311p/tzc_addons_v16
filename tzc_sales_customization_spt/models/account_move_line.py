@@ -1,6 +1,12 @@
 # -*- coding: utf-8 -*-
 from odoo import models, fields, api, _
-from odoo.exceptions import ValidationError,UserError
+from odoo.exceptions import ValidationError, UserError
+import ast
+from collections import defaultdict
+from contextlib import contextmanager
+from datetime import date, timedelta
+from functools import lru_cache
+from odoo.tools import frozendict, formatLang, format_date, float_compare, Query
 
 class AccountMoveLine(models.Model):
     _inherit = 'account.move.line'
@@ -17,6 +23,14 @@ class AccountMoveLine(models.Model):
     # is_fs = fields.Boolean("Is FS?")
     # is_promotion_applied = fields.Boolean("Is promotion applied?",compute='_compute_boolean_fields')
     primary_image_url = fields.Char("Primary Image URL",related='product_id.primary_image_url')
+
+    _sql_constraints = [
+        (
+            "check_amount_currency_balance_sign",
+            """CHECK(1=1)""",
+            ""
+        ),
+    ]
     # def write(self, vals):
     #     if 'pos_model' in self._context.keys():
     #         create_context = {}
@@ -43,6 +57,89 @@ class AccountMoveLine(models.Model):
     #     'move_id.invoice_line_ids.price_unit',
     #     'quantity','discount','price_unit'
     #    )
+
+    @api.depends('tax_ids', 'currency_id', 'partner_id', 'analytic_distribution', 'balance', 'partner_id', 'move_id.partner_id', 'price_unit')
+    def _compute_all_tax(self):
+        for line in self:
+            sign = line.move_id.direction_sign
+            if line.display_type == 'tax':
+                line.compute_all_tax = {}
+                line.compute_all_tax_dirty = False
+                continue
+            if line.display_type == 'product' and line.move_id.is_invoice(True):
+                # amount_currency = sign * line.discount_unit_price * (1 - line.discount / 100)
+                amount_currency = sign * line.discount_unit_price
+                handle_price_include = True
+                quantity = line.quantity
+            else:
+                amount_currency = line.amount_currency
+                handle_price_include = False
+                quantity = 1
+            line.tax_ids
+            compute_all_currency = line.tax_ids.compute_all(
+                amount_currency,
+                currency=line.currency_id,
+                quantity=quantity,
+                product=line.product_id,
+                partner=line.move_id.partner_id or line.partner_id,
+                is_refund=line.is_refund,
+                handle_price_include=handle_price_include,
+                include_caba_tags=line.move_id.always_tax_exigible,
+                fixed_multiplicator=sign,
+            )
+            rate = line.amount_currency / line.balance if line.balance else 1
+            line.compute_all_tax_dirty = True
+            line.compute_all_tax = {
+                frozendict({
+                    'tax_repartition_line_id': tax['tax_repartition_line_id'],
+                    'group_tax_id': tax['group'] and tax['group'].id or False,
+                    'account_id': tax['account_id'] or line.account_id.id,
+                    'currency_id': line.currency_id.id,
+                    'analytic_distribution': (tax['analytic'] or not tax['use_in_tax_closing']) and line.analytic_distribution,
+                    'tax_ids': [(6, 0, tax['tax_ids'])],
+                    'tax_tag_ids': [(6, 0, tax['tag_ids'])],
+                    'partner_id': line.move_id.partner_id.id or line.partner_id.id,
+                    'move_id': line.move_id.id,
+                }): {
+                    'name': tax['name'],
+                    'balance': tax['amount'] / rate,
+                    'amount_currency': tax['amount'],
+                    'tax_base_amount': tax['base'] / rate * (-1 if line.tax_tag_invert else 1),
+                }
+                for tax in compute_all_currency['taxes']
+                if tax['amount']
+            }
+            if not line.tax_repartition_line_id:
+                line.compute_all_tax[frozendict({'id': line.id})] = {
+                    'tax_tag_ids': [(6, 0, compute_all_currency['base_tags'])],
+                }
+
+    # @api.depends('quantity', 'discount', 'price_unit', 'tax_ids', 'currency_id')
+    # def _compute_totals(self):
+    #     for line in self:
+    #         line.price_subtotal =  line.sale_line_ids.price_subtotal
+    #         line.price_total =  line.sale_line_ids.price_total
+    #         if line.display_type != 'product':
+    #             line.price_total = line.price_subtotal = False
+    #         # Compute 'price_subtotal'.
+    #         line_discount_price_unit = line.discount_unit_price 
+    #         subtotal = line.quantity * line_discount_price_unit
+
+    #         # Compute 'price_total'.
+    #         if line.tax_ids:
+    #             taxes_res = line.tax_ids.compute_all(
+    #                 line_discount_price_unit,
+    #                 quantity=line.quantity,
+    #                 currency=line.currency_id,
+    #                 product=line.product_id,
+    #                 partner=line.partner_id,
+    #                 is_refund=line.is_refund,
+    #             )
+    #             line.price_subtotal = taxes_res['total_excluded']
+    #             line.price_total = taxes_res['total_included']
+    #         else:
+    #             line.price_total = line.price_subtotal = subtotal
+
     def _compute_discount_price(self):
         for record in self:
             # discounted_price = record.price_unit
@@ -52,12 +149,14 @@ class AccountMoveLine(models.Model):
                 # discounted_price = round(record.price_unit - unit_discount_price,2)
             record.unit_discount_price = round(record.sale_line_ids.fix_discount_price,2)
             record.discount_unit_price = round(record.sale_line_ids.unit_discount_price,2) #Our Price
-            if record.product_id.detailed_type == 'product':
-                total = record._get_price_total_and_subtotal_model(record.sale_line_ids[0].price_unit,record.sale_line_ids[0].picked_qty,record.sale_line_ids[0].discount,record.sale_line_ids[0].currency_id,record.sale_line_ids[0].product_id,record.partner_id,record.sale_line_ids[0].tax_id,record.move_type)
-            else:
-                total = record._get_price_total_and_subtotal_model(record.sale_line_ids[0].price_unit,record.sale_line_ids[0].product_uom_qty,record.sale_line_ids[0].discount,record.sale_line_ids[0].currency_id,record.sale_line_ids[0].product_id,record.partner_id,record.sale_line_ids[0].tax_id,record.move_type)
+            total = {}
+            if record.sale_line_ids:
+                if record.product_id.detailed_type == 'product':
+                    total = record._get_price_total_and_subtotal_model(record.sale_line_ids[0].price_unit,record.sale_line_ids[0].picked_qty,record.sale_line_ids[0].discount,record.sale_line_ids[0].currency_id,record.sale_line_ids[0].product_id,record.partner_id,record.sale_line_ids[0].tax_id,record.move_type)
+                else:
+                    total = record._get_price_total_and_subtotal_model(record.sale_line_ids[0].price_unit,record.sale_line_ids[0].product_uom_qty,record.sale_line_ids[0].discount,record.sale_line_ids[0].currency_id,record.sale_line_ids[0].product_id,record.partner_id,record.sale_line_ids[0].tax_id,record.move_type)
                 
-            record.price_total = total.get('price_total')
+            record.price_total = total.get('price_total') if total.get('price_total') else 0.0
             record.price_subtotal = record.sale_line_ids.picked_qty_subtotal # Subtotal
 
     @api.onchange('product_id')
@@ -231,9 +330,54 @@ class AccountMoveLine(models.Model):
                 result[move_line_id] = unknown_sale_line
         return result
 
+    def _convert_to_tax_base_line_dict(self):
+        """ Convert the current record to a dictionary in order to use the generic taxes computation method
+        defined on account.tax.
+        :return: A python dictionary.
+        """
+        self.ensure_one()
+        is_invoice = self.move_id.is_invoice(include_receipts=True)
+        sign = -1 if self.move_id.is_inbound(include_receipts=True) else 1
+
+        return self.env['account.tax']._convert_to_tax_base_line_dict(
+            self,
+            partner=self.partner_id,
+            currency=self.currency_id,
+            product=self.product_id,
+            taxes=self.tax_ids,
+            price_unit=self.discount_unit_price,
+            quantity=self.quantity,
+            discount=self.discount ,
+            account=self.account_id,
+            analytic_distribution=self.analytic_distribution,
+            price_subtotal=sign * self.amount_currency,
+            is_refund=self.is_refund,
+            rate=(abs(self.amount_currency) / abs(self.balance)) if self.balance else 1.0
+        )
+
     @api.depends('quantity', 'discount', 'price_unit', 'tax_ids', 'currency_id')
     def _compute_totals(self):
         for record in self:
             record.price_subtotal =  record.sale_line_ids.price_subtotal
             record.price_total =  record.sale_line_ids.price_total
         return super(AccountMoveLine, self)._compute_totals()
+
+    @api.model
+    def create(self,vals):
+        product_id = self.env['product.product'].browse(vals.get('product_id'))
+        if vals.get('display_type') == 'product' and product_id.is_global_discount:
+            vals.update({'price_unit':-vals.get('price_unit')})
+        res = super(AccountMoveLine,self).create(vals)
+        for rec in res:
+            if rec.display_type == 'payment_term':
+                rec.balance = res.amount_currency
+            if rec.display_type == 'product' and rec.move_id.move_type == 'out_invoice':
+                if not res.product_id.is_global_discount:
+                    rec.balance = rec.price_subtotal
+                    rec.credit = rec.price_subtotal
+                else:
+                    rec.debit = rec.discount_unit_price
+                    rec.amount_currency = rec.discount_unit_price
+            if rec.sale_line_ids:
+                rec.discount_unit_price = rec.sale_line_ids[0].unit_discount_price
+        return res

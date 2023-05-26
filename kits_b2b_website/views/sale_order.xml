@@ -7,8 +7,19 @@
         <field name="inherit_id" ref="sale.view_order_form"/>
         <field name="arch" type="xml">
             <xpath expr="//field[@name='currency_id']" position="replace">
-                    <!-- <field name="currency_id" invisible="1"/> -->
-                    <field name="b2b_currency_id"  options="{'no_open': True, 'no_create': True}" required="1" attrs="{'readonly':[('state','in',['scan','shipped','draft_inv','open_inv','cancel','merged','done'])]}"/>
+                <div>
+                    <div class="col-6" style="display:flex;">
+                        <label for='b2b_currency_id' style="font-weight:bold;"/>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-4" style="display:flex">
+                        <field name="b2b_currency_id" options="{'no_open': True, 'no_create': True}" required="0" attrs="{'readonly':[('state','in',['scan','shipped','draft_inv','open_inv','cancel','merged','done'])]}" readonly="1" force_save="1"/>
+                    </div>
+                    <div class="col-6" style="display:flex; margin-top: -6px;">
+                        <button icon="fa-solid fa-pencil" name="action_change_currency" type="object" />
+                    </div>
+                </div>
             </xpath>
         </field>
     </record>

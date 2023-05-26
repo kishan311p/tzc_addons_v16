@@ -69,7 +69,7 @@ class stock_move(models.Model):
         moves_todo._check_company()
         # Split moves where necessary and move quants
         backorder_moves_vals = []
-        for move in moves_todo:
+        for move in moves_todo.filtered(lambda x:not x.product_id.product_tmpl_id.is_case_product):
             # To know whether we need to create a backorder or not, round to the general product's
             # decimal precision and not the product's UOM.
             rounding = self.env['decimal.precision'].precision_get('Product Unit of Measure')

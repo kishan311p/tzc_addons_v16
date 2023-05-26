@@ -68,7 +68,7 @@
 
         </xpath>
         <xpath expr="//tree/field[@name='tax_id']" position="before">
-            <field name="discount" string="Disc.%" optional="show" groups="product.group_discount_per_so_line" widget="sol_discount"/>
+            <field name="discount" string="Disc.%" force_save="1" optional="show" groups="product.group_discount_per_so_line" widget="sol_discount" attrs="{'readonly':['|','|','|',('is_admin','=',True),('is_shipping_product','=',True),('is_global_discount','=',True),('state','not in',['draft','sent','received','in_scanning','sale','scanned'])]}"/>
             <field name="unit_discount_price" force_save="1" attrs="{'readonly':['|','|',('is_admin','=',True),('is_global_discount','=',True),('state','not in',['draft','sent','received','in_scanning','sale','scanned'])]}" />
         </xpath>
         <xpath expr="//button[@name='action_quotation_send'][4]" position="after">
@@ -280,9 +280,9 @@
                 <attribute name="decoration-muted">is_shipping_product==True or is_admin==True or is_global_discount == True </attribute>
                 <attribute name="default_order">product_id</attribute>
                 <attribute name="limit">10000000</attribute>
-            <xpath expr="//tree/field[@name='discount']" position="after">
+            <!-- <xpath expr="//tree/field[@name='discount']" position="after">
                <field name="fix_discount_price" groups="product.group_discount_per_so_line" attrs="{'readonly':['|','|',('is_admin','=',True),('is_shipping_product','=',True),('state','not in',['draft','sent','received','in_scanning','sale','scanned'])]}" />
-            </xpath>
+            </xpath> -->
                 <!-- <xpath expr="//field[@name='order_line']/tree/field[@name='product_uom_qty']"
                     position="attributes">
                     <attribute name="attrs">
@@ -828,7 +828,7 @@
             <xpath expr="//page[@name='order_lines']/field[@name='order_line']" position="after">
                 <group name="non_case_product_lines" string="Order Lines">
                 </group>
-                <field name="non_case_order_line" attrs="{'readonly': [('state','not in',['draft','sent','received','in_scanning','sale','scanned'])]}">
+                <field name="non_case_order_line" attrs="{'readonly': [('state','not in',['draft','sent','received'])]}">
                 <!-- <field name="non_case_order_line" attrs="{'readonly': [('state','not in',['draft','sent','received','in_scanning','sale','scanned'])]}"> -->
                     <tree editable='bottom' default_order="product_id" create="0">
                         <!-- <field name="sequence" widget="handle"/> -->
@@ -887,7 +887,7 @@
                 </field>
                 <group name="case_product_lines" string="Cases" >
                 </group>
-                <field name="case_order_line" attrs="{'readonly':[('state','not in',('draft','sent','received','in_scanning','sale','scanned'))]}">
+                <field name="case_order_line" attrs="{'readonly':[('state','not in',('draft','sent','received'))]}">
                     <tree editable='bottom'  default_order="product_id" create="1">
                         <field name="sequence" widget="handle"/>
                         <field name="display_type" on_change="1" invisible="1"/>
@@ -895,7 +895,7 @@
                         <field name="product_type" on_change="1" invisible="1"/>
                         <field name="product_updatable" invisible="1"/>
                         <field name="primary_image_url" string="Image" widget="image" options="{'zoom': true,'thumb_image':'primary_image_url','preview_image':'primary_image_url','size': [100, 100]}"  width='200px' readonly="1"/>
-                        <field name="product_id"  context="{'from_sale_order':True}" force_save="1" attrs="{'readonly':['|','|',('is_admin','=',True),('is_shipping_product','=',True),('state','not in',['draft','sent','received'])]}" domain="[('is_case_product','=',True),('is_pending_price','!=',True)]"  options="{'no_create': True}" required="1"/>
+                        <field name="product_id"  context="{'from_sale_order':True}" force_save="1" attrs="{'readonly':['|','|',('is_admin','=',True),('is_shipping_product','=',True),('state','not in',['draft','sent','received'])]}" domain="[('is_case_product','=',True)]"  options="{'no_create': True}" required="1"/>
                         <field name="case_type" readonly="1" />
                         <field name="is_shipping_product" invisible="1"/>
                         <field name="is_admin" invisible="1"/>

@@ -122,7 +122,8 @@ class SaleOrderLine(models.Model):
             if extra_pricing.get('is_special_discount'):
                 unit_discount_price = (unit_discount_price - unit_discount_price * extra_pricing.get('special_disc_rate') / 100)
             
-            record.price_unit = product_price
+            if not self._context.get('currency_change'):
+                record.price_unit = product_price 
             # if unit_discount_price:
             if record.order_id.state not in record.order_id.draft_states():
                 record.price_subtotal = round(record.unit_discount_price * record.picked_qty,2)
@@ -215,7 +216,7 @@ class SaleOrderLine(models.Model):
             product_price = product_price_dict.get('price')
             unit_discount_price = product_price_dict.get('discounted_unit_price')
             fix_discount_price = product_price_dict.get('fix_discount_price')
-            extra_pricing = record.product_id.inflation_special_discount(record.order_id.partner_id.country_id.ids,bypass_flag=record.order_id.partner_id.b2b_pricelist_id.is_pricelist_excludedb2b_pricelist_id.is_pricelist_excluded)
+            extra_pricing = record.product_id.inflation_special_discount(record.order_id.partner_id.country_id.ids,bypass_flag=record.order_id.partner_id.b2b_pricelist_id.is_pricelist_excluded)
             if record.product_id:
                 update_dict = {'price_unit':round(product_price,2),
                                'unit_discount_price': round(unit_discount_price,2), 
@@ -307,10 +308,10 @@ class SaleOrderLine(models.Model):
         for line in range(len(self)):
             line = self[line]
             if line.order_id.state in ['sale', 'done','in_scanning','scanned','scan','shipped','draft_inv','open_inv']:
-                # if line.product_id.invoice_policy == 'order':
-                line.qty_to_invoice = line.picked_qty - line.qty_invoiced
-                # else:
-                #     line.qty_to_invoice = line.qty_delivered - line.qty_invoiced
+                if line.product_id.is_shipping_product or line.product_id.is_global_discount or line.product_id.is_admin:
+                    line.qty_to_invoice = line.product_uom_qty
+                else:
+                    line.qty_to_invoice = line.picked_qty - line.qty_invoiced
             else:
                 line.qty_to_invoice = 0
 
@@ -360,11 +361,11 @@ class SaleOrderLine(models.Model):
             else:
                 pass
 
-    @api.onchange('price_unit')
-    def onchange_price_unit_case(self):
-        for rec in self:
-            rec.price_unit = rec.price_unit
-            # self._cr.commit() 
+    #@api.onchange('price_unit')
+    #def onchange_price_unit_case(self):
+    #    for rec in self:
+    #        rec.price_unit = rec.price_unit
+    #        self._cr.commit() 
 
     @api.depends('product_id', 'product_uom', 'product_uom_qty')
     def _compute_price_unit(self):

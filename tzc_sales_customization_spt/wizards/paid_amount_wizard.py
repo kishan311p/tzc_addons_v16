@@ -24,24 +24,28 @@ class paid_amount_wizard(models.TransientModel):
                         invoice_id.commission_line_ids.write({'state':self.order_id.payment_status})
                     else:
                         invoice_id.commission_line_ids.write({'state':'draft'})
-                    # if rec.due_amount < 0.0:
-                    #     invoice_id.commission_line_ids.write({'state':'paid'})
-                    # elif rec.due_amount > 0.0:
-                    #     if self.amount >= rec.due_amount:
-                    #         invoice_id.commission_line_ids.write({'state':'paid'})
-                    #     elif self.amount < rec.due_amount:
-                    #         invoice_id.commission_line_ids.write({'state':'draft'})
-                    # elif rec.due_amount == 0.0:
-                    #     if rec.amount_paid and rec.amount_paid == rec.picked_qty_order_total:
-                    #         invoice_id.commission_line_ids.write({'state':'paid'})
-                    #     else:
-                    #         if self.amount >= rec.picked_qty_order_total:
-                    #             invoice_id.commission_line_ids.write({'state':'paid'})
-                    #         elif self.amount < rec.picked_qty_order_total:
-                    #             invoice_id.commission_line_ids.write({'state':'draft'})
-
+                 
             rec.mark_as_paid_by_user = self.env.user.id
             rec.paid_amount = self.amount or 0.0
-            self.env['order.payment'].create({'order_id':rec.id,'amount':float(self.amount),'state':'approve','is_manual_paid':True,'mode_of_payment':self.payment_method,'payment_description':self.description})
+      
+            payment_obj = self.env['account.payment'].sudo()
+            vals = {
+                'name' : self.order_id.name,
+                'partner_id' : self.order_id.partner_id.id,
+                'sale_id' : self.order_id.id,
+                'partner_type' : 'customer',
+                'payment_type' : 'inbound',
+                'journal_id' : self.env.company.journal_id.id,
+                'currency_id' : self.order_id.currency_id.id,
+                'date' : self.date,
+                'amount' : self.amount
+                }
+            payment = payment_obj.create(vals)
+            payment.action_post()
+            invoice_id = self.order_id.invoice_ids.filtered(lambda x:x.state == 'posted')
+            receive = payment.line_ids.filtered('credit')
+            if invoice_id:
+                invoice_id.js_assign_outstanding_line(receive.id)
+
             if rec.payment_link:
                 rec.payment_link = False

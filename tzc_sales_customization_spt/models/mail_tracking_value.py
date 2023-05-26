@@ -2,7 +2,7 @@ from odoo import _, api, fields, models, tools
 from datetime import datetime
 
 from .sale_order import NO_TRACKING_FIELDS
-
+from .account_move import NO_TRACKING_FIELDS_ACCOUNT_MOVE
 
 class mail_tracking_value(models.Model):
     _inherit = "mail.tracking.value"
@@ -18,6 +18,9 @@ class mail_tracking_value(models.Model):
         if model_name == 'sale.order' and col_name in NO_TRACKING_FIELDS+[
             'picked_qty_order_subtotal', 'picked_qty_order_discount', 'picked_qty_order_total',
         ]:
+            tracked = False
+
+        if model_name == 'account.move' and col_name in NO_TRACKING_FIELDS_ACCOUNT_MOVE:
             tracked = False
 
         if col_info['type'] in ['integer', 'float', 'char', 'text', 'datetime', 'monetary']:

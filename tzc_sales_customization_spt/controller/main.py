@@ -104,20 +104,35 @@ class kits_ReportController(http.Controller):
                     payment_status = 'declined'
 
         order_id = request.env['sale.order'].sudo().search([('name','like',order_number)])
-        invoice_id = order_id.invoice_ids.filtered(lambda x:x.state != 'cancel')
-        payment_obj = request.env['order.payment'].sudo()
-        same_transaction_line_id = request.env['order.payment'].sudo().search([('transaction_id','=',transaction_id)])
+        # payment_obj = request.env['order.payment'].sudo()
+        payment_obj = request.env['account.payment']
+        # same_transaction_line_id = request.env['order.payment'].sudo().search([('transaction_id','=',transaction_id)])
         if order_number and payment_status:
-            status = 'approve' if payment_status == 'approved' else 'decliend'
-            if transaction_id and not same_transaction_line_id:
-                payment_obj.create({'order_id':order_id.id,'amount':float(paid_amount),'state':status,'mode_of_payment':'bambora','is_manual_paid':False,'transaction_id':transaction_id})
-
+            # status = 'approve' if payment_status == 'approved' else 'decliend'
+            # if transaction_id and not same_transaction_line_id:
+            # payment_obj.create({'order_id':order_id.id,'amount':float(paid_amount),'state':status,'mode_of_payment':'bambora','is_manual_paid':False,'transaction_id':transaction_id})
+            pay_id = payment_obj.create({'name':order_id.name,
+                                'partner_id':order_id.partner_id.id,
+                                'sale_id':order_id.id,
+                                'partner_type':'customer',
+                                'payment_type':'inbound',
+                                'journal_id':request.env.company.journal_id.id,
+                                'currency_id':order_id.currency_id.id,
+                                'amount':float(paid_amount),
+                                'transaction_id':transaction_id,
+                                'date':datetime.datetime.now().date()})
+            pay_id.action_post()
+            receive = pay_id.line_ids.filtered('credit')
+            invoice_id = order_id.invoice_ids.filtered(lambda x:x.state == 'posted')
+            if invoice_id:
+                invoice_id.js_assign_outstanding_line(receive.id)
         if order_number and payment_status == 'approved':
-            if not same_transaction_line_id:
+            # if not same_transaction_line_id:
                 if order_id and order_id.state not in ['draft','sent','recived']:
-                    total_paid_amount = sum(payment_obj.search([('order_id','=',order_id.id),('state','=','approve')]).mapped('amount'))
+                    total_paid_amount = sum(payment_obj.sudo().search([('sale_id','=',order_id.id),('state','=','posted')]).mapped('amount'))
+                    # total_paid_amount = sum(payment_obj.search([('order_id','=',order_id.id),('state','=','approve')]).mapped('amount'))
                     # paid_amount = paid_amount if not total_paid_amount else total_paid_amount
-                    order_id.amount_paid = paid_amount
+                    order_id.amount_paid = total_paid_amount
                     if order_id.picked_qty_order_total == float(paid_amount):
                         order_id.is_paid = True
 

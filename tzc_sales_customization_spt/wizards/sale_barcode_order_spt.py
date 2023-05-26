@@ -66,6 +66,26 @@ class sale_barcode_order_spt(models.TransientModel):
                 sale_order_line = sale_order_line_obj.create(vals)
                 sale_order_line.product_id_change()
                 sale_order_line._onchange_fix_discount_price_spt()
+            
+            # Adding case product.
+            case_product_id = self.env['product.product'].browse(line.product_id.id).case_product_id.id
+            case_order_line_id = self.sale_id.order_line.filtered(lambda x:x.product_id.id == case_product_id)
+            if case_order_line_id:
+                order_line_id.product_uom_qty += line.product_qty
+            else:
+                case_product_price = self.env['kits.b2b.multi.currency.mapping'].get_product_price(self.partner_id.id,[case_product_id])
+                if case_product_id:
+                    case_vals = {
+                        'product_id' : case_product_id,
+                        'product_uom_qty' : line.product_qty,
+                        'order_id' : self.sale_id.id,
+                        'price_unit': round(case_product_price.get(case_product_id).get('price'),2),
+                        'sale_type': case_product_price.get(case_product_id).get('sale_type'),
+                        'unit_discount_price':round(case_product_price.get(case_product_id).get('sale_type_price'),2)
+                    }
+                    sale_case_order_line = sale_order_line_obj.create(case_vals)
+                    sale_case_order_line.product_id_change()
+                    sale_case_order_line._onchange_fix_discount_price_spt()
         self.sale_id.merge_order_lines()
         self.sale_id._amount_all()
         

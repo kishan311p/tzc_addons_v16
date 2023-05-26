@@ -297,10 +297,10 @@
                                                 <br/>
                                                 <t t-if="unit_discount_price">
                                                     <t t-if="'eto dubai' in doc.customer_id.property_product_pricelist.name or 'other eto' in doc.customer_id.property_product_pricelist.name">
-                                                        <span t-options='{"widget": "monetary", "display_currency":  doc.customer_id.property_product_pricelist.currency_id}' t-esc="doc.env['product.pricelist.item'].search([('product_id','=',line.product_pro_id.id),('pricelist_id','=',doc.customer_id.property_product_pricelist.id)]).fixed_price" style="white-space: nowrap;color:#7693f8;"/>
+                                                        <span t-options='{"widget": "monetary", "display_currency":  doc.customer_id.property_product_pricelist.currency_id}' t-esc="doc.env['product.pricelist.item'].search([('product_id','=',line.product_pro_id.id),('pricelist_id','=',doc.customer_id.property_product_pricelist.id)]).fixed_price" style="white-space: nowrap;color:#ff0000;"/>
                                                     </t>
                                                     <t t-else="">
-                                                        <span t-options='{"widget": "monetary", "display_currency":  doc.customer_id.property_product_pricelist.currency_id}' t-esc="round(product_price - (product_price * line.discount / 100),2)" style="white-space: nowrap;color:#7693f8;"/>
+                                                        <span t-options='{"widget": "monetary", "display_currency":  doc.customer_id.property_product_pricelist.currency_id}' t-esc="round(product_price - (product_price * line.discount / 100),2)" style="white-space: nowrap;color:#ff0000;"/>
                                                     </t>
                                                 </t>
                                             </td>
@@ -528,7 +528,7 @@
                                                         }
                                                     </style>
 
-                                                    <t t-if="is_special_discount and fest_discount_icon">
+                                                    <t t-if="is_special_discount and fest_discount_icon and fest_discount_icon.dynamic_label_icon">
                                                         <div class="icon_div position-absolute" id="style_3" style="background-color: transparent !important;top:unset !important;">
                                                             <img t-attf-src="data:image/png;base64,#{fest_discount_icon.dynamic_label_icon}" alt="Discount Icon" style="height:25px !important;"/>
                                                         </div>
@@ -543,7 +543,7 @@
                                                         </span>
                                                     </t>
                                                 </t>
-                                                <t t-if="is_special_discount and fest_discount_icon">
+                                                <t t-if="is_special_discount and fest_discount_icon and fest_discount_icon.dynamic_label_icon">
                                                     <div class="icon_div position-absolute" id="style_3" style="background-color: transparent !important;top:unset !important;">
                                                         <img t-attf-src="data:image/png;base64,#{fest_discount_icon.dynamic_label_icon}" alt="Discount Icon" style="height:25px !important;"/>
                                                     </div>
@@ -619,7 +619,7 @@
                                                 <br/>
                                                 <t t-if="unit_discount_price">
                                                     
-                                                    <span t-options='{"widget": "monetary", "display_currency":  doc.customer_id.preferred_currency}' t-esc="round(unit_discount_price,2)" style="white-space: nowrap;color:#7693f8;"/>
+                                                    <span t-options='{"widget": "monetary", "display_currency":  doc.customer_id.preferred_currency}' t-esc="round(unit_discount_price,2)" style="white-space: nowrap;color:#ff0000;"/>
                                                 </t>
                                             </td>
                                             <td style="text-align: right; border: 1px solid #dbdde0; padding: 70px 10px 10px 10px;" t-if="unit_price == unit_discount_price">

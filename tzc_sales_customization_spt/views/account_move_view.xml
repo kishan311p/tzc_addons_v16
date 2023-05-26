@@ -412,8 +412,10 @@
                     <field name="amount_is_shipping_total" string="Shipping Fee"/>
                     <field name="amount_is_admin" string="Admin Fee"/>
                     <field name="amount_is_case"/>
-                    <field name="kits_amount_tax" readonly="1"/>
-                    <field name="kits_amount_total" class="oe_subtotal_footer_separator" colspan="2" readonly="1"/>
+                    <field name="amount_tax" readonly="1" />
+                    <!-- <field name="amount_tax" readonly="1" string="Base Tax"/> -->
+                    <field name="amount_total" class="oe_subtotal_footer_separator" colspan="2" readonly="1" />
+                    <!-- <field name="amount_total" class="oe_subtotal_footer_separator" colspan="2" readonly="1" string="Custome Total"/> -->
                     <!-- <field name="kits_amount_residual" class="oe_subtotal_footer_separator" readonly="1" attrs="{'invisible': [('state', '=', 'draft')]}"/> -->
                     <field name="global_discount" readonly="1" invisible="1"/>
                     <field name="amount_total" class="oe_subtotal_footer_separator" colspan="2"/>
@@ -465,11 +467,11 @@
                     <field name="is_commission_paid" readonly="1" invisible="1"/>
                     <field name="filtere_state" invisible="1"/>
                 </xpath>
-                <xpath expr="//sheet/widget[@name='web_ribbon']" position="replace">
+                <!-- <xpath expr="//sheet/widget[@name='web_ribbon']" position="replace">
                     <widget name="web_ribbon" title="Fully  Paid" attrs="{'invisible': [('inv_payment_status','in',['partial','over',False])]}"/>
                     <widget name="web_ribbon" title="Partial  Paid" attrs="{'invisible': [('inv_payment_status','in',['over','full',False])]}"/>
                     <widget name="web_ribbon" title="Over  Paid" attrs="{'invisible': [('inv_payment_status','in',['partial','full',False])]}"/>
-                </xpath>
+                </xpath> -->
 
                 <!-- <xpath expr="//sheet/widget[@name='web_ribbon']" position="replace">
                     <widget name="web_ribbon" title="Paid" attrs="{'invisible': [('is_commission_paid','=',False)]}"/>

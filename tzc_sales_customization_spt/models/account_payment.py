@@ -6,6 +6,7 @@ class account_payment(models.Model):
 
     is_return_credit = fields.Boolean('Return Credit Payment ?')
     sale_id = fields.Many2one('sale.order','Order')
+    transaction_id = fields.Char('Transaction')
 
     def kits_create_credit_payment(self,partner,order,amount):
         payment_obj = self.env['account.payment'].sudo()
@@ -33,6 +34,6 @@ class account_payment(models.Model):
         if total_credit_payment + amount > order.amount_total:
             raise UserError(_("You can not create credit notes totaling amount more than order's total amount.\nYou are entering %s %s more."%(order_currency._convert(abs(order.amount_total-(total_credit_payment+amount)),order_currency,self.env.companies[0],fields.Date().today()),order_currency.symbol)))
         else:
-            payment = self.env['account.payment'].create(vals)
+            payment = payment_obj.create(vals)
             payment.action_post()
         return payment

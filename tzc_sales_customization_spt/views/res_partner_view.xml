@@ -42,7 +42,7 @@
                 </xpath>
                 <xpath expr="//sheet" position="before">
                     <header>
-                        <field name="customer_type" options="{'clickable': '1'}" widget="statusbar" statusbar_visible='b2c,b2b_regular,b2b_fs' class='oe_highlight' />
+                        <field name="customer_type" options="{'clickable': '1'}" widget="statusbar" statusbar_visible='b2c,b2b_regular' class='oe_highlight' />
                         <!-- <field name="customer_type" groups="sales_team.group_sale_salesman" options="{'clickable': '1'}" widget="statusbar"/> -->
                         <button string="Send Email" class="btn btn-primary" type="object" name="partner_approved_spt" />
                         <button string="Send Reset Password Email" class="btn btn-primary" type="object" name="action_reset_password" />
@@ -287,9 +287,9 @@
                 <filter name="inactive" position="before">
                     <filter name="sales_manager" string="Sales Manager" domain="[('is_salesmanager', '=', True)]"/>
                     <separator/>
-                    <filter name="customer_type_filter_fs" string="ETO Is B2C" domain="[('customer_type', '=', 'b2c')]"/>
-                    <filter name="customer_type_filter_b2b_regular" string="ETO Is B2B Regular" domain="[('customer_type', '=', 'b2b_regular')]"/>
-                    <filter name="customer_type_filter_b2b_fs" string="ETO Is B2B FS" domain="[('customer_type', '=', 'b2b_fs')]"/>
+                    <filter name="customer_type_filter_fs" string="Pending" domain="[('customer_type', '=', 'b2c')]"/>
+                    <filter name="customer_type_filter_b2b_regular" string="Verified" domain="[('customer_type', '=', 'b2b_regular')]"/>
+                    <!-- <filter name="customer_type_filter_b2b_fs" string="ETO Is B2B FS" domain="[('customer_type', '=', 'b2b_fs')]"/> -->
                     <separator/>
                     <filter name="not_approved_for_pricing" string="Not Approved For Price" domain="[('user_ids.share', '=',True),('user_ids.state', '=','new')]"/>
                     <separator/>

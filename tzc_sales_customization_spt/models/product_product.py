@@ -18,6 +18,7 @@ import openpyxl
 from openpyxl import Workbook,load_workbook
 from openpyxl.styles import Border, Side, Alignment, Font
 import xlsxwriter
+import csv
 
 class product_template(models.Model):
     _inherit = 'product.product'
@@ -188,8 +189,10 @@ class ProductProduct(models.Model):
     def _compute_pending_price(self):
         for record in self:
             is_pending_price =False
-            if record.type== 'product' and (not record.lst_price or not record.price_wholesale or not record.price_msrp or  any(record.product_pricelist_item_ids.mapped(lambda pp : not pp.fixed_price))):
-                is_pending_price = True
+            # if record.type== 'product' and (not record.lst_price or not (record.price_wholesale or record.is_case_product) or not (record.price_msrp or record.is_case_product) or  any(record.product_pricelist_item_ids.mapped(lambda pp : not pp.fixed_price))):
+            if not record.is_case_product:
+                if record.type== 'product' and (not record.lst_price or not record.price_wholesale or not record.price_msrp or  any(record.product_pricelist_item_ids.mapped(lambda pp : not pp.fixed_price))):
+                    is_pending_price = True
             if is_pending_price:
                 record.is_published_spt = False
             record.is_pending_price = is_pending_price
@@ -267,7 +270,7 @@ class ProductProduct(models.Model):
         for rec in self:
             rec.variant_count = 0
             country_id = self.env.user.country_id.ids
-            product_ids = self.env['product.product'].search([('geo_restriction','not in',country_id),('brand','=',rec.product_variant_ids.brand.name),('model','=',rec.product_variant_ids.model.name),('categ_id','=',rec.categ_id.id),('id','!=',rec.id)])
+            product_ids = self.env['product.product'].search([('geo_restriction','not in',country_id),('brand','=',rec.product_variant_ids.brand.name),('model','=',rec.product_variant_ids.model.name),('categ_id','=',rec.categ_id.id),('id','!=',rec.id) if type(rec.id) == int else ('id','!=',rec._origin.id)])
             if product_ids:
                 rec.variant_count = len(product_ids)
     
@@ -385,20 +388,21 @@ class ProductProduct(models.Model):
 
     @api.depends('product_seo_keyword')
     def _compute_product_seo_url(self):
-        base_url = self.env['ir.config_parameter'].sudo().get_param('web.base.url')
+        # base_url = self.env['ir.config_parameter'].sudo().get_param('web.base.url')
+        web_url = self.env['kits.b2b.website'].search([],limit=1).url
         for record in self:
             # if record.website_id and record.website_id.domain:
             #     base_url = 'http://'+ record.website_id.domain
             if record.product_seo_keyword:
-                record.product_seo_url = base_url + '/product/%s' % (record.product_seo_keyword)
+                record.product_seo_url = web_url + '/product/%s' % (record.product_seo_keyword)
             else:
                 try:
                     if record.website_url:
-                        record.product_seo_url = base_url + record.website_url
+                        record.product_seo_url = web_url + record.website_url
                     else:
-                        record.product_seo_url = base_url + '/shop/product/' + slug(record)
+                        record.product_seo_url = web_url + '/shop/product/' + slug(record)
                 except Exception as e:
-                    record.product_seo_url = base_url + '/'
+                    record.product_seo_url = web_url + '/'
     
     @api.depends('stock_move_line_ids','stock_move_ids','sale_order_line_ids','sale_order_line_ids.write_date','sale_order_line_ids.state','stock_move_line_ids.write_date','stock_move_ids.write_date','stock_move_ids.state')
     def _compute_order_not_invoice(self):
@@ -1582,7 +1586,7 @@ class ProductProduct(models.Model):
                 'type': 'ir.actions.act_window',
                 'domain': [('is_case_product','=',True)],
                 # 'context' : {"search_default_filter_is_case_product":True,'case_product':True,'default_is_case_product':True,'default_purchase_ok':False,'default_default_code':"test"}
-                'context' : {"search_default_filter_is_case_product":True,'case_product':True,'default_is_case_product':True,'default_purchase_ok':False,'default_categ_id':product_categ_id.id,'default_detailed_type':'product'}
+                'context' : {"search_default_filter_is_case_product":True,'case_product':True,'default_is_case_product':True,'default_purchase_ok':False,'default_categ_id':product_categ_id.id,'default_detailed_type':'product','pending_price':True}
             }
     @api.model
     def _get_view(self, view_id=None, view_type='search', **options):
@@ -1686,3 +1690,147 @@ class ProductProduct(models.Model):
             'url': 'web/content/?model=warning.spt.wizard&download=true&field=file&id=%s&filename=%s.xlsx' % (wiz_id.id, 'pending_price'),
             'target': 'self',
         }
+
+    def wix_product_export_excel(self):
+        rows = []
+        for rec in self:
+            row=[]
+            row.append(rec.default_code)
+            row.append("Product")
+            row.append(f"{str(rec.brand.name)} {str(rec.model.name)} {str(rec.product_color_name.name)}{('/'+str(rec.secondary_color_name.name)) if rec.secondary_color_name else ''}")
+            # declaring \n in variable as we cannot use directly in string formatting.
+            new_line = '\n'
+            description = f"""<p>Product Specifications:</p>
+<ul>
+<li>Colour - {str(rec.product_color_name.name)}</li>{(new_line+'<li>Secondary Colour - ' + str(rec.secondary_color_name.name) + '</li>') if rec.secondary_color_name.name else ''}
+<li>Bridge Size - {(str(rec.bridge_size.name) if rec.bridge_size.name else '00')}</li>
+<li>Eyesize - {(str(rec.eye_size.name) if rec.eye_size.name else '00')}</li>
+<li>Temple Size - {(str(rec.temple_size.name) if rec.temple_size.name else '00')}</li>
+<li>Lens Colour - {(str(rec.lense_color_name.name) if rec.lense_color_name.name else '')}</li>
+<li>Rim Type - {(str(rec.rim_type.name) if rec.rim_type.name else '')}</li>
+<li>Shape - {(str(rec.shape_id.name) if rec.shape_id.name else '')}</li>
+<li>Material - {(str(rec.material_id.name) if rec.material_id.name else '')}</li>
+<li>Flex Hinges - {rec.flex_hinges}</li>
+<li>Gender - {dict(rec._fields['gender'].selection).get(rec.gender)}</li>
+</ul>
+<p><em>Actual case may vary from image</em></p>
+                """
+        
+            row.append(description)
+            row.append(str(rec.primary_image_url) + ";" + str(rec.sec_image_url) + ";" + str(rec.case_image_url))
+            row.append(rec.brand.name)
+            row.append(rec.default_code)
+            row.append("")
+            row.append(rec.lst_price)
+            row.append("")
+            row.append("TRUE")
+            row.append("PERCENT")
+            row.append("0")
+            row.append("InStock")
+            row.append(rec.weight)
+            row.append("")
+            row.append("Colour")
+            row.append("COLOR")
+            row.append(f"{str(rec.product_color_name.color)}:{str(rec.product_color_name.name)}")
+            rows.append(row)
+
+        # creating a csv file
+        with open('wix_product_export.csv', mode='w') as file:
+            writer = csv.writer(file, delimiter=',')
+            writer.writerow(['handleId','fieldType','name','description','productImageUrl','collection','sku','ribbon','price','surcharge','visible','discountMode','discountValue','inventory','weight','cost','productOptionName1','productOptionType1','productOptionDescription1','productOptionName2','productOptionType2','productOptionDescription2','productOptionName3','productOptionType3','productOptionDescription3','productOptionName4','productOptionType4','productOptionDescription4','productOptionName5','productOptionType5','productOptionDescription5','productOptionName6','productOptionType6','productOptionDescription6','additionalInfoTitle1','additionalInfoDescription1','additionalInfoTitle2','additionalInfoDescription2','additionalInfoTitle3','additionalInfoDescription3','additionalInfoTitle4','additionalInfoDescription4','additionalInfoTitle5','additionalInfoDescription5','additionalInfoTitle6','additionalInfoDescription6','customTextField1','customTextCharLimit1','customTextMandatory1','customTextField2','customTextCharLimit2','customTextMandatory2','brand'])
+            for row in rows:
+                writer.writerow(row)
+        with open('wix_product_export.csv', 'r', encoding="utf-8") as f2:
+            data = str.encode(f2.read(), 'utf-8')
+            wiz_id = self.env['warning.spt.wizard'].create({'file':base64.encodebytes(data)})
+            os.remove('wix_product_export.csv')
+            return {
+                'type': 'ir.actions.act_url',
+                'url': 'web/content/?model=warning.spt.wizard&download=true&field=file&id=%s&filename=%s.csv' % (wiz_id.id, 'wix_product_export'),
+                'target': 'self',
+            }
+
+    def shopify_product_export_excel(self):
+        rows = []
+        for rec in self:
+            row=[]
+            row.append(rec.default_code)
+            title = f"{str(rec.brand.name)} {str(rec.model.name)} {str(rec.product_color_name.name)}{('/'+str(rec.secondary_color_name.name)) if rec.secondary_color_name else ''}"
+            row.append(title)
+            # declaring \n in variable as we cannot use directly in string formatting.
+            new_line = '\n'
+            body_html = f"""<p>Product Specifications:</p>
+<ul>
+<li>Colour - {str(rec.product_color_name.name)}</li>{(new_line+'<li>Secondary Colour - ' + str(rec.secondary_color_name.name) + '</li>') if rec.secondary_color_name.name else ''}
+<li>Bridge Size - {(str(rec.bridge_size.name) if rec.bridge_size.name else '00')}</li>
+<li>Eyesize - {(str(rec.eye_size.name) if rec.eye_size.name else '00')}</li>
+<li>Temple Size - {(str(rec.temple_size.name) if rec.temple_size.name else '00')}</li>
+<li>Lens Colour - {(str(rec.lense_color_name.name) if rec.lense_color_name.name else '')}</li>
+<li>Rim Type - {(str(rec.rim_type.name) if rec.rim_type.name else '')}</li>
+<li>Shape - {(str(rec.shape_id.name) if rec.shape_id.name else '')}</li>
+<li>Material - {(str(rec.material_id.name) if rec.material_id.name else '')}</li>
+<li>Flex Hinges - {rec.flex_hinges}</li>
+<li>Gender - {dict(rec._fields['gender'].selection).get(rec.gender)}</li>
+</ul>
+<p><em>Actual case may vary from image</em></p>
+                """
+            row.append(body_html)
+            row.append(str(rec.brand.name))
+            categ_dict = {
+                "E" : "Health & Beauty > Personal Care > Vision Care > Eyeglasses",
+                "S" : 'Apparel & Accessories > Clothing Accessories > Sunglasses'
+            }
+            row.append(categ_dict.get(rec.categ_id.name))
+            row.append("")
+            row.append(f"{rec.rim_type.name}, {dict(rec._fields['gender'].selection).get(rec.gender)}, {rec.shape_id.name}")
+            row.append("true")
+            row.append("Color")
+            row.append(str(rec.product_color_name.name))
+            row.append("Eye Size")
+            row.append(str(rec.eye_size.name))
+            row.append("Material")
+            row.append(str(rec.material_id.name))
+            row.append(str(rec.default_code))
+            row.append(str(rec.weight))
+            row.append("shopify")
+            row.append(rec.available_qty_spt)
+            row.append('deny')
+            row.append('manual')
+            usd_price_id = self.env['product.pricelist'].search([('name','=','USD Price List')],limit=1).id
+            eto_dubai_price_id = self.env['product.pricelist'].search([('name','=','ETO Dubai Price')],limit=1).id
+            eto_other_price_id = self.env['product.pricelist'].search([('name','=','Other ETO Branch Price')],limit=1).id
+            row.append(rec.product_pricelist_item_ids.filtered(lambda x:x.pricelist_id.id==usd_price_id).fixed_price)
+            row.append(rec.product_pricelist_item_ids.filtered(lambda x:x.pricelist_id.id==eto_dubai_price_id).fixed_price)
+            row.append(rec.product_pricelist_item_ids.filtered(lambda x:x.pricelist_id.id==eto_other_price_id).fixed_price)
+            row.append(rec.price_wholesale)
+            row.append('true')
+            row.append('false' if rec.categ_id.name=='E' else 'true')
+            row.append(rec.barcode)
+            row.append(rec.primary_image_url)
+            row.append('1')
+            row.append('')
+            row.append('false')
+            row.extend(['','','','','','','','','','','','','','','','',rec.weight_uom_name,'','','true','true','','','true','','','active'])
+            # Adding first row with details.
+            rows.append(row)
+            # Adding second row with secondary image.
+            s_row = [rec.default_code,'','','','','','','','','','','','','','','','','','','','','','','','','','',rec.sec_image_url,'2']
+            t_row = [rec.default_code,'','','','','','','','','','','','','','','','','','','','','','','','','','',rec.case_image_url,'3']
+            rows.append(s_row)
+            rows.append(t_row)
+        # creating a csv file
+        with open('shopify_product_export.csv', mode='w') as file:
+            writer = csv.writer(file, delimiter=',')
+            writer.writerow(['Handle', 'Title', 'Body (HTML)', 'Vendor', 'Product Category', 'Type', 'Tags', 'Published', 'Option1 Name', 'Option1 Value', 'Option2 Name', 'Option2 Value', 'Option3 Name', 'Option3 Value', 'Variant SKU', 'Variant Grams', 'Variant Inventory Tracker', 'Variant Inventory Qty', 'Variant Inventory Policy', 'Variant Fulfillment Service', 'Variant Price', 'Price 2', 'Price 3','Variant Compare At Price','Variant Requires Shipping', 'Variant Taxable', 'Variant Barcode', 'Image Src', 'Image Position', 'Image Alt Text', 'Gift Card', 'SEO Title', 'SEO Description', 'Google Shopping / Google Product Category', 'Google Shopping / Gender', 'Google Shopping / Age Group', 'Google Shopping / MPN', 'Google Shopping / AdWords Grouping', 'Google Shopping / AdWords Labels', 'Google Shopping / Condition', 'Google Shopping / Custom Product', 'Google Shopping / Custom Label 0', 'Google Shopping / Custom Label 1', 'Google Shopping / Custom Label 2', 'Google Shopping / Custom Label 3', 'Google Shopping / Custom Label 4', 'Variant Image', 'Variant Weight Unit', 'Variant Tax Code', 'Cost per item', 'Included / Canada', 'Included / International', 'Price / International', 'Compare At Price / International', 'Included / United States', 'Price / United States', 'Compare At Price / United States', 'Status'])
+            for row in rows:
+                writer.writerow(row)
+        with open('shopify_product_export.csv', 'r', encoding="utf-8") as f2:
+            data = str.encode(f2.read(), 'utf-8')
+            # base64.encodestring = base64.encodebytes
+            wiz_id = self.env['warning.spt.wizard'].create({'file':base64.encodebytes(data)})
+            os.remove('shopify_product_export.csv')
+            return {
+                'type': 'ir.actions.act_url',
+                'url': 'web/content/?model=warning.spt.wizard&download=true&field=file&id=%s&filename=%s.csv' % (wiz_id.id, 'shopify_product_export'),
+                'target': 'self',
+            }

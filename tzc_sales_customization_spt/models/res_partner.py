@@ -41,7 +41,7 @@ class res_partner(models.Model):
     internal_flag_id = fields.Many2one('internal.flag.spt',string='Internal Flag')
     eto = fields.Selection([('fs','FS'),('registered','REG')],string='ETO')
     business_type_ids = fields.Many2many('business.type.spt','business_type_partner_rel','partner_id','business_id',string='Business Type')
-    customer_type = fields.Selection([('b2c','B2C'),('b2b_regular','B2B-Regular'),('b2b_fs','B2B-Fs')],default="b2c",tracking=True,string='Customer Type')
+    customer_type = fields.Selection([('b2c','Pending'),('b2b_regular','Verified')],default="b2c",tracking=True,string='Customer Type')
     sales_person_id= fields.Char('Sales Person ID',compute='_get_sales_person_id')
     business_fax = fields.Char('Business fax')
     business_type = fields.Char('Type of Business')
@@ -694,7 +694,7 @@ class res_partner(models.Model):
                     rec.result = request.get('result')
                     rec.mail_risk = request.get('risk')
 
-        if 'customer_type' in vals.keys() and vals['customer_type'] in ['b2b_regular','b2b_regular']:
+        if 'customer_type' in vals.keys() and vals['customer_type'] in ['b2b_regular']:
                 config_parameter = config_parameter_obj.sudo().get_param('user_ids_spt', False)
                 user_ids =user_obj.search([('id','=',eval(config_parameter)+res.user_id.ids)])
                 self.env.ref('tzc_sales_customization_spt.tzc_mail_template_customer_approve_notify_spt').sudo().send_mail(res.id,force_send=True,email_values={'partner_ids':[(6,0,res.ids)]},email_layout_xmlid="mail.mail_notification_light")
@@ -1577,7 +1577,7 @@ class res_partner(models.Model):
             else:
                 order_id = self.env['sale.order'].sudo().browse(res_id)
                 report_name = 'tzc_sales_customization_spt.action_report_salesorder'
-                if order_id in ('sent','received'):
+                if order_id.state in ('draft','sent','received'):
                     report_name = 'sale.action_report_saleorder'
                 get_dict = self.env['ir.model'].generate_report_access_link('sale.order',res_id,report_name,self.id,'pdf')
         elif model in ['sale.catalog'] and res_id: 

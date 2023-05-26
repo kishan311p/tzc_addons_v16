@@ -25,7 +25,12 @@
                                                 <tr>
                                                     <td valign="middle" style="width: 245px;">
                                                         <span style="font-size: 20px; font-weight: bold;">
+                                                        <t t-if="object.contact_name_spt">
+                                                            <t t-out="object.contact_name_spt"/>
+                                                        </t>
+                                                        <t t-else="">
                                                             <t t-out="object.name"/>
+                                                        </t>
                                                         </span>
                                                     </td>
                                                     <td valign="middle" style="width: 50%;" align="right">
@@ -48,7 +53,14 @@
                                                     <tr>
                                                         <td valign="top">
                                                             <div>
-                                                                <p style="margin-top:0px;">Dear <t t-out="object.name"/>,</p>
+                                                                <p style="margin-top:0px;">Dear 
+                                                                    <t t-if="object.contact_name_spt">
+                                                                        <t t-out="object.contact_name_spt"/>
+                                                                    </t>
+                                                                    <t t-else="">
+                                                                        <t t-out="object.name"/>
+                                                                    </t>,
+                                                                </p>
                                                                 <p>Thank you for registering to use our B2B portal. To complete your registration, please verify your email address.</p>
                                                                 <p>
                                                                     <div style="font-size: 13px; margin: 16px 0px;">

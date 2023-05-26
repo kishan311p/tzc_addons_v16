@@ -13,8 +13,11 @@ from werkzeug.urls import url_encode
 from lxml import etree
 import requests
 import json
+from contextlib import contextmanager
+
 
 field_list = ['sequence_name','sale_manager_id','state']
+NO_TRACKING_FIELDS_ACCOUNT_MOVE = ['amount_untaxed']
 
 class account_move(models.Model):
     _inherit = 'account.move'
@@ -141,6 +144,8 @@ class account_move(models.Model):
                     state = 'draft'
             sale_id.write({'state': state})  
             return super(account_move,self).button_cancel()
+        elif not(self.state):
+            pass
         else:
             raise UserError("You cannot delete an item linked to a posted entry")
             # return {
@@ -186,8 +191,8 @@ class account_move(models.Model):
                 for record in self:
                     users = dict(saleperson=user_obj,manager=user_obj)
                     if record.invoice_user_id:
-                        # if record.partner_id.user_ids and record.invoice_user_id.ids != record.partner_id.user_ids.ids:
-                        users['saleperson'] = record.invoice_user_id
+                        if record.partner_id.user_ids and record.invoice_user_id.ids != record.partner_id.user_ids.ids:
+                            users['saleperson'] = record.invoice_user_id
                     if record.sale_manager_id:
                         users['manager'] = record.sale_manager_id
                     for user in users:
@@ -212,6 +217,10 @@ class account_move(models.Model):
                                     brand_commission_line_id.create(vals)
                                     
                     record.commission_line_ids.write({'state':record.inv_payment_status})
+                    payment_obj = self.env['account.payment'].sudo()
+                    for receive in payment_obj.search([('sale_id','=',self.order_id.id),('state','=','posted')]).line_ids.filtered('credit'):
+                        if not( (receive.reconciled) or (not receive.account_id.reconcile and receive.account_id.account_type not in ('asset_cash', 'liability_credit_card')) ):
+                            self.js_assign_outstanding_line(receive.id)
                     # if record.commission_line_ids and record.inv_payment_status in ['full','over']:
                     #     record.commission_line_ids.write({'state':'paid'})
                     # elif record.commission_line_ids and record.inv_payment_status == 'partial':
@@ -384,7 +393,8 @@ class account_move(models.Model):
             # move.amount_is_admin = total_amount_is_admin
             move.amount_is_shipping_total = move.order_id.amount_is_shipping_total
             # move.amount_is_shipping_total = total_amount_is_shipping_total
-            move.amount_without_discount = amount_without_discount
+            move.amount_without_discount = amount_without_discount 
+            global_discount = move.order_id.order_line.filtered(lambda x:x.product_id.is_global_discount == True).price_subtotal
             move.global_discount = - global_discount
             move.amount_discount = move.order_id.picked_qty_order_discount
             # move.amount_discount = amount_discount + abs(global_discount)
@@ -1202,3 +1212,29 @@ class account_move(models.Model):
     #     term_response = requests.request("POST",term_url,headers=headers,data=json.dumps(payload))
     #     term_response.raise_for_status()
     #     return term_response
+
+    @contextmanager
+    def _check_balanced(self, container):
+        ''' Assert the move is fully balanced debit = credit.
+        An error is raised if it's not the case.
+        '''
+        with self._disable_recursion(container, 'check_move_validity', default=True, target=False) as disabled:
+            yield
+            if disabled:
+                return
+
+        unbalanced_moves = self._get_unbalanced_moves(container)
+        if unbalanced_moves:
+            error_msg = _("An error has occurred.")
+            for move_id, sum_debit, sum_credit in unbalanced_moves:
+                move = self.browse(move_id)
+                # error_msg += _(
+                #     "\n\n"
+                #     "The move (%s) is not balanced.\n"
+                #     "The total of debits equals %s and the total of credits equals %s.\n"
+                #     "You might want to specify a default account on journal \"%s\" to automatically balance each move.",
+                #     move.display_name,
+                #     # format_amount(self.env, sum_debit, move.company_id.currency_id),
+                #     # format_amount(self.env, sum_credit, move.company_id.currency_id),
+                #     move.journal_id.name)
+            # raise UserError(error_msg)

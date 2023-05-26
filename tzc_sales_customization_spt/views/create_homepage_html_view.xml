@@ -11,19 +11,27 @@
                 <sheet>
                     <group>
                         <field name="name"/>
+                        <field name="header_image" widget="image" options="{'zoom': true,'preview_image':'banner_image','size': [500, 100]}"/>
                         <field name="header_url" />
                         <field name="header_redirect_url" />
                         <field name="view_more_redirect_url"/>
                         <field name="unsubscribe_redirect_url"/>
                     </group>
-                        <field name="banner_ids">
-                            <tree editable='bottom'>
-                                <field name="sequence" widget='handle'/>
-                                <field name="banner_image" widget="image" options="{'zoom': true,'preview_image':'banner_image','size': [161, 100]}" />
-                                <field name="banner_url" />
-                                <field name="banner_redirect_url"/>
-                            </tree>
-                        </field>
+                    <group>
+                        <group>
+                            <field name="price_inflation"/>
+                            <field name="inflation"/>
+                        </group>
+                    </group>
+                    <field name="banner_ids">
+                        <tree editable='bottom'>
+                            <field name="sequence" widget='handle'/>
+                            <field name="banner_image" widget="image" options="{'zoom': true,'preview_image':'banner_image','size': [161, 100]}" />
+                            <field name="banner_url" />
+                            <field name="banner_redirect_url"/>
+                            <field name="row_number" attrs="{'required':[('banner_url','=',True)]}"/>
+                        </tree>
+                    </field>
                     <notebook>
                         <page name="html_view" string="Html View">
                             <div class="text-center">

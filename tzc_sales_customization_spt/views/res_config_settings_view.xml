@@ -164,6 +164,20 @@
                     </div> 
                     </div>
                 </xpath>
+                <xpath expr="//div[@name='shipping_setting_container']" position="inside">
+                    <div class="col-lg-6 o_setting_box">
+                        <div class="o_setting_right_pane" id = 'nearest_shipping_range'>
+                            <b>Nearest Qty Range</b>
+                            <div class='text-muted'>Nearest qty range for finding sale order for shipping cost estimation.</div>
+                            <div class="content-group">
+                                <div class="m16">
+                                    <label for="nearest_shipping_qty_range" string="" />
+                                    <field name="nearest_shipping_qty_range" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </xpath>
             </field>
         </record>
 

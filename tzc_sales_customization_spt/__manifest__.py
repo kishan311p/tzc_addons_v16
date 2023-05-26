@@ -115,6 +115,7 @@
         'views/product_pricelist_view.xml',
         'views/kits_product_color_code_view.xml',
         'views/create_homepage_html_view.xml',
+        'views/delivery_box_view.xml',
 
         # Wizard
         'wizards/kits_warning_wizard_view.xml',
@@ -183,10 +184,12 @@
         'wizards/stock_change_product_qty_view.xml',
         'wizards/on_consignment_product_message_wizard.xml',
         'wizards/kits_message_update_picking_wizard_view.xml',
+        'wizards/choose_delivery_carrier_wizard_view.xml',
         'wizards/kits_remove_package_products_view.xml',
         'wizards/kits_scan_return_items_view.xml',
         'wizards/add_commission_wizard.xml',
         'wizards/exist_commission_line_wizard_view.xml',
+        'wizards/change_order_currency_view.xml',
 
         # Reports
         'reports/kits_commission_report.xml',

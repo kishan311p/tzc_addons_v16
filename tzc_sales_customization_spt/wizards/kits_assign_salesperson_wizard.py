@@ -145,7 +145,7 @@ class kits_assign_salesperson_wizard(models.TransientModel):
         ctx = self._context.copy()
         ctx.update({'changed_orders':self._context.get('changed_orders')})
         for recipient in recipients:
-            ctx.update(recipient=recipient.name)
+            ctx.update(recipient=recipient.name,default_record_name=self.partner_id.name)
             self.with_context(ctx).env.ref('tzc_sales_customization_spt.partner_salesperson_change_notify_admin_mail_template').sudo().send_mail(self.partner_id.id,force_send=True,email_values={'recipient_ids':[(6,0,recipient.ids)]},email_layout_xmlid="mail.mail_notification_light")
 
     def action_process(self):

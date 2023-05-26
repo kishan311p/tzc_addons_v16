@@ -126,3 +126,7 @@ access_add_commission_wizard,access.add.commission.wizard,model_add_commission_w
 access_exist_commission_line_wizard,access.exist.commission.line.wizard,model_exist_commission_line_wizard,base.group_system,1,1,1,1
 access_tzc_homepage_banner,access.tzc.homepage.banner,model_tzc_homepage_banner,,1,1,1,1
 access_create_homepage_html,access.create.homepage.html,model_create_homepage_html,,1,1,1,1
+access_delivery_box,access.delivery.box,model_delivery_box,,1,1,1,1
+access_delivery_box_line,access.delivery.box.line,model_delivery_box_line,,1,1,1,1
+access_delivery_package_line,access.delivery.package.line,model_delivery_package_line,,1,1,1,1
+access_change_order_currency,access.change.order.currency,model_change_order_currency,,1,1,1,1

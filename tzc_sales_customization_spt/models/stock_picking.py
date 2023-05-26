@@ -11,6 +11,7 @@ import base64
 import ast
 import os
 from lxml import etree
+from collections import defaultdict
 
 field_list = ['move_ids_without_package','partner_id','user_id','scheduled_date','origin','shipping_id','no_of_cases','carrier_id','calulate_shipping_cost',
               'tracking_number_spt','package_contain','total_box','weight','weight_unit','package_type_id','height','width','kits_length','ship_date','carriage_value','currency_id',
@@ -140,9 +141,10 @@ class stock_picking(models.Model):
     # kits_return_picking = fields.Boolean(compute="_compute_kits_return_picking",store=True,compute_sudo=True)
     move_lines = fields.One2many('stock.move', 'picking_id', string="Stock Moves", copy=True)
 
-    actual_weight = fields.Float('Actual Weight (kg)',related="weight")
+    actual_weight = fields.Float('Actual Weight (kg)',compute="_compute_weight_of_cases")
+    # actual_weight = fields.Float('Actual Weight (kg)',related="weight")
     weight_of_cases = fields.Float('Calculated Weight for cases (kg)',compute="_compute_weight_of_cases",store=True,compute_sudo=True)
-    weight_total_kg = fields.Float('Total Weight (kg)',compute="_compute_weight_of_cases",store=True,compute_sudo=True)
+    weight_total_kg = fields.Float('Total Weight (kg)',compute="_compute_total_weight",store=True,compute_sudo=True,help='Total weight of packages.')
     calulate_shipping_cost = fields.Float('Shipping Cost ')
     shipping_id = fields.Many2one('shipping.provider.spt', ondelete='set null', string='Shipping Provider')
     tracking_number_spt = fields.Char('Tracking Number')
@@ -183,6 +185,9 @@ class stock_picking(models.Model):
     ship_date = fields.Datetime('Ship Date',default=fields.Date.today())
     carriage_value = fields.Monetary('Total Carriage value',related="sale_id.picked_qty_order_subtotal",currency_field='currency_id')
     currency_id = fields.Many2one('res.currency',related="sale_id.currency_id")
+    delivery_package_line_ids = fields.One2many('delivery.package.line','picking_id','Delivery Package')
+    delivery_box_line_ids = fields.One2many('delivery.box.line','picking_id','Delivery Box')
+    no_of_delivery_package = fields.Integer('Number of delivery package',compute="_compute_delivery_package_qty")
 
     # Sender Info Fields
     currecnt_sender_name = fields.Many2one('res.company',compute="_depends_default_package")
@@ -305,7 +310,9 @@ class stock_picking(models.Model):
             if order:
                 weight_of_cases = order.case_weight_kg
             record.weight_of_cases = weight_of_cases
-            record.weight_total_kg = round(round(record.shipping_weight,2)+weight_of_cases,2)
+            record.actual_weight = round(round(record.shipping_weight,2)+weight_of_cases,2)
+            record.sale_id.actual_weight = record.actual_weight
+            # record.weight_total_kg = round(round(record.shipping_weight,2)+weight_of_cases,2)
 
     # @api.depends('name','is_return_picking','sale_id','sale_id.picking_ids')
     # def _compute_kits_return_picking(self):
@@ -619,7 +626,7 @@ class stock_picking(models.Model):
                         for product in product_prices:
                             if line.quantity_done:
                                 price_unit = product_prices.get(product).get('price')
-                                unit_discount_price = product_prices.get(product).get('sale_type_price')
+                                unit_discount_price = product_prices.get(product).get('discounted_unit_price')
 
                                 if extra_pricing.get('is_inflation'):
                                     price_unit = price_unit+(price_unit * extra_pricing.get('inflation_rate') /100)
@@ -627,7 +634,9 @@ class stock_picking(models.Model):
 
                                 if extra_pricing.get('is_special_discount'):
                                     unit_discount_price = (unit_discount_price - unit_discount_price * extra_pricing.get('special_disc_rate') / 100)
-
+                                
+                                discount = 100-(unit_discount_price*100/price_unit) if price_unit else 0.0
+                                fix_discount_price = (price_unit*discount)/100
                                 # create new sale order line
                                 order_line_id = order_line_obj.sudo().create({
                                     'order_id': record.sale_id.id,
@@ -637,7 +646,9 @@ class stock_picking(models.Model):
                                     'name': line.product_id.display_name,
                                     'price_unit': round(price_unit,2),
                                     'sale_type':  product_prices.get(product).get('sale_type'),
-                                    'unit_discount_price': round(unit_discount_price,2)
+                                    'unit_discount_price': round(unit_discount_price,2),
+                                    'discount':round(discount,2),
+                                    'fix_discount_price':round(fix_discount_price,2),
                                 })
                                 if order_line_id:
                                     # order_line_id.product_id_change() if not line._context.get('order_ship') else None
@@ -1111,21 +1122,21 @@ class stock_picking(models.Model):
         return order_id
 
 
-    @api.onchange('fright','shipping_id')
-    def _check_order_weight(self):
-        for rec in self:
-            domain = []
-            if rec.fright:
-                carrier_ids = self.env['delivery.carrier'].search([('is_freight','=',True)])
-                rec.carrier_id = carrier_ids[0].id if carrier_ids else False
-                domain.append(('id','in',carrier_ids.ids))
-            else:
-                carrier_ids = self.env['delivery.carrier'].search([('delivery_type','=',rec.provider),('is_default','=',True)],limit=1)
-                rec.carrier_id = carrier_ids.id if carrier_ids else False
-                domain.append(('delivery_type','=',rec.provider))
-                domain.append(('is_freight','=',False))
+    # @api.onchange('fright','shipping_id')
+    # def _check_order_weight(self):
+    #     for rec in self:
+    #         domain = []
+    #         if rec.fright:
+    #             carrier_ids = self.env['delivery.carrier'].search([('is_freight','=',True)])
+    #             rec.carrier_id = carrier_ids[0].id if carrier_ids else False
+    #             domain.append(('id','in',carrier_ids.ids))
+    #         else:
+    #             carrier_ids = self.env['delivery.carrier'].search([('delivery_type','=',rec.provider),('is_default','=',True)],limit=1)
+    #             rec.carrier_id = carrier_ids.id if carrier_ids else False
+    #             domain.append(('delivery_type','=',rec.provider))
+    #             domain.append(('is_freight','=',False))
 
-        return {'domain':{'carrier_id':domain}}
+    #     return {'domain':{'carrier_id':domain}}
 
     # @api.onchange('weight_unit')
     # def onchange_check_weighty_unit(self):
@@ -1171,18 +1182,23 @@ class stock_picking(models.Model):
                             rec.is_fedex = True
                         elif shipping_id.delivery_type.lower() == 'ups':
                             rec.is_ups = True
-                        rec.carrier_id = shipping_id.id
-                        rec.sale_id.carrier_id = shipping_id.id
-            rec._get_recipent_address()
+                        # rec.carrier_id = shipping_id.id
+                        # rec.sale_id.carrier_id = shipping_id.id
+                rec.carrier_id = rec.shipping_id.carrier_id
+                rec.sale_id.carrier_id = rec.shipping_id.carrier_id
+            rec._get_recipent_address()     
             rec._onchange_carrier_id()
             
     @api.onchange('carrier_id')
     def _onchange_carrier_id(self):
         for rec in self:
-            if rec.carrier_id:
-                rec.carrier_id = rec.carrier_id.id
-                rec.sale_id.carrier_id = rec.carrier_id.id
-                rec.package_type_id = getattr(rec.carrier_id,'%s_default_packaging_id'%rec.provider).id if rec.carrier_id else False
+            if rec.shipping_id:
+                rec.carrier_id = rec.shipping_id.carrier_id
+                rec.sale_id.carrier_id = rec.carrier_id
+                # Uncomment below 1 line
+                # rec.package_type_id = getattr(rec.carrier_id,'%s_default_packaging_id'%rec.provider).id if rec.carrier_id else False
+                
+                
                 # if rec.is_ups:
                 #     rec.weight_unit = 'kg' if rec.carrier_id.ups_package_weight_unit == 'KGS' else 'lb'
             else:
@@ -1218,39 +1234,43 @@ class stock_picking(models.Model):
                     rec.warning = 'The order weight is more than 150 lb, Add multiple package for ship order.'
                 elif rec.weight_unit == 'kg' and rec.weight > 68.04:
                     rec.warning = 'The order weight is more than 68.04 kg, Add multiple package for ship order.'
-                rec.actual_weight = weight
-                rec.sale_id.actual_weight = weight
+                # rec.actual_weight = weight
+                # rec.sale_id.actual_weight = weight
                 rec.ups_no_of_package = self.calculate_package() if rec.warning else 1
-            else:
-                rec.actual_weight = rec.weight_total_kg
-                rec.sale_id.actual_weight = rec.weight_total_kg
+            # else:
+                # rec.actual_weight = rec.weight_total_kg
+                # rec.sale_id.actual_weight = rec.weight_total_kg
 
     def send_to_shipper(self):
         if not self._context.get('no_shipping_label'):
             self.ensure_one()
-            res = self.carrier_id.send_shipping(self)[0]
-            if self.carrier_id.free_over and self.sale_id and self.sale_id._compute_amount_total_without_delivery() >= self.carrier_id.amount:
-            # if self.carrier_id.free_over and self.sale_id and self.sale_id._compute_amount_total_without_delivery() >= self.carrier_id.amount:
-                res['exact_price'] = 0.0
-            self.carrier_price = res['exact_price'] * (1.0 + (self.carrier_id.margin / 100.0))
-            if res['tracking_number']:
-                label = res.get('fedex_label') or res.get('ups_label')
-                self.carrier_tracking_ref = res['tracking_number']
-                self.tracking_number_spt = res['tracking_number']
-                self.sale_id.kits_carrier_tracking_ref = res['tracking_number']
-                self.sale_id.carrier_id = self.carrier_id.id
-                if label:
-                    base64_data = base64.b64encode(label[1])
-                    byte_data = b64decode(base64_data,validate=True)
-                    if byte_data[0:4] != b'%PDF':
-                        raise ValueError('Missing the PDF file signature')
-                    else:
-                        self.shipping_label = base64.b64encode(byte_data)
-                        self.file_name = label[0].split('.')[0] + '-' + res['tracking_number'] if self.carrier_id.delivery_type != 'fedex' else label[0].split('.')[0]
-            order_currency = self.sale_id.currency_id or self.company_id.currency_id
-            msg = _("Shipment sent to carrier %s for shipping with tracking number %s<br/>Cost: %.2f %s") % (self.carrier_id.name, self.carrier_tracking_ref, self.carrier_price, order_currency.name)
-            self.message_post(body=msg)
-            self._add_delivery_cost_to_so()
+            if self.delivery_package_line_ids:
+                if self.carrier_id:
+                    res = self.carrier_id.send_shipping(self)[0]
+                    if self.carrier_id.free_over and self.sale_id and self.sale_id._compute_amount_total_without_delivery() >= self.carrier_id.amount:
+                    # if self.carrier_id.free_over and self.sale_id and self.sale_id._compute_amount_total_without_delivery() >= self.carrier_id.amount:
+                        res['exact_price'] = 0.0
+                    self.carrier_price = res['exact_price'] * (1.0 + (self.carrier_id.margin / 100.0))
+                    if res['tracking_number']:
+                    #     label = res.get('fedex_label') or res.get('ups_label')
+                        self.carrier_tracking_ref = ",".join(self.delivery_package_line_ids.mapped('tracking_number'))
+                        self.tracking_number_spt =self.carrier_tracking_ref
+                        self.sale_id.kits_carrier_tracking_ref =self.carrier_tracking_ref
+                        self.sale_id.carrier_id = self.carrier_id.id
+                        # if label:
+                        #     base64_data = base64.b64encode(label[1])
+                        #     byte_data = b64decode(base64_data,validate=True)
+                        #     if byte_data[0:4] != b'%PDF':
+                        #         raise ValueError('Missing the PDF file signature')
+                        #     else:
+                        #         self.shipping_label = base64.b64encode(byte_data)
+                        #         self.file_name = label[0].split('.')[0] + '-' + res['tracking_number'] if self.carrier_id.delivery_type != 'fedex' else label[0].split('.')[0]
+                    order_currency = self.sale_id.currency_id or self.company_id.currency_id
+                    msg = _("Shipment sent to carrier %s for shipping with tracking number %s<br/>Cost: %.2f %s") % (self.carrier_id.name, self.carrier_tracking_ref, self.carrier_price, order_currency.name)
+                    self.message_post(body=msg)
+                    self._add_delivery_cost_to_so()
+            else:
+                raise UserError("Add package to generate label")
         else:
             pass
 
@@ -1391,6 +1411,7 @@ class stock_picking(models.Model):
                 shipping_line.write(vals)
             else:
                 self.env['sale.order.line'].create(vals)
+            self.sale_id.onchange_ship_cost_update()
 
             self.sale_id.message_post(body='Shipping Cost:%s --> %s'%(old_shipping_value,self.calulate_shipping_cost))
 
@@ -1410,12 +1431,17 @@ class stock_picking(models.Model):
 
     def get_rate(self):
         vals = {}
-        if self.carrier_id and self.sale_id and self.partner_id:
-            vals.update({'carrier_id':self.carrier_id.id,'order_id':self.sale_id.id,'partner_id':self.partner_id})
+        # if self.carrier_id and self.sale_id and self.partner_id:
+            # vals.update({'carrier_id':self.carrier_id.id,'order_id':self.sale_id.id,'partner_id':self.partner_id})
+            # shipping_cost_wizard = self.env['choose.delivery.carrier'].create(vals)
+            # result = shipping_cost_wizard.update_price()
+            # if shipping_cost_wizard.delivery_price:
+            #     self.write({'calulate_shipping_cost':shipping_cost_wizard.delivery_price})
+        if self.shipping_id:
+            vals.update({'shipping_id':self.shipping_id.id,'order_id':self.sale_id.id,'partner_id':self.partner_id.id})
             shipping_cost_wizard = self.env['choose.delivery.carrier'].create(vals)
-            result = shipping_cost_wizard.update_price()
-            if shipping_cost_wizard.delivery_price:
-                self.write({'calulate_shipping_cost':shipping_cost_wizard.delivery_price})
+            shipping_cost_wizard.update_price()
+            self.write({'calulate_shipping_cost':shipping_cost_wizard.display_price})
 
     def action_download_pdf_report(self):
         for rec in self:
@@ -1462,9 +1488,10 @@ class stock_picking(models.Model):
             # shipping_error = []
             website_error_msg = "This order comes from abandoned cart confirmed by %s, please do recount if needed.\n\n"%(self.sale_id.user_id.name)
             for record in self:
-                if not record.tracking_number_spt and record.shipping_id and record.shipping_id.name.lower() not in ('pick up','warehouse choose cheapest option','customer pickup','delivered to customer'):
+                if not record.tracking_number_spt and record.shipping_id and record.shipping_id.is_tracking_req_flag:
+                    # if not record.tracking_number_spt and record.shipping_id and record.shipping_id.name.lower() not in ('pick up','warehouse choose cheapest option','customer pickup','delivered to customer'):
                     raise UserError('Please add tracking number for ship order.')
-                # record.with_context(order_ship=True).update_sale_order_spt()
+                record.update_sale_order_spt()
                 product_dict = {}
                 # product record with qty
                 for line in record.move_ids_without_package.sorted(lambda x: x.product_id.variant_name):
@@ -1787,3 +1814,49 @@ class stock_picking(models.Model):
             'target':'self',
             'res_id': self.return_order_id.id
         }
+
+
+    @api.depends('move_line_ids', 'move_line_ids.result_package_id', 'move_line_ids.product_uom_id', 'move_line_ids.qty_done')
+    def _compute_bulk_weight(self):
+        picking_weights = defaultdict(float)
+        res_groups = self.env['stock.move.line'].read_group(
+            [('picking_id', 'in', self.ids), ('product_id', '!=', False), ('result_package_id', '=', False),('move_id','not in',self.case_move_ids_without_package.ids)],
+            ['id:count'],
+            ['picking_id', 'product_id', 'product_uom_id', 'qty_done'],
+            lazy=False, orderby='qty_done asc'
+        )
+        products_by_id = {
+            product_res['id']: (product_res['uom_id'][0], product_res['weight'])
+            for product_res in
+            self.env['product.product'].with_context(active_test=False).search_read(
+                [('id', 'in', list(set(grp["product_id"][0] for grp in res_groups)))], ['uom_id', 'weight'])
+        }
+        for res_group in res_groups:
+            uom_id, weight = products_by_id[res_group['product_id'][0]]
+            uom = self.env['uom.uom'].browse(uom_id)
+            product_uom_id = self.env['uom.uom'].browse(res_group['product_uom_id'][0])
+            picking_weights[res_group['picking_id'][0]] += (
+                res_group['__count']
+                * product_uom_id._compute_quantity(res_group['qty_done'], uom)
+                * weight
+            )
+        for picking in self:
+            picking.weight_bulk = picking_weights[picking.id]
+
+    
+    # For updating domain of package_line commodities 
+    @api.onchange('delivery_package_line_ids','delivery_box_line_ids')
+    def _update_domain_category(self):
+        for rec in self:
+            rec.delivery_package_line_ids._compute_box_domain()
+            rec.delivery_package_line_ids._compute_package_qty()
+
+    @api.depends('delivery_package_line_ids')
+    def _compute_delivery_package_qty(self):
+        for rec in self:
+            rec.no_of_delivery_package = len(rec.delivery_package_line_ids)
+    
+    @api.depends('delivery_box_line_ids','delivery_package_line_ids')
+    def _compute_total_weight(self):
+        for rec in self:
+            rec.weight_total_kg = sum(rec.delivery_package_line_ids.mapped('weight'))

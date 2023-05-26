@@ -19,7 +19,7 @@ class mailing_contact(models.Model):
     website = fields.Char('Website')
     source = fields.Selection([('imported','Imported'),('odoo_contact','Odoo Contact'),('newsletter','Newsletter'),('mixed','Mixed')],'Source')
     prospect_level = fields.Selection([('zero','0'),('one','1')],'Prospect Level')
-    status_type = fields.Selection([('b2c','B2C'),('b2b_regular','B2B-Regular'),('b2b_fs','B2B-Fs')],'Status Type')
+    status_type = fields.Selection([('b2c','Pending'),('b2b_regular','Verified')],'Status Type')
     action_type = fields.Selection([('confirmed','Confirmed'),('not_connected','Not Connected')],'Action Type')
     orders = fields.Integer('# Orders')
     active = fields.Boolean("Active",default=True)

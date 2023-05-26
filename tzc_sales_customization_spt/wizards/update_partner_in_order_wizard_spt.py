@@ -10,7 +10,7 @@ class update_partner_in_order_wizard_spt(models.TransientModel):
     disc_options = fields.Selection(string='Discount Options', selection=[('keep_discount', 'Keep Discount'),('change_discount', 'Remove Discount & apply current price')],default="keep_discount")
     
     def action_process(self):
-        for record in self:
+        for record in self.sudo():
             if record.sale_id and record.sale_id.partner_id:
                 record.sale_id.partner_id = record.partner_id.id
                 record.sale_id.partner_invoice_id = record.partner_id.id

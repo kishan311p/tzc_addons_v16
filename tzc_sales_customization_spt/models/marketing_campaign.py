@@ -3,7 +3,7 @@ from odoo.exceptions import UserError
 from openpyxl import load_workbook
 from openpyxl.styles import Border, Side, Font
 from io import BytesIO
-
+from dateutil.relativedelta import relativedelta
 import datetime
 import os
 import base64
@@ -29,6 +29,8 @@ class marketing_campaign(models.Model):
     count_received = fields.Integer(compute="_compute_count_sent")
     mailgun_failed_count = fields.Integer(compute="_compute_count_sent")
     is_custome_rec = fields.Boolean('Is Custome Rec. (Flag)')
+
+    not_ordered_on = fields.Selection([('90_days','Last 90 Days'),('60_days','Last 60 Days'),('30_days','Last 30 Days'),('older_than_1_day','Older Than 1 Day')],'Not Ordered On')
 
     @api.depends('marketing_activity_ids')
     def _compute_count_sent(self):
@@ -105,41 +107,66 @@ class marketing_campaign(models.Model):
 
 
     def sync_participants(self):
-        res = super(marketing_campaign, self).sync_participants()
-        blacklist_participants = res.filtered(lambda participant: participant.model_name == 'mailing.contact' and participant.resource_ref.email in self.env['mail.blacklist'].search([]).mapped('email'))
-        blacklist_participants.unlink()
-        monetization_obj = self.env['campaign.monetization.spt']
-        for participant in res - blacklist_participants:
-            if participant.resource_ref and participant.resource_ref._name == 'res.partner':
-                if not monetization_obj.search([('participant_id','=',participant.id)],limit=1):
-                    monetization_obj.create({
-                        'name' : participant.resource_ref.name,
-                        'email' : participant.resource_ref.email,
-                        'internal_id' : participant.resource_ref.internal_id,
-                        'salesperson_id' : participant.resource_ref.user_id.id,
-                        'odoo_contact_id' : participant.resource_ref.id,
-                        'before_source' : 'odoo_contact',
-                        'before_status_type' : participant.resource_ref.customer_type,
-                        'campaign_id' : self.id,
-                        'participant_id' :participant.id,
-                    })
-            else:
-                if not monetization_obj.search([('participant_id','=',participant.id)],limit=1):
-                    monetization_obj.create({
-                        'name' : participant.resource_ref.name,
-                        'email' : participant.resource_ref.email,
-                        'internal_id' : participant.resource_ref.internal_id,
-                        'odoo_contact_id' : participant.resource_ref.odoo_contact_id.id,
-                        'before_source' : participant.resource_ref.source,
-                        'before_prospect_level' : participant.resource_ref.prospect_level,
-                        'before_status_type' : participant.resource_ref.status_type,
-                        'before_action_type' : participant.resource_ref.action_type,
-                        'before_orders' : participant.resource_ref.orders,
-                        # 'before_promo_code_ids' : [(6,0,participant.resource_ref.promo_code_ids.ids)],
-                        'campaign_id' : participant.campaign_id.id,
-                        'participant_id' :participant.id,
-                    })
-        return res
+        for rec in self:
+            if rec.model_id.model == 'res.partner' and rec.state=='running' and not self._context.get('confirming') and rec.not_ordered_on:
+                domain=[]
+                if rec.not_ordered_on=='90_days':
+                    compare_date = fields.datetime.now() - relativedelta(days=90)
+                    domain.append(('date_order','>',compare_date))
+                elif rec.not_ordered_on=='60_days':
+                    compare_date = fields.datetime.now() - relativedelta(days=60)
+                    domain.append(('date_order','>',compare_date))
+                elif rec.not_ordered_on=='30_days':
+                    compare_date = fields.datetime.now() - relativedelta(days=30)
+                    domain.append(('date_order','>',compare_date))
+                elif rec.not_ordered_on=='older_than_1_day':
+                    compare_date = fields.datetime.now() - relativedelta(days=1)
+                    domain.append(('date_order','>',compare_date))
+                else:
+                    pass
+                order_ids = rec.env['sale.order'].search(domain)
+                ordered_partner_ids = rec.env['res.partner'].search([('id','not in',rec.participant_ids.mapped('res_id'))]) - order_ids.mapped('partner_id')
+                partner_list_ids = ordered_partner_ids.ids
+                if partner_list_ids:
+                    if rec.domain != '[]':
+                        rec.domain = f'["|",("id","in",{partner_list_ids}),' + rec.domain[1:]
+                    else:
+                        rec.domain =f'[("id","in",{partner_list_ids})]'
+            res = super(marketing_campaign, rec).sync_participants()
+            blacklist_participants = res.filtered(lambda participant: participant.model_name == 'mailing.contact' and participant.resource_ref.email in rec.env['mail.blacklist'].search([]).mapped('email'))
+            blacklist_participants.unlink()
+            monetization_obj = rec.env['campaign.monetization.spt']
+            for participant in res - blacklist_participants:
+                if participant.resource_ref and participant.resource_ref._name == 'res.partner':
+                    if not monetization_obj.search([('participant_id','=',participant.id)],limit=1):
+                        monetization_obj.create({
+                            'name' : participant.resource_ref.name,
+                            'email' : participant.resource_ref.email,
+                            'internal_id' : participant.resource_ref.internal_id,
+                            'salesperson_id' : participant.resource_ref.user_id.id,
+                            'odoo_contact_id' : participant.resource_ref.id,
+                            'before_source' : 'odoo_contact',
+                            'before_status_type' : participant.resource_ref.customer_type,
+                            'campaign_id' : rec.id,
+                            'participant_id' :participant.id,
+                        })
+                else:
+                    if not monetization_obj.search([('participant_id','=',participant.id)],limit=1):
+                        monetization_obj.create({
+                            'name' : participant.resource_ref.name,
+                            'email' : participant.resource_ref.email,
+                            'internal_id' : participant.resource_ref.internal_id,
+                            'odoo_contact_id' : participant.resource_ref.odoo_contact_id.id,
+                            'before_source' : participant.resource_ref.source,
+                            'before_prospect_level' : participant.resource_ref.prospect_level,
+                            'before_status_type' : participant.resource_ref.status_type,
+                            'before_action_type' : participant.resource_ref.action_type,
+                            'before_orders' : participant.resource_ref.orders,
+                            # 'before_promo_code_ids' : [(6,0,participant.resource_ref.promo_code_ids.ids)],
+                            'campaign_id' : participant.campaign_id.id,
+                            'participant_id' :participant.id,
+                        })
+            return res
     
     def _compute_button_count(self):
         sale_order_obj = self.env['sale.order']
@@ -221,7 +248,7 @@ class marketing_campaign(models.Model):
             wrksht.cell(row=table_header_row, column=6).value = contact.resource_ref.state_id.name if contact.resource_ref.state_id else ''
             wrksht.cell(row=table_header_row, column=7).value = contact.resource_ref.country_id.name if contact.resource_ref.country_id else ''
             wrksht.cell(row=table_header_row, column=8).value = contact.resource_ref.territory.name if contact.resource_ref.territory else ''
-            wrksht.cell(row=table_header_row, column=9).value = 'B2C' if contact.resource_ref.customer_type == 'b2c' else 'B2B-Regular' if contact.resource_ref.customer_type == 'b2b_regular' else 'B2B-Fs' if contact.resource_ref.customer_type == 'b2b_fs' else  ''
+            wrksht.cell(row=table_header_row, column=9).value = 'Pending' if contact.resource_ref.customer_type == 'b2c' else 'Verified' if contact.resource_ref.customer_type == 'b2b_regular' else '' if contact.resource_ref.customer_type == 'b2b_fs' else  ''
             wrksht.cell(row=table_header_row, column=10).value = contact.resource_ref.user_id.name
             wrksht.cell(row=table_header_row, column=11).value = contact.resource_ref.sale_order_count
             wrksht.cell(row=table_header_row, column=12).value = 1 if campaign_contact.sent else 0
@@ -456,7 +483,7 @@ class marketing_campaign(models.Model):
                     campaign.unlink()
         return super(marketing_campaign,self).unlink()
 
-    # def execute_activities(self):
-    #     for campaign in self:
-    #         # if campaign._context.get('from_bulk_mail'):
-    #         campaign.marketing_activity_ids.execute()
+    def execute_activities(self):
+        for campaign in self:
+            campaign.sync_participants()
+            campaign.marketing_activity_ids.execute()

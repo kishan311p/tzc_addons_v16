@@ -599,5 +599,27 @@
             <field name="context">{'default_is_pending_price' : True,'pending_price' :True}</field>
         </record>
         <menuitem id="pending_price_product_product_menu" name="Product For Pending Price" action="pending_price_product_action"  groups="base.group_system" parent="sale.product_menu_catalog" sequence="100"/>
+
+        <record id="wix_product_export_action" model="ir.actions.server">
+            <field name="name">Wix Products Exports</field>
+            <field name="model_id" ref="product.model_product_product"/>
+            <field name="binding_model_id" ref="product.model_product_product"/>
+            <field name="state">code</field>
+            <!-- <field name="context">{"case_product":True}</field> -->
+            <field name="code">
+                action = records.wix_product_export_excel()
+            </field>
+        </record>
+        <record id="shopify_product_export_action" model="ir.actions.server">
+            <field name="name">Shopify Products Exports</field>
+            <field name="model_id" ref="product.model_product_product"/>
+            <field name="binding_model_id" ref="product.model_product_product"/>
+            <field name="state">code</field>
+            <!-- <field name="context">{"case_product":True}</field> -->
+            <field name="code">
+                action = records.shopify_product_export_excel()
+            </field>
+        </record>
+
     </data>
 </odoo>

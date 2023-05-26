@@ -20,6 +20,7 @@ class res_config_settings(models.TransientModel):
     cart_recovery_mail_template = fields.Many2one('mail.template', string='Cart Recovery Email', domain="[('model', '=', 'sale.order')]")
     kits_shipping_method = fields.Boolean('Display Shipping Method')
     no_product_case_image_url = fields.Char('No product case image url')
+    nearest_shipping_qty_range = fields.Integer('Nearest Shipping Qty Range',config_parameter="tzc_sales_customization_spt.nearest_shipping_qty_range",default="")
     
     @api.model
     def get_values(self):

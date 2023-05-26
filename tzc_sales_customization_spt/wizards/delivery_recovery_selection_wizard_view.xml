@@ -10,7 +10,7 @@
                         <group>
                             <group>
                                 <field name="sale_id" invisible="1"/>
-                                <field name="picking_id" options="{'no_create_edit': True}" domain="[('sale_id', '=', sale_id),('state','=','cancel')]"/>
+                                <field name="picking_id" options="{'no_open': True,'no_create': True}" domain="[('sale_id', '=', sale_id),('state','=','cancel')]"/>
                             </group>
                         </group>
                     </sheet>
