@@ -56,7 +56,7 @@
                                                                 <p>Congratulations! Your email has been verified!
                                                                     <br/>
                                                                     <br/>
-                                                                        Please allow 24 hours for our admin team to grant you full access to <a target="_blank" href="www.teameto.com">teameto.com</a>. We are an excluisve supplier to eyecare practices, and as such we ensure that all members are vetted before access is granted.
+                                                                        Please allow 24 hours for our admin team to grant you full access to <a target="_blank" t-attf-href="www.teameto.com">teameto.com</a>. We are an excluisve supplier to eyecare practices, and as such we ensure that all members are vetted before access is granted.
                                                                     <br/>
                                                                     <br/>
                                                                     Once your full access has been granted, you will receive a confirmation email.
@@ -65,7 +65,7 @@
                                                                     To login to your account, you must use the email and password used when you registered.
                                                                     <br/>
                                                                     <br/>
-                                                                        If you need any assistance, you may contact your Account Manager or you may email us at <a href="mailto:support@teameto.com">support@teameto.com</a>.
+                                                                        If you need any assistance, you may contact your Account Manager or you may email us at <a t-attf-href="mailto:support@teameto.com">support@teameto.com</a>.
                                                                 </p>
                                                                 <!-- <br/> -->
                                                                 <!-- <br/> -->
@@ -82,11 +82,11 @@
                                             </table>
                                         </td>
                                     </tr>
-                                    <!-- <tr>
+                                    <tr>
                                         <td style="text-align:center;">
                                             <hr width="100%" style="background-color:rgb(204,204,204);border:medium none;clear:both;display:block;font-size:0px;min-height:1px;line-height:0; margin: 16px 0px 16px 0px;"/>
                                         </td>
-                                    </tr> -->
+                                    </tr>
                                 </tbody>
                             </table>
                         </td>

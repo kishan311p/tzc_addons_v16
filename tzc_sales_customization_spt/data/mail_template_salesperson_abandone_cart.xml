@@ -17,14 +17,14 @@
                         <tr>
                             <td valign="top" style="font-size:13px;">
                                 <p style="margin-top:0px;">Hello <t t-out="object.user_id.name"/>,</p>
-                                <p><t t-out="object.partner_id.name"/> order <t t-out="object.name"/> has been abounded. Order is now <b><t t-out="object.count_days()"/> Days</b> old. Please follow up with customer.</p>
-                                <p>
-                                    <div style="text-align: left; margin: 16px 0px 16px 0px; font-size: 14px;">
-                                        <a t-attf-href="{{object.get_base_url()}}/web#id={{object.id}} &amp;action={{object.env.ref('sale.action_orders').id}} &amp;model=sale.order&amp;view_type=form" target="_blank" style="background-color: #1F7B6F; padding: 8px 16px 8px 16px; text-decoration: none; color: #fff; border-radius: 5px; font-size:13px;">
+                                <p><t t-out="object.partner_id.name"/> order <t t-out="object.name"/> has been abandoned. Order is now <b><t t-out="object.count_days()"/> Days</b> old. Please follow up with customer.</p>
+                                <!-- <p> -->
+                                    <div align='center' style="margin:20px 0px 20px 0px">
+                                        <a t-attf-href="{{object.get_base_url()}}/web#id={{object.id}} &amp;action={{object.env.ref('sale.action_orders').id}} &amp;model=sale.order&amp;view_type=form" target="_blank" style="background-color: #1F7B6F; padding: 8px 16px 8px 16px; text-decoration: none; color: #fff; border-radius: 100px; font-size:13px;">
                                             View order
                                         </a>
                                     </div>
-                                </p>
+                                <!-- </p> -->
                                 <p style="margin-bottom:0px;">Thank you,<br/>
                                     Everything Optical Management
                                 </p>

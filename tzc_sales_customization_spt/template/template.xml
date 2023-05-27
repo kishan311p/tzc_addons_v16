@@ -139,85 +139,98 @@
         </template> -->
 
         <template id="mail.mail_notification_light">
-            <table border="0" cellpadding="0" cellspacing="0" style="padding-top: 16px; background-color: #F1F1F1; font-family:Verdana, Arial,sans-serif; color: #454748; width: 100%; border-collapse:separate;">
+            <table border="0" cellpadding="0" cellspacing="0" style="padding-top: 16px; background-color: rgb(32,123,111); font-family:Verdana, Arial,sans-serif; color: black; width: 100%; border-collapse:separate;">
                 <tr>
                     <td align="center">
-                        <table border="0" cellpadding="0" cellspacing="0" style="padding: 24px; background-color: white; color: #454748; border-collapse:separate;">
+                        <table border="0" cellpadding="10" cellspacing="10" style="padding: 7px; background-color: white; color: black; border-collapse:separate;">
                             <tbody>
                                 <!-- HEADER -->
                                 <tr>
                                     <td align="center" style="min-width: 590px;">
-                                        
-                                        <t t-if="message.env.cr.dbname != 'eto_production'">
-                                            <div class="corner-ribbon" style="top: 5%;position:absolute;width: 165px;font-weight: bold;color: #dc0e0e;font-size: 36px;text-align: center;">TEST</div>
-                                        </t>
-                                        <table border="0" cellpadding="0" cellspacing="0" width="100%" style="background-color: white; padding: 0; border-collapse:separate;">
+                                        <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%" style="background-color: white; padding: 0; border-collapse:separate;">
                                             <tr>
-                                                <td valign="middle" style="width: 245px;">
-                                                    
-                                                    <span style="font-size: 20px; font-weight: bold;">
-                                                        <t t-if="not message._context.get('product_name','')">
-                                                            <t t-esc="message.record_name and message.record_name.replace('/','-') or ''"/>
-                                                        </t>
-                                                    </span>
+                                                <td valign="middle">
+                                                    <img t-att-src="'/logo.png?company=%s' % (company.id or 0)" style="padding: 0px; margin: 0px; height: 30px;" t-att-alt="'%s' % company.name" />
                                                 </td>
-                                                <td valign="middle" align="right" style="width: 50%;">
-                                                    <img src="/web/image?model=res.company&amp;id=1&amp;field=logo" style="padding:0px;margin: 0px;height: auto;width:280px;" t-att-alt="'%s' % company.name" class="padding-small"/>
-                                                </td>
+                                                <td align="right">
+
+                                                    <a style="background-color:#ffffff;display:inline-block;font-family:'Open Sans',sans-serif;text-decoration:none;text-align:center;color:#1f7b6f;border-radius:18px;width:50%;max-width:100%;border-top-color:#1f7b6f;border-top-style:solid;border-top-width:1px;border-left-color:#1f7b6f;border-left-style:solid;border-left-width:1px;border-right-color:#1f7b6f;border-right-style:solid;border-right-width:1px;border-bottom-color:#1f7b6f;border-bottom-style:solid;border-bottom-width:1px;font-size:14px;min-width:88px">
+                                                        <span style="display:block;padding:10px;line-height:100%"> <span style="line-height:14px"> Sign In </span> </span> </a>
+                                                    </td>
                                             </tr>
-                                            <tr>
-                                                <td colspan="2" style="text-align:center;">
-                                                    <hr width="100%" style="background-color:rgb(204,204,204);border:medium none;clear:both;display:block;font-size:0px;min-height:1px;line-height:0; margin:16px 0px 16px 0px;"/>
-                                                </td>
-                                            </tr>
+                                            <tr><td colspan="2" style="text-align:center;">
+                                              <hr width="100%" style="background-color:rgb(32,123,111);border:medium none;clear:both;display:block;font-size:0px;min-height:1px;line-height:0; margin:20px 0px 32px 0px;"/>
+                                            </td></tr>
                                         </table>
                                     </td>
                                 </tr>
                                 <!-- CONTENT -->
-                                <tr>
-                                    <td style="min-width: 590px;">
-                                        <t t-raw="message.body"/>
-                                        <t t-if="message._context.get('from_chatter') and message._context.get('default_model') in ('sale.order','account.move','res.partner','stock.picking')">
-                                            <p style="margin-top: 24px; margin-bottom: 16px;width: 590px !important;">
-                                                <a t-att-href="'/mail/view?model=%s&amp;res_id=%s' % (message._context.get('default_model'), message._context.get('default_res_id'))" style="background-color:#1F7B6F; padding: 10px; text-decoration: none; color: #fff; border-radius: 5px;">
-                                                    View <t t-esc="model_description or 'document'"/>
-                                                </a>
-                                            </p>
-                                        </t>
-                                    </td>
-                                </tr>
+                                    <tr>
+                                        <td style="min-width: 590px;">
+                                            <t t-raw="message.body"/>
+                                            <!-- <t t-if="message._context.get('from_chatter') and message._context.get('default_model') in ('sale.order','account.move','res.partner','stock.picking')">
+                                                <p style="margin-top: 24px; margin-bottom: 16px;width: 590px !important;">
+                                                    <a t-att-href="'/mail/view?model=%s&amp;res_id=%s' % (message._context.get('default_model'), message._context.get('default_res_id'))" style="background-color:#1F7B6F; padding: 10px; text-decoration: none; color: #fff; border-radius: 5px;">
+                                                        View <t t-esc="model_description or 'document'"/>
+                                                    </a>
+                                                </p>
+                                            </t> -->
+                                        </td>
+                                    </tr>
                                 <!-- FOOTER -->
-                                <tr align="left">
-                                    <td align="left" style="min-width: 590px;font-size:11px;">
-                                        <hr width="100%" style="background-color:rgb(204,204,204);border:medium none;clear:both;display:block;font-size:0px;min-height:1px;line-height:0; margin: 16px 0px 21px 0px;"/>
-                                        <b t-esc="company.name"/>
-                                        <br/>
-                                        <div style="color: #999999;">
-                                            <t t-esc="company.phone"/>
-                                            <t t-if="company.email"> |
-                                                <a t-att-href="'mailto:%s' % company.email" style="text-decoration:none; color: #999999;">
-                                                    <t t-esc="company.email"/>
-                                                </a>
-                                            </t>
-                                            <t t-if="company.website"> |
-                                                <a t-att-href="'%s' % company.website" style="text-decoration:none; color: #999999;">
-                                                    <t t-esc="company.website"/>
-                                                </a>
-                                            </t>
+                                <tr >
+                                    <td align="center" style="min-width: 590px; padding: 0 8px 0 8px; font-size:13px;" >
+                                        <hr width="90%" style="background-color:rgb(32,123,111);border:medium none;clear:both;display:block;font-size:0px;min-height:1px;line-height:0; margin: 75px 0px 10px 0px;"/>
+                                        <img t-att-src="'/logo.png?company=%s' % (company.id or 0)" style="padding: 0px; margin: 0px; height: 30px;" t-att-alt="'%s' % company.name" /><br/>
+                                        <div style="color:black;margin:10px" >
+                                            
+                                            <t t-out="company.street" /><br/>
+                                            <t t-out="company.city" />, <t t-out="company.state_id.name" />, <t t-out="company.country_id.name" /> <t t-out="company.zip" /><br/>
+                                            <a t-if="company.website" t-att-href="'%s' % company.website" style="text-decoration:none ;color: black;" t-out="company.website"/><br/>
+                                            <a href="tel:+1%20905%20944%209786" rel="noopener" style="text-decoration:none;background-color:transparent;color:#000000" target="_blank">
+                                                <t t-out="company.phone" />
+                                            </a>
+                                            <t t-if="company.email and company.phone"> |</t>
+                                            <a t-if="company.email" t-att-href="'mailto:%s' % company.email" style="text-decoration:none ; color: black;" t-out="company.email"/>
+                                        </div>
+                                        <div align="center">
+                                            <a t-att-href="'%s' % company.social_instagram" style="text-decoration:none;background-color:transparent;">
+                                                <img alt="Instagram" text="Instagram" t-attf-src="https://cdn.teameto.com/data/B2B/email/instagram.png"  height="32" width="32"></img>
+                                            </a>
+                                            <a t-att-href="'%s' % company.social_linkedin" style="text-decoration:none;background-color:transparent;">
+                                                <img alt="LinkedIn" text="LinkedIn" t-attf-src="https://cdn.teameto.com/data/B2B/email/linkedin.png"  height="32" width="32"></img>
+                                            </a>
+                                            <a t-att-href="'%s' % company.social_facebook" style="text-decoration:none;background-color:transparent;">
+                                                <img alt="Facebook" text="Facebook" t-attf-src="https://cdn.teameto.com/data/B2B/email/facebook.png"  height="32" width="32"></img>
+                                            </a>
                                         </div>
                                     </td>
                                 </tr>
                             </tbody>
                         </table>
                     </td>
+                    
                 </tr>
-                <!-- POWERED BY -->
                 <tr>
-                    <td align="center" style="min-width: 590px;">
-        Powered by <a target="_blank" href="https://www.teameto.com" style="color: #1F7B6F;">ETO</a>
+                    <td style="padding-right:0px;padding-left:0px" align="center" >
+                        <div>
+                            <a href="mailto:support@teameto.com" style="text-decoration:none;background-color:transparent;color:rgb(0,135,132)" target="_blank">
+                                <img src="https://cdn.teameto.com/data/B2B/email/email-footer-banner.jpg" style="border-style:none;vertical-align:middle;text-decoration:none;display:inline-block!important;border:none;height:auto;float:none;width:100%;max-width:645px;padding:25px 0px 25px 0px" width="600" height="300" border="0" align="middle" >
+                                </img>
+                            </a>
+                        </div>
                     </td>
+
                 </tr>
             </table>
+            <p style="margin:25px 0px 0px 0px">
+                <t t-if="company.env.context.get('signature')">
+                    <t t-out="company.env.context.get('signature')"/>
+                </t>
+                <t t-else="">
+                    
+                </t>
+            </p>
         </template>
 
         <!-- Information on model to use this notification template

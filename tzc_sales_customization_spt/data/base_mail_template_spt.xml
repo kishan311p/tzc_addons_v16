@@ -3,121 +3,39 @@
     <data noupdate="0">
         <record id="auth_signup.reset_password_email" model="mail.template">
             <field name="name">Auth Signup: Reset Password</field>
-            <field name="model_id" ref="base.model_res_partner"/>
+            <field name="model_id" ref="base.model_res_users"/>
             <field name="subject">Password Reset Request for {{object.name}}</field>
-            <field name="email_from">"ETO-Support" &lt;{{(object.company_id.catchall_email or object.user_ids[0].email)}}&gt;</field>
+            <field name="email_from">"ETO-Support" &lt;{{(object.company_id.catchall_email or user.email)}}&gt;</field>
             <field name="email_to">{{object.email_formatted }}</field>
             <field name="body_html" type="html">
-                <table border="0" cellpadding="0" cellspacing="0" style="padding-top: 16px; background-color: #F1F1F1; font-family:Verdana, Arial,sans-serif; color: #454748; width: 100%; border-collapse:separate;">
+                <table border="0" cellpadding="0" cellspacing="0" width="590" style="min-width: 590px; background-color: white; padding: 0px 8px 0px 8px; border-collapse:separate;">
                     <tr>
-                        <td align="center">
-                            <table border="0" cellpadding="0" cellspacing="0" width="590" style="padding: 16px; background-color: white; color: #454748; border-collapse:separate;">
-                                <tbody>
-                                    <!-- HEADER -->
-                                    <tr>
-                                        <td align="center" style="min-width: 590px;">
-
-                                            <t t-if="object.env.cr.dbname != 'eto_production'">
-                                                <div class="corner-ribbon" style="top: 5%;position:absolute;width: 165px;font-weight: bold;color: #dc0e0e;font-size: 36px;text-align: center;">TEST</div>
-                                            </t>
-
-                                            <table border="0" cellpadding="0" cellspacing="0" width="590" style="min-width: 590px; background-color: white; padding: 0px 8px 0px 8px; border-collapse:separate;">
-                                                <tr>
-                                                    <td valign="middle" style="width: 245px;">
-                                                        <span style="font-size: 20px; font-weight: bold;">
-                                                            <t t-out="object.name"/>
-                                                        </span>
-                                                    </td>
-                                                    <td valign="middle" style="width: 50%;" align="right">
-                                                        <img src="/web/image?model=res.company&amp;id=1&amp;field=logo" style="padding: 0px; margin: 0px; width: 95%;" t-att-alt="object.user_id.company_id.name"/>
-                                                    </td>
-                                                </tr>
-                                                <tr>
-                                                    <td colspan="2" style="text-align:center;">
-                                                        <hr width="100%" style="background-color:rgb(204,204,204);border:medium none;clear:both;display:block;font-size:0px;min-height:1px;line-height:0; margin:16px 0px 16px 0px;"/>
-                                                    </td>
-                                                </tr>
-                                            </table>
-                                        </td>
-                                    </tr>
-                                    <!-- CONTENT -->
-                                    <tr>
-                                        <td align="center" style="min-width: 590px;">
-                                            <table border="0" cellpadding="0" cellspacing="0" width="590" style="min-width: 590px; background-color: white; padding: 0px 8px 0px 8px; border-collapse:separate;">
-                                                <tr>
-                                                    <td valign="top" style="font-size: 13px;">
-                                                        <div>
-                                                            <p style="margin-top:0px;">Dear <t t-out="object.name"/>
+                        <td valign="top" style="font-size: 13px;">
+                            <div>
+                                <p style="margin-top:0px;">Dear <t t-out="object.name"/>
 ,</p>
-                                                            <p>We received a request to reset your password for your account. To reset your password, please click on the button below and you will be re-directed to another web page.</p>
-                                                            <p>
-                                                                <div style="margin: 16px 0px 16px 0px;">
-                                                                    <a t-attf-href="{{object.signup_url}}" style="background-color: #1F7B6F; padding: 8px 16px 8px 16px; text-decoration: none; color: #fff; border-radius: 5px; font-size:13px;">Change password</a>
-                                                                </div>
-                                                            </p>
-                                                            <p>Please note that this link will expire in 24 hours for security reasons. If you did not make this request, please ignore this email and your account will remain secure.</p>
-                                                            <p>If you have any questions or concerns, please don't hesitate to contact us at support@teameto.com. We're always here to help.</p>
-                                                            <p>
-                                                                Best regards,
-                                                                <br/>
-                                                                Team Everything Optical 
-                                                            </p>
-                                                            <!-- <br/> -->
-                                                        </div>
-                                                    </td>
-                                                </tr>
-                                                <tr>
-                                                    <td style="text-align:center;">
-                                                        <hr width="100%" style="background-color:rgb(204,204,204);border:medium none;clear:both;display:block;font-size:0px;min-height:1px;line-height:0; margin: 16px 0px 16px 0px;"/>
-                                                    </td>
-                                                </tr>
-                                            </table>
-                                        </td>
-                                    </tr>
-                                    <!-- FOOTER -->
-                                    <tr>
-                                        <td align="left" style="min-width: 590px;">
-                                            <table border="0" cellpadding="0" cellspacing="0" width="590" style="min-width: 590px; background-color: white; font-size: 11px; padding: 0px 8px 0px 8px; border-collapse:separate;">
-                                                <tr>
-                                                    <td valign="middle" align="left">
-                                                        <t t-out="object.company_id.name"/>
-                                                    </td>
-                                                </tr>
-                                                <tr>
-                                                    <td valign="middle" align="left" style="opacity: 0.7;">
-                                                        <t t-out="object.company_id.phone"/>
-                                                        <t t-if="object.company_id.email">
-                        
-                |                                                            <a t-attf-href="'mailto:%s' % {{object.company_id.email}}" style="text-decoration:none; color: #454748;" t-out="object.company_id.email">
-                                                            </a>
-                                                        </t>
-                                                        <t t-if="object.company_id.website">
-                        |                                                            <a t-attf-href="'%s' % {{object.company_id.website}}" style="text-decoration:none; color: #454748;">
-                                                                <t t-out="object.company_id.website"/>
-                                                            </a>
-
-                                                        </t>
-                                                    </td>
-                                                </tr>
-                                            </table>
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
+                                <p>We received a request to reset your password for your account. To reset your password, please click on the button below and you will be re-directed to another web page.</p>
+                                <p>
+                                    <div align='center' style="margin:20px 0px 20px 0px">
+                                        <a t-attf-href="{{object.signup_url}}" style="background-color: #1F7B6F; padding: 8px 16px 8px 16px; text-decoration: none; color: #fff; border-radius: 100px; font-size:13px;">Change password</a>
+                                    </div>
+                                </p>
+                                <p>Please note that this link will expire in 24 hours for security reasons. If you did not make this request, please ignore this email and your account will remain secure.</p>
+                                <p>If you have any questions or concerns, please don't hesitate to contact us at support@teameto.com. We're always here to help.</p>
+                                <p>
+                                    Best regards,
+                                    <br/>
+                                    Team Everything Optical 
+                                </p>
+                                <!-- <br/> -->
+                            </div>
                         </td>
                     </tr>
-                    <!-- POWERED BY -->
-                    <tr>
-                        <td align="center" style="min-width: 590px;">
-                            <table border="0" cellpadding="0" cellspacing="0" width="590" style="min-width: 590px; background-color: #F1F1F1; color: #454748; padding: 8px; border-collapse:separate;">
-                                <tr>
-                                    <td style="text-align: center; font-size: 13px;">
-        Powered by <a target="_blank" href="www.teameto.com" style="color: #1F7B6F;">ETO</a>
-                                    </td>
-                                </tr>
-                            </table>
+                    <!-- <tr>
+                        <td style="text-align:center;">
+                            <hr width="100%" style="background-color:rgb(204,204,204);border:medium none;clear:both;display:block;font-size:0px;min-height:1px;line-height:0; margin: 16px 0px 16px 0px;"/>
                         </td>
-                    </tr>
+                    </tr> -->
                 </table>
             </field>
             <field name="lang">{{object.lang}}</field>
@@ -138,7 +56,7 @@
                             <table border="0" cellpadding="0" cellspacing="0" width="590" style="padding: 16px; background-color: white; color: #454748; border-collapse:separate;">
                                 <tbody>
                                     <!-- HEADER -->
-                                    <tr>
+                                    <!-- <tr>
                                         <td align="center" style="min-width: 590px;">
                                             <t t-if="object.env.cr.dbname != 'eto_production'">
                                                 <div class="corner-ribbon" style="top: 5%;position:absolute;width: 165px;font-weight: bold;color: #dc0e0e;font-size: 36px;text-align: center;">TEST</div>
@@ -162,7 +80,7 @@
                                                 </tr>
                                             </table>
                                         </td>
-                                    </tr>
+                                    </tr> -->
                                     <!-- CONTENT -->
                                     <tr>
                                         <td align="center" style="min-width: 590px;">
@@ -194,8 +112,8 @@
                                                             <!-- Have a nice day!<br />
                         <br/>
 The ${object.company_id.name} Team -->
-                                                            <p style="margin-bottom:0px;">Thank you,<br/>
-                                ETO Support</p>
+                                                            <p style="margin-bottom:0px;">Best regards,<br/>
+                                Team Everything Optical</p>
                                                         </div>
                                                     </td>
                                                 </tr>
@@ -205,7 +123,7 @@ The ${object.company_id.name} Team -->
                                                     </td>
                                                 </tr>
                                                 <!-- FOOTER -->
-                                                <tr>
+                                                <!-- <tr>
                                                     <td align="left" style="min-width: 590px;">
                                                         <table border="0" cellpadding="0" cellspacing="0" width="590" style="min-width: 590px; background-color: white; font-size: 11px; padding: 0px 8px 0px 8px; border-collapse:separate;">
                                                             <tr>
@@ -232,7 +150,7 @@ The ${object.company_id.name} Team -->
                                                             </tr>
                                                         </table>
                                                     </td>
-                                                </tr>
+                                                </tr> -->
 
 
                                             </table>
@@ -244,17 +162,17 @@ The ${object.company_id.name} Team -->
                         </td>
                     </tr>
                     <!-- POWERED BY -->
-                    <tr>
+                    <!-- <tr>
                         <td align="center" style="min-width: 590px;">
                             <table border="0" cellpadding="0" cellspacing="0" width="590" style="min-width: 590px; background-color: #F1F1F1; color: #454748; padding: 8px; border-collapse:separate;">
                                 <tr>
                                     <td style="text-align: center; font-size: 13px;">
-        Powered by <a target="_blank" href="www.teameto.com" style="color: #1F7B6F;">ETO</a>
+        Powered by <a target="_blank" t-attf-href="www.teameto.com" style="color: #1F7B6F;">ETO</a>
                                     </td>
                                 </tr>
                             </table>
                         </td>
-                    </tr>
+                    </tr> -->
                 </table>
             </field>
             <field name="lang">{{object.partner_id.lang}}</field>
@@ -270,13 +188,32 @@ The ${object.company_id.name} Team -->
             <!-- <![CDATA[ETO-Support <${ |safe}>]]> -->
             <field name="email_to">{{object.user_id.email_formatted }}</field>
             <field name="body_html" type="html">
-                <table border="0" cellpadding="0" cellspacing="0" style="padding-top: 16px; background-color: #F1F1F1; font-family:Verdana, Arial,sans-serif; color: #454748; width: 100%; border-collapse:separate;">
+                <table border="0" cellpadding="0" cellspacing="0" style="padding-top: 16px; background-color: rgb(32,123,111); font-family:Verdana, Arial,sans-serif; color: black; width: 100%; border-collapse:separate;">
                     <tr>
                         <td align="center">
                             <table border="0" cellpadding="0" cellspacing="0" width="590" style="padding: 16px; background-color: white; color: #454748; border-collapse:separate;">
                                 <tbody>
                                     <!-- HEADER -->
                                     <tr>
+                                        <td align="center" style="min-width: 590px;">
+                                            <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%" style="background-color: white; padding: 0; border-collapse:separate;">
+                                                <tr>
+                                                    <td valign="middle">
+                                                        <img t-att-src="'/logo.png?company=%s' % (object.user_id.company_id.id or 0)" style="padding: 0px; margin: 0px; height: 30px;" t-att-alt="'%s' % object.user_id.company_id.name" />
+                                                    </td>
+                                                    <td align="right">
+
+                                                        <a style="background-color:#ffffff;display:inline-block;font-family:'Open Sans',sans-serif;text-decoration:none;text-align:center;color:#1f7b6f;border-radius:18px;width:50%;max-width:100%;border-top-color:#1f7b6f;border-top-style:solid;border-top-width:1px;border-left-color:#1f7b6f;border-left-style:solid;border-left-width:1px;border-right-color:#1f7b6f;border-right-style:solid;border-right-width:1px;border-bottom-color:#1f7b6f;border-bottom-style:solid;border-bottom-width:1px;font-size:14px;min-width:88px">
+                                                            <span style="display:block;padding:10px;line-height:100%"> <span style="line-height:14px"> Sign In </span> </span> </a>
+                                                        </td>
+                                                </tr>
+                                                <tr><td colspan="2" style="text-align:center;">
+                                                <hr width="100%" style="background-color:rgb(32,123,111);border:medium none;clear:both;display:block;font-size:0px;min-height:1px;line-height:0; margin:20px 0px 32px 0px;"/>
+                                                </td></tr>
+                                            </table>
+                                        </td>
+                                    </tr>
+                                    <!-- <tr>
                                         <td align="center" style="min-width: 590px;">
                                             <t t-if="object.env.cr.dbname != 'eto_production'">
                                                 <div class="corner-ribbon" style="top: 5%;position:absolute;width: 165px;font-weight: bold;color: #dc0e0e;font-size: 36px;text-align: center;">TEST</div>
@@ -299,7 +236,7 @@ The ${object.company_id.name} Team -->
                                                 </tr>
                                             </table>
                                         </td>
-                                    </tr>
+                                    </tr> -->
                                     <!-- CONTENT -->
                                     <tr>
                                         <td align="center" style="min-width: 590px;">
@@ -312,9 +249,9 @@ The ${object.company_id.name} Team -->
                                                             <!-- <br/> -->
                                                             <p>As part of the team, you'll now have access to the wide range of products we carry along with inventory and pricing information. Once you sign in, you can view inventory, add to cart and proceed to check out and orders will be created on your account.</p>
                                                             <p>
-                                                                <div style="margin: 16px 0px 16px 0px;">
+                                                                <div align='center' style="margin:20px 0px 20px 0px">
                                                                     <!-- <a t-attf-href="{{object.user_id.signup_url}}" style="background-color: #1F7B6F; padding: 8px 16px 8px 16px; text-decoration: none; color: #fff; border-radius: 5px; font-size:13px;"> -->
-                                                                    <a t-attf-href="{{object.env.context.get('url')}}" style="background-color: #1F7B6F; padding: 8px 16px 8px 16px; text-decoration: none; color: #fff; border-radius: 5px; font-size:13px;">
+                                                                    <a t-attf-href="{{object.env.context.get('url')}}" style="background-color: #1F7B6F; padding: 8px 16px 8px 16px; text-decoration: none; color: #fff; border-radius: 100px; font-size:13px;">
                                                                     Sign in
                                                                     </a>
                                                                 </div>
@@ -332,15 +269,43 @@ The ${object.company_id.name} Team -->
                                                     </td>
                                                 </tr>
                                                 <tr>
-                                                    <td style="text-align:center;">
-                                                        <hr width="100%" style="background-color:rgb(204,204,204);border:medium none;clear:both;display:block;font-size:0px;min-height:1px;line-height:0; margin: 16px 0px 16px 0px;"/>
-                                                    </td>
+                                                        <!-- <td style="text-align:center;">
+                                                            <hr width="100%" style="background-color:rgb(204,204,204);border:medium none;clear:both;display:block;font-size:0px;min-height:1px;line-height:0; margin: 16px 0px 16px 0px;"/>
+                                                        </td> -->
                                                 </tr>
                                             </table>
                                         </td>
                                     </tr>
                                     <!-- FOOTER -->
-                                    <tr>
+                                    <tr >
+                                        <td align="center" style="min-width: 590px; padding: 0 8px 0 8px; font-size:13px;" >
+                                            <hr width="90%" style="background-color:rgb(32,123,111);border:medium none;clear:both;display:block;font-size:0px;min-height:1px;line-height:0; margin: 75px 0px 10px 0px;"/>
+                                            <img t-att-src="'/logo.png?company=%s' % (object.user_id.company_id.id or 0)" style="padding: 0px; margin: 0px; height: 30px;" t-att-alt="'%s' % object.user_id.company_id.name" /><br/>
+                                            <div style="color:black;margin:10px" >
+                                                
+                                                <t t-out="object.user_id.company_id.street" /><br/>
+                                                <t t-out="object.user_id.company_id.city" />, <t t-out="object.user_id.company_id.state_id.name" />, <t t-out="object.user_id.company_id.country_id.name" /> <t t-out="object.user_id.company_id.zip" /><br/>
+                                                <a t-if="object.user_id.company_id.website" t-att-href="'%s' % object.user_id.company_id.website" style="text-decoration:none ;color: black;" t-out="object.user_id.company_id.website"/><br/>
+                                                <a href="tel:+1%20905%20944%209786" rel="noopener" style="text-decoration:none;background-color:transparent;color:#000000" target="_blank">
+                                                    <t t-out="object.user_id.company_id.phone" />
+                                                </a>
+                                                <t t-if="object.user_id.company_id.email and object.user_id.company_id.phone"> |</t>
+                                                <a t-if="object.user_id.company_id.email" t-att-href="'mailto:%s' % object.user_id.company_id.email" style="text-decoration:none ; color: black;" t-out="object.user_id.company_id.email"/>
+                                            </div>
+                                            <div align="center">
+                                                <a t-att-href="'%s' % object.user_id.company_id.social_instagram" style="text-decoration:none;background-color:transparent;">
+                                                    <img alt="Instagram" text="Instagram" t-attf-src="https://cdn.teameto.com/data/B2B/email/instagram.png"  height="32" width="32"></img>
+                                                </a>
+                                                <a t-att-href="'%s' % object.user_id.company_id.social_linkedin" style="text-decoration:none;background-color:transparent;">
+                                                    <img alt="LinkedIn" text="LinkedIn" t-attf-src="https://cdn.teameto.com/data/B2B/email/linkedin.png"  height="32" width="32"></img>
+                                                </a>
+                                                <a t-att-href="'%s' % object.user_id.company_id.social_facebook" style="text-decoration:none;background-color:transparent;">
+                                                    <img alt="Facebook" text="Facebook" t-attf-src="https://cdn.teameto.com/data/B2B/email/facebook.png"  height="32" width="32"></img>
+                                                </a>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <!-- <tr>
                                         <td align="center" style="min-width: 590px;">
                                             <table border="0" cellpadding="0" cellspacing="0" width="590" style="min-width: 590px; background-color: white; font-size: 11px; padding: 0px 8px 0px 8px; border-collapse:separate;">
                                                 <tr>
@@ -362,23 +327,34 @@ The ${object.company_id.name} Team -->
                                                 </tr>
                                             </table>
                                         </td>
-                                    </tr>
+                                    </tr> -->
                                 </tbody>
                             </table>
                         </td>
                     </tr>
                     <!-- POWERED BY -->
                     <tr>
+                        <td style="padding-right:0px;padding-left:0px" align="center" >
+                            <div>
+                                <a href="mailto:support@teameto.com" style="text-decoration:none;background-color:transparent;color:rgb(0,135,132)" target="_blank">
+                                    <img src="https://cdn.teameto.com/data/B2B/email/email-footer-banner.jpg" style="border-style:none;vertical-align:middle;text-decoration:none;display:inline-block!important;border:none;height:auto;float:none;width:100%;max-width:640px;padding:25px 0px 25px 0px" width="600" height="300" border="0" align="middle" >
+                                    </img>
+                                </a>
+                            </div>
+                        </td>
+
+                    </tr>
+                    <!-- <tr>
                         <td align="center" style="min-width: 590px;">
                             <table border="0" cellpadding="0" cellspacing="0" width="590" style="min-width: 590px; background-color: #F1F1F1; color: #1F7B6F; padding: 8px; border-collapse:separate;">
                                 <tr>
                                     <td style="text-align: center; font-size: 13px;">
-                                    Powered by <a target="_blank" href="www.teameto.com" style="color: #1F7B6F;">ETO</a>
+                                    Powered by <a target="_blank" t-attf-href="www.teameto.com" style="color: #1F7B6F;">ETO</a>
                                     </td>
                                 </tr>
                             </table>
                         </td>
-                    </tr>
+                    </tr> -->
                 </table>
             </field>
             <field name="lang">{{object.partner_id.lang}}</field>

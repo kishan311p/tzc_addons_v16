@@ -929,7 +929,7 @@
                         <field name="price_unit" readonly="1"/>
                         <!-- <field name="price_unit" readonly="1"  force_save="1"/> -->
                         <field name="unit_discount_price" force_save="1" attrs="{'readonly':['|','|',('is_admin','=',True),('is_global_discount','=',True),('state','not in',['draft','sent','received','in_scanning','sale','scanned'])]}" />
-                        <!-- <field name="tax_id" widget="many2many_tags" options="{'no_create': True}" domain="[('type_tax_use','=','sale'),('company_id','=',parent.company_id), ('country_id', '=', parent.tax_country_id)]" context="{'active_test': True}" optional="show" force_save="1" readonly="1" can_create="true" can_write="true"/> -->
+                        <field name="tax_id" widget="many2many_tags" options="{'no_create': True}" domain="[('type_tax_use','=','sale'),('company_id','=',parent.company_id), ('country_id', '=', parent.tax_country_id)]" context="{'active_test': True}" optional="show" force_save="1" readonly="1" can_create="true" can_write="true"/>
                         <field name="discount" string="Disc.%" optional="show" widget="sol_discount" on_change="1" attrs="{'readonly':['|','|',('is_admin','=',True),('is_shipping_product','=',True),('state','not in',['draft','sent','received','in_scanning','sale','scanned'])]}" />
                         <field name="fix_discount_price" force_save="1" on_change="1" readonly="1"/>
                         <field name="picked_qty_subtotal" readonly="1"/>

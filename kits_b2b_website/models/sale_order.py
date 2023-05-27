@@ -23,12 +23,12 @@ class sale_order(models.Model):
         order_id = self.env['sale.order'].search([('name','=',dictionary.get('order'))],limit=1)
         if dictionary.get('payment_status') == 'approved':
             template_id = self.env.ref('tzc_sales_customization_spt.mail_template_for_approve_payment')
-            template_id = template_id.with_context(order = order_id.name,date=datetime.datetime.now().strftime("%d-%m-%Y %H:%M:%S"),amount = order_id.currency_id.name + ' ' + order_id.currency_id.symbol + str(dictionary.get('amount',0.00)))
+            template_id = template_id.with_context(signature=order_id.user_id.signature,order = order_id.name,date=datetime.datetime.now().strftime("%d-%m-%Y %H:%M:%S"),amount = order_id.currency_id.name + ' ' + order_id.currency_id.symbol + str(dictionary.get('amount',0.00)))
             template_id.sudo().send_mail(order_id.id,force_send=True,email_layout_xmlid="mail.mail_notification_light")
             
         if dictionary.get('payment_status') == 'declined':
             template_id = self.env.ref('tzc_sales_customization_spt.mail_template_for_decline_payment')
-            template_id = template_id.with_context(order = order_id.name,date=datetime.datetime.now().strftime("%d-%m-%Y %H:%M:%S"),amount = order_id.currency_id.name + ' ' + order_id.currency_id.symbol + str(dictionary.get('amount',0.00)))
+            template_id = template_id.with_context(signature=order_id.user_id.signature,order = order_id.name,date=datetime.datetime.now().strftime("%d-%m-%Y %H:%M:%S"),amount = order_id.currency_id.name + ' ' + order_id.currency_id.symbol + str(dictionary.get('amount',0.00)))
             template_id.sudo().send_mail(order_id.id,force_send=True,email_layout_xmlid="mail.mail_notification_light")
         return {}
     
@@ -36,15 +36,15 @@ class sale_order(models.Model):
     def kits_b2b_order_confrim_mail_send(self):
         
         salesman_mail_template = self.env.ref('tzc_sales_customization_spt.tzc_email_template_sales_person_sale_order_confirm')
-        salesman_mail_template.send_mail(self.id,force_send=True)
+        salesman_mail_template.send_mail(self.id,force_send=True,email_layout_xmlid="mail.mail_notification_light")
         order_mail_template = self.env.ref('tzc_sales_customization_spt.tzc_email_template_sale_confirm_spt')
-        order_mail_template.send_mail(self.id,force_send=True)
+        order_mail_template.send_mail(self.id,force_send=True,email_layout_xmlid="mail.mail_notification_light")
         return{}
     
     
     def kits_b2b_order_catalog_mail_send(self):
-        self.env.ref('tzc_sales_customization_spt.kits_mail_cancel_saleorder_to_customer').send_mail(self.id, force_send=True)
-        self.env.ref('tzc_sales_customization_spt.kits_mail_cancel_saleorder_to_sales_person').send_mail(self.id, force_send=True)
+        self.env.ref('tzc_sales_customization_spt.kits_mail_cancel_saleorder_to_customer').send_mail(self.id, force_send=True,email_layout_xmlid="mail.mail_notification_light")
+        self.env.ref('tzc_sales_customization_spt.kits_mail_cancel_saleorder_to_sales_person').send_mail(self.id, force_send=True,email_layout_xmlid="mail.mail_notification_light")
         return{}
     
     def cart_notification_to_salesperson(self):
@@ -60,5 +60,5 @@ class sale_order(models.Model):
         if pdf_links.get('success') and pdf_links.get('url'):
             url = pdf_links.get('url')
         recipients = self.user_id.partner_id.ids if self.user_id and self.user_id.partner_id else []
-        mail_template_id.with_context(pdf_url=url).send_mail(res_id=self.id,force_send=True,email_values={'recipient_ids':[(6,0,recipients)]},email_layout_xmlid="mail.mail_notification_light")
+        mail_template_id.with_context(signature=self.user_id.signature,pdf_url=url).send_mail(res_id=self.id,force_send=True,email_values={'recipient_ids':[(6,0,recipients)]},email_layout_xmlid="mail.mail_notification_light")
         return{}

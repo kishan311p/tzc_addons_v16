@@ -198,9 +198,11 @@ class sale_order(models.Model):
             #     })
                 # move_id._set_quantity_done(case_ol.product_uom_qty)
             template_id = self.env.ref('tzc_sales_customization_spt.tzc_picking_ready_notification_to_salesperson_spt')
-            template_id.send_mail(self.id,force_send=True,email_layout_xmlid="mail.mail_notification_light")
+            template_id.with_context(signature=self.user_id.signature).send_mail(self.id,force_send=True,email_layout_xmlid="mail.mail_notification_light")
+            # template_id.send_mail(self.id,force_send=True,email_layout_xmlid="mail.mail_notification_light")
             ready_to_ship_template_id = self.env.ref('tzc_sales_customization_spt.tzc_email_template_order_ready_to_ship')
-            ready_to_ship_template_id.send_mail(self.id,force_send=True,email_layout_xmlid="mail.mail_notification_light")
+            ready_to_ship_template_id.with_context(signature=self.user_id.signature).send_mail(self.id,force_send=True,email_layout_xmlid="mail.mail_notification_light")
+            # ready_to_ship_template_id.send_mail(self.id,force_send=True,email_layout_xmlid="mail.mail_notification_light")
             picking_id.write({'state':'assigned'})
             self.write({'state': 'scan'})
             self.order_approved_by = self.env.user.partner_id.id
@@ -2651,12 +2653,13 @@ class sale_order(models.Model):
                         'default_template_id': customer_tmp_id.id,
                         'default_composition_mode': 'comment',
                         'mark_so_as_sent': False,
-                        'custom_layout': "mail.mail_notification_light",
+                        'default_email_layout_xmlid': "mail.mail_notification_light",
                         'force_email': True,
                         'default_no_auto_thread':False,
                         'model_description': self.with_context(lang=lang).type_name,
                         'cart_recovery':True,
                         'next_execution_date':mail_delay_date,
+                        'signature':self.user_id.signature
                     }
                     return {
                         'type': 'ir.actions.act_window',
@@ -2879,7 +2882,8 @@ class sale_order(models.Model):
                 'default_composition_mode': 'comment',
                 'mark_so_as_sent': True,
                 'force_email': True,
-                'default_email_layout_xmlid':'mail.mail_notification_light'
+                'default_email_layout_xmlid':'mail.mail_notification_light',
+                'generate_payment' : True
             }
             return {
                 'name': _('Send Mail'),
@@ -3880,7 +3884,8 @@ class sale_order(models.Model):
             'target': 'new',
             'context': {
                 'default_composition_mode': 'mass_mail' if len(self.ids) > 1 else 'comment',
-                'default_email_layout_xmlid': 'mail.mail_notification_layout_with_responsible_signature',
+                'default_email_layout_xmlid': 'mail.mail_notification_light',
+                # 'default_email_layout_xmlid': 'mail.mail_notification_layout_with_responsible_signature',
                 'default_res_id': self.ids[0],
                 'default_model': 'sale.order',
                 'default_use_template': bool(template_id),

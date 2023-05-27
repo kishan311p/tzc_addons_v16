@@ -11,14 +11,14 @@
             <field name="auto_delete" eval="False"/>
             <field name="lang">{{object.env.user.lang }}</field>
             <field name="body_html" type="html">
-                <table border="0" cellpadding="0" cellspacing="0" width="590" style="padding: 16px; background-color: white; color: #454748; border-collapse:separate;">
+                <!-- <table border="0" cellpadding="0" cellspacing="0" width="590" style="padding: 16px; background-color: white; color: #454748; border-collapse:separate;">
                     <tbody>
-                        <!-- CONTENT -->
+                        CONTENT
                         <tr>
                             <td align="center" style="min-width: 590px;">
                                 <table border="0" cellpadding="0" cellspacing="0" width="590" style="min-width: 590px; background-color: white; padding: 0px 8px 0px 8px; border-collapse:separate;">
                                     <tr>
-                                        <td valign="top" style="font-size: 13px;">
+                                        <td valign="top" style="font-size: 13px;"> -->
                                             <p style="margin-top:0px;">Hello <t t-out="object.user_id.name"/>,</p>
                                             <p><t t-out="object.partner_id.name"/> is adding items to their cart.</p>
                                             <p>Please reach out to customer for any assistance.</p>
@@ -26,15 +26,15 @@
                                                 Everything Optical Management
                                             </p>
                                             <a t-attf-href="{{object.env.context.get('pdf_url')}}">
-                                                <img src="/tzc_sales_customization_spt/static/src/img/pdf.png" style="height:60px;width:100px;" />
+                                                <img t-attf-src="/tzc_sales_customization_spt/static/src/img/pdf.png" style="height:60px;width:100px;" />
                                             </a>
-                                        </td>
+                                        <!-- </td>
                                     </tr>
                                 </table>
                             </td>
                         </tr>
                     </tbody>
-                </table>
+                </table> -->
             </field>
         </record>
     </data>

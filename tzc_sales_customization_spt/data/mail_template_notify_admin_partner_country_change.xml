@@ -32,11 +32,11 @@
  has changed their country from <t t-out="ctx.get('from_country')"/>
  to <t t-out="object.country_id.name"/>
                                 </p>
-                                <p>
-                                    <a t-attf-href="{{object.get_base_url()}}/web#id={{object.id}}&amp;action={{object.env.ref('contacts.action_contacts').id}}&amp;model=res.partner&amp;view_type=form" target="_blank" style="background-color:#1F7B6F !important; padding:10px; text-decoration: none; color: #fff; border-radius: 5px; font-size: 16px;" class="o_default_snippet_text">
+                                <div align='center' style="margin:20px 0px 20px 0px">
+                                    <a t-attf-href="{{object.get_base_url()}}/web#id={{object.id}}&amp;action={{object.env.ref('contacts.action_contacts').id}}&amp;model=res.partner&amp;view_type=form" target="_blank" style="background-color:#1F7B6F !important; padding:10px; text-decoration: none; color: #fff; border-radius: 100px; font-size: 13px;" class="o_default_snippet_text">
                                             View Customer Account
                                     </a>
-                                </p>
+                                </div>
 
                                 <p style="margin-bottom:0px;">
                                 Thank you,<br/>
@@ -82,11 +82,11 @@
  by <t t-out="object.env.user.name"/>
 . Please ensure customer is aware of change.
                         </p>
-                        <p>
-                            <a t-attf-href="{{object.get_base_url()}}/web#id={{object.id}}&amp;action={{object.env.ref('contacts.action_contacts').id}}&amp;model=res.partner&amp;view_type=form" target="_blank" style="background-color:#1F7B6F !important; padding:10px; text-decoration: none; color: #fff; border-radius: 5px; font-size: 16px;" class="o_default_snippet_text">
+                        <div align='center' style="margin:20px 0px 20px 0px">
+                            <a t-attf-href="{{object.get_base_url()}}/web#id={{object.id}}&amp;action={{object.env.ref('contacts.action_contacts').id}}&amp;model=res.partner&amp;view_type=form" target="_blank" style="background-color:#1F7B6F !important; padding:10px; text-decoration: none; color: #fff; border-radius: 100px; font-size: 13px;" class="o_default_snippet_text">
                                     View Customer Account
                             </a>
-                        </p>
+                        </div>
                         <p style="margin-bottom:0px;">
                                     Thank you,<br/>
                                     Everything Optical Management
@@ -117,18 +117,22 @@
                             <t t-if="receiver">
                                 <p style="margin-top:0px;margin-top:0px;">Hello <t t-out="receiver"/>,</p>
                             </t>
-                            <t t-else="">
+                            <t t-if="not receiver">
                                 <p style="margin-top:0px;margin-top:0px;">Hello ,</p>
                             </t>
                         </p>
-                        <p>
-                            <t t-out="object.name"/> has been reassigned sales managers from <t t-out="ctx.get('old_salesperson')"/> to <t t-out="object.user_id.name"/>.
-                        </p>
-                        <p>
-                            <a t-attf-href="{{object.get_base_url()}}/web#id={{object.id}}&amp;action={{object.env.ref('contacts.action_contacts').id}}&amp;model=res.partner&amp;view_type=form" target="_blank" style="background-color:#1F7B6F !important; padding:10px; text-decoration: none; color: #fff; border-radius: 5px; font-size: 16px;" class="o_default_snippet_text">
-                                View Customer Account
-                            </a>
-                        </p>
+                            <t t-if="ctx.get('old_salesperson')">
+                                <t t-out="object.name"/> has been reassigned sales managers from <t t-out="ctx.get('old_salesperson')"/> to <t t-out="object.user_id.name"/>.
+                            </t>
+                            <t t-if="not ctx.get('old_salesperson')">
+                                <t t-out="object.name"/> has been reassigned sales managers to <t t-out="object.user_id.name"/>.
+                            </t>
+                            <div align='center' style="margin:20px 0px 20px 0px">
+                                <a t-attf-href="{{object.get_base_url()}}/web#id={{object.id}}&amp;action={{object.env.ref('contacts.action_contacts').id}}&amp;model=res.partner&amp;view_type=form" target="_blank" style="background-color:#1F7B6F !important; padding:10px; text-decoration: none; color: #fff; border-radius: 100px; font-size: 13px;" class="o_default_snippet_text">
+                                    View Customer Account
+                                </a>
+                            </div>    
+                       
                         <p style="margin-bottom:0px;">Thank you,<br/>
                             Everything Optical Management
                         </p>

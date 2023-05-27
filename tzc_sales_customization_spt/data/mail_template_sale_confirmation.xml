@@ -11,48 +11,52 @@
             <field name="model_id" ref="sale.model_sale_order"/>
             <field name="auto_delete" eval="False"/>
             <field name="lang">{{object.partner_id.lang}}</field>
-            <field name="body_html">
-                <![CDATA[
-                    <p style="margin: 0px; padding: 0px; font-size: 13px;width: 590px !important;">
-
-                        <p style='margin-top:0px;'>Dear <t t-out="object.partner_id.name"/>,</p>
-                        <p>Thank you for placing an order with Everything Optical! We appreciate your business and wanted to confirm that we have received your order.</p>
-                        <p>
-                            Here are the details of your order:
-                            <br/>
-                            Order Number: #<t t-out="object.name"/>
-                            <br/>
-                            Order Date: <t t-out="object.date_order"/>
-                            <br/>
-                            <t t-set="shipping_address" t-value="object.create_address_line_for_sale(object.partner_shipping_id)"/>
-                            Shipping Address: <t t-out="shipping_address"/>
-                        </p>
-                        <p>
-                            <a t-attf-href="{{object.get_portal_url()}}/order-details?order_id={{object.id}}" style="background-color:#1F7B6F !important;padding: 10px; text-decoration: none; color: #fff; border-radius: 5px; font-size: 16px;" class="o_default_snippet_text">
-                                View Order
+            <field name="body_html" type="html">
+                <table border="0" cellpadding="0" cellspacing="0" width="590" style="min-width: 590px; background-color: white; padding: 0px 8px 0px 8px; border-collapse:separate;">
+                    <tbody>
+                    <tr>
+                        <td valign="top" style="font-size: 13px;">
+                            <p style='margin-top:0px;'>Dear <t t-out="object.partner_id.name"/>,</p>
+                            <p>Thank you for placing an order with Everything Optical! We appreciate your business and wanted to confirm that we have received your order.</p>
+                            <p>
+                                Here are the details of your order:
+                                <br/>
+                                Order Number: #<t t-out="object.name"/>
+                                <br/>
+                                Order Date: <t t-out="object.date_order"/>
+                                <br/>
+                                <t t-set="shipping_address" t-value="object.create_address_line_for_sale(object.partner_shipping_id)"/>
+                                Shipping Address: <t t-out="shipping_address"/>
+                            </p>
+                            <div align='center' style="margin:20px 0px 20px 0px">
+                                <a t-attf-href="{{object.get_portal_url()}}/order-details?order_id={{object.id}}" style="background-color:#1F7B6F !important;padding: 10px; text-decoration: none; color: #fff; border-radius: 100px; font-size: 13px;" class="o_default_snippet_text">
+                                    View Order
+                                </a>
+                            </div>
+                            <p>
+                                If you notice any errors in your order, please contact <t t-out="object.user_id.name"/> soon as possible so we can correct it before shipping. Otherwise, your order will be processed and shipped within 2 business days.
+                            </p>
+                            <p>
+                                If you have any questions or need help with your order, please don't hesitate to contact <t t-out="object.user_id.name"/> by replying to this email.
+                            </p>
+                            <p>
+                                Thank you for your business, and we hope you enjoy your purchase!
+                            </p>
+                            <p style="margin-bottom:0px;">                                                            
+                                Best regards,
+                                <br/>
+                                Team Everything Optical
+                            </p>
+                            <!-- <a t-attf-href="{{object.get_base_url()}}/report/pdf/sale.report_saleorder/{{object.id}}"> -->
+                            <t t-set="pdf_url" t-value="object.env['ir.model'].generate_report_access_link('sale.order',object.id,'sale.action_report_saleorder',object.partner_id.id)" />
+                            <a t-attf-href="{{pdf_url.get('url') if pdf_url.get('success') and pdf_url.get('url') else '' }}">
+                                <img t-attf-src="/tzc_sales_customization_spt/static/src/img/pdf.png" style="height:60px;width:100px;"/>
                             </a>
-                        </p>
-                        <p>
-                            If you notice any errors in your order, please contact <t t-out="object.user_id.name"/> soon as possible so we can correct it before shipping. Otherwise, your order will be processed and shipped within 2 business days.
-                        </p>
-                        <p>
-                            If you have any questions or need help with your order, please don't hesitate to contact <t t-out="object.user_id.name"/> by replying to this email.
-                        </p>
-                        <p>
-                            Thank you for your business, and we hope you enjoy your purchase!
-                        </p>
-                        <p style="margin-bottom:0px;">                                                            
-                            Best regards,
-                            <br/>
-                            Team Everything Optical
-                        </p>
-                        <!-- <a t-attf-href="{{object.get_base_url()}}/report/pdf/sale.report_saleorder/{{object.id}}"> -->
-                        <t t-set="pdf_url" t-value="object.env['ir.model'].generate_report_access_link('sale.order',object.id,'sale.action_report_saleorder',object.partner_id.id)" />
-                        <a t-attf-href="{{pdf_url.get('url') if pdf_url.get('success') and pdf_url.get('url') else '' }}">
-                            <img src="/tzc_sales_customization_spt/static/src/img/pdf.png" style="height:60px;width:100px;"/>
-                        </a>
-                    </p>
-                ]]>
+                        </td>
+                        </tr>
+                        </tbody>
+                        </table>
+                
             </field>
         </record>
     </data>

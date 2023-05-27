@@ -21,22 +21,22 @@
                                             <p>
                                                 <t t-out="object.user_id.name"/> has your pro-forma invoice ready for order <t t-out="object.name"/>.
                                             </p>
-                                            <p>
-                                                <a t-attf-href="{{object.get_portal_url()}}/order-details?order_id={{object.id}}" style="background-color:#1F7B6F !important;padding: 10px; text-decoration: none; color: #fff; border-radius: 5px; font-size: 16px;" class="o_default_snippet_text">
+                                            <div align='center' style="margin:20px 0px 20px 0px">
+                                                <a t-attf-href="{{object.get_portal_url()}}/order-details?order_id={{object.id}}" target="_blank" style="background-color:#1F7B6F !important; padding: 20px; text-decoration: none; color: #fff; border-radius: 100px; font-size: 13px;" class="o_default_snippet_text">
                                                     View Pro-forma Order
                                                 </a>
-                                            </p>
+                                            </div>
                                             <p>For further assistance, please reach out to <t t-out="object.user_id.name"/> by replying to this email.</p>
                                         </t>
                                         <t t-else="">
                                             <p>
                                                 <t t-out='object.user_id.name'/> is awaiting your review on a quotation sent to your account.
                                             </p>
-                                            <p>
-                                                <a t-attf-href="{{object.get_order_portal_url()}}/order-details?order_id={{object.id}}" style="background-color:#1F7B6F !important; padding: 10px; text-decoration: none; color: #fff; border-radius: 5px; font-size: 16px;" class="o_default_snippet_text">
+                                            <div align='center' style="margin:20px 0px 20px 0px">
+                                                <a t-attf-href="{{object.get_order_portal_url()}}/order-details?order_id={{object.id}}" target="_blank" style="background-color:#1F7B6F !important; padding: 20px; text-decoration: none; color: #fff; border-radius: 100px; font-size: 13px;" class="o_default_snippet_text" >
                                                     View Quotation
                                                 </a>
-                                            </p>
+                                            </div>
                                             <p>
                                                 For further assistance or to update quotation, please reach out to <t t-out='object.user_id.name'/> by replying to this email.
                                             </p>
@@ -51,11 +51,6 @@
                                     <a t-attf-href="{{pdf_url.get('url') if pdf_url.get('success') and pdf_url.get('url') else '' }}">
                                         <img src="/tzc_sales_customization_spt/static/src/img/pdf.png" style="height:60px;width:100px;"/>
                                     </a>
-                                    <p>
-                                        <t t-if="not ctx.get('proforma') and object.user_id.signature">
-                                            <t t-out="object.user_id.signature"/>
-                                        </t>
-                                    </p>
                                 </div>
                             </td>
                         </tr>

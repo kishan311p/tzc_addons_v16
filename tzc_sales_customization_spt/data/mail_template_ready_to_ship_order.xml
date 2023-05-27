@@ -13,7 +13,7 @@
             <field name="body_html" type="html">
                 <table border="0" cellpadding="0" cellspacing="0" width="590" style="padding: 0px; background-color: white; color: #454748; border-collapse:separate;">
                     <tbody>
-                        <!-- CONTENT -->
+                            <!-- CONTENT -->
                         <tr>
                             <td align="left" style="min-width: 590px;">
                                 <table border="0" cellpadding="0" cellspacing="0" width="590" style="min-width: 590px; background-color: white; padding: 0px 8px 0px 8px; border-collapse:separate;">
@@ -23,18 +23,20 @@
                                             <p>
                                                 Your Order <t t-out="object.name"/> is now ready for shipment.
                                             </p>
-                                            <p>
-                                            <a t-attf-href="{{object.get_base_url()}}/my/orders/{{object.id}}?{{object.get_access_token_spt()}}" style="background-color:#1F7B6F !important; padding: 10px; text-decoration: none; color: #fff; border-radius: 5px; font-size: 16px;" class="o_default_snippet_text">
+                                            <!-- <p> -->
+                                            <div align='center' style="margin:20px 0px 20px 0px">
+                                                <a t-attf-href="{{object.get_base_url()}}/my/orders/{{object.id}}?{{object.get_access_token_spt()}}" style="background-color:#1F7B6F !important; padding: 10px; text-decoration: none; color: #fff; border-radius: 100px; font-size: 13px;" class="o_default_snippet_text">
                                                 View Order
-                                            </a>
-                                            </p>
+                                                </a>
+                                            </div>
+                                            <!-- </p> -->
                                             <p>
                                                 Your account manager <b><t t-out="object.user_id.name"/></b> will be in touch with you shortly to collect payment and to finalize any specific shipping instructions.
                                             </p>
                                             <p style="margin-bottom:0px;">
-                                                Thank you,
+                                                Thank you
                                             </p>
-                                            <p>
+                                            <!-- <p>
                                                 <t t-if="object.user_id.signature">
                                                     <t t-out="object.user_id.signature"/>
                                                 </t>
@@ -43,7 +45,7 @@
                                                     Eto Support
                                                 </t>
                                                 
-                                            </p>
+                                            </p> -->
                                         </td>
                                     </tr>
                                 </table>

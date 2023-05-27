@@ -34,7 +34,7 @@ class stock_move_line(models.Model):
     @api.depends('location_id','state')
     def _compute_qty_on_hand(self):
         for rec in self:
-            lines = self.env['stock.move.line'].search([('product_id','=',rec.product_id.id),('state','=','done'),('id','<=',rec.id)])
+            lines = self.env['stock.move.line'].search([('product_id','=',rec.product_id.id),('state','=','done'),('id','<=',rec.id)],order='id asc')
             reserved_lines = self.env['stock.move.line'].search([('product_id','=',rec.product_id.id),('state','not in',('draft','cancel','done')),('id','<=',rec.id)]).filtered(lambda x: x.location_id.display_name.startswith('WH/Stock'))
             virtual_loc_lines = lines.filtered(lambda x : x.location_id.display_name.startswith('Virtual Locations/') or x.location_id.display_name.startswith('Partner Locations/') and x.location_dest_id.display_name.startswith('WH/Stock'))
             wh_stock_lines = lines.filtered(lambda x : x.location_id.display_name.startswith('WH/Stock'))

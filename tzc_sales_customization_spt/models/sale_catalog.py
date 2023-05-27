@@ -479,7 +479,7 @@ class SaleCatalog(models.Model):
                     if pdf_links.get('success') and pdf_links.get('url'):
                         url = pdf_links.get('url')
                     customer_template_id = self.env.ref('tzc_sales_customization_spt.tzc_email_template_catalog_spt')
-                    customer_template_id.with_context(customer_id=customer_id,pdf_url=url).send_mail(record.id,email_values={'email_to': customer_id.email},force_send=True)
+                    customer_template_id.with_context(customer_id=customer_id,pdf_url=url,signature = self.user_id.signature).send_mail(record.id,email_values={'email_to': customer_id.email},force_send=True)
                     # sales_person_template_id = self.env.ref('tzc_sales_customization_spt.tzc_email_template_catalog_confirmation_spt')
                     # sales_person_template_id.with_context(customer_id=customer_id,pdf_url=url).send_mail(record.id,force_send=True)
                 

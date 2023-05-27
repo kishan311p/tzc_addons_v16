@@ -146,7 +146,7 @@ class kits_ReportController(http.Controller):
                         order_id.payment_status = 'over'
 
                     template_id = request.env.ref('tzc_sales_customization_spt.mail_template_for_approve_payment')
-                    template_id = template_id.with_context(order = order_id.name,date=datetime.datetime.now().strftime("%d-%m-%Y %H:%M:%S"),amount = order_id.currency_id.name + ' ' + order_id.currency_id.symbol + str(amount))
+                    template_id = template_id.with_context(signature = order_id.user_id.signature,order = order_id.name,date=datetime.datetime.now().strftime("%d-%m-%Y %H:%M:%S"),amount = order_id.currency_id.name + ' ' + order_id.currency_id.symbol + str(amount))
                     template_id.sudo().send_mail(order_id.id,force_send=True,email_layout_xmlid="mail.mail_notification_light")
                     # email_layout_xmlid
 
@@ -157,7 +157,7 @@ class kits_ReportController(http.Controller):
                         invoice_id.commission_line_ids.write({'state':'draft'})
         else:
             template_id = request.env.ref('tzc_sales_customization_spt.mail_template_for_decline_payment')
-            template_id = template_id.with_context(order = order_id.name,date=datetime.datetime.now().strftime("%d-%m-%Y %H:%M:%S"),amount = order_id.currency_id.name + ' ' + order_id.currency_id.symbol + str(amount))
+            template_id = template_id.with_context(signature = order_id.user_id.signature,order = order_id.name,date=datetime.datetime.now().strftime("%d-%m-%Y %H:%M:%S"),amount = order_id.currency_id.name + ' ' + order_id.currency_id.symbol + str(amount))
             template_id.sudo().send_mail(order_id.id,force_send=True,email_layout_xmlid="mail.mail_notification_light")
 
         # transaction_date = datetime.datetime.now().strftime("%m/%d/%y %H:%M:%S %2p") + ' (UTC)'

@@ -233,17 +233,12 @@
                                     </t>
                                     <hr/>
 
-                                    <br/>
-                                    <br/>
-                                    <center>
-                                        <a t-attf-href="{{object.get_order_portal_url()}}/cart" target="_blank" style="background-color:#1F7B6F !important; padding: 20px; text-decoration: none; color: #fff; border-radius: 5px; font-size: 16px;" class="o_default_snippet_text">
+            
+                                    <div align='center' style="margin:20px 0px 20px 0px">
+                                        <a t-attf-href="{{object.get_order_portal_url()}}/cart" target="_blank" style="background-color:#1F7B6F !important; padding: 20px; text-decoration: none; color: #fff; border-radius: 100px; font-size: 16px;" class="o_default_snippet_text">
         View Cart
                                         </a>
-                                        <br/>
-                                        <br/>
-                                        <br/>
-                                    </center>
-                                    <br/>
+                                    </div>
 
 
                                     <p>For further assistance, please reach out to <t t-out="object.user_id.name"/> by replying to this email.</p>
@@ -252,12 +247,7 @@
                                         Team Everything Optical
 
                                     </p>
-                                    <p>
-                                        <t t-if="object.user_id.signature">
-                                            <t t-out="object.user_id.signature"/>
-                                        </t>
-
-                                    </p>
+                                    
                                 </td>
                             </tr>
                         </table>

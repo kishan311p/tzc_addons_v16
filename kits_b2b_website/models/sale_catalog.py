@@ -6,7 +6,7 @@ class sale_catalog(models.Model):
     
     def catalog_reject_mail(self,partner_id,message) :
         self.ensure_one()
-        self.env.ref('tzc_sales_customization_spt.kits_mail_reject_catalog_to_sales_person').with_context(message=message,customer=partner_id).send_mail(self.id, force_send=True,email_layout_xmlid="mail.mail_notification_light")
+        self.env.ref('tzc_sales_customization_spt.kits_mail_reject_catalog_to_sales_person').with_context(message=message,customer=partner_id,signature=self.user_id.signature).send_mail(self.id, force_send=True,email_layout_xmlid="mail.mail_notification_light")
         return {}
 
     def catalog_email(self,partner_id):
@@ -23,10 +23,10 @@ class sale_catalog(models.Model):
                 'pdf'
             )
             if pdf_links.get('success') and pdf_links.get('url'):
-                url = pdf_links.get('url')
-            quotation_template_id.with_context(pdf_url=url).send_mail(so_id.id,force_send=True) if verified else None
+                url = pdf_links.get('url')  
+            quotation_template_id.with_context(pdf_url=url,signature=self.user_id.signature).send_mail(so_id.id,force_send=True) if verified else None
             confirmation_template_id = self.env.ref('tzc_sales_customization_spt.tzc_email_template_saleperson_quotation_spt')
-            confirmation_template_id.with_context(pdf_url=url).send_mail(so_id.id,email_values={'email_to': so_id.user_id.partner_id.email},force_send=True)
+            confirmation_template_id.with_context(pdf_url=url,signature=self.user_id.signature).send_mail(so_id.id,email_values={'email_to': so_id.user_id.partner_id.email},force_send=True)
         return {}
 
     def line_ordering_by_product(self):

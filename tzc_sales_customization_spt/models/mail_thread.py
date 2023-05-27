@@ -94,6 +94,8 @@ class mail_thread(models.AbstractModel):
                         recipients_data.append(pdata)
                     if self._context.get('quotation_send') and  pdata not in recipients_data:
                         recipients_data.append(pdata)
+                    if self._context.get('generate_payment') and  pdata not in recipients_data:
+                        recipients_data.append(pdata)
                 else:
                     if pdata.get('id') in msg_sudo.partner_ids.ids:
                         recipients_data.append(pdata)

@@ -18,11 +18,11 @@
                             <p>Customer <t t-out="object.env['res.partner'].browse(object.env.context.get('customer')).name"/> has rejected their <b><t t-out="object.name"/></b> and has provided the following reason:<br/>
                                 <t t-out="object.env.context.get('message')"/>
                             </p>
-                            <p>
-                                <a t-attf-href="{{object.get_portal_url()}}//catalog-details?catalog_id={{object.id}}" target="_blank" style="background-color: #1F7B6F; padding: 8px 16px 8px 16px; text-decoration: none; color: #fff; border-radius: 5px; font-size:13px;">
+                            <div align='center' style="margin:20px 0px 20px 0px">
+                                <a t-attf-href="{{object.get_portal_url()}}//catalog-details?catalog_id={{object.id}}" target="_blank" style="background-color: #1F7B6F; padding: 8px 16px 8px 16px; text-decoration: none; color: #fff; border-radius: 100px; font-size:13px;">
                                     View Catalog
                                 </a>
-                            </p>
+                            </div>
                             <p>
                                 Please follow up with the customer.
                             </p>

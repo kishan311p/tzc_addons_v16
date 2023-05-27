@@ -86,10 +86,10 @@
                                                                     </t>
                                                                 </t>
                                                             </t>
-                                                            <img width="250px" t-attf-src="{{product.image_url}}"/>
+                                                            <img width="150px" t-attf-src="{{product.image_url}}"/>
                                                         </td>
                                                         <td style="border: 1px solid #dbdde0; padding: 10px;">
-                                                            <img width="250px" t-attf-src="{{product.image_secondary_url}}"/>
+                                                            <img width="150px" t-attf-src="{{product.image_secondary_url}}"/>
                                                         </td>
                                                         <td style="text-align: center; border: 1px solid #dbdde0; padding: 10px;text-transform: capitalize;">
                                                             <p style="width: 105px;">

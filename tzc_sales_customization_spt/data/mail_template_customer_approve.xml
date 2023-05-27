@@ -15,25 +15,29 @@
             <field name="report_name">Catalog ${(object.name or '')}</field> -->
             <field name="lang">{{object.lang}}</field>
             <field name="body_html" type="html">
-                <div>
-                    <p style="margin-top:0px;">Dear <t t-out="object.name or ''"></t>
-                        <br/>
-                        <br/>
-                    </p>
-                    <!-- <br/> -->
-                    <p>Congratulations! Your account has been verified! Your savings start now!
-                        <br/>
-                    You can now access the Everything Optical (ETO) wholesale website and place orders directly.<br/>
-To login, you must use the email and password used when you registered your account.
-                    If you need any assistance, you may contact your Account Manager or you may email us at <a href="mailto:support@teameto.com">support@teameto.com</a>.
-                </p>
+                <table border="0" cellpadding="0" cellspacing="0" width="590" style="min-width: 590px; background-color: white; padding: 0px 8px 0px 8px; border-collapse:separate;">
+                    <tr>
+                        <td valign="top" style="font-size: 13px;">
+                            <p style="margin-top:0px;">Dear <t t-out="object.name or ''"></t>
+                                <br/>
+                                <br/>
+                            </p>
+                            <!-- <br/> -->
+                            <p>Congratulations! Your account has been verified! Your savings start now!
+                                <br/>
+                            You can now access the Everything Optical (ETO) wholesale website and place orders directly.<br/>
+        To login, you must use the email and password used when you registered your account.
+                            If you need any assistance, you may contact your Account Manager or you may email us at <a t-attf-href="mailto:support@teameto.com">support@teameto.com</a>.
+                        </p>
                 <!-- <br/> -->
-                <p style="margin-bottom:0px;">
-                        Thank you,
-                    <br/>
-                        ETO Support
-                </p>
-            </div>
+                        <p style="margin-bottom:0px;">
+                                Thank you,
+                            <br/>
+                                ETO Support
+                        </p>
+                    </td>
+                </tr>
+            </table>
 
         </field>
     </record>
