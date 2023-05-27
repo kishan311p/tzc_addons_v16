@@ -11,3 +11,4 @@ access_kits_b2b_home_advertisement,access.kits.b2b.home.advertisement,model_kits
 access_kits_b2b_user_token_all,access.kits.b2b.user.token.all,model_kits_b2b_user_token,,1,1,1,1
 access_kits_b2b_product_wishlist_all,access.kits.b2b.product.wishlist.all,model_kits_b2b_product_wishlist,,1,0,0,0
 access_kits_b2b_recent_view_all,access.kits.b2b.recent.view.all,model_kits_b2b_recent_view,,1,0,0,0
+access_kits_landing_view_all,access.kits.landing.view.all,model_kits_landing_view,,1,1,1,1

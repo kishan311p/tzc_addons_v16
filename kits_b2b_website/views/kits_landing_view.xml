@@ -1,0 +1,51 @@
+<?xml version='1.0' encoding='utf-8'?>
+<odoo>
+    <data>
+        <record id="kits_landing_view_from" model="ir.ui.view">
+            <field name="name">kits.landing.view.form</field>
+            <field name="model">kits.landing.view</field>
+            <field name="arch" type="xml">
+                <form>
+                    <sheet>
+                       <group>
+                            <group>
+                                <field name="name" />
+                                <field name="url" />
+                                <field name="on_link" />
+                                <field name="mobile_banner_url" />
+                                <field name="dekstop_banner_url" />
+                                <field name="website_id" required="1" options="{'no_create_edit' :True}" />
+                            </group>
+                            <group>
+                                <field name="mobile_banner" widget="image" class="oe_avatar" options="{'zoom': true,'preview_image': 'mobile_banner','size': [128, 128]}"/>
+                                <field name="dekstop_banner" widget="image" class="oe_avatar" options="{'zoom': true,'preview_image': 'dekstop_banner','size': [128, 128]}" />
+                            </group>
+
+                        </group>
+                       
+                    </sheet>
+                </form>
+            </field>
+        </record>
+        <record id="kits_landing_view_tree" model="ir.ui.view">
+            <field name="name">kits.landing.view.tree</field>
+            <field name="model">kits.landing.view</field>
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="mobile_banner"  widget="image" class="oe_avatar" options="{'zoom': true,'preview_image': 'mobile_banner','size': [128, 128]}"/>
+                    <field name="dekstop_banner"  widget="image" class="oe_avatar" options="{'zoom': true,'preview_image': 'dekstop_banner','size': [128, 128]}"/>
+                    <field name="name" />
+                    <field name="url" />
+                    <field name="on_link" />
+                </tree>
+            </field>
+        </record>
+      
+        <record id="action_kits_landing_view" model="ir.actions.act_window">
+            <field name="name">Landing View</field>
+            <field name="res_model">kits.landing.view</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+    </data>
+
+</odoo>

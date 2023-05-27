@@ -31,7 +31,7 @@
         'views/res_users.xml',
         'views/res_partner.xml',
         'views/sale_order.xml',
-
+        'views/kits_landing_view.xml',
         #actions
         'action.xml',
         'menuitem.xml',

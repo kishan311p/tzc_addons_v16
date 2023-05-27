@@ -51,6 +51,16 @@
             action="kits_b2b_website.kits_b2b_recent_view_action"
             parent="kits_b2b_website.kits_b2b_main_menu"
             sequence="6"/>
+        
+        <menuitem 
+            id="menu_kits_landing_view"
+            name="Landing View"
+            action="action_kits_landing_view" 
+            parent="kits_b2b_website.kits_b2b_main_menu" 
+            groups="base.group_system" 
+            sequence="52"
+            />
+
 
     </data>
 </odoo>

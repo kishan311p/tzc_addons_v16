@@ -16,3 +16,4 @@ from . import kits_b2b_recent_view
 from . import product_product
 from . import sale_catalog
 from . import crm_lead
+from . import kits_landing_view
