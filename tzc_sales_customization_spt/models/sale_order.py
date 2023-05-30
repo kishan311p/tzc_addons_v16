@@ -60,8 +60,8 @@ class sale_order(models.Model):
             return manager.id if len(manager) <= 1 else manager[0].id
 
     sale_manager_id = fields.Many2one('res.users','Sales Manager',default=get_sale_manager,domain=_get_salesmangers,tracking=True)
-    original_sale_manager_id = fields.Many2one('res.users','Original Sales Manager',readonly=True)
-    original_user_id = fields.Many2one('res.users','Original Sales Person',readonly=True)
+    original_sale_manager_id = fields.Many2one('res.users','Original Sales Manager',readonly=True,copy=False)
+    original_user_id = fields.Many2one('res.users','Original Sales Person',readonly=True,copy=False)
     sale_manager_tracking_ids = fields.One2many('sale.manager.tracking','order_id')
     # kits_abadon_card_order
     next_execution_date = fields.Datetime('Next Execution Date',copy=False)
@@ -736,11 +736,11 @@ class sale_order(models.Model):
                             'old_value_%s' % (f_id.ttype): initial_state[tracking_field],
                             'new_value_%s' % (f_id.ttype): rec[tracking_field],
                         }))
-                    
-                    if len(tracking_value_ids):
-                        rec.message_post(
-                            tracking_value_ids=tracking_value_ids
-                        )
+                    # No need as message is posting now.
+                    # if len(tracking_value_ids):
+                    #     rec.message_post(
+                    #         tracking_value_ids=tracking_value_ids
+                    #     )
             return res
 
     # def action_confirm(self):
@@ -975,15 +975,16 @@ class sale_order(models.Model):
                     if line.product_id.type != 'service':
                         delivered_qty += line.picked_qty
                         ordered_qty += line.product_uom_qty
-                    if line.price_tax and line.product_uom_qty:
+                    # if line.price_tax and line.product_uom_qty:
                         # unit_per_tax = round(line.price_tax/line.product_uom_qty,2) if line.product_uom_qty else 0.0
-                        amount_tax = amount_tax + line.picked_qty_subtotal*line.tax_id.amount/100
+                        # amount_tax = amount_tax + line.picked_qty_subtotal*line.tax_id.amount/100
                         # amount_tax = amount_tax + round(unit_per_tax * line.product_uom_qty,2)
                     amount_untaxed += line.price_subtotal
                     amount_discount += line.product_uom_qty * line.fix_discount_price
                     # amount_discount +=  ((line.product_uom_qty * line.price_unit) - line.price_subtotal)
                     amount_without_discount += line.product_uom_qty * line.price_unit
-                amount_tax = amount_tax + (line.product_uom_qty * line.price_unit) *line.tax_id.amount/100
+                amount_tax = amount_tax + line.picked_qty_subtotal*line.tax_id.amount/100
+                # amount_tax = amount_tax + (line.product_uom_qty * line.price_unit) *line.tax_id.amount/100
                 if line.product_id.id not in product_list:
                     picking_ids =picking_line_obj.search([('picking_id.state','!=','cancel'),('picking_id','in',order.picking_ids.ids),('product_id','=',line.product_id.id)])
                     for picking in picking_ids:
@@ -4068,3 +4069,70 @@ class sale_order(models.Model):
                         'discount': discount,
                     })
                     line._compute_amount()
+
+
+
+    def _mail_track(self, tracked_fields, initial):
+        """ For a given record, fields to check (tuple column name, column info)
+        and initial values, return a valid command to create tracking values.
+
+        :param tracked_fields: fields_get of updated fields on which tracking
+          is checked and performed;
+        :param initial: dict of initial values for each updated fields;
+
+        :return: a tuple (changes, tracking_value_ids) where
+          changes: set of updated column names;
+          tracking_value_ids: a list of ORM (0, 0, values) commands to create
+          ``mail.tracking.value`` records;
+
+        Override this method on a specific model to implement model-specific
+        behavior. Also consider inheriting from ``mail.thread``. """
+        self.ensure_one()
+        changes = set()  # contains onchange tracked fields that changed
+        tracking_value_ids = []
+
+        # generate tracked_values data structure: {'col_name': {col_info, new_value, old_value}}
+        revert_order = False
+        confirm_order = False
+        # passing state in ctx to stop some tracking fields in specified state
+        ctx = self._context.copy()
+        ctx.update({'order_state':self.state})
+        self.env.context = ctx
+        for col_name, col_info in tracked_fields.items():
+            if col_name not in initial:
+                continue
+            initial_value = initial[col_name]
+            new_value = self[col_name]
+
+            # Making flag to know whether the order is reverting or confirming.
+            if col_name=='state' and initial_value=='sale' and new_value=='draft':
+                revert_order = True
+            
+            if col_name=='state' and initial_value in ['draft','sent','received'] and new_value=='sale':
+                confirm_order = True
+            
+            # Changing value as field of total is not same. So for log, manupilating values.
+            if revert_order and col_name=='picked_qty_order_total':
+                new_value=self.amount_total
+
+            if revert_order and col_name=='picked_qty_order_discount':
+                new_value=self.amount_discount
+
+            if confirm_order and col_name=='picked_qty_order_total':
+                initial_value = self.amount_total
+                new_value = self.picked_qty_order_total
+
+            if new_value != initial_value and (new_value or initial_value):  # because browse null != False
+                tracking_sequence = getattr(self._fields[col_name], 'tracking',
+                                            getattr(self._fields[col_name], 'track_sequence', 100))  # backward compatibility with old parameter name
+                if tracking_sequence is True:
+                    tracking_sequence = 100
+                tracking = self.env['mail.tracking.value'].create_tracking_values(initial_value, new_value, col_name, col_info, tracking_sequence, self._name)
+
+                if tracking:
+                    if tracking['field_type'] == 'monetary':
+                        tracking['currency_id'] = self[col_info['currency_field']].id
+                    tracking_value_ids.append([0, 0, tracking])
+                changes.add(col_name)
+
+        return changes, tracking_value_ids

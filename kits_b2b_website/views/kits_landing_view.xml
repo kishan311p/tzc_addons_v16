@@ -10,7 +10,6 @@
                        <group>
                             <group>
                                 <field name="name" />
-                                <field name="url" />
                                 <field name="on_link" />
                                 <field name="mobile_banner_url" />
                                 <field name="dekstop_banner_url" />
@@ -22,6 +21,15 @@
                             </group>
 
                         </group>
+                        <notebook>
+                            <page name="video_url" string="Video Url">
+                                <field name="video_url_ids">
+                                    <tree editable="bottom">
+                                        <field name="url" />
+                                    </tree>
+                                </field>
+                            </page>
+                        </notebook>
                        
                     </sheet>
                 </form>
@@ -35,7 +43,6 @@
                     <field name="mobile_banner"  widget="image" class="oe_avatar" options="{'zoom': true,'preview_image': 'mobile_banner','size': [128, 128]}"/>
                     <field name="dekstop_banner"  widget="image" class="oe_avatar" options="{'zoom': true,'preview_image': 'dekstop_banner','size': [128, 128]}"/>
                     <field name="name" />
-                    <field name="url" />
                     <field name="on_link" />
                 </tree>
             </field>

@@ -116,7 +116,11 @@ class kits_b2b_multi_currency_mapping(models.Model):
                         discounted_unit_price = sale_type_price
                     discount = (1-(sale_type_price/product_price))*100
                 else:
-                    discounted_unit_price = self.env['product.pricelist.item'].search([('product_id','in',product.ids),('pricelist_id','=',partner_id.b2b_pricelist_id.id)],limit=1).fixed_price
+
+                    if product.is_case_product:
+                        discounted_unit_price = product.lst_price
+                    else:
+                        discounted_unit_price = self.env['product.pricelist.item'].search([('product_id','in',product.ids),('pricelist_id','=',partner_id.b2b_pricelist_id.id)],limit=1).fixed_price
                     if partner_currency_rate:
                         discounted_unit_price = discounted_unit_price * partner_currency_rate
                     # discounted_unit_price = product_price

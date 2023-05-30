@@ -249,6 +249,9 @@ class product_import_spt(models.Model):
                             wrong_lines.append([import_line.default_code,'Error:'+str("Website id not found.")])
                     if 'is_b2c_published' in product_pro_dict.keys():
                         del product_pro_dict['is_b2c_published']
+                        
+                    if 'is_b2c_published' in product_pro_dict.keys():
+                        del product_pro_dict['is_b2c_published']
                     product_pro_id.with_context(from_product_import=True).write(product_pro_dict)
                     product_pro_ids_list.append(product_pro_id.id)
 

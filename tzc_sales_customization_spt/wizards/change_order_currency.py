@@ -26,7 +26,10 @@ class change_order_currency(models.TransientModel):
                 # For delivered type product.
                 else:
                     usd_pricelist_id = self.env.ref('tzc_sales_customization_spt.usd_public_pricelist_spt')
-                    unit_price = self.env['product.pricelist.item'].search([('product_id','=',line.product_id.id),('pricelist_id','=',usd_pricelist_id.id)],limit=1).fixed_price
+                    if line.product_id.is_case_product:
+                        unit_price = line.product_id.lst_price
+                    else:
+                        unit_price = self.env['product.pricelist.item'].search([('product_id','=',line.product_id.id),('pricelist_id','=',usd_pricelist_id.id)],limit=1).fixed_price
                     if currency_id.name.lower() != 'usd':
                         currency_rate = self.env['kits.b2b.multi.currency.mapping'].search([('currency_id','=',currency_id.id)],limit =1).currency_rate
                         price_unit = unit_price * currency_rate

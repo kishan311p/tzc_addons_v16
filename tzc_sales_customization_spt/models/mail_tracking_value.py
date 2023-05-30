@@ -13,13 +13,17 @@ class mail_tracking_value(models.Model):
         field = self.env['ir.model.fields']._get(model_name, col_name)
         values = {'field': field.id, 'field_desc': col_info['string'],
                   'field_type': col_info['type'], 'tracking_sequence': tracking_sequence}
-
+        order_id = self._context.get('order_id') or False
+        
+        # Order state is used for stopping log on specific state.
+        order_state = self._context.get('order_state') or False
         # Stop Auto Logl
-        if model_name == 'sale.order' and col_name in NO_TRACKING_FIELDS+[
-            'picked_qty_order_subtotal', 'picked_qty_order_discount', 'picked_qty_order_total',
-        ]:
+        if model_name == 'sale.order' and col_name in NO_TRACKING_FIELDS and order_state not in ['draft','sent','received']:
             tracked = False
-
+           
+        if model_name == 'sale.order' and col_name in ['picked_qty_order_total'] and order_state in ['draft','sent','received']:
+            tracked = False
+	
         if model_name == 'account.move' and col_name in NO_TRACKING_FIELDS_ACCOUNT_MOVE:
             tracked = False
 
@@ -59,7 +63,6 @@ class mail_tracking_value(models.Model):
             tracked = False
 
         wh_user = self.env['res.users'].search([('is_warehouse','=',True)])
-        order_id = self._context.get('order_id') or False
         if order_id:
             for ord in order_id:
                 if not ord.shipping_msg_inv_flag and not ord.notify_done:

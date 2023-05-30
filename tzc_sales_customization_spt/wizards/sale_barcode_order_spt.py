@@ -44,7 +44,7 @@ class sale_barcode_order_spt(models.TransientModel):
                 order_line_id.product_uom_qty += line.product_qty
             else:
                 product_data = product_prices.get(line.product_id.id)
-                extra_pricing = line.product_id.inflation_special_discount(self.sale_id.partner_id.country_id.ids)
+                extra_pricing = line.product_id.inflation_special_discount(self.sale_id.partner_id.country_id.ids,bypass_flag=self.sale_id.partner_id.b2b_pricelist_id.is_pricelist_excluded)
                 price_unit = product_data.get('price')
                 unit_discount_price = product_data.get('discounted_unit_price')
 

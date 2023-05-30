@@ -436,7 +436,7 @@ class res_partner(models.Model):
                     'default_res_id': self.id,
                     'default_use_template': bool(template_id),
                     'default_template_id': template_id,
-                    'custom_layout': 'mail.mail_notification_light',
+                    'default_email_layout_xmlid': "mail.mail_notification_light",
                     'force_email': True,
                     'quotation_send': True,
                 })

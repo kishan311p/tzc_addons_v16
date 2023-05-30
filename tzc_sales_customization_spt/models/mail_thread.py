@@ -26,6 +26,7 @@ class mail_thread(models.AbstractModel):
         if self._name == 'sale.order':
             ctx = self._context.copy()
             ctx.update({'order_id':self})
+            # Need to pass state as context as we want to show different pricing fields in chatter.
             self.env.context = ctx
         res = super(mail_thread, self)._message_track(
             tracked_fields, initial_values)

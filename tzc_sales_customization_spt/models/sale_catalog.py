@@ -111,7 +111,7 @@ class SaleCatalog(models.Model):
         pricelist_obj = self.env['product.pricelist.item']
         for record in self:
            for line in record.line_ids:
-                extra_pricing = line.product_pro_id.inflation_special_discount(self.env.user.country_id.ids)
+                extra_pricing = line.product_pro_id.inflation_special_discount(self.env.user.country_id.ids,bypass_flag=record.pricelist_id.is_pricelist_excluded)
                 product_price = line .product_pro_id.lst_price
                 pricelist_item_id = pricelist_obj.search([('product_id','=',line.product_pro_id.id),('pricelist_id','=',record.pricelist_id.id)],limit=1)
                 line.product_price = pricelist_item_id.fixed_price or product_price

@@ -115,7 +115,7 @@ class SaleOrderLine(models.Model):
                 unit_discount_price = product_price_dict.get('discounted_unit_price')
 
             # Call method for extra pricing.
-            extra_pricing = record.product_id.inflation_special_discount(record.order_id.partner_id.country_id.ids)
+            extra_pricing = record.product_id.inflation_special_discount(record.order_id.partner_id.country_id.ids,bypass_flag=record.order_id.partner_id.b2b_pricelist_id.is_pricelist_excluded)
             if extra_pricing.get('is_inflation'):
                 product_price = product_price_dict.get('price')+(product_price_dict.get('price')*extra_pricing.get('inflation_rate') /100)
                 unit_discount_price = unit_discount_price+(unit_discount_price*extra_pricing.get('inflation_rate') /100)

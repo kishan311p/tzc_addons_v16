@@ -192,9 +192,11 @@ class account_move(models.Model):
                     users = dict(saleperson=user_obj,manager=user_obj)
                     if record.invoice_user_id:
                         if record.partner_id.user_ids and record.invoice_user_id.ids != record.partner_id.user_ids.ids:
-                            users['saleperson'] = record.invoice_user_id
+                            users['saleperson'] = record.order_id.original_user_id
+                            # users['saleperson'] = record.invoice_user_id
                     if record.sale_manager_id:
-                        users['manager'] = record.sale_manager_id
+                        users['manager'] = record.order_id.original_sale_manager_id
+                        # users['manager'] = record.sale_manager_id
                     for user in users:
                         values = self._get_commission_line_detail(user,users[user])
                         if record.state == 'posted' and values and values['amount']:
@@ -216,7 +218,7 @@ class account_move(models.Model):
                                 if commission:
                                     brand_commission_line_id.create(vals)
                                     
-                    record.commission_line_ids.write({'state':record.inv_payment_status})
+                    record.commission_line_ids.write({'state':record.inv_payment_status if record.inv_payment_status else 'draft'})
                     payment_obj = self.env['account.payment'].sudo()
                     for receive in payment_obj.search([('sale_id','=',self.order_id.id),('state','=','posted')]).line_ids.filtered('credit'):
                         if not( (receive.reconciled) or (not receive.account_id.reconcile and receive.account_id.account_type not in ('asset_cash', 'liability_credit_card')) ):
@@ -1238,3 +1240,18 @@ class account_move(models.Model):
                 #     # format_amount(self.env, sum_credit, move.company_id.currency_id),
                 #     move.journal_id.name)
             # raise UserError(error_msg)
+
+
+    # Override this method as we want want to changes salesperson and ignore error that is raised due to company lock date
+    def _check_fiscalyear_lock_date(self):
+        for move in self:
+            # getting ctx from assign salesperson and by passing lockdate error.
+            if not self._context.get('bulk_salesperson_update'):
+                lock_date = move.company_id._get_user_fiscal_lock_date()
+                if move.date <= lock_date:
+                    if self.user_has_groups('account.group_account_manager'):
+                        message = _("You cannot add/modify entries prior to and inclusive of the lock date %s.", format_date(self.env, lock_date))
+                    else:
+                        message = _("You cannot add/modify entries prior to and inclusive of the lock date %s. Check the company settings or ask someone with the 'Adviser' role", format_date(self.env, lock_date))
+                    raise UserError(message)
+        return True

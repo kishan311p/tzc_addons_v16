@@ -596,7 +596,7 @@ class stock_picking(models.Model):
                     product_data = product_prices.get(line.product_id.id)
 
                     # Call method for extra pricing.
-                    extra_pricing = line.product_id.inflation_special_discount(line.picking_id.sale_id.partner_id.country_id.ids)
+                    extra_pricing = line.product_id.inflation_special_discount(line.picking_id.sale_id.partner_id.country_id.ids,bypass_flag=line.picking_id.sale_id.partner_id.b2b_pricelist_id.is_pricelist_excluded)
                     if line.sale_line_id:
 
                         #update the quontity in related sale order line

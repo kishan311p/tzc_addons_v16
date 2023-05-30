@@ -184,6 +184,7 @@ class ProductProduct(models.Model):
     )
     product_pricelist_item_ids = fields.One2many('product.pricelist.item','product_id')
     is_pending_price = fields.Boolean( string='Is Pending Price (Flag)',compute='_compute_pending_price',store=True)
+    is_case_product = fields.Boolean('Is Case Product (Flag)',related='product_tmpl_id.is_case_product',store=True)
     
     @api.depends('lst_price','price_wholesale','price_msrp','product_pricelist_item_ids')
     def _compute_pending_price(self):
@@ -1523,49 +1524,52 @@ class ProductProduct(models.Model):
     def inflation_special_discount(self,country_ids,bypass_flag=False):
         is_special_discount = False 
         is_inflation = False
-
-        # Check Inflation.
-        active_inflation = self.env['kits.inflation'].search([('is_active','=',True)])
-        inflation_rule_ids = self.env['kits.inflation.rule'].search([('country_id','in',country_ids),('brand_ids','in',self.brand.ids),('inflation_id','=',active_inflation.id)])
-        inflation_rule = inflation_rule_ids[-1] if inflation_rule_ids else False
-            
-        # Validation of Inflation Rule.
-        if inflation_rule:
-            if active_inflation.from_date and active_inflation.to_date :
-                if active_inflation.from_date <= datetime.now().date() and active_inflation.to_date >= datetime.now().date():
-                    is_inflation = True
-            elif active_inflation.from_date:
-                if active_inflation.from_date <= datetime.now().date():
-                    is_inflation = True
-            elif active_inflation.to_date:
-                if active_inflation.to_date >= datetime.now().date():
-                    is_inflation = True
-            else:
-                if not active_inflation.from_date:
-                    is_inflation = True
-                if not active_inflation.to_date:
-                    is_inflation = True
-            
-        # Check Discount.
-        active_fest_id = self.env['tzc.fest.discount'].search([('is_active','=',True)])
-        special_disocunt_id = self.env['kits.special.discount'].search([('country_id','in',country_ids),('brand_ids','in',self.brand.ids),('tzc_fest_id','=',active_fest_id.id)])
-        price_rule_id = special_disocunt_id[-1] if special_disocunt_id else False
-        if price_rule_id:
-            # Validation of Special Discount Rule.
-            if active_fest_id.from_date and active_fest_id.to_date :
-                if active_fest_id.from_date <= datetime.now().date() and active_fest_id.to_date >= datetime.now().date():
-                    is_special_discount = True
-            elif active_fest_id.from_date:
-                if active_fest_id.from_date <= datetime.now().date():
-                    is_special_discount = True
-            elif active_fest_id.to_date:
-                if active_fest_id.to_date >= datetime.now().date():
-                    is_special_discount = True
-            else:
-                if not active_fest_id.from_date:
-                    is_special_discount = True
-                if not active_fest_id.to_date:
-                    is_special_discount = True
+        inflation_rule = False
+        price_rule_id = False
+        if not bypass_flag:
+    
+            # Check Inflation.
+            active_inflation = self.env['kits.inflation'].search([('is_active','=',True)])
+            inflation_rule_ids = self.env['kits.inflation.rule'].search([('country_id','in',country_ids),('brand_ids','in',self.brand.ids),('inflation_id','=',active_inflation.id)])
+            inflation_rule = inflation_rule_ids[-1] if inflation_rule_ids else False
+                
+            # Validation of Inflation Rule.
+            if inflation_rule:
+                if active_inflation.from_date and active_inflation.to_date :
+                    if active_inflation.from_date <= datetime.now().date() and active_inflation.to_date >= datetime.now().date():
+                        is_inflation = True
+                elif active_inflation.from_date:
+                    if active_inflation.from_date <= datetime.now().date():
+                        is_inflation = True
+                elif active_inflation.to_date:
+                    if active_inflation.to_date >= datetime.now().date():
+                        is_inflation = True
+                else:
+                    if not active_inflation.from_date:
+                        is_inflation = True
+                    if not active_inflation.to_date:
+                        is_inflation = True
+                
+            # Check Discount.
+            active_fest_id = self.env['tzc.fest.discount'].search([('is_active','=',True)])
+            special_disocunt_id = self.env['kits.special.discount'].search([('country_id','in',country_ids),('brand_ids','in',self.brand.ids),('tzc_fest_id','=',active_fest_id.id)])
+            price_rule_id = special_disocunt_id[-1] if special_disocunt_id else False
+            if price_rule_id:
+                # Validation of Special Discount Rule.
+                if active_fest_id.from_date and active_fest_id.to_date :
+                    if active_fest_id.from_date <= datetime.now().date() and active_fest_id.to_date >= datetime.now().date():
+                        is_special_discount = True
+                elif active_fest_id.from_date:
+                    if active_fest_id.from_date <= datetime.now().date():
+                        is_special_discount = True
+                elif active_fest_id.to_date:
+                    if active_fest_id.to_date >= datetime.now().date():
+                        is_special_discount = True
+                else:
+                    if not active_fest_id.from_date:
+                        is_special_discount = True
+                    if not active_fest_id.to_date:
+                        is_special_discount = True
 
         return {
             'is_inflation':is_inflation,
