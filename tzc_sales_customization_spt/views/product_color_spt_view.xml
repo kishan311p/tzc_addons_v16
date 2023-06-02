@@ -27,29 +27,26 @@
                                 </span>
                             </button> -->
                             <button name="action_open_primary_color_products_spt" type="object" class="oe_stat_button" icon="fa-cubes">
-                                <field name="primary_color_products" string="Primary Color" widget="statinfo"/>
+                                <field name="primary_color_products" string="Primary" widget="statinfo"/>
                             </button>
                             <button name="action_open_secondarycolor_products_spt" type="object" class="oe_stat_button" icon="fa-cubes">
-                                <field name="secondary_color_products" string="Secondary Color" widget="statinfo"/>
+                                <field name="secondary_color_products" string="Secondary" widget="statinfo"/>
+                            </button>
+                            <button name="action_open_lense_color_name_products_spt" type="object" class="oe_stat_button" icon="fa-cubes">
+                                <field name="lense_color_products" string="Lense" widget="statinfo"/>
                             </button>
                         </div>
 
                         <group>
                             <group>
-                                <field name="name" />
+                                <field name="name" string="Name"/>
+                                <field name="active" widget="boolean_toggle"/>
                             </group>
                             <group>
                                 <field name="color" nolabel='1' widget="color"/>
 
                             </group>
                         </group>
-                        <group>
-                            <field name="eyeglass_avl_colour"/>
-                            <field name="sunglass_avl_colour"/>
-                            <field name="new_arrival_avl_colour"/>
-                            <field name="sale_avl_colour"/>
-                        </group>
-
                     </sheet>
                 </form>
             </field>
@@ -60,17 +57,23 @@
             <field name="model">product.color.spt</field>
             <field name="arch" type="xml">
                 <tree default_order="name" create="0" edit="0">
-                    <field name="name"/>
+                    <field name="name" string="Name"/>
                     <!-- <field name="is_published"/> -->
-                    <field name="eyeglass_avl_colour"/>
-                    <field name="sunglass_avl_colour"/>
-                    <field name="new_arrival_avl_colour"/>
-                    <field name="sale_avl_colour"/>
                 </tree>
             </field>
         </record>
 
-        <menuitem name="Color" action="action_product_color_spt" id="menu_action_product_color_spt" parent="menu_action_product_custom_spt" sequence="4"/>
+        <record id="product_color_spt_view_search" model="ir.ui.view">
+            <field name="name">product.color.spt.view.search</field>
+            <field name="model">product.color.spt</field>
+            <field name="arch" type="xml">
+                <search string="">
+                    <filter name="active" string="Active" domain="[('active', '=', True)]" context="{}" />
+                    <filter name="inactive" string="Archive" domain="[('active', '=', False)]" context="{}" />
+                </search>
+            </field>
+        </record>
+
 
     </data>
 </odoo>

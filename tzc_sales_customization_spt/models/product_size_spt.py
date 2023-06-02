@@ -11,6 +11,8 @@ class ProductSizeSpt(models.Model):
     kits_product_ids = fields.One2many('product.product','size',string='Products')
     eyesize_id = fields.Many2one('kits.product.color.code', string='Eye Size')
     products_count = fields.Integer("#Products",compute="_compute_size_product_variants")
+    active = fields.Boolean('Active')
+    
     def _compute_size_product_variants(self):
         for record in self:
             product_ids = self.env['product.product'].search([('size','=',record.id)])

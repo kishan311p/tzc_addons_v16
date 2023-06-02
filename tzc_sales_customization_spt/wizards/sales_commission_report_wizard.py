@@ -41,7 +41,8 @@ class sales_commission_report_wizard(models.TransientModel):
     sales_manager_ids = fields.Many2many('res.users', 'sales_manager_commission_wizard_res_users_rel', 'wizard_id', 'user_id', string="Sales Manager",default=lambda self:self.env.user,domain=_get_salesmanagers)
     file = fields.Binary()
     commission_for = fields.Selection([('sales_person', 'Salesperson'),('sales_manager', 'Sales Manager')],default="sales_person")
-    commission_is = fields.Selection([('all','All'),('is_paid','Paid'),('is_unpaid','Unpaid')],default='all',string="Commission Type")
+    commission_is = fields.Selection([('draft','Draft'),('full','Fully Paid'),('partial','Partial Paid'),('over','Over Paid')],default='full',string="Commission Type")
+    # commission_is = fields.Selection([('all','All'),('is_paid','Paid'),('is_unpaid','Unpaid')],default='all',string="Commission Type")
     apply_groups = fields.Selection([('admin','Administrator'),('sales_person','Salesperson'),('sales_manager','Sales Manager')],string="Apply Groups")
 
 
@@ -99,29 +100,34 @@ class sales_commission_report_wizard(models.TransientModel):
             domain.append(('invoice_id.invoice_date', '>=', self.start_date))
         if self.end_date:
             domain.append(('invoice_id.invoice_date', '<=', self.end_date))
-        if self.commission_is == 'is_paid':
-            domain.append(('state','in',['full','partial','over']))
-        if self.commission_is == 'is_unpaid':
-            domain.append(('state','not in',['full','partial','over']))
+        if self.commission_is == 'draft':
+            domain.append(('state','in',['draft']))
+        elif self.commission_is == 'full':
+            domain.append(('state','in',['full']))
+        elif self.commission_is == 'partial':
+            domain.append(('state','in',['partial']))
+        elif self.commission_is == 'over':
+            domain.append(('state','in',['over']))
         # if self.commission_is == 'all':
         #     domain.append(('state','in',['draft','paid']))
         
         invoice_ids = self.env['kits.commission.lines'].sudo().search(domain).mapped('invoice_id')
 
-        state = []
-        if self.commission_is == 'is_paid':
-            state.append('full')
-            state.append('partial')
-            state.append('over')
-        elif self.commission_is == 'is_unpaid':
-            state.append('draft')
-            state.append('cancel')
-        elif self.commission_is == 'all':
-            state.append('full')
-            state.append('partial')
-            state.append('over')
-            state.append('draft')
-            state.append('cancel')
+        # state = []
+        # if self.commission_is == 'is_paid':
+        #     state.append('full')
+        #     state.append('partial')
+        #     state.append('over')
+        # elif self.commission_is == 'is_unpaid':
+        #     state.append('draft')
+        #     state.append('cancel')
+        # elif self.commission_is == 'all':
+        #     state.append('full')
+        #     state.append('partial')
+        #     state.append('over')
+        #     state.append('draft')
+        #     state.append('cancel')
+        state = self.commission_is
         # if invoice_ids and ((sale_person.commission_rule_id and self.commission_for =='sales_person') or( sale_person.manager_commission_rule_id and self.commission_for =='sales_manager')):
         for invoice in invoice_ids:
             order = self.env['sale.order'].search([('invoice_ids','in',invoice.ids)],limit=1)
@@ -133,7 +139,7 @@ class sales_commission_report_wizard(models.TransientModel):
             else:
                 pass
             if commission:
-                report_table_lines.append(self.data_dict_pdf(invoice,commission))
+                report_table_lines.append(self.data_dict_pdf(invoice,commission,dict(self._fields['commission_is'].selection).get(state)))
         return report_table_lines
 
     def create_address_line_for_commission(self, source_id, take_name=False):
@@ -188,7 +194,7 @@ class sales_commission_report_wizard(models.TransientModel):
         center_alignment = Alignment(vertical='center', horizontal='center', text_rotation=0, wrap_text=True)
         left_alignment = Alignment(vertical='center', horizontal='left', text_rotation=0, wrap_text=True)
         for sale_person in users:
-            selected_state = {'is_paid':" in ('full','partial','over')",'is_unpaid': " not in ('full','partial','over')",'all':"in ('full','partial','over','cancel','draft')"}
+            selected_state = {'draft':" in ('draft')",'full':" in ('full')",'partial': " in ('partial')",'over':" in ('over')"}
             commission_type = selected_state[self.commission_is]
 
             commi_for = {'sales_person':'saleperson','sales_manager':'manager'}
@@ -217,17 +223,11 @@ class sales_commission_report_wizard(models.TransientModel):
                         COALESCE(ROUND(AM.AMOUNT_TOTAL,2),0.0) AS NET_SALE,
                         COALESCE(SUM(KCL.AMOUNT),00) AS COMMISION,
                         CASE 
-                        WHEN SO.AMOUNT_PAID < SO.PICKED_QTY_ORDER_TOTAL AND SO.AMOUNT_PAID > 0 THEN 'Partial Paid'
-                        WHEN SO.AMOUNT_PAID = SO.PICKED_QTY_ORDER_TOTAL THEN 'Full Paid'
-                        WHEN SO.AMOUNT_PAID > SO.PICKED_QTY_ORDER_TOTAL THEN 'Over Paid'
-                        WHEN SO.AMOUNT_PAID = 0 THEN 'Unpaid'
-                        END AS STATUS,
-                        CASE 
-                            WHEN KCL.STATE = 'paid' THEN KCL.AMOUNT
-                        END AS PAID_AMOUND,
-                        CASE 
-                            WHEN KCL.STATE = 'draft' THEN KCL.AMOUNT
-                        END AS UNPAID_AMOUNT
+                        WHEN KCL.state = 'partial' THEN 'Partial Paid'
+                        WHEN KCL.state = 'full' THEN 'Full Paid'
+                        WHEN KCL.state = 'over' THEN 'Over Paid'
+                        WHEN KCL.state = 'draft' THEN 'Draft'
+                        END AS STATUS
                         FROM KITS_COMMISSION_LINES AS KCL
                         left JOIN ACCOUNT_MOVE AS AM ON KCL.INVOICE_ID = AM.ID 
                         left JOIN SALE_ORDER AS SO ON SO.NAME = AM.INVOICE_ORIGIN
@@ -254,16 +254,6 @@ class sales_commission_report_wizard(models.TransientModel):
             top_border = Border(top=bd)
 
 
-            # Merge rows (Start Date & End Date & Commissioin Structure)
-            # sheet.merge_cells('A1:B1')
-            # sheet.cell(row=1, column=1).value = 'Salesperson : %s'%(sale_person.name if sale_person.name else '')
-            # sheet.merge_cells('A2:B2')
-            # sheet.cell(row=2, column=1).value = 'Email : %s'%(sale_person.partner_id.email if sale_person.partner_id and sale_person.partner_id.email else '')
-            # sheet.merge_cells('A3:B3')
-            # sheet.cell(row=3, column=1).value = 'Tel : %s'%(str(sale_person.phone) if sale_person.phone else '')
-            # sheet.merge_cells('A:B5')
-            # sheet.cell(row=5, column=1).value = 'Start Date : %s'%(str(self.start_date) if self.start_date else "")
-            # logo = self.env.company.logo_web
             address_alignment = Alignment(vertical='center', horizontal='left', text_rotation=0)
             sheet.merge_cells('A2:E6')
             img = BytesIO()
@@ -329,59 +319,27 @@ class sales_commission_report_wizard(models.TransientModel):
             sheet.cell(row=table_header, column=2).value = 'Order'
             sheet.cell(row=table_header, column=3).value = 'Invoice'
             sheet.cell(row=table_header, column=4).value = 'Customer'
-            # sheet.cell(row=table_header, column=5).value = 'Country'
-            # sheet.cell(row=table_header, column=6).value = 'Territory'
-            # sheet.cell(row=table_header, column=7).value = 'Quantity'
-            # sheet.cell(row=table_header, column=9).value = 'Gross Sale'
-            # sheet.cell(row=table_header, column=10).value = 'Discount'
-            # sheet.cell(row=table_header, column=11).value = 'Tax'
-            # sheet.cell(row=table_header, column=12).value = 'Net Sale'
             sheet.cell(row=table_header, column=6).value = 'Currency'
             sheet.cell(row=table_header, column=7).value = 'Status'
             sheet.cell(row=table_header, column=8).value = 'Commission'
 
             sheet.cell(row=table_header, column=1).font = header_font
             sheet.cell(row=table_header, column=1).alignment = center_alignment
-            # sheet.cell(row=table_header, column=1).border = top_bottom_border
             sheet.cell(row=table_header, column=2).font = header_font
             sheet.cell(row=table_header, column=2).alignment = center_alignment
-            # sheet.cell(row=table_header, column=2).border = top_bottom_border
             sheet.cell(row=table_header, column=3).font = header_font
             sheet.cell(row=table_header, column=3).alignment = center_alignment
-            # sheet.cell(row=table_header, column=3).border = top_bottom_border
             sheet.cell(row=table_header, column=4).font = header_font
             sheet.cell(row=table_header, column=4).alignment = left_alignment
-            # sheet.cell(row=table_header, column=4).border = top_bottom_border
-            # sheet.cell(row=table_header, column=5).font = header_font
-            # sheet.cell(row=table_header, column=5).border = top_bottom_border
-            # sheet.cell(row=table_header, column=6).font = header_font
-            # sheet.cell(row=table_header, column=6).border = top_bottom_border
             sheet.cell(row=table_header, column=6).font = header_font
             sheet.cell(row=table_header, column=6).alignment = center_alignment
             sheet.cell(row=table_header, column=7).font = header_font
             sheet.cell(row=table_header, column=7).alignment = center_alignment
             sheet.cell(row=table_header, column=8).font = header_font
             sheet.cell(row=table_header, column=8).alignment = right_alignment
-            # sheet.cell(row=table_header, column=6).border = top_bottom_border
-            # sheet.cell(row=table_header, column=7).border = top_bottom_border
-            # sheet.cell(row=table_header, column=9).font = header_font
-            # sheet.cell(row=table_header, column=9).border = top_bottom_border
-            # sheet.cell(row=table_header, column=9).alignment = right_alignment
-            # sheet.cell(row=table_header, column=10).font = header_font
-            # sheet.cell(row=table_header, column=10).border = top_bottom_border
-            # sheet.cell(row=table_header, column=10).alignment = right_alignment
-            # sheet.cell(row=table_header, column=11).font = header_font
-            # sheet.cell(row=table_header, column=11).border = top_bottom_border
-            # sheet.cell(row=table_header, column=11).alignment = right_alignment
-            # sheet.cell(row=table_header, column=12).font = header_font
-            # sheet.cell(row=table_header, column=12).border = top_bottom_border
-            # sheet.cell(row=table_header, column=12).alignment = right_alignment
-            # sheet.cell(row=table_header, column=5).border = top_bottom_border
            
             row_index=table_header+1
 
-            # total_qty = 0
-            # if (invoice_ids and sale_person.commission_rule_id and self.commission_for =='sales_person') or (sale_person.manager_commission_rule_id and self.commission_for =='sales_manager'):
             paid_unpaid_total = {}
             for data in record_data:
                 if data[12]:
@@ -393,10 +351,6 @@ class sales_commission_report_wizard(models.TransientModel):
                     sheet.cell(row=row_index, column=3).alignment = center_alignment
                     sheet.cell(row=row_index, column=4).value = data[3]
                     sheet.cell(row=row_index, column=4).alignment = left_alignment
-                    # sheet.cell(row=row_index, column=5).value = data[4]
-                    # sheet.cell(row=row_index, column=6).value = data[5]
-                    # sheet.cell(row=row_index, column=7).value = data[6]
-                    # total_qty += order.ordered_qty
                     merge_range='D%s:E%s'%(row_index,row_index)
                     sheet.merge_cells(merge_range)
                     sheet.cell(row=row_index, column=6).value = data[13]
@@ -406,44 +360,13 @@ class sales_commission_report_wizard(models.TransientModel):
                     sheet.cell(row=row_index, column=8).value = '$ {:,.2f}'.format(data[12])
                     sheet.cell(row=row_index, column=8).alignment = right_alignment
                     row_index+=1
-                    # sheet.cell(row=row_index, column=9).value = '$ {:,.2f}'.format(data[8])
-                    # sheet.cell(row=row_index, column=9).alignment = right_alignment
-                    # sheet.cell(row=row_index, column=10).value = '$ {:,.2f}'.format(data[9])
-                    # sheet.cell(row=row_index, column=10).alignment = right_alignment
-                    # sheet.cell(row=row_index, column=11).value = '$ {:,.2f}'.format(data[10])
-                    # sheet.cell(row=row_index, column=11).alignment = right_alignment
-                    # sheet.cell(row=row_index, column=12).value = '$ {:,.2f}'.format(data[11])
-                    # sheet.cell(row=row_index, column=12).alignment = right_alignment
 
                     if data[7] in total_lines:
-                        # total_lines[data[7]]['qty'] = total_lines[data[7]]['qty'] + data[6]
-                        # total_lines[data[7]]['gross_sale'] = round(total_lines[data[7]]['gross_sale']+data[8],2)
-                        # total_lines[data[7]]['discount'] = round(total_lines[data[7]]['discount']+data[9],2)
-                        # total_lines[data[7]]['tax'] = round(total_lines[data[7]]['tax']+data[10],2)
-                        # total_lines[data[7]]['net_sale'] = round(total_lines[data[7]]['net_sale']+data[11],2)
                         total_lines[data[7]]['commission'] = round(total_lines[data[7]]['commission']+data[12],2)
                     else:
                         total_lines[data[7]] = {
-                            # 'qty':data[6],
-                            # 'gross_sale':data[8],
-                            # 'discount':data[9],
-                            # 'tax':data[10],
-                            # 'net_sale':data[11],
                             'commission':data[12],
                         }
-                    
-                    # if data[7] in paid_unpaid_total:
-                    #     if self.commission_for == 'sales_person':
-                    #         paid_unpaid_total[data[7]]['paid'] = paid_unpaid_total[data[7]]['paid'] + (data[14] or 00)
-                    #         paid_unpaid_total[data[7]]['unpaid'] = paid_unpaid_total[data[7]]['unpaid'] + (data[15] or 00)
-                    #     elif self.commission_for == 'sales_manager':
-                    #         paid_unpaid_total[data[7]]['paid'] = paid_unpaid_total[data[7]]['paid'] + (data[14] or 00)
-                    #         paid_unpaid_total[data[7]]['unpaid'] = paid_unpaid_total[data[7]]['unpaid'] + (data[15] or 00)
-                    # else:
-                    #     if self.commission_for == 'sales_person':
-                    #         paid_unpaid_total[data[7]] = {'paid':data[14] or 00,'unpaid':data[15] or 00}
-                    #     elif self.commission_for == 'sales_manager':
-                    #         paid_unpaid_total[data[7]] = {'paid':data[14] or 00,'unpaid':data[15] or 00}
 
             sheet.merge_cells('A'+str(row_index)+':H'+str(row_index))
             total_row = row_index + 1
@@ -533,19 +456,22 @@ class sales_commission_report_wizard(models.TransientModel):
         if self.start_date and self.end_date and self.start_date > self.end_date:
             raise UserError(_("Start Date should be lesser than End Date."))
 
-    def data_dict_pdf(self,order,commission):
+    def data_dict_pdf(self,order,commission,commission_is):
         data_dict = {}
         sale_order = self.env['sale.order'].search([('invoice_ids','in',order.ids)])
         invoice_num = ''
-        commission_is = ''
-        if order.inv_payment_status == 'full':
-            commission_is = 'Fully Paid'
-        elif order.inv_payment_status == 'partial':
-            commission_is = 'Partial Paid'
-        elif order.inv_payment_status == 'over':
-            commission_is = 'Over Paid'
-        else:
-            commission_is = 'Unpaid'
+        # commission_is = ''
+        # if order.inv_payment_status == 'full':
+        #     commission_is = 'Fully Paid'
+        # elif order.inv_payment_status == 'partial':
+        #     commission_is = 'Partial Paid'
+        # elif order.inv_payment_status == 'over':
+        #     commission_is = 'Over Paid'
+        # elif order.inv_payment_status == 'draft':
+        #     commission_is = 'Draft'
+        # else:
+        #     commission_is = 'Unpaid'
+
         data_dict['gross_sale'] = order.amount_without_discount
         data_dict['date'] = sale_order.date_order.strftime("%d-%m-%Y")
         data_dict['discount'] = order.amount_discount

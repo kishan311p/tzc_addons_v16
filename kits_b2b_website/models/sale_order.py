@@ -62,3 +62,15 @@ class sale_order(models.Model):
         recipients = self.user_id.partner_id.ids if self.user_id and self.user_id.partner_id else []
         mail_template_id.with_context(signature=self.user_id.signature,pdf_url=url).send_mail(res_id=self.id,force_send=True,email_values={'recipient_ids':[(6,0,recipients)]},email_layout_xmlid="mail.mail_notification_light")
         return{}
+
+    def action_change_currency(self):
+        self.ensure_one()
+        return {
+            'name': self.name,
+            'type': 'ir.actions.act_window',
+            'view_type': 'form',
+            'view_mode': 'form',
+            'res_model': 'change.order.currency',
+            'target': 'new',
+            'context': {'default_currency_id': self.b2b_currency_id.id,'order_id':self.id}
+        }

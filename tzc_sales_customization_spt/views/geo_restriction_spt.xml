@@ -42,7 +42,7 @@
             </field>
         </record>
 
-    <menuitem name="Geo Restriction" action="action_geo_restriction_spt" id="menu_action_geo_restriction_spt" parent="menu_action_product_custom_spt" sequence="9"/>
+    <!-- <menuitem name="Geo Restriction" action="action_geo_restriction_spt" id="menu_action_geo_restriction_spt" parent="menu_action_product_custom_spt" sequence="9"/> -->
 
     </data>
 </odoo>

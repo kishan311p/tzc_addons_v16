@@ -8,7 +8,9 @@
             <form string="">
                 <sheet>
                     <h1>
-                        <field name="name" />
+                        <field name="name" string="Name"/>
+                        <field name="active" widget="boolean_toggle"/>
+
                     </h1>
                     <group>
                         <group>
@@ -35,6 +37,32 @@
                 </sheet>
             </form>
         </field>
+    </record>
+    <record id="kits_product_color_code_view_tree" model="ir.ui.view">
+        <field name="name">kits.product.color.code.view.tree</field>
+        <field name="model">kits.product.color.code</field>
+        <field name="arch" type="xml">
+            <tree string="">
+                <field name="name" string="Name"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="kits_product_color_code_view_search" model="ir.ui.view">
+        <field name="name">kits.product.color.code.view.search</field>
+        <field name="model">kits.product.color.code</field>
+        <field name="arch" type="xml">
+            <search string="">
+                <filter name="active" string="Active" domain="[('active', '=', True)]" context="{}" />
+                <filter name="inactive" string="Archive" domain="[('active', '=', False)]" context="{}" />
+            </search>
+        </field>
+    </record>
+
+    <record id="action_kits_product_color_code" model="ir.actions.act_window">
+        <field name="view_mode">tree,form</field>
+        <field name="res_model">kits.product.color.code</field>
+        <field name="name">Manufacturing Color Code</field>
     </record>
 
 </odoo>

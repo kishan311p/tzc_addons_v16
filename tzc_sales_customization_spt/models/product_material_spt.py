@@ -18,6 +18,7 @@ class ProductMaterialSpt(models.Model):
     sunglass_avl_material = fields.Boolean(string="Available Sunglass Material")
     new_arrival_avl_material = fields.Boolean(string="Available New Arrival Material")
     sale_avl_material = fields.Boolean(string="Available sale Material")
+    active = fields.Boolean('Active')
 
     def _compute_material_products(self):
         for record in self:

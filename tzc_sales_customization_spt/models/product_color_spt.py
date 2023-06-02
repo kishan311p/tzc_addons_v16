@@ -10,21 +10,20 @@ class ProductColorSpt(models.Model):
 
     primary_color_products = fields.Integer(compute="_compute_color_products_spt")
     secondary_color_products = fields.Integer(compute="_compute_color_products_spt")
+    lense_color_products = fields.Integer(compute="_compute_color_products_spt")
     # is_published = fields.Boolean('Is Published',default=True)
     kits_product_ids = fields.One2many('product.product','product_color_name',string="Products")
     kits_product_ids = fields.One2many('product.product','secondary_color_name',string="Products")
-
-    eyeglass_avl_colour = fields.Boolean(string="Available Eyeglass Colour")
-    sunglass_avl_colour = fields.Boolean(string="Available Sunglass Colour")
-    new_arrival_avl_colour = fields.Boolean(string="Available New Arrival Colour")
-    sale_avl_colour = fields.Boolean(string="Available sale Colour")
+    active = fields.Boolean('Active')
 
     def _compute_color_products_spt(self):
         for record in self:
             primanry_products = self.env['product.product'].search([('product_color_name','=',record.id)])
             secondary_products = self.env['product.product'].search([('secondary_color_name','=',record.id)])
+            lense_color_name = self.env['product.product'].search([('lense_color_name','=',record.id)])
             record.primary_color_products = len(primanry_products)
             record.secondary_color_products = len(secondary_products)
+            record.lense_color_products = len(lense_color_name)
 
     def action_open_primary_color_products_spt(self):
         return {
@@ -34,6 +33,15 @@ class ProductColorSpt(models.Model):
             "view_mode":"tree,form",
             "domain":[('product_color_name','=',self.id)]
         }
+    def action_open_lense_color_name_products_spt(self):
+        return {
+            "name":_("Color Products"),
+            "type":"ir.actions.act_window",
+            "res_model": "product.product",
+            "view_mode":"tree,form",
+            "domain":[('secondary_color_name','=',self.id)]
+        }
+        
     def action_open_secondarycolor_products_spt(self):
         return {
             "name":_("Color Products"),

@@ -33,20 +33,10 @@
 
                         <group>
                             <group>
-                                <field name="name"/>
+                                <field name="name" string="Name"/>
+                                <field name="active" widget="boolean_toggle"/>
                             </group>
 
-                        </group>
-                        <group>
-                            <group>
-                                <field name="eyeglass_avl_rim_type"/>
-                                <field name="sunglass_avl_rim_type"/>
-
-                            </group>
-                            <group>
-                                <field name="new_arrival_avl_rim_type"/>
-                                <field name="sale_avl_rim_type"/>
-                            </group>
                         </group>
 
                     </sheet>
@@ -59,17 +49,23 @@
             <field name="model">product.rim.type.spt</field>
             <field name="arch" type="xml">
                 <tree default_order="name" create="0" edit="0">
-                    <field name="name"/>
+                    <field name="name" string="Name"/>
                     <!-- <field name="is_published"/> -->
-                    <field name="eyeglass_avl_rim_type"/>
-                    <field name="sunglass_avl_rim_type"/>
-                    <field name="new_arrival_avl_rim_type"/>
-                    <field name="sale_avl_rim_type"/>
                 </tree>
             </field>
         </record>
 
-    <menuitem name="Rim Type" action="action_product_rim_type_spt" id="menu_action_product_rim_type_spt" parent="menu_action_product_custom_spt" sequence="6"/>
+        <record id="product_rim_type_spt_view_search" model="ir.ui.view">
+            <field name="name">product.rim.type.spt.view.search</field>
+            <field name="model">product.rim.type.spt</field>
+            <field name="arch" type="xml">
+                <search string="">
+                    <filter name="active" string="Active" domain="[('active', '=', True)]" context="{}" />
+                    <filter name="inactive" string="Archive" domain="[('active', '=', False)]" context="{}" />
+                </search>
+            </field>
+        </record>
+
 
     </data>
 </odoo>

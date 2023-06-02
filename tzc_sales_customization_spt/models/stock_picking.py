@@ -592,7 +592,7 @@ class stock_picking(models.Model):
                     line = record.move_ids_without_package[line]
 
                     # Convert price based on currency.
-                    product_prices = self.env['kits.b2b.multi.currency.mapping'].get_product_price(line.picking_id.partner_id.id,line.product_id.ids)
+                    product_prices = self.env['kits.b2b.multi.currency.mapping'].with_context(from_order_line=True).get_product_price(line.picking_id.partner_id.id,line.product_id.ids,order_id=record.sale_id)
                     product_data = product_prices.get(line.product_id.id)
 
                     # Call method for extra pricing.

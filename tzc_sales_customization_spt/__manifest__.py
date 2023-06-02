@@ -216,6 +216,7 @@
         'template/excel_data.xml',
         'template/template.xml',
 
+        'menuitems.xml',
     ],
     
     'qweb': [

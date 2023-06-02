@@ -42,7 +42,7 @@
             </field>
         </record>
 
-    <menuitem name="Aging" action="action_product_aging_spt" id="menu_action_product_aging_spt" parent="menu_action_product_custom_spt" sequence="7"/>
+    <!-- <menuitem name="Aging" action="action_product_aging_spt" id="menu_action_product_aging_spt" parent="menu_action_product_custom_spt" sequence="7"/> -->
 
     </data>
 </odoo>

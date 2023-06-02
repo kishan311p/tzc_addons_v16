@@ -110,7 +110,7 @@
                         <p class="m-0" t-field="doc.catalog_id.user_id.name"/>
                     </div>
                     <div class="col-auto mw-100 mb-2 text-center">
-                        <strong>Total Quantity:</strong>
+                        <strong>Total Items:</strong>
                         <p class="m-0 text-center" t-esc="int(sum(request.env['sale.catalog.line'].sudo().search([('catalog_id','=',doc.id)]).mapped(lambda line:line.product_qty if doc.customer_id.country_id not in line.product_pro_id.geo_restriction else 0)))"/>
                     </div>
 
@@ -456,7 +456,7 @@
                         <p class="m-0" t-field="doc.user_id.name"/>
                     </div>
                     <div class="col-auto mw-100 mb-2 text-center">
-                        <strong>Total Quantity:</strong>
+                        <strong>Total Items:</strong>
                         <t t-if="doc.env['kits.b2b.website'].search([('website_name','=','b2b1')],limit = 1).is_allow_for_geo_restriction">
                             
                              <p class="m-0 text-center" t-esc="int(sum(request.env['sale.catalog.line'].sudo().search([('catalog_id','=',doc.id)]).mapped(lambda line:line.product_qty if doc.customer_id.country_id not in line.product_pro_id.geo_restriction else 0 )))"/>

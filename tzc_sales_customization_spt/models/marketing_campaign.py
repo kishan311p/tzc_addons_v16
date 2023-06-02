@@ -248,7 +248,7 @@ class marketing_campaign(models.Model):
             wrksht.cell(row=table_header_row, column=6).value = contact.resource_ref.state_id.name if contact.resource_ref.state_id else ''
             wrksht.cell(row=table_header_row, column=7).value = contact.resource_ref.country_id.name if contact.resource_ref.country_id else ''
             wrksht.cell(row=table_header_row, column=8).value = contact.resource_ref.territory.name if contact.resource_ref.territory else ''
-            wrksht.cell(row=table_header_row, column=9).value = 'Pending' if contact.resource_ref.customer_type == 'b2c' else 'Verified' if contact.resource_ref.customer_type == 'b2b_regular' else '' if contact.resource_ref.customer_type == 'b2b_fs' else  ''
+            wrksht.cell(row=table_header_row, column=9).value = 'Pending' if contact.resource_ref.customer_type == 'b2c' else 'Verified' if contact.resource_ref.customer_type == 'b2b_regular' else ''
             wrksht.cell(row=table_header_row, column=10).value = contact.resource_ref.user_id.name
             wrksht.cell(row=table_header_row, column=11).value = contact.resource_ref.sale_order_count
             wrksht.cell(row=table_header_row, column=12).value = 1 if campaign_contact.sent else 0

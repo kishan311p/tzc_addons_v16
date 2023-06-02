@@ -23,6 +23,7 @@
                         <group>
                             <group>
                                 <field name="name"/>
+                                <field name="active" widget="boolean_toggle"/>
                             </group>
 
                         </group>
@@ -42,7 +43,17 @@
             </field>
         </record>
 
-    <menuitem name="Eye Size" action="action_product_size_spt" id="menu_action_product_size_spt" parent="menu_action_product_custom_spt" sequence="3"/>
+        <record id="product_size_spt_view_search" model="ir.ui.view">
+            <field name="name">product.size.spt.view.search</field>
+            <field name="model">product.size.spt</field>
+            <field name="arch" type="xml">
+                <search string="">
+                    <filter name="active" string="Active" domain="[('active', '=', True)]" context="{}" />
+                    <filter name="inactive" string="Archive" domain="[('active', '=', False)]" context="{}" />
+                </search>
+            </field>
+        </record>
+
 
     </data>
 </odoo>

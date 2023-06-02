@@ -37,7 +37,7 @@
             </field>
         </record>
 
-    <menuitem name="Internal Flag" action="action_internal_flag_spt" id="menu_action_internal_flag_spt" parent="tzc_sales_customization_spt.menu_action_product_custom_spt" sequence="13"/>
+    <!-- <menuitem name="Internal Flag" action="action_internal_flag_spt" id="menu_action_internal_flag_spt" parent="tzc_sales_customization_spt.menu_action_product_custom_spt" sequence="13"/> -->
 
     </data>
 </odoo>

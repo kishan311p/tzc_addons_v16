@@ -803,7 +803,7 @@
                 <attribute name="invisible">1</attribute>
             </xpath>
             <xpath expr="//group[@name='carrier_data']" position="before">
-                <field name="delivery_box_line_ids">
+                <field name="delivery_box_line_ids" attrs="{'readonly':[('state','in',['done','cancel'])]}">
                     <tree editable='bottom'>
                         <field name="deliver_box_id" width='15%' required='1' options="{'no_create': True}"/>
                         <field name="weight"/>
@@ -811,7 +811,7 @@
                         <!-- <field name="extra_case_qty" /> -->
                     </tree>
                 </field>
-                <field name="delivery_package_line_ids">
+                <field name="delivery_package_line_ids" attrs="{'readonly':[('state','in',['done','cancel'])]}">
                     <tree editable='bottom'>
                         <field name="name" required='1' />
                         <field name="deliver_box_domain_ids" invisible="1" force_save='1' />

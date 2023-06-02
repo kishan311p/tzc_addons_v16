@@ -1105,6 +1105,8 @@
                 <!-- <field name='picked_qty_order_total'/> -->
                 <field name="b2b_currency_id" optional="show" />
                 <field name='invoice_name' optional="show" invisible="1" />
+                <field name='original_user_id' optional="hide" />
+                <field name='original_sale_manager_id' optional="hide" />
                 <field name='state' optional="show" />
             </field>
             <!-- <xpath expr="//field[@name='team_id']" position="attributes">
@@ -1199,6 +1201,8 @@
                 <!-- <field name='picked_qty_order_total'/> -->
                 <field name="b2b_currency_id" optional="show"/>
                 <field name='invoice_name' optional="show" invisible="1"/>
+                <field name='original_user_id' optional="hide" />
+                <field name='original_sale_manager_id' optional="hide" />
                 <field name='state' optional="show"/>
                 <field name="payment_status" readonly="1"/>
                 <field name="is_payment_link" readonly="1"/>
@@ -1271,6 +1275,8 @@
                 <filter name="full_paid" string="Fully Paid" domain="[('payment_status', '=', 'full')]"/>
                 <filter name="partial_paid" string="Partial Paid" domain="[('payment_status', '=', 'partial')]"/>
                 <filter name="over_paid" string="Over Paid" domain="[('payment_status', '=', 'over')]"/>
+                <separator/>
+                <filter string="Original Sales Person" name="original_salesperson" context="{'group_by': 'original_user_id'}"/>
                 <separator/>
                 <filter string="Payment Status" name="payment_status" context="{'group_by': 'payment_status'}"/>
                 <filter name="manually" string="Manually" domain="[('source_spt','=','Manually')]"/>

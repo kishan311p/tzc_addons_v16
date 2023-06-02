@@ -37,12 +37,11 @@
                         </div>
                         <group>
                             <group>
+                                <field name="active" widget="boolean_toggle"/>
                                 <field name="brand_link" widget="url"/>
-                                <field name="case_image_url" />
                             </group>
                             <group>
                                 <!-- <field name="case_type" /> -->
-                                <field name="custom_message" />
                             </group>
                         </group>
                         <!-- <div groups="website.group_multi_website">
@@ -77,6 +76,21 @@
                                         <field name="description"/>
                                     </group>
                                 </page>
+                                <page name="case_product" string="Case Product">
+                                    <field name="case_product_ids" options="{'no_create' : True,'no_edit' : True}">
+                                        <tree string="" create="0" edit="0">
+
+                                            <field name="image_url" widget="image" options="{'zoom': true,'preview_image':'image_url','size': [173, 173]}" string="Image" optional="show"/>
+                                            <field name="variant_name" string="Name" optional="show"/>
+                                            <field name="default_code" string="SKU" optional="show"/>
+                                            <field name="categ_id" string="Product Category" optional="show"/>
+                                            <field name="lst_price" string="Our Price" optional="show"/>
+                                            <field name="brand" optional="show" />
+                                            <field name="updated_on" optional="show"/>
+                                            <field name="updated_by" optional="show"/>
+                                        </tree>
+                                    </field>
+                                </page>
                             </notebook>
                         </xpath>
                     </sheet>
@@ -92,8 +106,17 @@
                 </tree>
             </field>
         </record>
-        <menuitem name="Products Configuration " groups="base.group_system" id="menu_action_product_custom_spt" parent="sale.sale_menu_root" sequence="250" />
-        <menuitem name="Brand" action="action_product_brand_spt" id="menu_action_product_brand_spt" parent="menu_action_product_custom_spt" sequence="1" />
+
+        <record id="product_brand_spt_view_search" model="ir.ui.view">
+            <field name="name">product.brand.spt.view.search</field>
+            <field name="model">product.brand.spt</field>
+            <field name="arch" type="xml">
+                <search string="">
+                    <filter name="active" string="Active" domain="[('active', '=', True)]" context="{}" />
+                    <filter name="inactive" string="Archive" domain="[('active', '=', False)]" context="{}" />
+                </search>
+            </field>
+        </record>
         <!-- <menuitem name="Brand" action="action_product_brand_spt" groups="mass_mailing.group_mass_mailing_user" id="menu_in_website_action_product_brand_spt" parent="website.menu_website_configuration" sequence="21"/> -->
     </data>
 </odoo>

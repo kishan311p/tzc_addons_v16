@@ -8,6 +8,7 @@ class ProductBrandSpt(models.Model):
     _description = 'Product Brand' 
     _order = "name asc"
 
+    active = fields.Boolean('Active')
     name = fields.Char('Brand',index=True)
     kits_product_ids = fields.One2many('product.product','brand',string="Brand ")
     description = fields.Text('   Description', translate=True)
@@ -36,10 +37,9 @@ class ProductBrandSpt(models.Model):
     sale_avl_brand = fields.Boolean(string='Available Sale Brand')
     # website_published = fields.Boolean(string='Website Publish',default=True)
     # slider_image_ids = fields.One2many('product.brand.slider.image.spt', 'brand',string='Slider Images')
-    case_image_url = fields.Char('Case Image Url')
     # case_type = fields.Selection([('original', 'Original'),('generic', 'Generic')],"Case Type",default='generic')
-    custom_message = fields.Text(string='Custom Message', default='', translate=True)
     model_ids = fields.One2many('product.model.spt', 'brand_id', string='Model')
+    case_product_ids = fields.One2many('product.product', 'brand_id', string='Case Products')
 
     @api.onchange('brand_link')
     def _onchange_brand_link(self):

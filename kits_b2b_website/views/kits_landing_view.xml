@@ -13,6 +13,7 @@
                                 <field name="on_link" />
                                 <field name="mobile_banner_url" />
                                 <field name="dekstop_banner_url" />
+                                <field name="seo_keyword" required="1"/>
                                 <field name="website_id" required="1" options="{'no_create_edit' :True}" />
                             </group>
                             <group>

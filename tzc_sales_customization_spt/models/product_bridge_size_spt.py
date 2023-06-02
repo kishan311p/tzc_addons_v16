@@ -11,6 +11,7 @@ class ProductBridgeSizeSpt(models.Model):
     kits_product_ids = fields.One2many('product.product','bridge_size',string='Products')
     bridgesize_id = fields.Many2one('kits.product.color.code', string='Bridge Size')
     products_count = fields.Integer(compute="_compute_bridge_size_spt")
+    active = fields.Boolean('Active')
 
     def _compute_bridge_size_spt(self):
         for record in self:

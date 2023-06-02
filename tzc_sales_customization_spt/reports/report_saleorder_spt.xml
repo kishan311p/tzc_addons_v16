@@ -154,7 +154,7 @@
 </xpath>
 <xpath expr="//div[@id='informations']/div[@t-if='doc.user_id.name']" position="after">
     <div class="col-auto mw-100 mb-2 text-center" >
-        <strong>Total Quantity:</strong>
+        <strong>Total Items:</strong>
         <t t-if="env.context.get('proforma', False) or is_pro_forma" >
             <t t-if="doc.state not in ('draft','sent','received')">
                 <t t-if="doc.picked_qty">

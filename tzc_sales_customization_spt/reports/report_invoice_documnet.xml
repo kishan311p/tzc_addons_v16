@@ -166,7 +166,7 @@
                         <p class="m-0" t-esc="kits_picking_details[1]"/>
                     </div>
                     <div class="col-auto mw-100 mb-2 text-center">
-                        <strong>Total Qty:</strong>
+                        <strong>Total Items:</strong>
                         <p class="m-0" t-esc="int(sum(request.env['account.move.line'].sudo().search([('move_id','=',o.id),('product_id.type','!=','service'),('product_id.is_case_product','=',False)]).mapped('quantity')))"/>
                     </div>
                     <div class="col-auto mw-100 mb-2 text-center">

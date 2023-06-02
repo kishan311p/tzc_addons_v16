@@ -60,6 +60,7 @@ class ProductProduct(models.Model):
     image_url = fields.Char('Image URL')
     image_secondary_url = fields.Char('Image Secondary URL')
     brand = fields.Many2one('product.brand.spt','Brand', index=True)
+    brand_id = fields.Many2one('product.brand.spt','Case Brand')
     model = fields.Many2one('product.model.spt','Model', index=True)
     color_code = fields.Many2one('kits.product.color.code','Manufacturing Color Code')
     eye_size = fields.Many2one('product.size.spt','Eye Size ', index=True)
@@ -185,6 +186,12 @@ class ProductProduct(models.Model):
     product_pricelist_item_ids = fields.One2many('product.pricelist.item','product_id')
     is_pending_price = fields.Boolean( string='Is Pending Price (Flag)',compute='_compute_pending_price',store=True)
     is_case_product = fields.Boolean('Is Case Product (Flag)',related='product_tmpl_id.is_case_product',store=True)
+    
+    @api.constrains('brand','is_published_spt')
+    def _constrains_brand_id(self):
+        for record in self:
+            if record.is_case_product and record.brand_id.id != record.brand.id: 
+                record.brand_id = record.brand.id
     
     @api.depends('lst_price','price_wholesale','price_msrp','product_pricelist_item_ids')
     def _compute_pending_price(self):
@@ -804,7 +811,7 @@ class ProductProduct(models.Model):
 
         # publish products
         # ignoring case products
-        product_ids = product_obj.search([('is_case_product','=',False)])
+        product_ids = product_obj.search([('is_case_product','=',False),('is_forcefully_unpublished','=',False)])
         product_ids = product_ids.filtered(lambda x: x.eye_size_compute > 1 and x.available_qty_spt > 0 and not x.is_image_missing)
         product_ids = product_ids.filtered(lambda x: x.product_color_name.id and x.product_color_name.id not in color_ids)
         product_ids = product_ids.filtered(lambda x: x.rim_type.id and x.rim_type.id not in rim_type_ids)
@@ -1521,6 +1528,7 @@ class ProductProduct(models.Model):
                     'Infaltion Rate': in %,
                     'Special Discount': in %
                 } '''
+
     def inflation_special_discount(self,country_ids,bypass_flag=False):
         is_special_discount = False 
         is_inflation = False
@@ -1838,3 +1846,11 @@ class ProductProduct(models.Model):
                 'url': 'web/content/?model=warning.spt.wizard&download=true&field=file&id=%s&filename=%s.csv' % (wiz_id.id, 'shopify_product_export'),
                 'target': 'self',
             }
+
+    def add_to_unpublished(self):
+        for rec in self:
+            rec.is_forcefully_unpublished = True
+
+    def remove_to_unpublished(self):
+        for rec in self:
+            rec.is_forcefully_unpublished = False

@@ -15,9 +15,10 @@
                 <div class="row">
                     <div class="col-4" style="display:flex">
                         <field name="b2b_currency_id" options="{'no_open': True, 'no_create': True}" required="0" attrs="{'readonly':[('state','in',['scan','shipped','draft_inv','open_inv','cancel','merged','done'])]}" readonly="1" force_save="1"/>
+                        <field name="is_currency_change" invisible="1"/>
                     </div>
                     <div class="col-6" style="display:flex; margin-top: -6px;">
-                        <button icon="fa-solid fa-pencil" name="action_change_currency" type="object" />
+                        <button icon="fa-solid fa-pencil" name="action_change_currency" type="object" attrs="{'invisible':[('is_currency_change','=',False)]}"/>
                     </div>
                 </div>
             </xpath>

@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <menuitem name="Products Configuration " groups="base.group_system" id="menu_action_product_custom_spt" parent="sale.sale_menu_root" sequence="250" />
+        <menuitem name="Category" action="product.product_category_action_form" id="menu_product_category_action_form" parent="menu_action_product_custom_spt" sequence="1" />
+        <menuitem name="Brand" action="action_product_brand_spt" id="menu_action_product_brand_spt" parent="menu_action_product_custom_spt" sequence="2" />
+        <menuitem name="Model" action="action_product_model_spt" id="menu_action_product_model_spt" parent="menu_action_product_custom_spt" sequence="3"/>
+        <menuitem name="Manufacturing Color Code" action="action_kits_product_color_code" id="menu_action_product_color_code_spt" parent="menu_action_product_custom_spt" sequence="4"/>
+        <menuitem name="Eye Size" action="action_product_size_spt" id="menu_action_product_size_spt" parent="menu_action_product_custom_spt" sequence="5"/>
+        <menuitem name="Bridge Size" action="action_product_bridge_size_spt" id="menu_action_product_bridge_size_spt" parent="menu_action_product_custom_spt" sequence="6"/>
+
+        <menuitem name="Temple Size" action="action_product_temple_size_spt" id="menu_action_product_temple_size_spt" parent="menu_action_product_custom_spt"  sequence="7" />
+        <menuitem name="Color" action="action_product_color_spt" id="menu_action_product_color_spt" parent="menu_action_product_custom_spt" sequence="8"/>
+        <menuitem name="Shapes" action="action_product_shape_spt" id="menu_action_product_shape_spt" parent="menu_action_product_custom_spt" sequence="9"/>
+        <menuitem name="Material" action="action_product_material_spt" id="menu_action_product_material_spt" parent="menu_action_product_custom_spt" sequence="10"/>
+        <menuitem name="Rim Type" action="action_product_rim_type_spt" id="menu_action_product_rim_type_spt" parent="menu_action_product_custom_spt" sequence="11"/>
+
+
+
+    </data>
+</odoo>

@@ -23,6 +23,7 @@
                         <group>
                             <group>
                                 <field name="name" />
+                                <field name="active" widget="boolean_toggle"/>
                             </group>
 
                         </group>
@@ -42,9 +43,16 @@
             </field>
         </record>
 
-        <menuitem name="Temple Size" action="action_product_temple_size_spt"
-            id="menu_action_product_temple_size_spt" parent="menu_action_product_custom_spt"
-            sequence="4" />
+        <record id="product_temple_size_spt_view_search" model="ir.ui.view">
+            <field name="name">product.temple.size.spt.view.search</field>
+            <field name="model">product.temple.size.spt</field>
+            <field name="arch" type="xml">
+                <search string="">
+                    <filter name="active" string="Active" domain="[('active', '=', True)]" context="{}" />
+                    <filter name="inactive" string="Archive" domain="[('active', '=', False)]" context="{}" />
+                </search>
+            </field>
+        </record>
 
     </data>
 </odoo>

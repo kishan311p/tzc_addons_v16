@@ -35,7 +35,7 @@
                     </group>
                     <group attrs="{'invisible':['|',('menu_type','!=','filter'),('show_sliders','=', False)]}">
                         <field name="slider_ids">
-                            <tree editable="bottom" delete="0" create="0">
+                            <tree editable="bottom">
                                 <field name="sequence" widget="handle"/>
                                 <field name='show_filter_menu_sliders' invisible="1" />
                                 <field name='header_description' />

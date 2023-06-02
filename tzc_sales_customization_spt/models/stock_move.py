@@ -73,7 +73,7 @@ class stock_move(models.Model):
             # To know whether we need to create a backorder or not, round to the general product's
             # decimal precision and not the product's UOM.
             rounding = self.env['decimal.precision'].precision_get('Product Unit of Measure')
-            if float_compare(move.quantity_done, move.product_uom_qty, precision_digits=rounding) < 0:
+            if float_compare(move.quantity_done, move.product_uom_qty, precision_digits=rounding) < 0 and not self._context.get('order_shipped'):
                 # Need to do some kind of conversion here
                 qty_split = move.product_uom._compute_quantity(move.product_uom_qty - move.quantity_done, move.product_id.uom_id, rounding_method='HALF-UP')
                 new_move_vals = move._split(qty_split)

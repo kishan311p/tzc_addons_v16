@@ -371,6 +371,7 @@ class sale_order(models.Model):
     merge_reference = fields.Many2many("sale.order","merged_order_sale_order_rel","merge_order_id","order_id","Merge Order of")
     customer_credit = fields.Char('Customer Credit')
     eto_shipping_cost = fields.Float('ETO Shipping Cost')
+    is_currency_change = fields.Boolean('Is Currency Change (Flag)',compute="_compute_is_currency_change",store=True)
 
     @api.onchange('order_line','order_line.unit_discount_price','amount_is_shipping_total')
     def onchange_ship_cost_update(self):
@@ -385,23 +386,19 @@ class sale_order(models.Model):
     b2b_currency_id = fields.Many2one('res.currency',default=_get_currency_id ,string=' Currency')
     currency_id = fields.Many2one(related='b2b_currency_id',depends=["b2b_currency_id"],store=True, precompute=True, ondelete="restrict")
 
+    @api.depends('state','source_spt')
+    def _compute_is_currency_change(self):
+        for rec in self:
+            is_currency_change = True
+            if rec.state == 'draft' and rec.source_spt and rec.source_spt.lower() == 'website':
+                is_currency_change = False
+            
+            rec.is_currency_change = is_currency_change
 
     def compute_all(self):
         for record in self:
             record._amount_all()
         return True
-
-    def action_change_currency(self):
-        self.ensure_one()
-        return {
-            'name': self.name,
-            'type': 'ir.actions.act_window',
-            'view_type': 'form',
-            'view_mode': 'form',
-            'res_model': 'change.order.currency',
-            'target': 'new',
-            'context': {'default_currency_id': self.b2b_currency_id.id,'order_id':self.id}
-        }
 
     def service_pro_price(self,price_unit,unit_discount_price,discount,currency_id):
         if self.b2b_currency_id != currency_id:

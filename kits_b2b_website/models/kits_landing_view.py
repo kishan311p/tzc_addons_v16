@@ -12,6 +12,7 @@ class kits_landing_view(models.Model):
     mobile_banner_url = fields.Char('Mobile Banner')
     dekstop_banner_url = fields.Char('Dekstop Banner')
     video_url_ids = fields.One2many('kits.landing.url', 'landing_view_id', string='Video URL')
+    seo_keyword = fields.Char('URL Keyword')
 
 class kits_landing_url(models.Model):
     _name = 'kits.landing.url'

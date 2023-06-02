@@ -1,4 +1,5 @@
 from odoo import fields, models, api, _
+from odoo.exceptions import UserError
 
 MENU_TYPE = [
     ('filter', 'Filter'),
@@ -46,3 +47,9 @@ class kits_b2b_menus(models.Model):
     
     def product_is_unpublish(self):
         self.write({'is_published':False})
+        
+    @api.constrains('slider_ids')
+    def _constrains_slider_ids(self):
+        for record in self:
+            if len(record.slider_ids) > 6:
+                raise UserError(_('Only 6 records are allowed.'))

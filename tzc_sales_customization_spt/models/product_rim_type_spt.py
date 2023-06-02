@@ -11,12 +11,9 @@ class product_rim_type_spt(models.Model):
     products_count = fields.Integer(compute="_compute_rim_type_products")
     # is_published = fields.Boolean('Is Published',default=True)
     
-    eyeglass_avl_rim_type = fields.Boolean(string="Available Eyeglass Rim Type")
-    sunglass_avl_rim_type = fields.Boolean(string="Available Sunglass Rim Type")
-    new_arrival_avl_rim_type = fields.Boolean(string="Available New Arrival Rim Type")
-    sale_avl_rim_type = fields.Boolean(string="Available sale Rim Type")
     image_url = fields.Char('Image Url')
     image = fields.Char('Image',related='image_url')
+    active = fields.Boolean('Active')
 
     def _compute_rim_type_products(self):
         for record in self:

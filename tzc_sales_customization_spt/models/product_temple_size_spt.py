@@ -11,6 +11,7 @@ class product_temple_size_spt(models.Model):
     kits_product_ids = fields.One2many('product.product','temple_size',string='Products')
     templesize_id = fields.Many2one('kits.product.color.code', string='Temple Size')
     products_count = fields.Integer(compute="_compute_temple_size_products")
+    active = fields.Boolean('Active')
 
     def _compute_temple_size_products(self):
         for record in self:

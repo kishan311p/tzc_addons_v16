@@ -24,6 +24,7 @@
                         <group>
                             <group>
                                 <field name="name"/>
+                                <field name="active" widget="boolean_toggle"/>
                             </group>
 
                         </group>
@@ -47,9 +48,16 @@
                 </tree>
             </field>
         </record>
-
-    <menuitem name="Model" action="action_product_model_spt" id="menu_action_product_model_spt" parent="menu_action_product_custom_spt" sequence="1"/>
-
+        <record id="product_model_spt_view_search" model="ir.ui.view">
+            <field name="name">product.model.spt.view.search</field>
+            <field name="model">product.model.spt</field>
+            <field name="arch" type="xml">
+                <search string="">
+                    <filter name="active" string="Active" domain="[('active', '=', True)]" context="{}" />
+                    <filter name="inactive" string="Archive" domain="[('active', '=', False)]" context="{}" />
+                </search>
+            </field>
+        </record>
     </data>
 </odoo>
 

@@ -22,9 +22,26 @@
                 <attribute name="create">0</attribute>
                 <attribute name="edit">0</attribute>
             </xpath>
+            <xpath expr="//field[@name='parent_id']" position="after">
+                <field name="active" widget="boolean_toggle"/>
+            </xpath>
         </field>
     </record>
     <record id="case_product_category" model="product.category">
         <field name="name">Case</field>
     </record>
+
+    <record id="product_category_inherit_tzc_sales_customization_spt" model="ir.ui.view">
+        <field name="name">product.category.view.form.inherit</field>
+        <field name="model">product.category</field>
+        <field name="inherit_id" ref="product.product_category_search_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//search" position="inside">
+                
+                <filter name="active" string="Active" domain="[('active', '=', True)]" context="{}" />
+                <filter name="inactive" string="Archive" domain="[('active', '=', False)]" context="{}" />
+            </xpath>
+        </field>
+    </record>
+
 </odoo>

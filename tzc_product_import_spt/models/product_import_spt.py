@@ -186,6 +186,9 @@ class product_import_spt(models.Model):
         self.ensure_one()
         pricelist = self.env['product.pricelist'].search([]).mapped('name')
         product_obj = self.env['product.product']
+        brand_obj = self.env['product.brand.spt']
+        category_obj = self.env['product.category']
+        taxes_obj= self.env['account.tax']
         # inventory_obj = self.env['stock.inventory']
         # inventory_line_obj = self.env['stock.inventory.line']
         quant_obj = self.env['stock.quant']
@@ -250,8 +253,40 @@ class product_import_spt(models.Model):
                     if 'is_b2c_published' in product_pro_dict.keys():
                         del product_pro_dict['is_b2c_published']
                         
-                    if 'is_b2c_published' in product_pro_dict.keys():
-                        del product_pro_dict['is_b2c_published']
+                    if 'case_image_url' in product_pro_dict.keys():
+                        case_product_id = product_obj.with_context(pending_price=True).sudo().search([('image_url','=',product_pro_dict.get('case_image_url'))])
+                        if not case_product_id:
+                            if product_pro_dict.get('case_type') and product_pro_dict.get('brand'):
+                                brand_name = ((brand_obj.browse(product_pro_dict.get('brand')).name or '')+' Case')
+                                case_product_id = product_obj.with_context(pending_price=True).sudo().create({
+                                    'name' : brand_name,
+                                    'variant_name' : brand_name,
+                                    'default_code' : brand_name.lower().replace(' ','-'),
+                                    'barcode' :  brand_name.lower().replace(' ','-'),
+                                    'image_url' : product_pro_dict.get('case_image_url'),
+                                    'case_type' : product_pro_dict.get('case_type'),
+                                    'brand' : product_pro_dict.get('brand'),
+                                    'taxes_id' : [(4,taxes_obj.search([('name','=','HST for sales - 13%')]).id)],
+                                    'categ_id' : category_obj.search([('name','=','Case')]).id,
+                                    'is_case_product' : True,
+                                    'active' : True,
+                                    'detailed_type': 'product',
+                                    'purchase_ok':False
+                                    
+                                })
+                                case_product_id.product_tmpl_id.write({ 'name' : product_pro_dict.get('brand'),
+                                    'default_code' : ((brand_obj.browse(product_pro_dict.get('brand')).name or '').lower()+' case').replace(' ','-'),
+                                    'barcode' : ((brand_obj.browse(product_pro_dict.get('brand')).name or '').lower()+' case').replace(' ','-'),
+                                    'taxes_id' : [(4,taxes_obj.search([('name','=','HST for sales - 13%')]).id)],
+                                    'categ_id' : category_obj.search([('name','=','Case')]).id,
+                                    'is_case_product' : True,
+                                    'active' : True,
+                                    'detailed_type': 'product',
+                                    'purchase_ok':False})
+                            else: 
+                                case_product_id = product_obj.with_context(pending_price=True).sudo().search([('image_url','=','https://cdn.teameto.com/data/product-images/case_generic.jpg'),('default_code','=','generic-case')], limit=1)
+                                product_pro_dict['case_type'] = 'generic'
+                        product_pro_dict['case_product_id'] = case_product_id.id
                     product_pro_id.with_context(from_product_import=True).write(product_pro_dict)
                     product_pro_ids_list.append(product_pro_id.id)
 

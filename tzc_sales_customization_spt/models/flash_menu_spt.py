@@ -29,7 +29,7 @@ class flash_menu_spt(models.Model):
     product_ids = fields.Many2many('product.product','flash_menu_product_product_rel','wizard_id','product_tmpl_id',string='Products')
     
 
-    partner_ids = fields.Many2many('res.partner','flash_menu_res_partner_real','wizard_id','partner_id',string='Customers',domain="[('customer_type','=','b2b_fs')]")
+    partner_ids = fields.Many2many('res.partner','flash_menu_res_partner_real','wizard_id','partner_id',string='Customers')
     state = fields.Selection([
             ('draft', 'Draft'),
             ('confrimed', 'Confrimed'),
