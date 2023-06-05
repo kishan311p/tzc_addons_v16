@@ -78,7 +78,7 @@
             <field name="context">{'search_default_archived':1}</field>
             <field name="domain">['|',('is_active','=',True),('is_active','=',False)]</field>
         </record>
-        <!-- <menuitem id="menu_kits_inflation" name="Price Inflation" action="action_kits_inflation" parent="sale.sale_menu_root" groups="base.group_system,tzc_sales_customization_spt.group_marketing_user" sequence="52"/> -->
+        <menuitem id="menu_kits_inflation" name="Price Inflation" action="action_kits_inflation" parent="sale.sale_menu_root" groups="base.group_system,tzc_sales_customization_spt.group_marketing_user" sequence="52"/>
     </data>
 
 </odoo>
