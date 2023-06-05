@@ -1151,7 +1151,9 @@ class stock_picking(models.Model):
     def _add_tracking_ref_in_order(self):
         for rec in self:
             if rec.sale_id:
-                rec.sale_id.kits_carrier_tracking_ref = rec.tracking_number_spt
+                tracking_num = rec.tracking_number_spt
+                query = '''update sale_order set kits_carrier_tracking_ref = '%s' where id = %s'''%(tracking_num,rec.sale_id.id)
+                self._cr.execute(query)
 
     @api.onchange('partner_id')
     def _get_recipent_address(self):
@@ -1182,11 +1184,10 @@ class stock_picking(models.Model):
                             rec.is_fedex = True
                         elif shipping_id.delivery_type.lower() == 'ups':
                             rec.is_ups = True
-                        # rec.carrier_id = shipping_id.id
-                        # rec.sale_id.carrier_id = shipping_id.id
-                rec.carrier_id = rec.shipping_id.carrier_id
-                rec.sale_id.carrier_id = rec.shipping_id.carrier_id
-            rec._get_recipent_address()     
+                        rec.carrier_id = shipping_id.id
+                        rec.sale_id.carrier_id = rec.carrier_id.id
+                rec.sale_id.estimate_shipping_cost = rec.calulate_shipping_cost
+            rec._get_recipent_address()
             rec._onchange_carrier_id()
             
     @api.onchange('carrier_id')

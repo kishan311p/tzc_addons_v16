@@ -54,7 +54,7 @@
         
         <menuitem 
             id="menu_kits_landing_view"
-            name="Landing View"
+            name="Video Landing Page"
             action="action_kits_landing_view" 
             parent="kits_b2b_website.kits_b2b_main_menu" 
             groups="base.group_system" 
