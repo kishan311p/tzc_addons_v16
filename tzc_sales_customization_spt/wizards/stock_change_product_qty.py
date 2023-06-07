@@ -16,11 +16,16 @@ class stock_change_product_qty(models.TransientModel):
         # Before creating a new quant, the quand `create` method will check if
         # it exists already. If it does, it'll edit its `inventory_quantity`
         # instead of create a new one.
+        old_product_qty = self.product_id.qty_available
         self.env['stock.quant'].with_context(inventory_mode=True).create({
             'product_id': self.product_id.id,
             'location_id': warehouse.lot_stock_id.id,
             'inventory_quantity': self.new_quantity + self.product_id.reversed_qty_spt if self._context.get('reserve_calculated',False) else self.new_quantity,
         })._apply_inventory()
+        if self.product_id.qty_available > old_product_qty and not self._context.get('set_qty_from_picking'):
+            self.product_id.write({
+                'new_arrivals' : True
+            })
         to_publish = self.product_id.product_color_name.name != 'Other' and self.product_id.eye_size_compute > 1 and not self.product_id.is_image_missing and self.product_id.available_qty_spt > 1
         if to_publish:
             self.product_id.is_published_spt = True

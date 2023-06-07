@@ -16,6 +16,9 @@ class stock_move(models.Model):
     scan_extra_item = fields.Boolean(default=False)
     return_order_line_id = fields.Many2one('kits.return.ordered.items.line', string='Return Order Line')
 
+    # include case flag
+    is_included_case = fields.Boolean('Included Case?',help='To identify move is for included case product or not.',related='sale_line_id.is_included_case',store=True,default=False)
+
     @api.depends('sale_line_id','sale_line_id.package_id')
     def _compute_package_id(self):
         for record in self:
@@ -247,8 +250,8 @@ class stock_move(models.Model):
     @api.onchange('product_id')
     def onchange_product_case(self):
         for rec in self:
-            if rec.product_id in rec.picking_id.case_move_ids_without_package._origin.mapped('product_id'):
-                raise UserError("Product already added")
+            if rec.product_id in rec.picking_id.extra_case_move_ids_without_package._origin.mapped('product_id'):
+                raise UserError("Product already added.")
 
     def _create_extra_move(self):
         """ If the quantity done on a move exceeds its quantity todo, this method will create an

@@ -33,10 +33,11 @@ class import_partner_spt(models.Model):
     ],readonly=True, states={'draft': [('readonly', False)]}, string='Operation',required=True,default="create")
     
     
-    @api.model
-    def create(self, vals):
-        vals['name'] = self.env['ir.sequence'].next_by_code('import.partner.spt') or 'New'
-        return super(import_partner_spt, self).create(vals)
+    @api.model_create_multi
+    def create(self, vals_list):
+        for vals in vals_list:
+            vals['name'] = self.env['ir.sequence'].next_by_code('import.partner.spt') or 'New'
+        return super(import_partner_spt, self).create(vals_list)
 
     
     def _get_number_of_partner(self):

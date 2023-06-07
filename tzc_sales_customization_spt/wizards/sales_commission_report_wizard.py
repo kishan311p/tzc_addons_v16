@@ -41,7 +41,7 @@ class sales_commission_report_wizard(models.TransientModel):
     sales_manager_ids = fields.Many2many('res.users', 'sales_manager_commission_wizard_res_users_rel', 'wizard_id', 'user_id', string="Sales Manager",default=lambda self:self.env.user,domain=_get_salesmanagers)
     file = fields.Binary()
     commission_for = fields.Selection([('sales_person', 'Salesperson'),('sales_manager', 'Sales Manager')],default="sales_person")
-    commission_is = fields.Selection([('draft','Draft'),('full','Fully Paid'),('partial','Partial Paid'),('over','Over Paid')],default='full',string="Commission Type")
+    commission_is = fields.Selection([('draft','Not Paid'),('full','Fully Paid'),('partial','Partial Paid'),('over','Over Paid')],default='full',string="Commission Type")
     # commission_is = fields.Selection([('all','All'),('is_paid','Paid'),('is_unpaid','Unpaid')],default='all',string="Commission Type")
     apply_groups = fields.Selection([('admin','Administrator'),('sales_person','Salesperson'),('sales_manager','Sales Manager')],string="Apply Groups")
 

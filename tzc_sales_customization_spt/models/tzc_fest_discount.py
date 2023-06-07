@@ -5,6 +5,8 @@ from datetime import datetime
 class tzc_fest_discount(models.Model):
     _name = 'tzc.fest.discount'
     _rec_name = 'name'
+    _description = 'Tzc Fest Discount'
+
 
     special_discount_rule_ids = fields.One2many('kits.special.discount','tzc_fest_id','Special Discount')
     from_date = fields.Date('Start Date')

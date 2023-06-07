@@ -28,7 +28,6 @@ class ProductBrandSpt(models.Model):
         help='It shows the number of product counts',
     )
     
-    
     # is_brand_page = fields.Boolean(string='Is Brand Page',help="It will set the separate landing page for this brand")
     # brand_page = fields.Many2one("website.page", string="Brand Page",help="Select the brand page which you want to set for this brand.")
     

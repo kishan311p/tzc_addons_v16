@@ -46,7 +46,7 @@ class delivery_carrier(models.Model):
             vals['integration_level'] = 'rate'
         return res
 
-    @api.model
+    @api.model_create_multi
     def create(self,vals):
         res = super(delivery_carrier,self).create(vals)
         if vals.get('integration_level'):

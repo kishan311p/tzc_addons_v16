@@ -3,6 +3,7 @@ from odoo.exceptions import UserError
 
 class kits_inflation(models.Model):
     _name = 'kits.inflation'
+    _description = 'Kits Inflation'
 
     name = fields.Char('Name')
     from_date = fields.Date('Start Date')

@@ -59,14 +59,14 @@ class res_partner(models.Model):
     is_vendor = fields.Boolean('Is Vendor')
     is_email_verified = fields.Boolean(compute="_compute_info_fields",string='User Verified',store=True)
     sale_order_count = fields.Integer(compute='_compute_sale_order_count', string='Sale Order Count',store=True)
-    email = fields.Char(track_visibility='onchange')
-    country_id = fields.Many2one('res.country', string='Country', ondelete='restrict',track_visibility="onchange",index=True)
+    email = fields.Char(tracking=True)
+    country_id = fields.Many2one('res.country', string='Country', ondelete='restrict',tracking=True,index=True)
     internal_contacts_ids = fields.Many2many('res.users','internal_contact_res_users_rel','internal_contacts_id','res_users_id','Designated Salespersons',compute="_get_partner_data",compute_sudo=True)
     designeted_country_ids = fields.Many2many('res.country','res_partner_res_country_rel','res_partner_id','res_country_id','Sales Manager\'s Designated Countries',compute="_get_partner_data",compute_sudo=True)
     notify_salesperson_country_ids = fields.Many2many('res.country','notify_salesperson_country_res_country_rel','notify_salesperson_country_id','res_country_id','Notify Salesperson Country',compute="_get_partner_data",compute_sudo=True)
     notify_salesperson = fields.Boolean(compute="_notify_salesperson")
     is_visitor_connected = fields.Boolean('Visitor Connected')
-    visiter_id = fields.Many2one('website.visitor','Website Visitor Partner')
+    # visiter_id = fields.Many2one('website.visitor','Website Visitor Partner')
     is_salesmanager = fields.Boolean(default=False)
 
     is_granted_portal_access = fields.Boolean('Is Granted Portal Access',compute="_compute_info_fields",store=True)
@@ -76,7 +76,7 @@ class res_partner(models.Model):
     access_field_flag = fields.Boolean("Access Field Flag",compute="_get_partner_data",default=True,compute_sudo=True)
     updated_on = fields.Datetime('Updated On')
     updated_by = fields.Many2one('res.users','Updated By')
-    website_id = fields.Many2one('website','Website')
+    # website_id = fields.Many2one('website','Website')
     result = fields.Char("Result")
     fail_reason = fields.Char("Fail Reason")
     mail_risk = fields.Char("Mail Risk")
@@ -643,7 +643,7 @@ class res_partner(models.Model):
         
         return vals
 
-    @api.model
+    @api.model_create_multi
     def create(self,vals):
         if self.env.user.has_group('base.group_user') and not self.env.user.has_group('tzc_sales_customization_spt.group_partner_access_salesperson'):
             raise ValidationError("You can not create partner !!!")

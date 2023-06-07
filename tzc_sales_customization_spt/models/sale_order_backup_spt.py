@@ -30,6 +30,19 @@ class sale_order_backup_spt(models.Model):
      readonly=True,
         domain="['|', ('company_id', '=', False), ('company_id', '=', company_id)]",
         help="If you change the pricelist, only newly added lines will be affected.")
+    
+    # Glasses
+    def _non_case_domain(self):
+        return [('id','in',self.line_ids.filtered(lambda x: x.product_id.is_case_product==False).ids)]
+    non_case_line_ids = fields.One2many('sale.order.backup.line.spt','order_backup_id','Product Lines', ondelete='cascade', index=True, copy=False,domain=_non_case_domain)
+    # Cases.
+    def _include_case_domain(self):
+        return [('id','in',self.line_ids.filtered(lambda x: x.product_id.is_case_product==True and x.is_included_case==True).ids)]
+    included_cases_line_ids = fields.One2many('sale.order.backup.line.spt','order_backup_id','Include Case Lines', ondelete='cascade', index=True, copy=False,domain=_include_case_domain)
+    
+    def _extra_case_domain(self):
+        return [('id','in',self.line_ids.filtered(lambda x: x.product_id.is_case_product==True and x.is_included_case==False).ids)]
+    extra_cases_line_ids = fields.One2many('sale.order.backup.line.spt','order_backup_id','Extra Case Lines', ondelete='cascade', index=True, copy=False,domain=_extra_case_domain)
 
     def _compute_order_total(self):
         for record in self:
@@ -139,6 +152,7 @@ class sale_order_backup_spt(models.Model):
                     'order_id':sale_id.id,
                     'tax_id':[(6,0,line.tax_id.ids)],
                     'sale_type':line.sale_type,
+                    'is_included_case':line.is_included_case
                 })
             for pack_line in record.backup_package_lines:
                 pack_line_obj.create({

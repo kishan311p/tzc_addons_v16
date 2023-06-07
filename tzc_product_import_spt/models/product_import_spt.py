@@ -88,10 +88,11 @@ class product_import_spt(models.Model):
     column_name = fields.Char('Archive Keyword')
 
 
-    @api.model
-    def create(self, vals):
-        vals['name'] = self.env['ir.sequence'].next_by_code('product.import.spt') or 'New'
-        res = super(product_import_spt, self).create(vals)
+    @api.model_create_multi
+    def create(self, vals_list):
+        for vals in vals_list:
+            vals['name'] = self.env['ir.sequence'].next_by_code('product.import.spt') or 'New'
+        res = super(product_import_spt, self).create(vals_list)
         for record in res:
             if record.qty_add_in_pro_qty:
                     record.add_reserved_qty = False
@@ -300,11 +301,16 @@ class product_import_spt(models.Model):
                             product_qty = 0
                         warehouse = self.env['stock.warehouse'].search([('company_id', '=', self.env.user.company_id.id)], limit=1)
                         if warehouse and warehouse.lot_stock_id:
+                           old_product_qty = product_pro_id.qty_available
                            inventory_id = quant_obj.with_context(inventory_mode=True,inventory_name=self.name).create({
                                 'location_id': warehouse.lot_stock_id.id,
                                 'product_id': product_pro_id.id,
                                 'inventory_quantity': product_qty
                             }).with_context(default_product_import_id=self.id).action_apply_inventory()
+                           if product_pro_id.qty_available > old_product_qty:
+                                product_pro_id.write({
+                                    'new_arrivals' : True
+                                })
                         else:
                             if import_line.default_code not in error_default_code_list:
                                 wrong_lines.append([import_line.default_code,'Error:'+str('stock location not found, stock updation operation can not preformed')])

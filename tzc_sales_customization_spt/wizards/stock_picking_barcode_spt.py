@@ -178,6 +178,7 @@ class stock_picking_barcode_spt(models.TransientModel):
         stock_move_obj = self.env['stock.move']
         line_list = []
         product_list = []
+        created_case_ids = []
         for data_line in self.line_ids:
             if data_line.product_id.id in product_list:
                 line_id = list(filter(lambda line: line.product_id.id == data_line.product_id.id,line_list))[0]
@@ -207,12 +208,14 @@ class stock_picking_barcode_spt(models.TransientModel):
                 })
                 stock_move_id.move_line_ids.write({'qty_done':line.product_qty,'picking_id':self.picking_id.id})
                 stock_move_id.picking_id = self.picking_id.id
-            case_move_id = self.picking_id.move_ids_without_package.filtered(lambda move: move.product_id == line.product_id.case_product_id)
+            
+            # For Case.
+            case_move_id = self.picking_id.move_ids_without_package.filtered(lambda move: move.product_id == line.product_id.case_product_id and move.is_included_case==True and move_id.product_id.sale_type != 'clearance')
             if case_move_id:
                 case_move_id = self.picking_id.check_duplicate_move(case_move_id)
                 case_move_id.quantity_done  =  case_move_id.quantity_done + line.product_qty 
             else:
-                if line.product_id.case_product_id:
+                if line.product_id.case_product_id and line.product_id.sale_type != 'clearance':
                     stock_case_move_id = stock_move_obj.create({
                         'location_id' : self.picking_id.location_id.id,
                         'location_dest_id' : self.picking_id.location_dest_id.id,
@@ -228,6 +231,7 @@ class stock_picking_barcode_spt(models.TransientModel):
                     })
                     stock_case_move_id.move_line_ids.write({'qty_done':line.product_qty,'picking_id':self.picking_id.id})
                     stock_case_move_id.picking_id = self.picking_id.id
+                    created_case_ids.append(stock_case_move_id)
         self.picking_id.action_assign()
         if self._context.get('sale_order_spt',False):
             return {
@@ -240,7 +244,7 @@ class stock_picking_barcode_spt(models.TransientModel):
             }
         self.picking_id.sale_id.write({'state': 'in_scanning','updated_by':self.env.user.id,'updated_on':datetime.now()})
         self.picking_id.sale_id._amount_all()
-        self.picking_id.update_sale_order_spt()
+        self.picking_id.with_context(created_extra_case_ids=created_case_ids).update_sale_order_spt()
         self.picking_id.write({'state': 'in_scanning'})
 
     def action_edit_product(self):

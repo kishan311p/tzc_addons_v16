@@ -3,6 +3,7 @@ from odoo.exceptions import UserError
 
 class kits_landing_view(models.Model):
     _name = 'kits.landing.view'
+    _description = 'Kits Landing View'
 
     name = fields.Char('Name')
     on_link = fields.Char('Redirect URL')

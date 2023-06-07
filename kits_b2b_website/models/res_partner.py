@@ -28,7 +28,7 @@ class res_partner(models.Model):
                     else:
                         rec.preferred_currency = self.env['kits.b2b.multi.currency.mapping'].search([('currency_id','=',self.env.ref('base.USD').id)]).currency_id.id
 
-    @api.model
+    @api.model_create_multi
     def create(self, vals):
         res = super(res_partner, self).create(vals)
         for record in res:    

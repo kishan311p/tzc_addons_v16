@@ -13,7 +13,7 @@ class kits_message_update_picking_wizard(models.TransientModel):
         for rec in self.sale_order_ids:
             for line in rec.order_line:
                 if line.product_id in self.picking_id.sale_id.order_line.product_id:
-                    product_ids = self.picking_id.sale_id.order_line.filtered(lambda x: x.product_id == line.product_id)
+                    product_ids = self.picking_id.sale_id.order_line.filtered(lambda x: x.product_id == line.product_id and x.is_included_case==line.is_included_case)
                     qty = sum(product_ids.mapped('product_uom_qty')) + line.product_uom_qty
                     product_ids.write({'product_uom_qty':qty,'sale_type':line.product_id.sale_type})
                     product_ids.product_id_change()
@@ -24,6 +24,7 @@ class kits_message_update_picking_wizard(models.TransientModel):
                             'unit_discount_price' : line.unit_discount_price,
                             'sale_type':line.product_id.sale_type,
                             'order_id':self.picking_id.sale_id.id,
+                            'is_included_case' : line.is_included_case
                         }
                     line_id = self.env['sale.order.line'].create(order_lines_vals)
                     line_id.product_id_change()

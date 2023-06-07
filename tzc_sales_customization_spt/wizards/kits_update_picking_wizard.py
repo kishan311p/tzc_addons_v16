@@ -22,7 +22,7 @@ class kits_update_picking_wizard(models.TransientModel):
                         self.picking_id.with_context(mail_notrack=True).write({'state':'draft'})
                         self.picking_id.sale_id.with_context(mail_notrack=True).write({'state':'sale'})
                         if line.product_id.id in product_list:
-                            product_ids = self.picking_id.sale_id.order_line.filtered(lambda x: x.product_id == line.product_id)
+                            product_ids = self.picking_id.sale_id.order_line.filtered(lambda x: x.product_id == line.product_id and x.is_included_case==line.is_included_case)
                             qty = sum(product_ids.mapped('product_uom_qty')) + line.product_uom_qty
                             product_ids.write({'product_uom_qty':qty})
                             order_line_list.extend(product_ids.ids)
@@ -31,7 +31,8 @@ class kits_update_picking_wizard(models.TransientModel):
                                 'product_id' : line.product_id.id,
                                 'sale_type' : line.sale_type,
                                 'product_uom_qty' : line.product_uom_qty,
-                                'unit_discount_price' : line.unit_discount_price
+                                'unit_discount_price' : line.unit_discount_price,
+                                'is_included_case' : line.is_included_case
                             })]
                             self.picking_id.sale_id.write({'order_line':order_lines_vals})
                     rec.state = 'merged'
@@ -60,7 +61,7 @@ class kits_update_picking_wizard(models.TransientModel):
         product_list = []
         for rec in self.sale_order_ids:
             for line in rec.order_line:
-                line_id = self.picking_id.sale_id.order_line.filtered(lambda x:x.product_id == line.product_id)
+                line_id = self.picking_id.sale_id.order_line.filtered(lambda x:x.product_id == line.product_id and x.is_included_case == line.is_included_case)
                 if line_id and line.unit_discount_price != line_id.unit_discount_price:
                     if line.product_id not in product_list:
                         product_list.append(line.product_id.id)

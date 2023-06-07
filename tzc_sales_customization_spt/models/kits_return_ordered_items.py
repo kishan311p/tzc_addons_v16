@@ -76,10 +76,11 @@ class kits_return_ordered_items(models.Model):
         for record in self:
             record.delivery_count = len(picking_obj.search([('return_order_id','=',record.id)]))
  
-    @api.model
-    def create(self, vals):
-        vals['name'] = self.env['ir.sequence'].next_by_code('kits.return.ordered.items.sequence')
-        return super().create(vals)
+    @api.model_create_multi
+    def create(self, vals_list):
+        for vals in vals_list:
+            vals['name'] = self.env['ir.sequence'].next_by_code('kits.return.ordered.items.sequence')
+        return super().create(vals_list)
     
     def action_reset_to_draft(self):
         for record in self:

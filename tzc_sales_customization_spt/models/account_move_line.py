@@ -23,6 +23,7 @@ class AccountMoveLine(models.Model):
     # is_fs = fields.Boolean("Is FS?")
     # is_promotion_applied = fields.Boolean("Is promotion applied?",compute='_compute_boolean_fields')
     primary_image_url = fields.Char("Primary Image URL",related='product_id.primary_image_url')
+    is_included_case = fields.Boolean('Case Included?',help='Use to differentiate case is included or not.')
 
     _sql_constraints = [
         (
@@ -362,17 +363,18 @@ class AccountMoveLine(models.Model):
             record.price_total =  record.sale_line_ids.price_total
         return super(AccountMoveLine, self)._compute_totals()
 
-    @api.model
-    def create(self,vals):
-        product_id = self.env['product.product'].browse(vals.get('product_id'))
-        if vals.get('display_type') == 'product' and product_id.is_global_discount:
-            vals.update({'price_unit':-vals.get('price_unit')})
-        res = super(AccountMoveLine,self).create(vals)
+    @api.model_create_multi
+    def create(self,vals_list):
+        for vals in vals_list:
+            product_id = self.env['product.product'].browse(vals.get('product_id'))
+            if vals.get('display_type') == 'product' and product_id.is_global_discount:
+                vals.update({'price_unit':-vals.get('price_unit')})
+        res = super(AccountMoveLine,self).create(vals_list)
         for rec in res:
             if rec.display_type == 'payment_term':
                 rec.balance = res.amount_currency
             if rec.display_type == 'product' and rec.move_id.move_type == 'out_invoice':
-                if not res.product_id.is_global_discount:
+                if not rec.product_id.is_global_discount:
                     rec.balance = rec.price_subtotal
                     rec.credit = rec.price_subtotal
                 else:

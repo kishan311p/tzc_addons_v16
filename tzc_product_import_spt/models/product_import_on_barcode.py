@@ -75,7 +75,7 @@ class product_import_on_barcode(models.Model):
                 line.product_id = product_id.id
             record.state = 'done'
     
-    @api.model
+    @api.model_create_multi
     def create(self, vals):
         res= super(product_import_on_barcode,self).create(vals)
         for record in res:

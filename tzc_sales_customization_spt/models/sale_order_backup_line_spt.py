@@ -23,7 +23,8 @@ class sale_order_backup_line_spt(models.Model):
     sale_type = fields.Selection([('clearance','Clearance'),('on_sale','On Sale')],'Sale Type')
     is_pack_order_line = fields.Boolean('Backup Pack Order Line')
     package_id = fields.Many2one('kits.package.product','Package')
-    
+    is_included_case = fields.Boolean('Included Case?',help='Help to differentiate extra case and included case.')    
+
     def _compute_sutotal(self):
         for record in self:
             record.subtotal = record.product_uom_qty * record.unit_discount_price

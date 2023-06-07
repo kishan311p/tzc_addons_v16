@@ -347,7 +347,7 @@
                     <field name="internal_id" string="Internal ID" optional="show"/>
                 </xpath>
                 <xpath expr="//field[@name='email']" position="after">
-                    <!-- <field name="last_logged_on" optional="show"/> -->
+                    <field name="last_logged_on" optional="show"/>
                     <field name="last_order_id" optional="show"/>
                     <field name="last_order_date" optional="show"/>
                     <field name="last_order_value" optional="show"/>

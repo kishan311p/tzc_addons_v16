@@ -260,15 +260,26 @@ class remove_product_spt(models.TransientModel):
         sol_obj = self.env['sale.order.line']
         messages =[]
         flag = False
-        if self.line_ids and self.line_ids.ids:
+        if self.line_ids:
             for line in self.line_ids:
-                if line.product_id and line.product_id.id:
-                    sol_ids = sol_obj.search([('order_id','=',self.sale_id.id),('product_id.brand','=',line.product_id.brand.id)])
+                if line.product_id:
+                    sol_ids = sol_obj.search([('order_id','=',self.sale_id.id),('product_id','=',line.product_id.id)])
+                    # sol_ids = sol_obj.search([('order_id','=',self.sale_id.id),('product_id.brand','=',line.product_id.brand.id)])
                     qty = line.product_qty
-                    if sol_ids and sol_ids.ids:
+                    if sol_ids:
                         for i in range(0,len(sol_ids)):
-                            if sol_ids.filtered(lambda x:x.product_template_id.is_case_product):
-                                qty = line.product_qty
+                            
+                            # Included Case
+                            case_product_id = line.product_id.case_product_id
+                            if case_product_id:
+                                col_id = sol_obj.search([('order_id','=',self.sale_id.id),('product_id','=',case_product_id.id),('is_included_case','=',True)],limit=1)
+                                if col_id:
+                                    case_qty = line.product_qty  
+                                    if case_qty > 0:
+                                        case_qty = case_qty - col_id.product_uom_qty
+                                        col_id.write({"product_uom_qty":0 if case_qty >= 0 else col_id.product_uom_qty - abs(col_id.product_uom_qty + case_qty)})
+                                        col_id.order_id.write({'updated_by':self.env.user.id,'updated_on':datetime.now()})
+
                             if qty > 0:
                                 qty = qty - sol_ids[i].product_uom_qty
                                 sol_ids[i].write({"product_uom_qty":0 if qty >= 0 else sol_ids[i].product_uom_qty - abs(sol_ids[i].product_uom_qty + qty)})

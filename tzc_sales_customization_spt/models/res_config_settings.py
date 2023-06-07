@@ -21,6 +21,7 @@ class res_config_settings(models.TransientModel):
     kits_shipping_method = fields.Boolean('Display Shipping Method')
     no_product_case_image_url = fields.Char('No product case image url')
     nearest_shipping_qty_range = fields.Integer('Nearest Shipping Qty Range',config_parameter="tzc_sales_customization_spt.nearest_shipping_qty_range",default="")
+    price_drop_days = fields.Integer('Price Drop Duration',config_parameter='tzc_sales_customization_spt.price_drop_days',default="")
     
     @api.model
     def get_values(self):

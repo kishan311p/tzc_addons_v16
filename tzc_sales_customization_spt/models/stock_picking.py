@@ -237,10 +237,17 @@ class stock_picking(models.Model):
         for rec in self:
             return [('id','in',rec.move_ids_without_package.filtered(lambda x:x.product_id.is_case_product==False).ids)]
     non_case_move_ids_without_package = fields.One2many('stock.move', 'picking_id', string="Non Case Products",domain=_filter_non_case_products)
+    is_included_case = fields.Boolean('Case Included ?',help='Use to differentiate case product is included or extra case.')
     def _filter_case_products(self):
         for rec in self:
-            return [('id','in',rec.move_ids_without_package.filtered(lambda x:x.product_id.is_case_product==True).ids)]
+            return [('id','in',rec.move_ids_without_package.filtered(lambda x:x.product_id.is_case_product==True and x.is_included_case==True).ids)]
     case_move_ids_without_package = fields.One2many('stock.move', 'picking_id', string="Case Products",domain=_filter_case_products)
+
+    def _filter_extra_case_products(self):
+        for rec in self:
+            return [('id','in',rec.move_ids_without_package.filtered(lambda x:x.product_id.is_case_product==True and x.is_included_case==False).ids)]
+    extra_case_move_ids_without_package = fields.One2many('stock.move', 'picking_id', string="Case Products",domain=_filter_extra_case_products)
+    
 
     return_order_id = fields.Many2one('kits.return.ordered.items', string='Return Order')
     def _compute_sale_order_number(self):
@@ -581,6 +588,7 @@ class stock_picking(models.Model):
         context_spt = dict(self.env.context)
         context_spt.update({'no_create_spt':True})
         order_line_obj = self.env['sale.order.line'].with_context(context_spt)
+        created_extra_case_ids = self._context.get('created_extra_case_ids') or []
         state_list = self.mapped(lambda picking : picking.state in  ['confirmed','in_scanning','scanned','assigned'])
 
         # applicable = False 
@@ -599,12 +607,22 @@ class stock_picking(models.Model):
                     extra_pricing = line.product_id.inflation_special_discount(line.picking_id.sale_id.partner_id.country_id.ids,bypass_flag=line.picking_id.sale_id.partner_id.b2b_pricelist_id.is_pricelist_excluded)
                     if line.sale_line_id:
 
-                        #update the quontity in related sale order line
+                        #update the quantity in related sale order line
                         if line.quantity_done > line.product_uom_qty:
                             # We don't want to update demand qty if there is an extra qty added.
                             # line.product_uom_qty = line.quantity_done
+                            # adding condition as we want to have included case price to zero
+                            
+                            # if cases are included then we will set price as 0.
                             price_unit = product_data.get('price')
                             unit_discount_price = product_data.get('sale_type_price')
+                            # if eyeglass is added and if case is present so we will add that case in included case 
+                            # with price unit 0.00. So we will get created_extra_case_ids.
+                            if line in created_extra_case_ids:
+                                price_unit = 0.00
+                            if line.is_included_case:
+                                price_unit = 0.00
+
                             line.sale_line_id.qty_to_invoice = line.quantity_done
 
                             if extra_pricing.get('is_inflation'):
@@ -625,8 +643,8 @@ class stock_picking(models.Model):
 
                         for product in product_prices:
                             if line.quantity_done:
-                                price_unit = product_prices.get(product).get('price')
-                                unit_discount_price = product_prices.get(product).get('discounted_unit_price')
+                                price_unit = product_prices.get(product).get('price') if line not in created_extra_case_ids else 0
+                                unit_discount_price = product_prices.get(product).get('discounted_unit_price') if line not in created_extra_case_ids else 0
 
                                 if extra_pricing.get('is_inflation'):
                                     price_unit = price_unit+(price_unit * extra_pricing.get('inflation_rate') /100)
@@ -649,6 +667,7 @@ class stock_picking(models.Model):
                                     'unit_discount_price': round(unit_discount_price,2),
                                     'discount':round(discount,2),
                                     'fix_discount_price':round(fix_discount_price,2),
+                                    'is_included_case' : False if line not in created_extra_case_ids else True
                                 })
                                 if order_line_id:
                                     # order_line_id.product_id_change() if not line._context.get('order_ship') else None
@@ -656,6 +675,8 @@ class stock_picking(models.Model):
                                     order_line_id._onchange_unit_discounted_price_spt()
                                     line.write({'sale_line_id':order_line_id.id,'product_uom_qty':0})
                                     # line.write({'sale_line_id':order_line_id.id,'product_uom_qty':line.quantity_done})
+                            else:
+                                line.write({'product_uom_qty':0})
                 record.sale_id._amount_all()
         else:
             return {
@@ -967,7 +988,7 @@ class stock_picking(models.Model):
                             'new_quantity' : inventory_dict[line]['qty']
 
                         })
-                        product_wizard_id.change_product_qty()
+                        product_wizard_id.with_context(set_qty_from_picking=True).change_product_qty()
                         self.create_update_qty_log(line,inventory_dict[line])
                 record.sale_id._amount_all()
                 #record.action_assign() 
@@ -1340,55 +1361,56 @@ class stock_picking(models.Model):
             }
         }
 
-    @api.model
-    def create(self,vals):
-        if not 'currecnt_sender_name' in vals.keys():
-            company_id = self.env.company
-            vals.update({'currecnt_sender_name':company_id.id,
-                         'kits_street':company_id.street,
-                         'kits_street_1':company_id.street2,
-                         'kits_country_id':company_id.country_id.id,
-                         'kits_state_id':company_id.state_id.id,
-                         'kits_zip_code':company_id.zip,
-                         'kits_city':company_id.city})
-        if not 'carrier_id' in vals.keys():
-            service_type_id = self.env['delivery.carrier'].search([('delivery_type','=','fedex'),('is_default','=',True)],limit=1)
-            vals.update({'carrier_id':service_type_id.id if vals.get('shipping_id') else False,
-                         'package_type_id':service_type_id.fedex_default_packaging_id.id,
-                         'kits_length':service_type_id.fedex_default_packaging_id.length,
-                         'width':service_type_id.fedex_default_packaging_id.width,
-                         'height':service_type_id.fedex_default_packaging_id.height})
-        if not 'recipient_id' in vals.keys() and 'origin' in vals.keys():
-            order_id = self.env['sale.order'].search([('name','=',vals.get('origin'))],limit=1)
-            if order_id:
-                vals.update({
-                    'recipient_id':order_id.partner_id.id,
-                    'country_id':order_id.partner_id.country_id.id,
-                    'state_id':order_id.partner_id.state_id.id,
-                    'street':order_id.partner_id.street,
-                    'street_2':order_id.partner_id.street2,
-                    'zip_code':order_id.partner_id.zip,
-                    'city':order_id.partner_id.city,
-                    'phone':order_id.partner_id.phone,
-                })
-        if "active_model" in self._context.keys() and self._context.get('active_model') == 'sale.order':
-            if 'params' in self._context.keys():
-                sale_id = self.env['sale.order'].browse(self._context['params'].get('id'))
-            else:
-                sale_id = self.env['sale.order'].search([('name','=',vals['origin'])]) if vals else False
-            if sale_id and sale_id.picking_ids.filtered(lambda picking: picking.state != 'cancel' ):
-                raise UserError("You can not create more then one delivery order of same sale order.")
-        
-        if "origin" in vals.keys() and not self._context.get('skip_backorder'):
-            sale_order_id = self.env['sale.order'].search([('name','=',vals['origin'])])
-            if sale_order_id and len(sale_order_id.picking_ids.filtered(lambda x:x.state != 'cancel' and x.picking_type_id.name != "Receipts")) >= 1:
-                raise UserError(_('You can not add product in this order.\n%s has already one delivery order')%(vals.get('origin')))
+    @api.model_create_multi
+    def create(self,vals_list):
+        for vals in vals_list:
+            if not 'currecnt_sender_name' in vals.keys():
+                company_id = self.env.company
+                vals.update({'currecnt_sender_name':company_id.id,
+                            'kits_street':company_id.street,
+                            'kits_street_1':company_id.street2,
+                            'kits_country_id':company_id.country_id.id,
+                            'kits_state_id':company_id.state_id.id,
+                            'kits_zip_code':company_id.zip,
+                            'kits_city':company_id.city})
+            if not 'carrier_id' in vals.keys():
+                service_type_id = self.env['delivery.carrier'].search([('delivery_type','=','fedex'),('is_default','=',True)],limit=1)
+                vals.update({'carrier_id':service_type_id.id if vals.get('shipping_id') else False,
+                            'package_type_id':service_type_id.fedex_default_packaging_id.id,
+                            'kits_length':service_type_id.fedex_default_packaging_id.length,
+                            'width':service_type_id.fedex_default_packaging_id.width,
+                            'height':service_type_id.fedex_default_packaging_id.height})
+            if not 'recipient_id' in vals.keys() and 'origin' in vals.keys():
+                order_id = self.env['sale.order'].search([('name','=',vals.get('origin'))],limit=1)
+                if order_id:
+                    vals.update({
+                        'recipient_id':order_id.partner_id.id,
+                        'country_id':order_id.partner_id.country_id.id,
+                        'state_id':order_id.partner_id.state_id.id,
+                        'street':order_id.partner_id.street,
+                        'street_2':order_id.partner_id.street2,
+                        'zip_code':order_id.partner_id.zip,
+                        'city':order_id.partner_id.city,
+                        'phone':order_id.partner_id.phone,
+                    })
+            if "active_model" in self._context.keys() and self._context.get('active_model') == 'sale.order':
+                if 'params' in self._context.keys():
+                    sale_id = self.env['sale.order'].browse(self._context['params'].get('id'))
+                else:
+                    sale_id = self.env['sale.order'].search([('name','=',vals['origin'])]) if vals else False
+                if sale_id and sale_id.picking_ids.filtered(lambda picking: picking.state != 'cancel' ):
+                    raise UserError("You can not create more then one delivery order of same sale order.")
+            
+            if "origin" in vals.keys() and not self._context.get('skip_backorder'):
+                sale_order_id = self.env['sale.order'].search([('name','=',vals['origin'])])
+                if sale_order_id and len(sale_order_id.picking_ids.filtered(lambda x:x.state != 'cancel' and x.picking_type_id.name != "Receipts")) >= 1:
+                    raise UserError(_('You can not add product in this order.\n%s has already one delivery order')%(vals.get('origin')))
 
-        order = self.env['sale.order'].search([('name','=',vals.get('origin'))],limit=1)
-        if order and vals.get('origin'):
-            vals.update(no_of_cases=order.no_of_cases)
-            # vals.update(include_cases=order.include_cases,no_of_cases=order.no_of_cases)
-        res = super(stock_picking,self).create(vals)
+            order = self.env['sale.order'].search([('name','=',vals.get('origin'))],limit=1)
+            if order and vals.get('origin'):
+                vals.update(no_of_cases=order.no_of_cases)
+                # vals.update(include_cases=order.include_cases,no_of_cases=order.no_of_cases)
+        res = super(stock_picking,self).create(vals_list)
         res.state = 'confirmed'
         return res
     
@@ -1680,7 +1702,7 @@ class stock_picking(models.Model):
 
     def check_duplicate_move(self,line):
         self.ensure_one()
-        self._cr.execute("""select id from stock_move where picking_id = {} and product_id={}  order by id""".format(self.id,line.product_id.id))
+        self._cr.execute("""select id from stock_move where picking_id = {} and product_id={} and is_included_case={} order by id""".format(self.id,line.product_id.id,line.is_included_case))
         move_data = self._cr.fetchall()
 
         move_id = self.env['stock.move'].browse([id[0] for id in move_data])
@@ -1756,9 +1778,10 @@ class stock_picking(models.Model):
         update = self.env['ir.model']._updated_data_validation(field_list,vals,self._name)
         if update:
             vals.update({'updated_by':self.env.user.id,'updated_on':datetime.now()})
-        if vals.get('no_of_cases'):
+        res = super(stock_picking,self).write(vals)
+        if vals.get('extra_case_move_ids_without_package'):
             self.update_sale_order_spt()
-        return super(stock_picking,self).write(vals)
+        return res
 
     def name_get(self):
         name = []
@@ -1821,7 +1844,7 @@ class stock_picking(models.Model):
     def _compute_bulk_weight(self):
         picking_weights = defaultdict(float)
         res_groups = self.env['stock.move.line'].read_group(
-            [('picking_id', 'in', self.ids), ('product_id', '!=', False), ('result_package_id', '=', False),('move_id','not in',self.case_move_ids_without_package.ids)],
+            [('picking_id', 'in', self.ids), ('product_id', '!=', False), ('result_package_id', '=', False),('move_id','in',self.non_case_move_ids_without_package.ids)],
             ['id:count'],
             ['picking_id', 'product_id', 'product_uom_id', 'qty_done'],
             lazy=False, orderby='qty_done asc'

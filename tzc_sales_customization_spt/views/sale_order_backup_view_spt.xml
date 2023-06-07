@@ -36,7 +36,58 @@
                         </group>
                         <notebook>
                             <page name="order_name" string="Order Line">
-                                <field name="line_ids">
+                                <group name="product_order_line" string="Products"></group>
+                                <field name="non_case_line_ids">
+                                <!-- <field name="line_ids"> -->
+                                    <tree default_order="product_id" limit="10000000" decoration-muted="is_shipping_product==True or is_admin==True or is_global_discount == True">
+                                        <field name="product_id" domain="[('is_pending_price','!=',True)]"/>
+                                        <!-- <field name="is_fs" readonly="1" force_save="1"/> -->
+                                        <field name="sale_type" readonly="1" force_save="1"/>
+                                        <!-- <field name="is_promotion_applied" readonly="1" force_save="1"/> -->
+                                        <field name="is_shipping_product" invisible="1"/>
+                                        <field name="is_admin" invisible="1"/>
+                                        <field name="is_global_discount" invisible="1"/>
+                                        <field name="categ_id"/>
+                                        <field name="product_uom_qty"/>
+                                        <field name="price_unit"/>
+                                        <field name="unit_discount_price"/>
+                                        <field name="tax_id" widget="many2many_tags"/>
+                                        <field name="fix_discount_price"/>
+                                        <field name="discount"/>
+                                        <field name="subtotal"/>
+                                    </tree>
+                                </field>
+                                <!-- <group class="oe_subtotal_footer oe_right" colspan="2" name="sale_total">
+                                    <field name="total_subtotal"/>
+                                    <field name="total_tax"/>
+                                    <field name="total_shipping_cost"/>
+                                    <field name="total_admin_cost"/>
+                                    <field name="total_discount"/>
+                                    <field name="global_discount"/>
+                                    <field name="total_amount"/>
+                                </group> -->
+                                <group name="included_case_order_line" string="Included Cases"></group>
+                                <field name="included_cases_line_ids">
+                                    <tree default_order="product_id" limit="10000000" decoration-muted="is_shipping_product==True or is_admin==True or is_global_discount == True">
+                                        <field name="product_id" domain="[('is_pending_price','!=',True)]"/>
+                                        <!-- <field name="is_fs" readonly="1" force_save="1"/> -->
+                                        <field name="sale_type" readonly="1" force_save="1"/>
+                                        <!-- <field name="is_promotion_applied" readonly="1" force_save="1"/> -->
+                                        <field name="is_shipping_product" invisible="1"/>
+                                        <field name="is_admin" invisible="1"/>
+                                        <field name="is_global_discount" invisible="1"/>
+                                        <field name="categ_id"/>
+                                        <field name="product_uom_qty"/>
+                                        <field name="price_unit"/>
+                                        <field name="unit_discount_price"/>
+                                        <field name="tax_id" widget="many2many_tags"/>
+                                        <field name="fix_discount_price"/>
+                                        <field name="discount"/>
+                                        <field name="subtotal"/>
+                                    </tree>
+                                </field>
+                                <group name="extra_case_order_line" string="Extra Cases"></group>
+                                <field name="extra_cases_line_ids">
                                     <tree default_order="product_id" limit="10000000" decoration-muted="is_shipping_product==True or is_admin==True or is_global_discount == True">
                                         <field name="product_id" domain="[('is_pending_price','!=',True)]"/>
                                         <!-- <field name="is_fs" readonly="1" force_save="1"/> -->

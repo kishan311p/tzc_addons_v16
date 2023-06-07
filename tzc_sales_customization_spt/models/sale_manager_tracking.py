@@ -3,6 +3,8 @@ from odoo import api,models,fields,_
 class sale_manager_tracking(models.Model):
     _name = 'sale.manager.tracking'
     _rec_name = 'order_id'
+    _description = 'Sale Manager Tracking'
+
 
     order_id = fields.Many2one('sale.order','Order')
     create_date = fields.Datetime('Date')

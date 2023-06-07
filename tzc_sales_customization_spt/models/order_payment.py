@@ -3,6 +3,8 @@ from odoo import api,models,fields,_
 class order_payment(models.Model):
     _name = 'order.payment'
     _rec_name = 'order_id'
+    _description = 'Order Payment'
+
     
     order_id = fields.Many2one('sale.order','Order')
     amount = fields.Float('Amount')

@@ -6,7 +6,7 @@ from odoo.http import request, content_disposition
 
 
 class PublicReport(http.Controller):
-    @http.route(['/report/custom/<reportname>/<int:docid>'], type='http', auth='public', website=True, method=['GET'], csrf=False)
+    @http.route(['/report/custom/<reportname>/<int:docid>'], type='http', auth='public', website=True, methods=['GET'], csrf=False)
     def custom_public_report(self, reportname=None, docid=False, **data):
         report = request.env.ref(reportname).sudo()
         context = dict(request.env.context)
@@ -26,7 +26,7 @@ class PublicReport(http.Controller):
             reportname, docid)[0]
         return request.make_response(pdf, headers=[('Content-Type', 'application/pdf'), ('Content-Length', len(pdf))])
 
-    @http.route(['/report/excel/<modalname>/<int:docid>'], type='http', auth='public', website=True, method=['GET'], csrf=False)
+    @http.route(['/report/excel/<modalname>/<int:docid>'], type='http', auth='public', website=True, methods=['GET'], csrf=False)
     def custom_excel_report(self, modalname=None, docid=None, **data):
         token = data.get('access_token', False)
         if modalname == 'sale.order':

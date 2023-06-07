@@ -20,18 +20,18 @@ class project_task(models.Model):
             return [('id','in',self.env.ref('base.group_system').users.ids)]
 
     task_type = fields.Selection([('bug','Bug'), ('improvement','Improvement'), ('new_development','New Development')],default="improvement", string="Type")
-    task_priority = fields.Selection([('-1','-1'),('1','1'),('2','2'),('3','3')], string="Priroity",default="1", track_visibility=True)
-    estimated_days = fields.Float("Estimated Days", track_visibility=True)
+    task_priority = fields.Selection([('-1','-1'),('1','1'),('2','2'),('3','3')], string="Priroity",default="1", tracking=True)
+    estimated_days = fields.Float("Estimated Days", tracking=True)
     task_follow_up = fields.Selection([('done','Done'), ('reject','Rejected'), ('attention','Needs Attention')])    
     is_bug = fields.Boolean("Creeping Bug")
-    planned_date_begin = fields.Date("Start date", track_visibility=True)
-    planned_date_end = fields.Date("End date", track_visibility=True)
+    planned_date_begin = fields.Date("Start date", tracking=True)
+    planned_date_end = fields.Date("End date", tracking=True)
     follow_up_by = fields.Many2one("res.users", "Follow Up By", domain=lambda self: [('groups_id','in',[self.env.ref('project.group_project_user').id, self.env.ref('project.group_project_manager').id])])
     task_progress = fields.Integer("Progress")
     check_date = fields.Boolean("Current Date", compute="_check_date")
     current_date = fields.Date('Current Date & Time',compute="_compute_current_date")
     user_id = fields.Many2one('res.users',string='Assigned to',default=lambda self: self.env.uid,index=True, tracking=True,domain=_get_admin_user)
-    task_status = fields.Selection([('pending','Pending'),('in_progress','In Progress'),('done','Done')],'Status',related='stage_id.progress_status')
+    task_status = fields.Selection(string='Status',related='stage_id.progress_status')
 
     @api.constrains('sequence')
     def onchange_time_duration(self):
@@ -135,7 +135,7 @@ class project_task(models.Model):
                 self.update_estimated_days()    
         return res
     
-    @api.model
+    @api.model_create_multi
     def create(self,vals):
         res = super(project_task,self).create(vals)
         if res and res.project_id:

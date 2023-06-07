@@ -112,7 +112,7 @@ class product_edit_line_wizard_spt(models.TransientModel):
     image_2 = fields.Char('Secondary Image')
     product_edit_wizard_id = fields.Many2one('product.edit.wizard.spt','Edit')
     onhand_qty = fields.Float('On Hand Qty')
-    flex_hinges = fields.Selection([('yes','Yes'),('no','No')],'Flex Hinges',related="product_id.flex_hinges")
+    flex_hinges = fields.Selection(string='Flex Hinges',related="product_id.flex_hinges")
     
 
 

@@ -3,7 +3,8 @@ from odoo.exceptions import UserError
 
 class add_commission_wizard(models.TransientModel):
     _name = 'add.commission.wizard'
-    
+    _description = 'Add Commission Wizard'
+
     commission_on = fields.Selection([('on_date', 'Between Order Dates'),('on_sale_order','Orders')],string='Commission On',default='on_date')
     order_ids = fields.Many2many('sale.order',string='Orders')
     commission_for = fields.Selection([('saleperson', 'SalesPerson'),('manager', 'SalesManager')],string="Commission For",default='saleperson')

@@ -19,6 +19,7 @@
                     </group>
                     <group>
                         <group>
+                            <field name="face_side"/>
                             <field name="price_inflation"/>
                             <field name="inflation"/>
                         </group>

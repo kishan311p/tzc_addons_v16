@@ -3,6 +3,7 @@ from odoo import fields,models,api
 
 class kits_inflation_rule(models.Model):
     _name = 'kits.inflation.rule'
+    _description = 'Kits Inflation Rule'
 
     country_id = fields.Many2many('res.country','inflation_country_rel','discount_id','brand_id',string='Country',index = True)
     brand_ids = fields.Many2many('product.brand.spt','inflation_brand_rel','model_id','brand_id','Brands',index = True)

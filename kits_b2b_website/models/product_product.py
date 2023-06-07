@@ -26,6 +26,13 @@ class product_product(models.Model):
         compute_sudo=True
     )
 
+    case_price = fields.Float(
+        'Case Price',
+        related='lst_price',
+        store=True,
+        help="Case Price for B2B website ( Not to show in Backend )."
+    )
+
     @api.depends('brand', 'brand.name')
     def _compute_brand_name(self):
         for product in self:

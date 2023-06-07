@@ -78,7 +78,7 @@ PortalAccount.portal_my_invoices = kitsPortalAccount.portal_my_invoices
 PortalAccount.portal_my_invoice_detail = kitsPortalAccount.portal_my_invoice_detail
 
 class kits_ReportController(http.Controller):
-    @http.route(['/bambora/approved','/bambora/declined'], type='http', auth='public', website=True, method=['GET', 'POST'], csrf=False)
+    @http.route(['/bambora/approved','/bambora/declined'], type='http', auth='public', website=True, methods=['GET', 'POST'], csrf=False)
     def get_payment_status(self,**kw):
         payment_status = False
         order_number = False

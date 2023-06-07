@@ -70,7 +70,7 @@ class mailing_contact(models.Model):
         vals['internal_id'] = self.env['ir.sequence'].next_by_code('mailing.contact')
         return vals
 
-    @api.model
+    @api.model_create_multi
     def create(self,values):
         vals = super(mailing_contact,self).create(values)
         website_contact = request.context.get('website_contact')

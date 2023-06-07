@@ -10,7 +10,7 @@ class change_order_currency(models.TransientModel):
         order_id = self.env['sale.order'].browse(self._context.get('order_id'))
         for rec in order_id:
             currency_id = self.currency_id
-            for line in rec.order_line:
+            for line in rec.order_line.filtered(lambda x : x.is_included_case==False):
                 # For service type product.
                 if line.product_id.is_global_discount or line.product_id.is_shipping_product or line.product_id.is_admin:
                     # Get converted price based on selected currency.

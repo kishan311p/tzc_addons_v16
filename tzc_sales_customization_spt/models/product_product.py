@@ -186,6 +186,7 @@ class ProductProduct(models.Model):
     product_pricelist_item_ids = fields.One2many('product.pricelist.item','product_id')
     is_pending_price = fields.Boolean( string='Is Pending Price (Flag)',compute='_compute_pending_price',store=True)
     is_case_product = fields.Boolean('Is Case Product (Flag)',related='product_tmpl_id.is_case_product',store=True)
+    price_drop_update = fields.Datetime('Price drop date')
     
     @api.constrains('brand','is_published_spt')
     def _constrains_brand_id(self):
@@ -309,6 +310,10 @@ class ProductProduct(models.Model):
     @api.depends('new_arrivals')
     def _onchange_new_arrivals(self):
         self.sudo().write({'new_arrival_update' : datetime.now()})
+
+    @api.depends('is_new_price')
+    def _onchange_price_drop(self):
+        self.sudo().write({'price_drop_update' : datetime.now()})
 
     @api.onchange('clearance_usd')
     def onchange_clearance_usd(self):
@@ -685,12 +690,13 @@ class ProductProduct(models.Model):
     def action_add_to_new_price(self):
         for rec in self:
             rec.is_new_price = True
+            rec.price_drop_update = datetime.now()
 
     def action_remove_to_new_price(self):
         for rec in self:
             rec.is_new_price = False
 
-    @api.model
+    @api.model_create_multi
     def create(self, vals):
         res = super(ProductProduct, self).create(vals)
         # no field as inventory_availability
@@ -701,6 +707,8 @@ class ProductProduct(models.Model):
     def write(self, vals):
         field_list = ['variant_name','brand','default_code','image_url','lst_price','case_type','height','width','length','weight','volume']
         update = self.env['ir.model']._updated_data_validation(field_list,vals,self._name)
+        if vals.get('list_price') and self.lst_price > vals.get('list_price'):
+            vals.update({'is_new_price':True,'price_drop_update' : datetime.now()})
         if update:
             vals.update({'updated_by':self.env.user.id,'updated_on':datetime.today()})
         if 'active' in vals and (vals['active'] == False or vals['active']) and not self.env.context.get('from_product_import'):
@@ -1359,6 +1367,14 @@ class ProductProduct(models.Model):
             limit = datetime.now()-timedelta(days=days)
             products_to_remove = products.filtered(lambda x : x.new_arrival_update <= limit)
             products_to_remove.action_remove_from_new_arrivals()
+    
+    def cron_remove_product_price_drop(self):
+        days = int(self.env['ir.config_parameter'].sudo().get_param('tzc_sales_customization_spt.price_drop_days'))
+        if days:
+            products = self.env['product.product'].search([('is_new_price','=',True),('price_drop_update','!=',False)])
+            limit = datetime.now()-timedelta(days=days)
+            products_to_remove = products.filtered(lambda x :  x.price_drop_update <= limit)
+            products_to_remove.action_remove_to_new_price()
 
     def action_product_data(self):
         wizard_obj = self.env['product.info.wizard.spt']
@@ -1534,7 +1550,7 @@ class ProductProduct(models.Model):
         is_inflation = False
         inflation_rule = False
         price_rule_id = False
-        if not bypass_flag:
+        if not bypass_flag and not self.product_tmpl_id.is_case_product:
     
             # Check Inflation.
             active_inflation = self.env['kits.inflation'].search([('is_active','=',True)])

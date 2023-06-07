@@ -70,7 +70,7 @@ class sale_order(models.Model):
     company_id = fields.Many2one('res.company')
 
     #kits_shipping_cost
-    shipping_id = fields.Many2one('shipping.provider.spt',default=False,track_visibility=True)
+    shipping_id = fields.Many2one('shipping.provider.spt',default=False,tracking=True)
     estimate_shipping_cost = fields.Float('Shipping Cost ')
     actual_weight = fields.Float('Actual Weight (kg)')
     kits_carrier_tracking_ref = fields.Char('Tracking Reference',compute="_compute_carrier_tracking_ref",compute_sudo=True,store=True)
@@ -87,18 +87,26 @@ class sale_order(models.Model):
     shipping_msg_inv_flag = fields.Boolean('Shipping Msg Flag',compute='_compute_shipping_msg_flag',store=True)
     notify_done = fields.Boolean('Notification (Flag)')
     
-    # Case
-    def _get_case_product_domain(self):
-        for rec in self:
-            return [('id','in',rec.order_line.filtered(lambda x: x.product_template_id.is_case_product==True).ids)]
-    case_order_line = fields.One2many('sale.order.line','order_id',"Case Order Lines",domain=_get_case_product_domain,copy=False,default=False)
 
     def _get_non_case_product_domain(self):
         for rec in self:
-            return [('id','in',rec.order_line.filtered(lambda x: x.product_template_id.is_case_product!=True).ids)]
+            return [('id','in',rec.order_line.filtered(lambda x: x.product_id.is_case_product!=True).ids)]
         
-    non_case_order_line = fields.One2many('sale.order.line','order_id',"Case Order Lines",domain=_get_non_case_product_domain,copy=False)
+    non_case_order_line = fields.One2many('sale.order.line','order_id',"Non Case Order Lines",domain=_get_non_case_product_domain)
+    
+    # Included Cases
+    def _get_case_product_domain(self):
+        for rec in self:
+            return [('id','in',rec.order_line.filtered(lambda x: x.product_id.is_case_product==True and x.is_included_case==True).ids)]
+    
+    case_order_line = fields.One2many('sale.order.line','order_id',"Case Order Lines",domain=_get_case_product_domain,copy=False,default=False)
     amount_is_case = fields.Monetary(string='Case Total', store=True, readonly=True,compute_sudo=True, compute='_amount_all', tracking=4)
+
+    # Extra Cases
+    def _get_extra_cases_domain(self):
+        return [('id','in',self.order_line.filtered(lambda x: x.product_id.is_case_product==True and x.is_included_case==False).ids)]
+
+    extra_case_order_line = fields.One2many('sale.order.line','order_id','Extra Case Order Lines',domain=_get_extra_cases_domain)
 
 
     @api.depends('case_weight_gm','no_of_cases')
@@ -251,7 +259,7 @@ class sale_order(models.Model):
     approve_by_admin = fields.Boolean('Approve By Administrator',copy=False)
     payment_link = fields.Char('Payment Link',copy=False)
     is_payment_link = fields.Boolean("Has Payment Link",compute="_compute_is_payment_link",store=True)
-    is_paid = fields.Boolean('Is Paid ?',track_visibility='onchange',copy=False)
+    is_paid = fields.Boolean('Is Paid ?',tracking=True,copy=False)
     mark_as_paid_by_user = fields.Many2one('res.users','Order Mark As Paid By',copy=False)
     payment_link_approved_by = fields.Many2one('res.users','Payment Approved By',copy=False)
     paid_amount = fields.Float('Paid Amount',copy=False)
@@ -329,7 +337,7 @@ class sale_order(models.Model):
     picked_qty_order_subtotal = fields.Monetary('Subtotal', tracking='32',compute="_amount_all",store=True,compute_sudo=True)
     picked_qty_order_total = fields.Monetary('Total', tracking='33',compute="_amount_all",store=True,compute_sudo=True)
     picked_qty_order_tax = fields.Monetary('Tax', tracking='34',compute="_amount_all",store=True,compute_sudo=True)
-    picked_qty_order_discount = fields.Monetary('Discount', tracking='35',scompute="_amount_all",store=True,compute_sudo=True)
+    picked_qty_order_discount = fields.Monetary('Discount', tracking='35',compute="_amount_all",store=True,compute_sudo=True)
     create_uid_spt = fields.Many2one('res.users', 'Created by User',compute="_compute_create_uid_spt", index=True, readonly=True)
     count_backup_order = fields.Integer('Original Order',compute="_get_compute_message",store=True)
     free_shipping = fields.Boolean('Free Shippping')
@@ -651,25 +659,59 @@ class sale_order(models.Model):
 
     def merge_order_lines(self):
         product_id_dict = {}
+        included_case_id_dict = {}
+        extra_case_id_dict = {}
         for record in self:
             #Merge same product lines
             for line in record.order_line.filtered(lambda x: not x.is_pack_order_line):
-                is_line = True
-                if line.product_id in product_id_dict.keys():
-                    order_line = product_id_dict[line.product_id]
-                    order_line.update({'product_uom_qty':order_line.product_uom_qty + line.product_uom_qty,
-                                       'price_unit':round(line.price_unit,2),
-                                       'unit_discount_price':line.unit_discount_price,
-                                       'discount':line.discount,
-                                       'fix_discount_price':line.fix_discount_price,
-                                       'picked_qty_subtotal':line.picked_qty_subtotal})
-                    line.unlink()
-                    is_line = False
+                if not line.product_id.is_case_product:
+                    is_line = True
+                    if line.product_id in product_id_dict.keys():
+                        order_line = product_id_dict[line.product_id]
+                        order_line.update({'product_uom_qty':order_line.product_uom_qty + line.product_uom_qty,
+                                        'price_unit':round(line.price_unit,2),
+                                        'unit_discount_price':line.unit_discount_price,
+                                        'discount':line.discount,
+                                        'fix_discount_price':line.fix_discount_price,
+                                        'picked_qty_subtotal':line.picked_qty_subtotal})
+                        line.unlink()
+                        is_line = False
+                    else:
+                        product_id_dict[line.product_id] = line
+                    if is_line and line.product_uom_qty == 0.0:
+                        line.unlink()
+                elif line.product_id.is_case_product and line.is_included_case:
+                    is_line = True
+                    if line.product_id in included_case_id_dict.keys():
+                        order_line = included_case_id_dict[line.product_id]
+                        order_line.update({'product_uom_qty':order_line.product_uom_qty + line.product_uom_qty,
+                                        'price_unit':0.00,
+                                        'unit_discount_price':0.00,
+                                        'discount':0.00,
+                                        'fix_discount_price':0.00,
+                                        'picked_qty_subtotal':0.00})
+                        line.unlink()
+                        is_line = False
+                    else:
+                        included_case_id_dict[line.product_id] = line
+                    if is_line and line.product_uom_qty == 0.0:
+                        line.unlink()
                 else:
-                    product_id_dict[line.product_id] = line
-                if is_line and line.product_uom_qty == 0.0:
-                    line.unlink()
-
+                    is_line = True
+                    if line.product_id in extra_case_id_dict.keys():
+                        order_line = extra_case_id_dict[line.product_id]
+                        order_line.update({'product_uom_qty':order_line.product_uom_qty + line.product_uom_qty,
+                                        'price_unit':round(line.price_unit,2),
+                                        'unit_discount_price':line.unit_discount_price,
+                                        'discount':line.discount,
+                                        'fix_discount_price':line.fix_discount_price,
+                                        'picked_qty_subtotal':line.picked_qty_subtotal})
+                        line.unlink()
+                        is_line = False
+                    else:
+                        extra_case_id_dict[line.product_id] = line
+                    if is_line and line.product_uom_qty == 0.0:
+                        line.unlink()
     def unlink(self):
         for rec in self:
             if self.env.user.has_group('base.group_system'):
@@ -708,6 +750,13 @@ class sale_order(models.Model):
                         for track_field in ['picked_qty_order_subtotal','picked_qty_order_discount','picked_qty_order_tax','picked_qty_order_total']:
                             initial_state[track_field] = rec[track_field]
                 res = super(sale_order,rec).write(vals)
+                if('extra_case_order_line' in vals):
+                    existing_case_product_ids = rec.extra_case_order_line.mapped('product_id').ids
+                    extra_product_case_ids = self.env['product.product'].search([('is_case_product','=',True),('id','not in',existing_case_product_ids)]).ids
+                    for extra_case_id in rec.extra_case_order_line:
+                        extra_case_id.write({
+                            'extra_cases_ids' : [(6,0,extra_product_case_ids)]
+                        })
                 if ('sale_manager_id' in vals) or ('user_id' in vals):
                     new_sales_person = rec.user_id.id
                     new_sales_manager = rec.sale_manager_id.id 
@@ -2551,7 +2600,7 @@ class sale_order(models.Model):
                         rec.message = "This order comes from an abandoned cart. The quantities may not be correct. Please check the red icons in the order lines and verify the quantities with the warehouse."
                         break
 
-    @api.model
+    @api.model_create_multi
     def create(self, vals):
         self = self.sudo()
         res = super(sale_order, self).create(vals)
@@ -3040,7 +3089,7 @@ class sale_order(models.Model):
                 order_id = self.env['sale.order.backup.spt'].search([('order_id','=',self.id)],limit=1,order="id desc")
                 for order_line in self.order_line:
                     if order_line.product_id and order_line.product_id.id in order_id.line_ids.product_id.ids:
-                        line=order_id.line_ids.search([('product_id','=',order_line.product_id.id),('order_backup_id','=',order_id.id)])
+                        line=order_id.line_ids.search([('product_id','=',order_line.product_id.id),('is_included_case','=',order_line.is_included_case),('order_backup_id','=',order_id.id)])
                         order_line.write({
                             'product_uom_qty':line.product_uom_qty,
                             'price_unit':line.price_unit,
@@ -3159,6 +3208,7 @@ class sale_order(models.Model):
                         'tax_id':[(6,0,line.tax_id.ids)],
                         'is_pack_order_line':bool(len(line.package_id)),
                         'package_id':line.package_id.id or False,
+                        'is_included_case':line.is_included_case
                     }))
                     if line.product_id.type == 'product' and record.partner_id.country_id.id in line.product_id.geo_restriction.ids:
                         geo_restriction_list.append(line.id)
@@ -4038,8 +4088,8 @@ class sale_order(models.Model):
 
                 for line in order.order_line.filtered(lambda l: not l.is_admin and not l.is_global_discount and not l.is_shipping_product):
                     product_price = product_price_dict[line.product_id.id]['price']
-                    unit_discount_price = product_price_dict[line.product_id.id]['discounted_unit_price']
-                    fix_dicount_price = product_price_dict[line.product_id.id]['fix_discount_price']
+                    fix_discount_price = round((product_price * line.discount)/100,2)
+                    unit_discount_price = product_price - fix_discount_price
 
                     if not order.partner_id.b2b_pricelist_id.is_pricelist_excluded:
                     # Apply inflation
@@ -4056,13 +4106,13 @@ class sale_order(models.Model):
                             price_rule_id = special_disocunt_id[-1] if special_disocunt_id else False
                             if price_rule_id:
                                 unit_discount_price = round((unit_discount_price - (unit_discount_price * price_rule_id.discount * 0.01 )),2)
-                                fix_dicount_price = (product_price - unit_discount_price)
+                                fix_discount_price = (product_price - unit_discount_price)
 
                     discount = round((100 - ( (100 * unit_discount_price)/ product_price )), 2)
                     line.write({
                         'price_unit': product_price,
                         'unit_discount_price': unit_discount_price,
-                        'fix_discount_price': fix_dicount_price,
+                        'fix_discount_price': fix_discount_price,
                         'discount': discount,
                     })
                     line._compute_amount()

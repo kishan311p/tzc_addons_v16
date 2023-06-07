@@ -3,6 +3,7 @@ from odoo.exceptions import UserError
 
 class create_homepage_html(models.Model):
     _name = 'create.homepage.html'
+    _description = 'Create Homepage HTML'
     _rec_name = 'name'
 
     name = fields.Char('Name',required=True)
@@ -17,16 +18,17 @@ class create_homepage_html(models.Model):
     body_html = fields.Char('Body')
     view_more_redirect_url = fields.Char('View More Redirect Url')
     unsubscribe_redirect_url = fields.Char('Unsubscribe Redirect Url')
+    face_side = fields.Selection([('front_face', 'Front Face'),('side_face', 'Side Face')],default='front_face')
 
     def generate_html(self):
         self.body_html=''        
         if self.header_url:
             web_url = self.env['kits.b2b.website'].search([],limit=1).url
             header=f'''
-            <div style="width: 91%;height: auto;style="background-color: #FDFDFD;">
+            <div style="width: 88%;height: auto;style="background-color: #FDFDFD;">
                 <div style="">
                     <a href="{web_url}" tyle="text-decoration:none;background-color:transparent;color:rgb(0,135,132)" target="_blank">
-                        <img src={self.header_url} class="header-img" border="0" align="middle" loading="" style="box-sizing:border-box;vertical-align:middle;width: 81%;height: auto;">
+                        <img src={self.header_url} class="header-img" border="0" align="middle" loading="" style="box-sizing:border-box;vertical-align:middle;width: -webkit-fill-available;height: auto;">
                     </a>
                 </div>
             '''
@@ -43,7 +45,7 @@ class create_homepage_html(models.Model):
                         product_table=product_table+f'''
                         <div>
                             <a href="{products['banner_id'].banner_redirect_url if products['banner_id'].banner_redirect_url else ''}" style="text-decoration:none;background-color:transparent;color:rgb(0,135,132)" target="_blank">
-                                <img src={products['banner_id'].banner_url} border="0" style="border-style:none;box-sizing:border-box;vertical-align:middle;text-decoration:none;border:none;float:none;width: 81%;height: auto;display:inline-block" align="middle" loading=""> 
+                                <img src={products['banner_id'].banner_url} border="0" style="border-style:none;box-sizing:border-box;vertical-align:middle;text-decoration:none;border:none;float:none;width: -webkit-fill-available;height: auto;display:inline-block" align="middle" loading=""> 
                             </a>
                         </div>
                             '''
@@ -76,16 +78,20 @@ class create_homepage_html(models.Model):
                                 elif self.product_ids[product].sale_type == 'clearance':
                                     product_type = 'https://cdn.teameto.com/data/B2B/email/clearance.png'
                                     style='width:50%;'
+                            if self.face_side == 'side_face':
+                                img_url = self.product_ids[product].sec_image_url
+                            else:
+                                img_url = self.product_ids[product].primary_image_url
                             product_table=product_table+f'''
                                 <td style="width: 33.3333%;">
                                     <span href="{self.product_ids[product].product_seo_url if self.product_ids[product].product_seo_url else ''}">
                                         <div style='margin:20px 15px 20px 15px;width: max-content;border: 1px solid rgba(31,123,111,.2);padding: 10px;background-color: var(--white-color);border-radius: 20px;transition: .3s;overflow: hidden;position: relative!important;'>
                                             <div class="">
                                                 <div>
-                                                <img src={product_type} style="{style}"> </img>
+                                                    <img src={product_type} style="{style}"> </img>
                                                 </div>
                                                 <a href="{self.product_ids[product].product_seo_url if self.product_ids[product].product_seo_url else ''}">
-                                                    <img src={self.product_ids[product].primary_image_url} style="border-style:none;box-sizing:border-box;vertical-align:middle;text-decoration:none;border:none;float:none;width:350px;height: auto !important;display:inline-block;"  border="0" align="middle"> </img>
+                                                    <img src={img_url} style="border-style:none;box-sizing:border-box;vertical-align:middle;text-decoration:none;border:none;float:none;width:350px;height: auto !important;display:inline-block;"  border="0" align="middle"> </img>
                                                 </a>
                                             </div>
                                             <div align='center' style='margin-bottom:10px;margin-top:10px'>
@@ -182,7 +188,6 @@ class create_homepage_html(models.Model):
         <br/>
         <div style="color:black;" align="center">
             {self.env.company.street if self.env.company.street else ''}
-            <br/>
             <br/>
             {self.env.company.city if self.env.company.city else ''}
             ,

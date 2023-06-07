@@ -61,7 +61,7 @@ class account_move(models.Model):
     updated_on = fields.Datetime('Updated On  ')
     updated_by = fields.Many2one('res.users','Updated By  ')
     count_return_credit_notes = fields.Integer(compute="_count_return_credit_notes")
-    is_commission_paid = fields.Boolean('Paid ?',track_visibility='onchange')
+    is_commission_paid = fields.Boolean('Paid ?',tracking=True)
     inv_payment_status = fields.Selection([('full','Fully Paid'),('partial','Partial Paid'),('over','Over Paid')],'Payment Status',compute="_compute_inv_payment_status",copy=False)
     filtere_state = fields.Char(compute="_compute_payment_status",copy=False,store=True)
     is_admin = fields.Char(compute='_compute_is_admin', string='is_admin')
@@ -77,16 +77,23 @@ class account_move(models.Model):
     
     def _filter_case_line(self):
         for rec in self:
-            return [('id','in',rec.invoice_line_ids.filtered(lambda x: x.product_id.is_case_product == True).ids)]
+            # return [('id','in',rec.invoice_line_ids.filtered(lambda x: x.product_id.is_case_product == True).ids)]
+            return [('id','in',rec.invoice_line_ids.filtered(lambda x: x.product_id.is_case_product == True and x.is_included_case==True).ids)]
 
     non_case_invoice_line_ids = fields.One2many('account.move.line','move_id',string='Non Case Invoice lines',copy=False,readonly=True,domain=_filter_non_case_line,states={'draft': [('readonly', False)]})
     case_invoice_line_ids = fields.One2many('account.move.line','move_id',string='Case Invoice lines',copy=False,readonly=True,domain=_filter_case_line,states={'draft': [('readonly', False)]})
+
+    def _filter_extra_case_line(self):
+        for rec in self:
+            # return [('id','in',rec.invoice_line_ids.filtered(lambda x: x.product_id.is_case_product == True).ids)]
+            return [('id','in',rec.invoice_line_ids.filtered(lambda x: x.product_id.is_case_product == True and x.is_included_case==False).ids)]
+    extra_case_invoice_line_ids = fields.One2many('account.move.line','move_id',string='Extra Case Invoice lines',copy=False,readonly=True,domain=_filter_extra_case_line,states={'draft': [('readonly', False)]})
 
     @api.depends('invoice_line_ids','case_invoice_line_ids','invoice_line_ids.discount_unit_price','invoice_line_ids.quantity')
     def _compute_case_total(self):
         for rec in self:
             if rec.case_invoice_line_ids:
-                rec.amount_is_case = sum(rec.case_invoice_line_ids.mapped('price_subtotal'))
+                rec.amount_is_case = sum(rec.extra_case_invoice_line_ids.mapped('price_subtotal'))
 
 
     def _compute_is_admin(self):
@@ -427,7 +434,7 @@ class account_move(models.Model):
                 move.payment_state = 'not_paid'
 
 
-    @api.model
+    @api.model_create_multi
     def create(self,vals):
         res = super(account_move,self).create(vals)
         for record in range(len(res)):

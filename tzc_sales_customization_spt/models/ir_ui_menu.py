@@ -21,7 +21,7 @@ class ir_ui_menu(models.Model):
 
         # Add case product menu for warehouse user 
         if self.env.user.is_warehouse:
-            case_id = self.env.ref("tzc_sales_customization_spt.menu_case_products")
+            case_id = self.env.ref("tzc_sales_customization_spt.menu_case_product_tree")
             if case_id not in menus:
                 menus = menus+case_id
 

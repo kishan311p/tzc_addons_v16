@@ -27,11 +27,11 @@ class discount_on_sale_order_line_wizard_spt(models.TransientModel):
     
     base_on = fields.Selection([
         ('order_line', 'Order Line'),
-        ('brand', 'Brand')],'Discount On', defualt="brand",required=True)
+        ('brand', 'Brand')],'Discount On', default="brand",required=True)
 
     apply_on = fields.Selection([
         ('percentage', 'Discount In Percentage'),('fix_discount','Discounted Amount'),
-        ('fix','Fixed Price')],'Discount Based On', defualt="fix",required=True)
+        ('fix','Fixed Price')],'Discount Based On', default="fix",required=True)
 
     fix_discount_price = fields.Float('Discount')
     fix_price = fields.Float('Fix Price')    
@@ -68,7 +68,8 @@ class discount_on_sale_order_line_wizard_spt(models.TransientModel):
                 if record.sale_id:
                     order_line_ids = []
                     if record.base_on == 'order_line':
-                        domain = [('order_id','=',record.sale_id.id),('product_id.type','!=','service'),('product_id.is_case_product','=',False)]
+                        domain = [('order_id','=',record.sale_id.id),('product_id.type','!=','service'),('is_included_case','=',False)]
+                        # domain = [('order_id','=',record.sale_id.id),('product_id.type','!=','service'),('product_id.is_case_product','=',False)]
                         if record.categ_ids:
                             domain.append(('product_id.categ_id','in',record.categ_ids.ids))
                         
@@ -77,7 +78,8 @@ class discount_on_sale_order_line_wizard_spt(models.TransientModel):
 
                         order_line_ids = order_line_obj.search(domain)
                     else:
-                        brand_domain = [('order_id','=',record.sale_id.id),('product_id.type','!=','service'),('product_id.is_case_product','=',False)]
+                        brand_domain = [('order_id','=',record.sale_id.id),('product_id.type','!=','service'),('is_included_case','=',False)]
+                        # brand_domain = [('order_id','=',record.sale_id.id),('product_id.type','!=','service'),('product_id.is_case_product','=',False)]
                         if record.categ_ids:
                             brand_domain.append(('product_id.categ_id','in',record.categ_ids.ids))
                         if record.brand_ids:

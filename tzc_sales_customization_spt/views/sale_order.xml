@@ -205,11 +205,11 @@
                     <group class="oe_subtotal_footer oe_right" attrs="{'invisible':[('state','in',['draft','sent','received'])]}" colspan="2" name="sale_total">
                         <field name="amount_without_discount" invisible="1"/>
                         <field name="picked_qty_order_subtotal" string="Subtotal"/>
+                        <field name="amount_is_case" string="Case Total" />                        
                         <field name="picked_qty_order_discount" readonly="1" string="Discount"/>
                         <field name="shipping_cost" string="Original Shipping Fee" widget='monetary' options="{'currency_field': 'currency_id'}"/>
                         <field name="amount_is_shipping_total" string="Shipping Fee"/>
                         <field name="amount_is_admin" string="Admin Fee" />
-                        <field name="amount_is_case" string="Case Total" />                        
                         <field name="picked_qty_order_tax"/>
                         <div class="oe_subtotal_footer_separator oe_inline o_td_label">
                             <label for="picked_qty_order_total" string="Total" attrs="{'invisible':[('state','not in',['draft','sent','received'])]}"/>
@@ -826,7 +826,7 @@
                 <attribute name="invisible">1</attribute>
             </xpath>
             <xpath expr="//page[@name='order_lines']/field[@name='order_line']" position="after">
-                <group name="non_case_product_lines" string="Order Lines">
+                <group name="non_case_product_lines" string="Products">
                 </group>
                 <field name="non_case_order_line" attrs="{'readonly': [('state','not in',['draft','sent','received'])]}">
                 <!-- <field name="non_case_order_line" attrs="{'readonly': [('state','not in',['draft','sent','received','in_scanning','sale','scanned'])]}"> -->
@@ -885,9 +885,66 @@
                         <field name="company_id" invisible="1"/>
                     </tree>
                 </field>
-                <group name="case_product_lines" string="Cases" >
+                <group name="included_case_product_lines" string="Included Cases" >
                 </group>
                 <field name="case_order_line" attrs="{'readonly':[('state','not in',('draft','sent','received'))]}">
+                    <tree editable='bottom'  default_order="product_id" create="0">
+                        <field name="sequence" widget="handle"/>
+                        <field name="display_type" on_change="1" invisible="1"/>
+                        <field name="product_uom_category_id" invisible="1"/>
+                        <field name="product_type" on_change="1" invisible="1"/>
+                        <field name="product_updatable" invisible="1"/>
+                        <field name="primary_image_url" string="Image" widget="image" options="{'zoom': true,'thumb_image':'primary_image_url','preview_image':'primary_image_url','size': [100, 100]}"  width='200px' readonly="1"/>
+                        <field name="product_id" readonly='1' context="{'from_sale_order':True}" force_save="1" attrs="{'readonly':['|','|',('is_admin','=',True),('is_shipping_product','=',True),('state','not in',['draft','sent','received'])]}" domain="[('is_case_product','=',True),('is_pending_price','!=',True)]"  options="{'no_create': True}" required="1"/>
+                        <field name="case_type" readonly="1" />
+                        <field name="is_shipping_product" invisible="1"/>
+                        <field name="is_admin" invisible="1"/>
+                        <field name="is_global_discount" invisible="1"/>
+                        <field name="package_id" readonly="1" invisible="1" />
+                        <!-- <field name="is_promotion_applied" readonly="1" force_save="1" invisible="1"/> -->
+                        <field name="product_template_id" string="Product" invisible="1"/>
+                        <field name="product_uom_qty" decoration-info="(not display_type and invoice_status == 'to invoice')" decoration-bf="(not display_type and invoice_status == 'to invoice')" attrs="{'readonly':['|',('parent.state', 'not in', ('draft','sent','received')),'|',('is_shipping_product','!=',False),'|',('is_admin','!=',False),('is_global_discount','!=',False)]}" />
+                        <field name="qty_delivered" invisible="1"/>
+                        <field name="virtual_available_at_date" invisible="1"/>
+                        <field name="qty_available_today" invisible="1"/>
+                        <field name="free_qty_today" invisible="1"/>
+                        <field name="scheduled_date" invisible="1"/>
+                        <field name="forecast_expected_date" invisible="1"/>
+                        <field name="warehouse_id" invisible="1"/>
+                        <field name="move_ids" on_change="1" invisible="1"/>
+                        <field name="qty_to_deliver" invisible="1"/>
+                        <field name="is_mto" invisible="1"/>
+                        <field name="display_qty_widget" invisible="1"/>
+                        <widget name="qty_at_date_widget" width="20px"/>
+                        <field name="qty_delivered_method" on_change="1" invisible="1"/>
+                        <field name="qty_invoiced" decoration-info="(not display_type and invoice_status == 'to invoice')" decoration-bf="(not display_type and invoice_status == 'to invoice')" string="Invoiced" optional="show" on_change="1" invisible="1"/>
+                        <field name="picked_qty" on_change="1" readonly="1"/>
+                        <field name="is_special_discount" invisible="1"/>
+                        <field name="qty_to_invoice" on_change="1" invisible="1"/>
+                        <field name="product_uom_readonly" invisible="1"/>
+                        <field name="product_uom" on_change="1" invisible="1"/>
+                        <field name="customer_lead" optional="hide" attrs="{'readonly': [('parent.state', 'not in', ['draft', 'sent', 'sale'])]}"/>
+                        <field name="recompute_delivery_price" invisible="1" />
+                        <field name="is_delivery" on_change="1" invisible="1"/>
+                        <field name="price_unit" readonly="1"/>
+                        <!-- <field name="price_unit" readonly="1"  force_save="1"/> -->
+                        <field name="unit_discount_price" readonly='1' force_save="1" attrs="{'readonly':['|','|',('is_admin','=',True),('is_global_discount','=',True),('state','not in',['draft','sent','received','in_scanning','sale','scanned'])]}" />
+                        <field name="tax_id" widget="many2many_tags"     options="{'no_create': True}" domain="[('type_tax_use','=','sale'),('company_id','=',parent.company_id), ('country_id', '=', parent.tax_country_id)]" context="{'active_test': True}" optional="show" force_save="1" readonly="1" can_create="true" can_write="true"/>
+                        <field name="discount" string="Disc.%" readonly='1' optional="show" widget="sol_discount" on_change="1" attrs="{'readonly':['|','|',('is_admin','=',True),('is_shipping_product','=',True),('state','not in',['draft','sent','received','in_scanning','sale','scanned'])]}" />
+                        <field name="fix_discount_price" force_save="1" on_change="1" readonly="1"/>
+                        <field name="picked_qty_subtotal" readonly="1"/>
+                        <field name="is_downpayment" on_change="1" invisible="1"/>
+                        <field name="price_subtotal" widget="monetary" on_change="1" invisible="1"/>
+                        <field name="state" on_change="1" invisible="1"/>
+                        <field name="invoice_status" on_change="1" invisible="1"/>
+                        <field name="currency_id" invisible="1"/>
+                        <field name="price_tax" on_change="1" invisible="1"/>
+                        <field name="company_id" invisible="1"/>
+                    </tree>
+                </field>
+                <group name="extra_case_product_lines" string="Extra Cases" >
+                </group>
+                <field name="extra_case_order_line" attrs="{'readonly':[('state','not in',('draft','sent','received'))]}">
                     <tree editable='bottom'  default_order="product_id" create="1">
                         <field name="sequence" widget="handle"/>
                         <field name="display_type" on_change="1" invisible="1"/>
@@ -895,7 +952,8 @@
                         <field name="product_type" on_change="1" invisible="1"/>
                         <field name="product_updatable" invisible="1"/>
                         <field name="primary_image_url" string="Image" widget="image" options="{'zoom': true,'thumb_image':'primary_image_url','preview_image':'primary_image_url','size': [100, 100]}"  width='200px' readonly="1"/>
-                        <field name="product_id"  context="{'from_sale_order':True}" force_save="1" attrs="{'readonly':['|','|',('is_admin','=',True),('is_shipping_product','=',True),('state','not in',['draft','sent','received'])]}" domain="[('is_case_product','=',True)]"  options="{'no_create': True}" required="1"/>
+                        <field name="extra_cases_ids" widget="many2many_tags" invisible='1' />
+                        <field name="product_id"  context="{'from_sale_order':True}" force_save="1" attrs="{'readonly':['|','|',('is_admin','=',True),('is_shipping_product','=',True),('state','not in',['draft','sent','received'])]}" domain="[('is_case_product','=',True),('is_pending_price','!=',True),('id','in',extra_cases_ids)]"  options="{'no_create': True}" required="1"/>
                         <field name="case_type" readonly="1" />
                         <field name="is_shipping_product" invisible="1"/>
                         <field name="is_admin" invisible="1"/>

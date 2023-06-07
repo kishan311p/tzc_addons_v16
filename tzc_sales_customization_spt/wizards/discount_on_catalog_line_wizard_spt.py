@@ -28,11 +28,11 @@ class discount_on_catalog_line_wizard_spt(models.TransientModel):
     
     base_on = fields.Selection([
         ('line_ids', 'Order Line'),
-        ('brand', 'Brand')],'Discount On', defualt="brand",required=True)
+        ('brand', 'Brand')],'Discount On', default="brand",required=True)
 
     apply_on = fields.Selection([
         ('percentage', 'Discount In Percentage'),
-        ('fix','Fixed Price')],'Discount Based On', defualt="fix",required=True)
+        ('fix','Fixed Price')],'Discount Based On', default="fix",required=True)
 
     fix_price = fields.Float('Fix Price')    
 

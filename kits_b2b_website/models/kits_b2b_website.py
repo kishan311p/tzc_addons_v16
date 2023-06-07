@@ -20,7 +20,7 @@ class kits_b2b_website(models.Model):
         'product.pricelist',
         string='Default Pricelist'
     )
-    portal_user_id = fields.Many2one('res.group', string='Default Portal User')
+    portal_user_id = fields.Many2one('res.groups', string='Default Portal User')
     my_dashboard_ids = fields.One2many(
         'kits.b2b.menus',
         'my_dashboard_model_id',

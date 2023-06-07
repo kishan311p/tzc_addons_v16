@@ -3,6 +3,8 @@ from odoo.exceptions import UserError
 
 class kits_special_discount(models.Model):
     _name = 'kits.special.discount'
+    _description = 'Kits Special Discount'
+
 
     country_id = fields.Many2many('res.country','special_discount_country_rel','discount_id','brand_id',string='Country',index = True)
     brand_ids = fields.Many2many('product.brand.spt','special_discount_brand_rel','model_id','brand_id','Brands',index = True)

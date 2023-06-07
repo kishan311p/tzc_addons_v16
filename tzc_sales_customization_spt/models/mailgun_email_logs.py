@@ -8,6 +8,8 @@ import requests
 class mailgun_email_logs(models.Model):
     _name = 'mailgun.email.logs'
     _rec_name = "subject"
+    _description = 'Mailgun Email Logs'
+
 
     state = fields.Selection([('sent','Sent'),('received','Received'),('fail','Failed')])
     date = fields.Datetime("Date")

@@ -47,4 +47,16 @@
         <field name="state">code</field>
         <field name="code">model.cron_send_abondand_order()</field>
     </record>
+
+    <record id="ir_cron_remove_product_from_price_drop" model="ir.cron">
+        <field name="name">Remove product from price drop</field>
+        <field name="interval_number">1</field>
+        <field name="interval_type">days</field>
+        <field name="numbercall">-1</field>
+        <field name="doall" eval="False"/>
+        <field name="active" eval="False"/>
+        <field name="model_id" ref="product.model_product_product"/>
+        <field name="state">code</field>
+        <field name="code">model.cron_remove_product_price_drop()</field>
+    </record>
 </odoo>

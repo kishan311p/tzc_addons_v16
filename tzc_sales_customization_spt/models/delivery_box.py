@@ -3,6 +3,7 @@ from odoo.exceptions import UserError, ValidationError
 
 class delivery_box(models.Model):
     _name='delivery.box'
+    _description = 'Delivery Box'
 
     name = fields.Char('Name')
     height = fields.Float('Height (in cm)')

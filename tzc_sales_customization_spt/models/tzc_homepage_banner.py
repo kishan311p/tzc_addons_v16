@@ -2,6 +2,8 @@ from odoo import _, api, fields, models, tools
 
 class tzc_homepage_banner(models.Model):
     _name = 'tzc.homepage.banner'
+    _description = 'Tzc Homepage Banner'
+    
 
     sequence = fields.Integer('Sequence')
     banner_url = fields.Char('Banner Url')
