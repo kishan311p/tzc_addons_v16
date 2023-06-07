@@ -116,6 +116,7 @@
         'views/kits_product_color_code_view.xml',
         'views/create_homepage_html_view.xml',
         'views/delivery_box_view.xml',
+        'views/kits_special_discount_offers_view.xml',
 
         # Wizard
         'wizards/kits_warning_wizard_view.xml',

@@ -32,6 +32,7 @@
         'views/res_partner.xml',
         'views/sale_order.xml',
         'views/kits_landing_view.xml',
+        'views/kits_special_discount_offers_view.xml',
         #actions
         'action.xml',
         'menuitem.xml',

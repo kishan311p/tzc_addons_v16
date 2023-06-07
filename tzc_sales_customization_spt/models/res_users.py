@@ -184,7 +184,8 @@ class res_users(models.Model):
         if self._context.get('error_report'):
             template_id = self.env.ref('tzc_sales_customization_spt.error_msg_mail_template').sudo()
             template_id.send_mail(res_id=self.env.user.id, force_send=True,notif_layout="mail.mail_notification_light")
-    @api.model
+
+    @api.model_create_multi
     def create(self, values):
         self.env['ir.ui.menu'].clear_caches()
         if 'email' in values.keys() and values['email']:
@@ -232,6 +233,8 @@ class res_users(models.Model):
             rec.is_sales_manager = rec.has_group('tzc_sales_customization_spt.group_sales_manager_spt')
 
     def kits_b2b_user_verification_sent_email(self):
+        name = self.partner_id.name_get()
+        self.partner_id.display_name = name[0][-1] if name else ''
         mail_template = self.env.ref('kits_b2b_website.mail_template_user_signup_confirmation')
         mail_template.sudo().send_mail(res_id= self.id,force_send=True,email_layout_xmlid="mail.mail_notification_light")
         return{}

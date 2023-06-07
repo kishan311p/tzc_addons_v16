@@ -17,3 +17,4 @@ from . import product_product
 from . import sale_catalog
 from . import crm_lead
 from . import kits_landing_view
+from . import kits_special_discount_offers

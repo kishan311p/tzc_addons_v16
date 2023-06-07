@@ -64,7 +64,7 @@
                                                                 <p>Thank you for registering to use our B2B portal. To complete your registration, please verify your email address.</p>
                                                                 <p>
                                                                     <div style="font-size: 13px; margin: 16px 0px;" align="center">
-                                                                        <a t-attf-href="{{object.env['kits.b2b.website'].search([('website_name','=','b2b1')]).url}}/login?details_code={{object.access_token}}&amp;login={{object.login}}" style="background-color:#1F7B6F !important;padding: 8px 16px 8px 16px; text-decoration: none; color: #fff; border-radius: 5px; font-size:13px;">
+                                                                        <a t-attf-href="{{object.env['kits.b2b.website'].search([('website_name','=','b2b1')]).url}}/verify-email?details_code={{object.access_token}}&amp;login={{object.login}}" style="background-color:#1F7B6F !important;padding: 8px 16px 8px 16px; text-decoration: none; color: #fff; border-radius: 5px; font-size:13px;">
                                                                             Activate Account
                                                                         </a>
                                                                     </div>

@@ -130,3 +130,5 @@ access_delivery_box,access.delivery.box,model_delivery_box,,1,1,1,1
 access_delivery_box_line,access.delivery.box.line,model_delivery_box_line,,1,1,1,1
 access_delivery_package_line,access.delivery.package.line,model_delivery_package_line,,1,1,1,1
 access_change_order_currency,access.change.order.currency,model_change_order_currency,,1,1,1,1
+access_kits_special_discount_offers,access.kits.special.discount.offers,model_kits_special_discount_offers,,1,1,1,1
+access_kits_special_discount_offers_line,access.kits.special.discount.offers.line,model_kits_special_discount_offers_line,,1,1,1,1

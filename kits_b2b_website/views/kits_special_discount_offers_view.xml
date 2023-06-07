@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="kits_special_discount_offers_inherit_kits_b2b_website" model="ir.ui.view">
+        <field name="name">kits.special.discount.offers.view.form.inherit</field>
+        <field name="model">kits.special.discount.offers</field>
+        <field name="inherit_id" ref="tzc_sales_customization_spt.kits_special_discount_offers_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='url_keyword']" position="after">
+                <field name="website_id" required="1"/>
+                <field name="page_url" widget="url" />
+            </xpath>
+            
+        </field>
+    </record>
+
+</odoo>

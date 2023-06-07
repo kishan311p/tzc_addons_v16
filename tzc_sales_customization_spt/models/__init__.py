@@ -90,3 +90,4 @@ from . import delivery_box
 from . import delivery_box_line
 from . import delivery_package_line
 from . import account_tax
+from . import kits_special_discount_offers

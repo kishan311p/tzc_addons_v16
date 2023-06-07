@@ -41,7 +41,7 @@ class SaleOrderLine(models.Model):
     primary_image_url = fields.Char("Primary Image URL",related='product_id.primary_image_url')
     case_type = fields.Selection([('original', 'Original'),('generic', 'Generic')],"Case Type",related='product_id.case_type')
     restrict_case_order_line = fields.Boolean('Restrict Flag')
-
+    special_discount_offer = fields.Many2one('kits.special.discount.offers', string='Special Discount Offers')
     def _get_virtual_sources(self):
         return []
 
