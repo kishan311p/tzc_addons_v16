@@ -15,7 +15,7 @@ class product_temple_size_spt(models.Model):
 
     def _compute_temple_size_products(self):
         for record in self:
-            products = self.env['product.product'].search([("temple_size",'=',record.id)])
+            products = self.env['product.product'].search([('is_pending_price','=',False),("temple_size",'=',record.id)])
             record.products_count = len(products)
 
     def action_open_temple_size_products_spt(self):

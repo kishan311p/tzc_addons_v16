@@ -16,6 +16,9 @@
         <menuitem name="Material" action="action_product_material_spt" id="menu_action_product_material_spt" parent="menu_action_product_custom_spt" sequence="10"/>
         <menuitem name="Rim Type" action="action_product_rim_type_spt" id="menu_action_product_rim_type_spt" parent="menu_action_product_custom_spt" sequence="11"/>
 
+        <!-- Emaiil Marketing Campaign Menu -->
+        <menuitem name="Campaigns" id="mass_mailing.menu_email_campaigns" parent="mass_mailing.mass_mailing_menu_root" sequence="3" action="action_view_utm_campaign_spt" groups="mass_mailing.group_mass_mailing_campaign"/>
+
 
 
     </data>

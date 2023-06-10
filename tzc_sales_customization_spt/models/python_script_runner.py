@@ -24,6 +24,15 @@ class python_script_runner(models.Model):
                 raise Warning('Python code is not able to run ! message : %s' %(e))
                 
         return True
+#     def execute_script(self):
+# brand_ids = self.env['product.brand.spt'].search(['|',('active','=',True),('active','=',False)])
+# for brand in brand_ids:
+#     custom_message = ''
+#     if brand.product_ids:
+#         custom_message = brand.product_ids.mapped(lambda x:x.custom_message)
+#         custom_message = custom_message[0]
+#     brand.description = custom_message
+
     # def execute_script(self):
     #     color_code_obj = self.env['kits.product.color.code']
     #     model_obj = self.env['product.model.spt']

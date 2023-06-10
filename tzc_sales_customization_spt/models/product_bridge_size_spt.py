@@ -15,7 +15,7 @@ class ProductBridgeSizeSpt(models.Model):
 
     def _compute_bridge_size_spt(self):
         for record in self:
-            products = self.env['product.product'].search([("bridge_size",'=',record.id)])
+            products = self.env['product.product'].search([('is_pending_price','=',False),("bridge_size",'=',record.id)])
             record.products_count = len(products)
 
     def action_open_bridge_size_products_spt(self):

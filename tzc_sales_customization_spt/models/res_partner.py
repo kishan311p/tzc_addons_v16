@@ -645,27 +645,28 @@ class res_partner(models.Model):
 
     @api.model_create_multi
     def create(self,vals):
-        if self.env.user.has_group('base.group_user') and not self.env.user.has_group('tzc_sales_customization_spt.group_partner_access_salesperson'):
-            raise ValidationError("You can not create partner !!!")
-        user_obj = self.env['res.users']
-        config_parameter_obj = self.env['ir.config_parameter'].sudo()
-        self = self.with_context(bypass_validation_spt=True)
-        # canada_country_id = self.env.ref('base.ca').id
-        if 'internal_id' not in vals.keys() or 'internal_id' in vals.keys() and not vals['internal_id']:
-            internal_id = self.env['ir.sequence'].next_by_code('tzc.partner.internal.id.seq.spt')
-            vals.update({'internal_id':internal_id})
-        if 'email' in vals.keys() and vals['email']:
-            vals.update({
-                'email':vals['email'].lower()
-            })
-        if 'user_id' in vals.keys() and not vals['user_id']:
-            vals.update({
-                'user_id': eval(config_parameter_obj.sudo().get_param('default_sales_person_id', 'False'))
-            })
-            self = self.with_context(stop_assign_mail=True)
-        
-        if 'type' in vals and vals['type'] != 'contact':
-            self = self.with_context({'mail_create_nosubscribe':True,'tracking_disable':True})
+        for val in vals:
+            if self.env.user.has_group('base.group_user') and not self.env.user.has_group('tzc_sales_customization_spt.group_partner_access_salesperson'):
+                raise ValidationError("You can not create partner !!!")
+            user_obj = self.env['res.users']
+            config_parameter_obj = self.env['ir.config_parameter'].sudo()
+            self = self.with_context(bypass_validation_spt=True)
+            # canada_country_id = self.env.ref('base.ca').id
+            if 'internal_id' not in val.keys() or 'internal_id' in val.keys() and not val['internal_id']:
+                internal_id = self.env['ir.sequence'].next_by_code('tzc.partner.internal.id.seq.spt')
+                val.update({'internal_id':internal_id})
+            if 'email' in val.keys() and val['email']:
+                val.update({
+                    'email':val['email'].lower()
+                })
+            if 'user_id' in val.keys() and not val['user_id']:
+                val.update({
+                    'user_id': eval(config_parameter_obj.sudo().get_param('default_sales_person_id', 'False'))
+                })
+                self = self.with_context(stop_assign_mail=True)
+            
+            if 'type' in val and val['type'] != 'contact':
+                self = self.with_context({'mail_create_nosubscribe':True,'tracking_disable':True})
         
         res = super(res_partner,self).create(vals)
         if res.country_id and not res.preferred_currency:
@@ -694,7 +695,8 @@ class res_partner(models.Model):
                     rec.result = request.get('result')
                     rec.mail_risk = request.get('risk')
 
-        if 'customer_type' in vals.keys() and vals['customer_type'] in ['b2b_regular']:
+        for val in vals:
+            if 'customer_type' in val.keys() and val['customer_type'] in ['b2b_regular']:
                 config_parameter = config_parameter_obj.sudo().get_param('user_ids_spt', False)
                 user_ids =user_obj.search([('id','=',eval(config_parameter)+res.user_id.ids)])
                 self.env.ref('tzc_sales_customization_spt.tzc_mail_template_customer_approve_notify_spt').sudo().send_mail(res.id,force_send=True,email_values={'partner_ids':[(6,0,res.ids)]},email_layout_xmlid="mail.mail_notification_light")

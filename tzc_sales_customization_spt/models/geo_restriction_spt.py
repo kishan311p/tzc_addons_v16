@@ -11,7 +11,7 @@ class geo_restriction_spt(models.Model):
 
     def _compute_geo_restricted_products(self):
         for record in self:
-            products = self.env['product.product'].search([("geo_restriction",'=',record.id)])
+            products = self.env['product.product'].search([('is_pending_price','=',False),("geo_restriction",'=',record.id)])
             record.products_count = len(products)
 
     def action_open_get_restricted_products(self):

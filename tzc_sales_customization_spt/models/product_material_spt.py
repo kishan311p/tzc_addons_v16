@@ -22,7 +22,7 @@ class ProductMaterialSpt(models.Model):
 
     def _compute_material_products(self):
         for record in self:
-            products = self.env['product.product'].search([("material_id",'in',record.ids)])
+            products = self.env['product.product'].search([('is_pending_price','=',False),("material_id",'in',record.ids)])
             record.products_count = len(products)
 
     def action_open_material_products_spt(self):

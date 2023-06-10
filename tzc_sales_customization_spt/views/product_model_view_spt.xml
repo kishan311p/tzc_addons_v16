@@ -4,7 +4,7 @@
         <!-- <act_window id="action_open_model_product_variants" name="Model Products" res_model="product.product" view_mode="kanban,form,tree" domain="[('model', '=', active_id)]"/> -->
 
         <record id="action_product_model_spt" model="ir.actions.act_window">
-        <field name="view_mode">tree,form</field>
+            <field name="view_mode">tree,form</field>
             <field name="name">Product Model</field>
             <field name="res_model">product.model.spt</field>
         </record>
@@ -30,7 +30,11 @@
                         </group>
                         <notebook>
                             <page name="manufacturing_code" string="Manufacturing Code">
-                                <field name="manufacturing_code_ids" />
+                                <field name="manufacturing_code_ids">
+                                    <tree editable="bottom">
+                                        <field name="name" string="Name" />
+                                    </tree>
+                                </field>
                             </page>
                         </notebook>
 

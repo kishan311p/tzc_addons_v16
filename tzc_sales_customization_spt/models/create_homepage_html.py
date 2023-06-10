@@ -8,7 +8,7 @@ class create_homepage_html(models.Model):
 
     name = fields.Char('Name',required=True)
     price_inflation = fields.Boolean('Price Inflation')
-    inflation = fields.Float('Inflation')
+    inflation = fields.Float('Inflation (%)')
     header_url = fields.Char('Header Image Url')
     header_image = fields.Char('Header Image', related='header_url')
     header_redirect_url = fields.Char('Header Redirect Url')
@@ -24,17 +24,34 @@ class create_homepage_html(models.Model):
         self.body_html=''        
         if self.header_url:
             web_url = self.env['kits.b2b.website'].search([],limit=1).url
-            header=f'''
-            <div style="width: 88%;height: auto;style="background-color: #FDFDFD;">
-                <div style="">
-                    <a href="{web_url}" tyle="text-decoration:none;background-color:transparent;color:rgb(0,135,132)" target="_blank">
-                        <img src={self.header_url} class="header-img" border="0" align="middle" loading="" style="box-sizing:border-box;vertical-align:middle;width: -webkit-fill-available;height: auto;">
-                    </a>
-                </div>
+            header='''
+                <!DOCTYPE html>
+                <html>
+
+                <head>
+                <body class="body" style="padding:0 !important; margin:0 !important; display:block !important; min-width:100% !important; width:100% !important; -webkit-text-size-adjust:none;">
+                    <table width="100%" border="0" cellspacing="0" cellpadding="0" bgcolor="">
+                        <tr>
+                            <td align="center" valign="top">
+                                <!-- Main -->
+                                <table width="450" border="0" cellspacing="0" cellpadding="0" class="mobile-shell">
+                                    <tr>
+                                        <td class="td" style="width:450px; min-width:450px; font-size:0pt; line-height:0pt; padding:0; margin:0; font-weight:normal;">
+                                            <!-- Header -->
+                                            <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                '''
+            header+=f'''
+                 <tr>
+                    <td class="p30-15-0" style="padding: 0px 45px 0px 45px;">
+                        <a href="{self.header_redirect_url}">
+                            <img src={self.header_url} border="0" style="border-style:none;box-sizing:border-box;vertical-align:middle;text-decoration:none;border:none;float:none;width:100%;height:auto;display:inline-block" align="middle" width="100%"
+                                height="100%">
+                        </a>
+                    </td>
+                </tr>
             '''
         if self.product_ids:
             product_table=''
-            product_table+='''<div>'''
             row=0
             banner=0
             products_l=self.product_list()
@@ -43,14 +60,34 @@ class create_homepage_html(models.Model):
                 if type(products) == dict:
                     if products['banner_id']:
                         product_table=product_table+f'''
-                        <div>
-                            <a href="{products['banner_id'].banner_redirect_url if products['banner_id'].banner_redirect_url else ''}" style="text-decoration:none;background-color:transparent;color:rgb(0,135,132)" target="_blank">
-                                <img src={products['banner_id'].banner_url} border="0" style="border-style:none;box-sizing:border-box;vertical-align:middle;text-decoration:none;border:none;float:none;width: -webkit-fill-available;height: auto;display:inline-block" align="middle" loading=""> 
-                            </a>
-                        </div>
+                            <layout label='Section B'>
+                                <table width="100%" border="0" cellspacing="0" cellpadding="0" bgcolor="#ffffff">
+                                    <tr>
+                                        <td class="p30-15-0" style="padding: 15px 30px 0px 30px;">
+                                            <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                                                <tr>
+                                                    <td class="h5-center" style="color:#a1a1a1; font-family:'Raleway', Arial,sans-serif; font-size:16px; line-height:22px; text-align:center;">
+                                                        <a href="{products['banner_id'].banner_redirect_url if products['banner_id'].banner_redirect_url else ''}">
+                                                            <img src={products['banner_id'].banner_url}  border="0" style="border-style:none;box-sizing:border-box;vertical-align:middle;text-decoration:none;border:none;float:none;width:97%;height:auto;display:inline-block" align="middle"
+                                                                width="100%" height="100%">
+                                                        </a>
+                                                    </td>
+                                                </tr>
+
+                                            </table>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </layout>
                             '''
                 else:
-                    product_table=product_table+'''<table style="width:65%;height: auto;background-color: #FDFDFD;"> <tr style="">'''
+                    product_table=product_table+'''<layout label='Section 8'>'''
+                    product_table=product_table+'''<table width="100%" border="0" cellspacing="0" cellpadding="0" bgcolor="#ffffff">
+                                                    <tr>
+                                                        <td style="padding: 0px 30px;" align="center">
+                                                            <table class="center" border="0" cellspacing="0" cellpadding="0" style="text-align:center;">
+                                                                <tr>'''
+                    # product_table=product_table+'''<table style="width:97%;height: auto;background-color: #FDFDFD;"> <tr style="">'''
                     for product in products:
                         style='color:white'
                         product_type=''
@@ -69,49 +106,59 @@ class create_homepage_html(models.Model):
                                 w_price+=w_price*self.inflation/100
 
                             if self.product_ids[product].new_arrivals:
-                                product_type = 'https://cdn.teameto.com/data/B2B/email/new-arrivals.png'
-                                style='width:50%;'
+                                product_type = "<img src='https://cdn.teameto.com/data/B2B/email/new-arrivals.png' style='width:50%;'> </img>"
                             else:
                                 if self.product_ids[product].sale_type == 'on_sale':
-                                    product_type = 'https://cdn.teameto.com/data/B2B/email/on-sale.png'
-                                    style='width:40%;'
+                                    product_type = "<img src='https://cdn.teameto.com/data/B2B/email/on-sale.png' style='width:40%;'> </img>"
                                 elif self.product_ids[product].sale_type == 'clearance':
-                                    product_type = 'https://cdn.teameto.com/data/B2B/email/clearance.png'
-                                    style='width:50%;'
+                                    product_type = "<img src='https://cdn.teameto.com/data/B2B/email/clearance.png' style='width:50%;'> </img>"
+                                else:
+                                    product_type = "<img src='https://cdn.teameto.com/data/B2B/email/clearance.png' style='display:none;width:50%;'> </img>"
                             if self.face_side == 'side_face':
                                 img_url = self.product_ids[product].sec_image_url
                             else:
                                 img_url = self.product_ids[product].primary_image_url
                             product_table=product_table+f'''
-                                <td style="width: 33.3333%;">
-                                    <span href="{self.product_ids[product].product_seo_url if self.product_ids[product].product_seo_url else ''}">
-                                        <div style='margin:20px 15px 20px 15px;width: max-content;border: 1px solid rgba(31,123,111,.2);padding: 10px;background-color: var(--white-color);border-radius: 20px;transition: .3s;overflow: hidden;position: relative!important;'>
-                                            <div class="">
-                                                <div>
-                                                    <img src={product_type} style="{style}"> </img>
-                                                </div>
-                                                <a href="{self.product_ids[product].product_seo_url if self.product_ids[product].product_seo_url else ''}">
-                                                    <img src={img_url} style="border-style:none;box-sizing:border-box;vertical-align:middle;text-decoration:none;border:none;float:none;width:350px;height: auto !important;display:inline-block;"  border="0" align="middle"> </img>
-                                                </a>
-                                            </div>
-                                            <div align='center' style='margin-bottom:10px;margin-top:10px'>
-                                                <a href="{self.product_ids[product].product_seo_url if self.product_ids[product].product_seo_url else ''}">
-                                                    <h6><a style='font-weight:bold;font-size: 120%;color:#1C7468'>{self.product_ids[product].brand_name if self.product_ids[product].brand_name else ''}</a></h6>
-                                                    <p style='color:#1C7468;font-size: 120%;margin-bottom: 0;'>{self.product_ids[product].b2b_name if self.product_ids[product].b2b_name else '   '}</p>
-                                                    <span class="price mb-0" style="font-weight: 500;color:#1f7b6f;font-size: 16px;justify-content: center;align-items: center;margin-bottom: 10px;">
-                                                        <del style="font-size: 120%;font-weight: 300;color:#ff7373;margin-right: 8px;">
-                                                            <font style="vertical-align: inherit;">
-                                                                <font style="vertical-align: inherit;"><b style="    font-weight: bold !important;">${'{:,.2f}'.format(w_price)}</b></font>
-                                                            </font>
-                                                        </del>
-                                                        <font style="vertical-align: inherit;">
-                                                            <font class="" style="vertical-align: inherit;"><b>${'{:,.2f}'.format(pro_price)}</b></font>
-                                                        </font>
-                                                    </span>
-                                                </a>
-                                            </div>
+                                <td>
+                                    <a href="{self.product_ids[product].product_seo_url if self.product_ids[product].product_seo_url else ''}">
+                                        <div style="margin:20px 10px 0px 10px;width: max-content;border: 1px solid rgba(31,123,111,.2);padding: 10px;background-color: var(--white-color);border-radius: 20px;transition: .3s;overflow: hidden;position: relative!important;">
+                                            <table>
+                                                <tr>
+                                                    <td>
+                                                        <a href="{self.product_ids[product].product_seo_url if self.product_ids[product].product_seo_url else ''}">
+                                                            <div style="text-align: -webkit-left;width:230px;height: 34px;">
+                                                                {product_type} 
+                                                            </div>
+                                                            <img src={img_url} style="border-style:none;box-sizing:border-box;vertical-align:middle;text-decoration:none;border:none;float:none;width:230px;height: auto !important;display:inline-block;" border="0" align="middle" loading=""> 
+                                                        </a>
+                                                    </td>
+                                                </tr>
+                                                <tr align="center" style="margin-bottom:10px;margin-top:10px">
+                                                    <td>
+                                                        <a href="{self.product_ids[product].product_seo_url if self.product_ids[product].product_seo_url else ''}">
+                                                            <h6 style="margin: 0 0 16px 0;">
+                                                                <a href="{self.product_ids[product].product_seo_url if self.product_ids[product].product_seo_url else ''}">
+                                                                    <a style="font-weight:bold;font-size: 13px;margin-bottom: 15px !important;color:#1C7468">{self.product_ids[product].brand_name if self.product_ids[product].brand_name else ''}
+                                                                    </a>
+                                                                </a>
+                                                            </h6>
+                                                            <p style="color:#1C7468;font-size: 120%;margin-bottom: 21px !important;font-size:13px ;">{self.product_ids[product].b2b_name if self.product_ids[product].b2b_name else '   '}</p>
+                                                            <span class="price mb-0" style="font-weight: 500;color:#1f7b6f;font-size: 13px;justify-content: center;align-items: center;margin-bottom: 10px;">
+                                                                <del style="font-weight: 300;color:#ff7373;margin-right: 8px;">
+                                                                    <font style="vertical-align: inherit;">
+                                                                        <font style="vertical-align: inherit;"><b style="font-weight: bold !important;">${'{:,.2f}'.format(w_price)}</b></font>
+                                                                    </font>
+                                                                </del>
+                                                                <font style="vertical-align: inherit;">
+                                                                    <font style="vertical-align: inherit;font-size: 13px;"><b>${'{:,.2f}'.format(pro_price)}</b></font>
+                                                                </font>
+                                                            </span>
+                                                        </a>
+                                                    <td>
+                                                </tr>
+                                            </table>
                                         </div>
-                                    </span>
+                                    </a>
                                 </td>
                             '''
                         else:
@@ -145,84 +192,118 @@ class create_homepage_html(models.Model):
                                     </a>
                                 </td>
                             '''
-                    product_table=product_table+'''</tr></table>'''
+                    product_table=product_table+''' </tr>
+                                                    </table>
+                                                </td>
+                                            </tr>
+                                        </table>'''
                     row+=1
-            product_table+='''</div>'''
         
         button=f'''
-            <div align="center" style="width: 91%;height: auto;background-color: #FDFDFD;" class="footer-style">
-            <div style="padding-bottom:40px;padding-top:30px;" class="row">
-                <div class="col-12" align="center">
-                    <a href="{self.view_more_redirect_url if self.view_more_redirect_url else 'https://teameto.com'}" target="_blank" style="padding-bottom:10px;background-color: rgb(233,254,250); padding: 12px 20px 12px 20px; text-decoration: none; color: #1C7468; border-radius: 500px; font-size:16px;    border: 1px solid #1C7468;" >
-                        View More
-                    </a>
-                </div>
-            </div>
+           <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                <tr>
+                    <td class="p10-15-0" bgcolor="#ffffff" style="border-radius: 0px 0px 20px 20px; padding: 0px 30px 0px 30px;">
+                        <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                            <tr>
+                                <td class="m-padder2" align="center" style="">
+                                    <table class="center" border="0" cellspacing="0" cellpadding="0" style="text-align:center;">
+                                        <div style="padding-bottom:16px;padding-top:48px;" class="row">
+                                            <div class="col-12" align="center">
+                                                <a href="{self.view_more_redirect_url if self.view_more_redirect_url else 'https://teameto.com'}" target="_blank" style="padding-bottom:10px;background-color: rgb(233,254,250); padding: 12px 20px 12px 20px; text-decoration: none; color: #1C7468; border-radius: 500px; font-size:16px;    border: 1px solid #1C7468;">
+                                                View More
+                                            </a>
+                                            </div>
+                                        </div>
+                                    </table>
+                                </td>
+                            </tr>
         '''
         footer=f'''
-        <div style="border-style:solid;box-sizing:border-box;border-left-width:0px;border-bottom-width:0px;border-right-width:0px;border-top-width:0px;border-left-color:inherit;border-bottom-color:inherit;border-right-color:inherit;border-top-color:inherit;word-break:break-word;padding:0px 10px 28px;font-family:'Cabin',sans-serif" align="left">
-            <table style="border-style:solid none none none;width: 55%;box-sizing:border-box;border-top-color:#1c7468;border-top-width:2px;caption-side:bottom;border-collapse:collapse;table-layout:fixed;border-spacing:0;vertical-align:top;border-top:2px solid #1c7468" width="79%" height="0px" cellspacing="0" cellpadding="0" border="0" align="center">
-                <tbody style="border-style:solid;box-sizing:border-box;border-left-width:0px;border-bottom-width:0px;border-right-width:0px;border-top-width:0px;border-left-color:inherit;border-bottom-color:inherit;border-right-color:inherit;border-top-color:inherit">
-                    <tr style="border-style:solid;box-sizing:border-box;border-width:0px;border-color:inherit;vertical-align:top;width:100%">
-                        <td style="border-style:solid;box-sizing:border-box;border-left-width:0px;border-bottom-width:0px;border-right-width:0px;border-top-width:0px;border-left-color:inherit;border-bottom-color:inherit;border-right-color:inherit;border-top-color:inherit;word-break:break-word;border-collapse:collapse;vertical-align:top;font-size:0px;line-height:0px">
-                            <span> <![CDATA[&nbsp;]]></span>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-
-        <div style="border-style:solid;box-sizing:border-box;border-left-width:0px;border-bottom-width:0px;border-right-width:0px;border-top-width:0px;border-left-color:inherit;border-bottom-color:inherit;border-right-color:inherit;border-top-color:inherit;word-break:break-word;padding:25px 10px 10px;font-family:'Cabin',sans-serif" align="left">
-            <table style="box-sizing:border-box;border-collapse:collapse;caption-side:bottom" width="100%" cellspacing="0" cellpadding="0" border="0">
-                <tbody style="border-style:solid;box-sizing:border-box;border-left-width:0px;border-bottom-width:0px;border-right-width:0px;border-top-width:0px;border-left-color:inherit;border-bottom-color:inherit;border-right-color:inherit;border-top-color:inherit">
-                    <tr style="border-style:solid;box-sizing:border-box;border-width:0px;border-color:inherit;width:100%">
-                        <td style="border-style:solid;box-sizing:border-box;border-left-width:0px;border-bottom-width:0px;border-right-width:0px;border-top-width:0px;border-left-color:inherit;border-bottom-color:inherit;border-right-color:inherit;border-top-color:inherit;padding-right:0px;padding-left:0px" align="center"> 
-                            <a href="https://teameto.com" style="text-decoration:none;box-sizing:border-box;color:#35979c" target="_blank"> 
-                                <img src="https://cdn.teameto.com/data/B2B/logo.png" alt="" title="" style="border-style:none;box-sizing:border-box;outline-width:initial;outline-style:none;outline-color:initial;vertical-align:middle;outline:none;text-decoration:none;clear:both;border:none;height:35px;float:none;width:270px;max-width:300px;display:inline-block" width="270" height="35" border="0" align="middle" class="CToWUd" data-bit="iit"/>
-                            </a>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-        <br/>
-        <div style="color:black;" align="center">
-            {self.env.company.street if self.env.company.street else ''}
-            <br/>
-            {self.env.company.city if self.env.company.city else ''}
-            ,
-            {self.env.company.state_id.name if self.env.company.state_id.name else ''}
-            ,
-            {self.env.company.country_id.name if self.env.company.country_id.name else ''}
-            {self.env.company.zip if self.env.company.zip else ''}
-            <br/>
-            <a href="{self.env.company.website if self.env.company.website else ''}" style="text-decoration:none ;color: black;">{self.env.company.website if self.env.company.website else ''}</a>
-            <br/>
-            <a href="tel:{self.env.company.phone if self.env.company.phone else ''}" rel="noopener" style="text-decoration:none;background-color:transparent;color:#000000" target="_blank">
-            {self.env.company.phone if self.env.company.phone else ''}
-            </a>
-            |
-            <a href="mailto:{self.env.company.email if self.env.company.email else ''}" style="text-decoration:none ; color: black;" >{self.env.company.email if self.env.company.email else ''}</a>
-        </div>
-        </div>
-        <br/>
-        <div style="width: 91%;height: auto;background-color:#E9ECEF;padding: 30px 0px 20px 140px;">
-            <a href="{self.unsubscribe_redirect_url if self.unsubscribe_redirect_url else 'https://teameto.com'}">
-                Unsubscribe
-            </a>
-            <br/>
-            <br/>
-            <p style='color:#1C7468'>
-            © 2023 All Rights Reserved
-            </p>
-        </div>
+        <tr>
+            <td align="center" class="p10-15" style=" padding: 0px;    border-top: none;">
+                <table class="center" border="0" cellspacing="0" cellpadding="0" style="text-align:center;">
+                    <div style="border-style:solid;box-sizing:border-box;border-left-width:0px;border-bottom-width:0px;border-right-width:0px;border-top-width:0px;border-left-color:inherit;border-bottom-color:inherit;border-right-color:inherit;border-top-color:inherit;word-break:break-word;padding:0px 10px 28px;font-family:'Cabin',sans-serif"
+                        align="left">
+                        <table style="border-style:solid none none none;width: 55%;box-sizing:border-box;border-top-color:#1c7468;border-top-width:2px;caption-side:bottom;border-collapse:collapse;table-layout:fixed;border-spacing:0;vertical-align:top;border-top:2px solid #1c7468"
+                            width="79%" height="0px" cellspacing="0" cellpadding="0" border="0" align="center">
+                            <tbody style="border-style:solid;box-sizing:border-box;border-left-width:0px;border-bottom-width:0px;border-right-width:0px;border-top-width:0px;border-left-color:inherit;border-bottom-color:inherit;border-right-color:inherit;border-top-color:inherit">
+                                <tr style="border-style:solid;box-sizing:border-box;border-width:0px;border-color:inherit;vertical-align:top;width:100%">
+                                    <td style="    border-top: none;border-style:solid;box-sizing:border-box;border-left-width:0px;border-bottom-width:0px;border-right-width:0px;border-top-width:0px;border-left-color:inherit;border-bottom-color:inherit;border-right-color:inherit;border-top-color:inherit;word-break:break-word;border-collapse:collapse;vertical-align:top;font-size:0px;line-height:0px">
+                                        <span> <!--[CDATA[&nbsp;]]--></span>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </table>
+            </td>
+        </tr>
+        <tr>
+            <td align="center" class="p10-15" style=" padding: 0px;">
+                <div style="border-style:solid;box-sizing:border-box;border-left-width:0px;border-bottom-width:0px;border-right-width:0px;border-top-width:0px;border-left-color:inherit;border-bottom-color:inherit;border-right-color:inherit;border-top-color:inherit;word-break:break-word;padding:25px 10px 10px;font-family:'Cabin',sans-serif"
+                    align="left">
+                    <table style="box-sizing:border-box;border-collapse:collapse;caption-side:bottom" width="100%" cellspacing="0" cellpadding="0" border="0">
+                        <tbody style="border-style:solid;box-sizing:border-box;border-left-width:0px;border-bottom-width:0px;border-right-width:0px;border-top-width:0px;border-left-color:inherit;border-bottom-color:inherit;border-right-color:inherit;border-top-color:inherit">
+                            <tr style="border-style:solid;box-sizing:border-box;border-width:0px;border-color:inherit;width:100%">
+                                <td style="border-style:solid;box-sizing:border-box;border-left-width:0px;border-bottom-width:0px;border-right-width:0px;border-top-width:0px;border-left-color:inherit;border-bottom-color:inherit;border-right-color:inherit;border-top-color:inherit;padding-right:0px;padding-left:0px"
+                                    align="center">
+                                    <a href="https://teameto.com" style="text-decoration:none;box-sizing:border-box;color:#35979c" target="_blank">
+                                        <img src="https://cdn.teameto.com/data/B2B/logo.png" style="border-style:none;box-sizing:border-box;outline-width:initial;outline-style:none;outline-color:initial;vertical-align:middle;outline:none;text-decoration:none;clear:both;border:none;height:35px;float:none;width:270px;max-width:300px;display:inline-block"
+                                            width="270" height="35" border="0" align="middle" class="CToWUd" data-bit="iit" loading="">
+                                    </a>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </td>
+        </tr>
+        <tr>
+            <td align="center" class="p10-15" style=" padding: 0px;font-size: 15px;">
+                <div style="color:black;" align="center">
+                    <p style="margin: 22px;">{self.env.company.street if self.env.company.street else ''}</p>
+                    <p style="margin: 22px;">{self.env.company.city if self.env.company.city else ''}
+                    ,
+                    {self.env.company.state_id.name if self.env.company.state_id.name else ''} 
+                    ,
+                    {self.env.company.country_id.name if self.env.company.country_id.name else ''}
+                    {self.env.company.zip if self.env.company.zip else ''}</p>
+                    <p style="margin: 25px;text-decoration: underline;"><a href="{self.env.company.website if self.env.company.website else ''}" style="text-decoration:none ;color: black;">{self.env.company.website if self.env.company.website else ''}</a></p>
+                    <p style="margin: 22px;text-decoration: underline;"><a href="tel:{self.env.company.phone if self.env.company.phone else ''}" rel="noopener" style="text-decoration:none;background-color:transparent;color:#000000" target="_blank">
+                    {self.env.company.phone if self.env.company.phone else ''}
+                    </a>| <a href="mailto:{self.env.company.email if self.env.company.email else ''}" style="text-decoration:none ; color: black;" >{self.env.company.email if self.env.company.email else ''}</a></p>
+                </div>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <div class="o_layout oe_unremovable oe_unmovable bg-200 o_empty_theme" data-name="Mailing" style="width: 90.5%;margin:auto;">
+                    <div class="container o_mail_wrapper o_mail_regular oe_unremovable" style="padding: 0px !important;;max-width: unset !important;">
+                        <div class="row">
+                            <div class="col o_mail_no_options o_mail_wrapper_td bg-white oe_structure o_editable theme_selection_done">
+                                <div class="s_footer_social o_mail_block_footer_social o_mail_footer_social_center o_mail_snippet_general bg-200" data-snippet="s_mail_block_footer_social" data-name="Footer Center">
+                                    <div class="container text-center"  style="padding: 18px;">
+                                        <div class="row">
+                                            <div class="col-lg o_mail_footer_links">
+                                                <a role="button" href="{self.unsubscribe_redirect_url if self.unsubscribe_redirect_url else 'https://teameto.com'}" class="btn btn-link o_default_snippet_text" style="padding: 0 0 10px 0;font-size: 15px;text-align: center;">Unsubscribe</a>
+                                            </div>
+                                        </div>
+                                        <div class="row" style="font-size:15px">
+                                            <div class="col-lg">
+                                                <p class="o_default_snippet_text">
+                                                    © 2023 All Rights Reserved
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </td>
+        </tr>
         '''
-        # if self.env.user.signature:
-        #     signature = f''' 
-        #     <p style="width: 91%;height: auto;;padding-top:30px">
-        #         {self.env.user.signature}
-        #     </p>
-        #     '''
         style_css= '''
         '''
         # give a html code to self.body_html
@@ -233,7 +314,13 @@ class create_homepage_html(models.Model):
             self.body_html+=product_table
         self.body_html+=button
         self.body_html+=footer 
-        self.body_html+='</div>' 
+        self.body_html+='''
+                                </td>
+                            </tr>
+                            </table>
+                    </body>
+
+                </html>''' 
             
         # if self.env.user.signature:
         #     self.body_html+=signature

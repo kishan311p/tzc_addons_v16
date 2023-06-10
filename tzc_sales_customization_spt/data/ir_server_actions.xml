@@ -468,5 +468,15 @@
                 action = records.remove_to_unpublished()
             </field>
         </record>
+        <record model="ir.actions.server" id="action_view_utm_campaign_spt">
+            <field name="name">Campaign</field>
+            <field name="model_id" ref="utm.model_utm_campaign"/>
+            <field name="binding_model_id" ref="utm.model_utm_campaign" />
+            <field name="state">code</field>
+            <field name="code">
+                action = model.action_view_utm_campaign()
+            </field>
+        </record>
+
     </data>
 </odoo>

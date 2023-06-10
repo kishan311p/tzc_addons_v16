@@ -78,46 +78,30 @@ class remove_done_quantity_spt(models.TransientModel):
         if self.line_ids:
             for line in self.line_ids:
                 if line.product_id and line.product_id.id:
-                    move_ids = self.picking_id.move_ids_without_package.filtered(lambda x: x.product_id.id == line.product_id.id)
-                    qty = line.product_qty
+                    move_ids = self.picking_id.move_ids_without_package.filtered(lambda x: x.product_id == line.product_id)
+                    # qty = line.product_qty
                     qty_line = line.product_qty
                     if move_ids and move_ids.ids:
                         for i in range(0,len(move_ids)):
                             try:
-                                # Included Case
-                                case_product_id = line.product_id.case_product_id
-                                if case_product_id:
-                                    com_ids = self.picking_id.move_ids_without_package.filtered(lambda x: x.product_id.is_case_product==True and x.is_included_case==True and x.product_id.id==case_product_id.id)
-                                    if com_ids:
-                                        case_qty = line.product_qty  
-                                        if case_qty > 0:
-                                            case_qty = case_qty - com_ids.quantity_done
-                                            com_ids.write({"quantity_done":0 if case_qty >= 0 else com_ids.quantity_done-abs(com_ids.quantity_done+case_qty)})
-                                            com_ids.picking_id.write({'updated_by':self.env.user.id,'updated_on':datetime.now()})
-
-                                # if self.picking_id.move_ids_without_package.filtered(lambda x: x.product_id.is_case_product):
-                                #     qty = line.product_qty
-                                if qty > 0:
-                                    qty = qty - move_ids[i].quantity_done
-                                    move_ids[i].write({"quantity_done":0 if qty >= 0 else move_ids[i].quantity_done-abs(move_ids[i].quantity_done+qty)})
+                                if line.product_qty > 0:
+                                    # qty = qty - move_ids[i].quantity_done
+                                    move_ids[i].write({"quantity_done":move_ids[i].quantity_done-line.product_qty})
                                     move_ids[i].picking_id.write({'updated_by':self.env.user.id,'updated_on':datetime.now()})
                                     move_ids[i].sale_line_id.order_id.write({'updated_by':self.env.user.id,'updated_on':datetime.now()})
                                     line.sudo().product_id.product_import_product_published()
                                 else:
                                     continue
                             except:
-                                # for move in move_ids.mapped('move_line_ids'):
-                                move = move_ids[i].move_line_ids
-                                if self.picking_id.move_ids_without_package.filtered(lambda x: x.product_id.is_case_product):
-                                    qty_line = line.product_qty
-                                if qty_line > 0:
-                                    qty_line = qty_line - move.qty_done
-                                move.write({"qty_done":0 if qty_line >= 0 else move.qty_done-abs(move_ids.quantity_done+qty_line)})
-                                move.picking_id.write({'updated_by':self.env.user.id,'updated_on':datetime.now()})
-                                move.picking_id.sale_id.write({'updated_by':self.env.user.id,'updated_on':datetime.now()})
-                                line.sudo().product_id.product_import_product_published()
-                                # else:
-                                #     continue
+                                for move in move_ids.mapped('move_line_ids'):
+                                    if line.product_qty > 0:
+                                        # qty_line = qty_line - move.qty_done
+                                        move.write({"qty_done":move.qty_done-line.product_qty})
+                                        move.picking_id.write({'updated_by':self.env.user.id,'updated_on':datetime.now()})
+                                        move.picking_id.sale_id.write({'updated_by':self.env.user.id,'updated_on':datetime.now()})
+                                        line.sudo().product_id.product_import_product_published()
+                                else:
+                                    continue
                     else:
                         messages.append('No order for product %s.'%(line.product_id.name))
                         flag=True

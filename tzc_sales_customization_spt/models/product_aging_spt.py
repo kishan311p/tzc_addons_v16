@@ -11,7 +11,7 @@ class ProductAgingSpt(models.Model):
 
     def _compute_aging_products_count(self):
         for record in self:
-            products =  self.env['product.product'].search([("aging",'=',record.id)])
+            products =  self.env['product.product'].search([('is_pending_price','=',False),("aging",'=',record.id)])
             record.products_count = len(products)
 
     def action_open_aging_spt(self):

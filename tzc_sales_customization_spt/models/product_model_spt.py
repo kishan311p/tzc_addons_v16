@@ -16,7 +16,7 @@ class ProductModelSpt(models.Model):
     product_count = fields.Integer("Products",compute="_compute_product_count")
     def _compute_product_count(self):
         for record in self:
-            product_ids = self.env['product.product'].search([('model','=',record.id)])
+            product_ids = self.env['product.product'].search([('is_pending_price','=',False),('model','=',record.id)])
             record.product_count = len(product_ids)
 
     def open_model_product_variants(self):

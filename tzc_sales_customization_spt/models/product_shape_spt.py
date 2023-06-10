@@ -18,7 +18,7 @@ class product_shape_spt(models.Model):
 
     def _compute_shape_products(self):
         for record in self:
-            products = self.env['product.product'].search([("shape_id",'in',record.ids)])
+            products = self.env['product.product'].search([('is_pending_price','=',False),("shape_id",'in',record.ids)])
             record.products_count = len(products)
         
     def action_open_shape_products_spt(self):

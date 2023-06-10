@@ -323,6 +323,26 @@
             <field name="groups" eval="[(4, ref('stock.group_stock_manager'))]"/>
         </record>
 
+        <!-- Marketing Participants Rule -->
+        <record id="marketing_participant_salesperson_rule" model="ir.rule">
+            <field name="name">Marketing Pariticipant Salesperson Rule</field>
+            <field ref="marketing_automation.model_marketing_participant" name="model_id"/>
+            <field name="domain_force">[('salesperson_id','=',user.id)]</field>
+            <field name="groups" eval="[(4, ref('tzc_sales_customization_spt.group_partner_access_salesperson'))]"/>
+        </record>
+        <record id="marketing_participant_all_customer_rule" model="ir.rule">
+            <field name="name">Marketing Pariticipant All Rule</field>
+            <field ref="marketing_automation.model_marketing_participant" name="model_id"/>
+            <field name="domain_force">[(1,'=',1)]</field>
+            <field name="groups" eval="[(4, ref('tzc_sales_customization_spt.group_partner_access_manager'))]"/>
+        </record>
+        <record id="marketing_participant_sales_manager_rule" model="ir.rule">
+            <field name="name">Marketing Pariticipant Manager</field>
+            <field ref="marketing_automation.model_marketing_participant" name="model_id"/>
+            <field name="domain_force">['|',('partner_id','in',user.get_filtere_contact().ids),('salesperson_id','=',user.id)]</field>
+            <field name="groups" eval="[(4, ref('tzc_sales_customization_spt.group_sales_manager_spt'))]"/>
+        </record>
+
     </data>
 
 

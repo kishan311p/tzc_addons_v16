@@ -487,3 +487,62 @@ class marketing_campaign(models.Model):
         for campaign in self:
             campaign.sync_participants()
             campaign.marketing_activity_ids.execute()
+
+    def action_salesperson_marketing_campaign(self):
+        partner_model = self.env.ref('base.model_res_partner')
+        # salesperson_ids = self.env.user.ids
+        partner_access_ids = self.env.user.get_filtere_contact()
+        # if self.env.user.allow_user_ids:
+        #     salesperson_ids.extend(self.env.user.allow_user_ids.ids)
+        if self.env.user.has_group('base.group_system'):
+            query = f'''
+            select id from marketing_campaign
+        '''
+        elif len(partner_access_ids)>1:
+            query = f'''
+                select mp.campaign_id from marketing_participant as mp
+                left join res_partner as rp on rp.id=mp.res_id
+                where mp.model_name='res.partner' and rp.id in {tuple(partner_access_ids.ids)}
+                group by mp.campaign_id
+            '''
+        else:
+            query = f'''
+                select mp.campaign_id from marketing_participant as mp
+                left join res_partner as rp on rp.id=mp.res_id
+                where mp.model_name='res.partner' and rp.user_id = {self.env.user.id}
+                group by mp.campaign_id
+            '''
+        self.env.cr.execute(query)
+        record_data = self.env.cr.fetchall()
+        campaign_ids = list(map(lambda x: x[0], record_data))
+
+        # Checking campaign with draft or zero participants. And targeting that campaign with domain.
+        campaign_to_check = self.search([('id','not in',campaign_ids)]).filtered(lambda x : len(x.participant_ids)==0 or x.model_id != partner_model)
+        partner_obj=self.env['res.partner']
+        for campaign in campaign_to_check:
+            # If campaign model is res.partner then we check it salesperson wise,
+            # else if campaign is of other model then we add it directly
+            if campaign.model_id == partner_model:
+                partner_ids = partner_obj.search(eval(campaign.domain))
+                
+                if set(partner_access_ids.ids) & set(partner_ids.ids):
+                    campaign_ids.append(campaign.id)
+                
+                elif self.env.user.id in partner_ids.mapped('user_id').ids or self.env.user.has_group('base.group_system'):
+                    campaign_ids.append(campaign.id)
+                
+                else:
+                    pass
+            else:
+                campaign_ids.append(campaign.id)
+        return{
+            'name': ('Campaigns'),
+            'res_model': 'marketing.campaign',
+            'type': 'ir.actions.act_window',
+            'views': [(self.env.ref('marketing_automation.marketing_campaign_view_kanban').id, 'kanban'),
+                      (self.env.ref('marketing_automation.marketing_campaign_view_form').id, 'form'),
+                      (self.env.ref('marketing_automation.marketing_campaign_view_tree').id, 'tree'),
+                      ],
+            'domain':[('id','in',campaign_ids)],
+            'target': 'current',
+        }

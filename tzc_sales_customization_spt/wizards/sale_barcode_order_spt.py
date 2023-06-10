@@ -102,7 +102,7 @@ class sale_barcode_order_spt(models.TransientModel):
                         sale_case_order_line = sale_order_line_obj.create(case_vals)
                         sale_case_order_line.product_id_change()
                         sale_case_order_line._onchange_fix_discount_price_spt()
-        self.sale_id.merge_order_lines()
+        # self.sale_id.merge_order_lines()
         self.sale_id._amount_all()
         
     def _add_product(self, barcode):

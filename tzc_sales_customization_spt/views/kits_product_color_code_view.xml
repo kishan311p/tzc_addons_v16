@@ -7,31 +7,53 @@
         <field name="arch" type="xml">
             <form string="">
                 <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_open_color_code_products_spt" type="object" class="oe_stat_button" icon="fa-cubes">
+                            <div class="o_field_widget o_stat_info">
+                                <span class="o_stat_value">
+                                    <field name="products_count"/>
+                                </span>
+                                <span class="o_stat_text"> Products</span>
+                            </div>
+                        </button>
+                    </div>
                     <h1>
                         <field name="name" string="Name"/>
-                        <field name="active" widget="boolean_toggle"/>
 
                     </h1>
                     <group>
                         <group>
-                            <field name="color" />
+                            <!-- <field name="color" /> -->
+                            <field name="active" widget="boolean_toggle"/>
                         </group>
                         <group>
-                            <field name="color" widget="color"/>
+                            <!-- <field name="color" widget="color"/> -->
                         </group>
                     </group>
                     <notebook>
-                        <page name="temple_size" string="Temple Size">
-                            <field name="temple_size_ids" />
-
-                        </page>
-                        <page name="bridge_size" string="Bridge Size">
-                            <field name="bridge_size_ids" />
-
-                        </page>
                         <page name="eye_size" string="Eye Size">
 
-                            <field name="eye_size_ids" />
+                            <field name="eye_size_ids">
+                                <tree editable="bottom">
+                                    <field name="name" string="Name" />
+                                </tree>
+                            </field>
+                        </page>
+                        <page name="bridge_size" string="Bridge Size">
+                            <field name="bridge_size_ids">
+                                <tree editable="bottom">
+                                    <field name="name" string="Name" />
+                                </tree>
+                            </field>
+
+                        </page>
+                        <page name="temple_size" string="Temple Size">
+                            <field name="temple_size_ids">
+                                <tree editable="bottom">
+                                    <field name="name" string="Name" />
+                                </tree>
+                            </field>
+
                         </page>
                     </notebook>
                 </sheet>

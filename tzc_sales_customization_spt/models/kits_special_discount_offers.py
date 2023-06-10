@@ -25,3 +25,5 @@ class kits_special_discount_offers(models.Model):
     offer_expired_mobile_banners = fields.Char('Offer Expired Mobile Banners',related='offer_expired_mobile_banners_url')
     brands_ids = fields.One2many('kits.special.discount.offers.line', 'sdo_id', string='Brands')
     active = fields.Boolean('Active',default=True)
+    offer_icon_url = fields.Char('Offer Icon URL')
+    offer_icon = fields.Char('Offer Icon',related='offer_icon_url')

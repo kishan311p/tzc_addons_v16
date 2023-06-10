@@ -49,8 +49,9 @@ class delivery_carrier(models.Model):
     @api.model_create_multi
     def create(self,vals):
         res = super(delivery_carrier,self).create(vals)
-        if vals.get('integration_level'):
-            vals['integration_level'] = 'rate'
+        for val in vals:
+            if val.get('integration_level'):
+                val['integration_level'] = 'rate'
         return res
 
     def fedex_send_shipping(self, pickings):

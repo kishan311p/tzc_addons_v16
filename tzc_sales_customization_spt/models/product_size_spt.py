@@ -15,7 +15,7 @@ class ProductSizeSpt(models.Model):
     
     def _compute_size_product_variants(self):
         for record in self:
-            product_ids = self.env['product.product'].search([('size','=',record.id)])
+            product_ids = self.env['product.product'].search([('is_pending_price','=',False),('size','=',record.id)])
             record.products_count = len(product_ids)
 
     def action_open_size_products_spt(self):

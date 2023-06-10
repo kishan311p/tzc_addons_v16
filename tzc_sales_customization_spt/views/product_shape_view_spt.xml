@@ -12,7 +12,7 @@
             <field name="name">product.shape.from.view.spt</field>
             <field name="model">product.shape.spt</field>
             <field name="arch" type="xml">
-                <form create="0" edit="0">
+                <form create="1" edit="1">
                     <sheet>
                         <div class="oe_button_box" name="button_box">
                             <!-- <field name="is_published" invisible="1" modifiers="{'invisible':true}"/>
@@ -48,7 +48,7 @@
             <field name="name">product.shape.tree.view.spt</field>
             <field name="model">product.shape.spt</field>
             <field name="arch" type="xml">
-                <tree default_order="name" create="0" edit="0">
+                <tree default_order="name" create="1" edit="1">
                     <field name="name"  string="Name"/>
                     <!-- <field name="is_published"/> -->
                 </tree>

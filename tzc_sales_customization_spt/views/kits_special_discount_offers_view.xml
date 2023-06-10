@@ -37,11 +37,24 @@
                         <group>
                             <field name="name"  required="1"/>
                             <field name="active" widget="boolean_toggle"/>
-                            <field name="url_keyword"  required="1"/>
+                            <field name="url_keyword" widget="url"  required="1"/>
                         </group>
                         <group>
                             <field name="start_date" />
                             <field name="end_date" />
+
+                        </group>
+                         <group>
+                            <field name="offer_icon_url" widget="url"  required="1"/>
+                            <field name="mobile_main_banners_url"  required="1"/>
+                            <field name="desktop_main_banners_url" required="1" />
+
+                        </group>
+                        <group>
+
+                            <field name="offer_icon" widget="image" class="oe_avatar" options="{'zoom': true,'preview_image': 'offer_icon_url','size': [128, 128]}"/>
+                            <field name="mobile_main_banners"  widget="image" class="oe_avatar" options="{'zoom': true,'preview_image': 'mobile_main_banners_url','size': [128, 128]}"/>
+                            <field name="desktop_main_banners"  widget="image" class="oe_avatar" options="{'zoom': true,'preview_image': 'desktop_main_banners_url','size': [128, 128]}"/>
 
                         </group>
                         <group>
@@ -55,17 +68,7 @@
                             <field name="offer_expired_mobile_banners"  widget="image" class="oe_avatar" options="{'zoom': true,'preview_image': 'offer_expired_mobile_banners_url','size': [128, 128]}" />
                         
                         </group>
-                         <group>
-                            <field name="mobile_main_banners_url"  required="1"/>
-                            <field name="desktop_main_banners_url" required="1" />
 
-                        </group>
-                        <group>
-
-                            <field name="mobile_main_banners"  widget="image" class="oe_avatar" options="{'zoom': true,'preview_image': 'mobile_main_banners_url','size': [128, 128]}"/>
-                            <field name="desktop_main_banners"  widget="image" class="oe_avatar" options="{'zoom': true,'preview_image': 'desktop_main_banners_url','size': [128, 128]}"/>
-
-                        </group>
                     </group>
                     <notebook>
                         <page name="brand" string="Brand">
@@ -82,5 +85,4 @@
         </field>
     </record>
 
-    <menuitem id="kits_special_discount_offers_menu" name="Special Discount Offers" action="kits_special_discount_offers_action" parent="sale.sale_menu_root" groups="base.group_system,tzc_sales_customization_spt.group_marketing_user" sequence="52"/>
 </odoo>

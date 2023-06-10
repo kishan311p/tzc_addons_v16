@@ -41,6 +41,17 @@ class ProductBrandSpt(models.Model):
     model_ids = fields.One2many('product.model.spt', 'brand_id', string='Model')
     case_product_ids = fields.One2many('product.product', 'brand_id', string='Case Products')
 
+    
+    def action_open_brand_products_spt(self):
+        return {
+            "name":_("Brand Products"),
+            "type":"ir.actions.act_window",
+            "res_model":"product.product",
+            "view_mode":"tree,form",
+            "domain":[('is_pending_price','=',False),('brand','=',self.id)],
+            "target":"current",
+        }
+
     @api.onchange('brand_link')
     def _onchange_brand_link(self):
         for record in self:
@@ -48,7 +59,7 @@ class ProductBrandSpt(models.Model):
 
     def _get_brand_data_spt(self):
         for record in self:
-            product_ids = self.env['product.product'].search([('brand', '=', record.id)]).ids
+            product_ids = self.env['product.product'].search([('is_pending_price','=',False),('brand', '=', record.id)]).ids
             record.product_ids = product_ids
             for brand in record:
                 brand.products_count = len(product_ids)

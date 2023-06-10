@@ -17,7 +17,7 @@ class product_rim_type_spt(models.Model):
 
     def _compute_rim_type_products(self):
         for record in self:
-            products = self.env['product.product'].search([("rim_type",'=',record.id)])
+            products = self.env['product.product'].search([('is_pending_price','=',False),("rim_type",'=',record.id)])
             record.products_count = len(products)
     
     def action_open_rim_type_product_spt(self):

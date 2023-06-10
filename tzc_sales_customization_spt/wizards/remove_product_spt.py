@@ -77,31 +77,31 @@ class remove_product_spt(models.TransientModel):
     def on_barcode_scanned(self, barcode):
         self._add_product(barcode)
 
-    # def action_process(self):
-    #     sol_obj = self.env['sale.order.line']
-    #     messages =[]
-    #     flag = False
-    #     if self.line_ids and self.line_ids.ids:
-    #         for line in self.line_ids:
-    #             if line.product_id and line.product_id.id:
-    #                 sol_ids = sol_obj.search([('order_id','=',self.sale_id.id),('product_id','=',line.product_id.id)])
-    #                 qty = line.product_qty
-    #                 if sol_ids and sol_ids.ids:
-    #                     for i in range(0,len(sol_ids)):
-    #                         if qty > 0:
-    #                             qty = qty - sol_ids[i].product_uom_qty
-    #                             sol_ids[i].write({"product_uom_qty":0 if qty >= 0 else sol_ids[i].product_uom_qty - abs(sol_ids[i].product_uom_qty + qty)})
-    #                             sol_ids.order_id.write({'updated_by':self.env.user.id,'updated_on':datetime.now()})
-    #                         else:
-    #                             continue
-    #                 else:
-    #                     messages.append("Order line not found for product %s."%(line.product_id.display_name))
-    #                     flag = True
-    #             else:
-    #                 raise UserError(_("No product found in line. Please select atleast one product."))
-    #     if flag:
-    #         raise UserError('\n'.join(messages))
-    #     self.sale_id.order_line.filtered(lambda line: line.product_uom_qty in [0.0,000]).unlink()
+    def action_process(self):
+        sol_obj = self.env['sale.order.line']
+        messages =[]
+        flag = False
+        if self.line_ids and self.line_ids.ids:
+            for line in self.line_ids:
+                if line.product_id and line.product_id.id:
+                    sol_ids = sol_obj.search([('order_id','=',self.sale_id.id),('product_id','=',line.product_id.id)])
+                    # qty = line.product_qty
+                    if sol_ids and sol_ids.ids:
+                        for i in range(0,len(sol_ids)):
+                            if line.product_qty > 0:
+                                # qty = qty - sol_ids[i].product_uom_qty
+                                sol_ids[i].write({"product_uom_qty":sol_ids[i].product_uom_qty - line.product_qty})
+                                sol_ids.order_id.write({'updated_by':self.env.user.id,'updated_on':datetime.now()})
+                            else:
+                                continue
+                    else:
+                        messages.append("Order line not found for product %s."%(line.product_id.display_name))
+                        flag = True
+                else:
+                    raise UserError(_("No product found in line. Please select atleast one product."))
+        if flag:
+            raise UserError('\n'.join(messages))
+        self.sale_id.order_line.filtered(lambda line: line.product_uom_qty in [0.0,000]).unlink()
 
     def action_edit_product(self):
         self.ensure_one()
@@ -256,44 +256,31 @@ class remove_product_spt(models.TransientModel):
     def on_barcode_scanned(self, barcode):
         self._add_product(barcode)
 
-    def action_process(self):
-        sol_obj = self.env['sale.order.line']
-        messages =[]
-        flag = False
-        if self.line_ids:
-            for line in self.line_ids:
-                if line.product_id:
-                    sol_ids = sol_obj.search([('order_id','=',self.sale_id.id),('product_id','=',line.product_id.id)])
-                    # sol_ids = sol_obj.search([('order_id','=',self.sale_id.id),('product_id.brand','=',line.product_id.brand.id)])
-                    qty = line.product_qty
-                    if sol_ids:
-                        for i in range(0,len(sol_ids)):
-                            
-                            # Included Case
-                            case_product_id = line.product_id.case_product_id
-                            if case_product_id:
-                                col_id = sol_obj.search([('order_id','=',self.sale_id.id),('product_id','=',case_product_id.id),('is_included_case','=',True)],limit=1)
-                                if col_id:
-                                    case_qty = line.product_qty  
-                                    if case_qty > 0:
-                                        case_qty = case_qty - col_id.product_uom_qty
-                                        col_id.write({"product_uom_qty":0 if case_qty >= 0 else col_id.product_uom_qty - abs(col_id.product_uom_qty + case_qty)})
-                                        col_id.order_id.write({'updated_by':self.env.user.id,'updated_on':datetime.now()})
-
-                            if qty > 0:
-                                qty = qty - sol_ids[i].product_uom_qty
-                                sol_ids[i].write({"product_uom_qty":0 if qty >= 0 else sol_ids[i].product_uom_qty - abs(sol_ids[i].product_uom_qty + qty)})
-                                sol_ids.order_id.write({'updated_by':self.env.user.id,'updated_on':datetime.now()})
-                            else:
-                                continue
-                    else:
-                        messages.append("Order line not found for product %s."%(line.product_id.display_name))
-                        flag = True
-                else:
-                    raise UserError(_("No product found in line. Please select atleast one product."))
-        if flag:
-            raise UserError('\n'.join(messages))
-        self.sale_id.order_line.filtered(lambda line: line.product_uom_qty in [0.0,000]).unlink()
+    # def action_process(self):
+    #     sol_obj = self.env['sale.order.line']
+    #     messages =[]
+    #     flag = False
+    #     if self.line_ids and self.line_ids.ids:
+    #         for line in self.line_ids:
+    #             if line.product_id and line.product_id.id:
+    #                 sol_ids = sol_obj.search([('order_id','=',self.sale_id.id),('product_id','=',line.product_id.id)])
+    #                 qty = line.product_qty
+    #                 if sol_ids and sol_ids.ids:
+    #                     for i in range(0,len(sol_ids)):
+    #                         if qty > 0:
+    #                             qty = qty - sol_ids[i].product_uom_qty
+    #                             sol_ids[i].write({"product_uom_qty":0 if qty >= 0 else sol_ids[i].product_uom_qty - abs(sol_ids[i].product_uom_qty + qty)})
+    #                             sol_ids.order_id.write({'updated_by':self.env.user.id,'updated_on':datetime.now()})
+    #                         else:
+    #                             continue
+    #                 else:
+    #                     messages.append("Order line not found for product %s."%(line.product_id.display_name))
+    #                     flag = True
+    #             else:
+    #                 raise UserError(_("No product found in line. Please select atleast one product."))
+    #     if flag:
+    #         raise UserError('\n'.join(messages))
+    #     self.sale_id.order_line.filtered(lambda line: line.product_uom_qty in [0.0,000]).unlink()
 
 class remove_product_qty_spt(models.TransientModel):
     _name = "remove.product.qty.spt"

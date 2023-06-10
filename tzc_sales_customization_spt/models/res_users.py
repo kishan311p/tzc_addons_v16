@@ -188,8 +188,9 @@ class res_users(models.Model):
     @api.model_create_multi
     def create(self, values):
         self.env['ir.ui.menu'].clear_caches()
-        if 'email' in values.keys() and values['email']:
-            values.update({'email':values['email'].lower()})
+        for val in values:
+            if 'email' in val.keys() and val['email']:
+                val.update({'email':val['email'].lower()})
         # ir_model_data = self.env['ir.model.data']
         # portal_user_id = ir_model_data.get_object_reference(
         #     'base', 'group_portal')[1]

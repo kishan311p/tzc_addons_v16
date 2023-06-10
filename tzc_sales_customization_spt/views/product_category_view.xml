@@ -1,5 +1,16 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <odoo>
+    <data noupdate="1">
+        <record id="account.view_category_property_form" model="product.category">
+            <field name="active">False</field>
+        </record>
+        <record id="stock.product_category_form_view_inherit" model="product.category">
+            <field name="active">False</field>
+        </record>
+        
+    
+    </data>
+    
     <record id="product_category_list_view_inherit_spt" model="ir.ui.view">
         <field name="name">product.category.list.inherit.spt</field>
         <field name="model">product.category</field>
@@ -25,6 +36,22 @@
             <xpath expr="//field[@name='parent_id']" position="after">
                 <field name="active" widget="boolean_toggle"/>
             </xpath>
+            <xpath expr="//div[@name='button_box']" position="replace">
+                <div class="oe_button_box" name="button_box">
+                    <button name="action_open_category_products_spt" type="object" class="oe_stat_button" icon="fa-cubes">
+                        <div class="o_field_widget o_stat_info">
+                            <span class="o_stat_value">
+                                <field name="product_count"/>
+                            </span>
+                            <span class="o_stat_text"> Products</span>
+                        </div>
+                    </button>
+                </div>
+
+            </xpath>
+            <!-- <xpath expr="//group[@name='first']" position="replace">
+            </xpath> -->
+
         </field>
     </record>
     <record id="case_product_category" model="product.category">

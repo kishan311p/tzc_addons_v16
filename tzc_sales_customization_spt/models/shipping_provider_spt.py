@@ -12,6 +12,8 @@ class shipping_provider_spt(models.Model):
     sequence = fields.Integer()
     carrier_id = fields.Many2one('delivery.carrier','Service Type')
     is_tracking_req_flag = fields.Boolean('Tracking No. Required ?')
+    active = fields.Boolean('Active',default=True)
+    
 
     @api.model
     def _get_provider(self):

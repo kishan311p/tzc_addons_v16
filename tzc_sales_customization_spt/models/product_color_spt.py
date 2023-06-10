@@ -18,9 +18,9 @@ class ProductColorSpt(models.Model):
 
     def _compute_color_products_spt(self):
         for record in self:
-            primanry_products = self.env['product.product'].search([('product_color_name','=',record.id)])
-            secondary_products = self.env['product.product'].search([('secondary_color_name','=',record.id)])
-            lense_color_name = self.env['product.product'].search([('lense_color_name','=',record.id)])
+            primanry_products = self.env['product.product'].search([('is_pending_price','=',False),('product_color_name','=',record.id)])
+            secondary_products = self.env['product.product'].search([('is_pending_price','=',False),('secondary_color_name','=',record.id)])
+            lense_color_name = self.env['product.product'].search([('is_pending_price','=',False),('lense_color_name','=',record.id)])
             record.primary_color_products = len(primanry_products)
             record.secondary_color_products = len(secondary_products)
             record.lense_color_products = len(lense_color_name)
@@ -39,7 +39,7 @@ class ProductColorSpt(models.Model):
             "type":"ir.actions.act_window",
             "res_model": "product.product",
             "view_mode":"tree,form",
-            "domain":[('secondary_color_name','=',self.id)]
+            "domain":[('lense_color_name','=',self.id)]
         }
         
     def action_open_secondarycolor_products_spt(self):

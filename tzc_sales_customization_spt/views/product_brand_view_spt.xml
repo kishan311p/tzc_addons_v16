@@ -28,6 +28,16 @@
                                 <field name="products_count" widget="statinfo" string="Products" />
                             </button>
                         </div> -->
+                        <div class="oe_button_box" name="button_box">
+                            <button name="action_open_brand_products_spt" type="object" class="oe_stat_button" icon="fa-cubes">
+                                <div class="o_field_widget o_stat_info">
+                                    <span class="o_stat_value">
+                                        <field name="products_count"/>
+                                    </span>
+                                    <span class="o_stat_text"> Products</span>
+                                </div>
+                            </button>
+                        </div>
                         <field name="logo" widget="image" class="oe_avatar" options="{'zoom': true,'preview_image': 'logo','size': [50, 50]}" size="[50,50]"/>
                         <div class="oe_title">
                             <label for="name" string="Brand Name" class="oe_edit_only" />
@@ -55,10 +65,14 @@
                         <xpath>
                             <notebook>
                                 <page name="model" string="Model">
-                                    <field name="model_ids" />
+                                    <field name="model_ids">
+                                        <tree editable="bottom">
+                                            <field name="name" string="Name" />
+                                        </tree>
+                                    </field>
 
                                 </page>
-                                <page string="Products" readonly="1">
+                                <!-- <page string="Products" readonly="1">
                                     <separator string="Select Products of this Brand" />
                                     <tr>
                                         <td>
@@ -70,7 +84,7 @@
                                             </field>
                                         </td>
                                     </tr>
-                                </page>
+                                </page> -->
                                 <page string="Description">
                                     <group>
                                         <field name="description"/>

@@ -74,11 +74,12 @@ class mailing_contact(models.Model):
     def create(self,values):
         vals = super(mailing_contact,self).create(values)
         website_contact = request.context.get('website_contact')
-        if website_contact:
-            vals.source = 'newsletter'
-        if 'email' in values.keys():
-            if values['email']:
-                values['email'] = values['email'].lower()
+        for val in vals:
+            if website_contact:
+                val.source = 'newsletter'
+            if 'email' in values.keys():
+                if values['email']:
+                    values['email'] = values['email'].lower()
         return vals
 
     def write(self,values):
