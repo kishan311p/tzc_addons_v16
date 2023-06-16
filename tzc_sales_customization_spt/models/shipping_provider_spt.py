@@ -13,8 +13,17 @@ class shipping_provider_spt(models.Model):
     carrier_id = fields.Many2one('delivery.carrier','Service Type')
     is_tracking_req_flag = fields.Boolean('Tracking No. Required ?')
     active = fields.Boolean('Active',default=True)
+    is_published = fields.Boolean('Is Published',default=True)
     
 
     @api.model
     def _get_provider(self):
         return list(self.env['delivery.carrier']._fields['delivery_type'].selection)
+
+    def action_published(self):
+        for record in self:
+            record.is_published = True
+
+    def action_unpublished(self):
+        for record in self:
+            record.is_published = False

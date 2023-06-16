@@ -27,3 +27,11 @@ class ProductSizeSpt(models.Model):
             "target":"current",
             "domain":[("size",'=',self.id)],
         }
+
+    def action_active(self):
+        for record in self:
+            record.active = True
+
+    def action_unactive(self):
+        for record in self:
+            record.active = False

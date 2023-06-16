@@ -29,47 +29,54 @@
                             <button name="action_open_material_products_spt" type="object" class="oe_stat_button" icon="fa-cubes">
                                 <field name="products_count" string="Products" widget="statinfo"/>
                             </button>
-                        </div>
+                            <field name="active" invisible="1" />
+                            <button type="object" name="action_active" class="oe_stat_button" icon="fa-square-o" attrs="{'invisible':[('active','=',True)]}">
+                                <span style="color:#f06767;">Inactive</span>
+                            </button>
+                            <button type="object" name="action_unactive" class="oe_stat_button" icon="fa-check-square-o" attrs="{'invisible':[('active','=',False)]}">
+                                <span style="color:#00b115;">Active</span>
+                            </button>
+                    </div>
 
+                    <group>
                         <group>
-                            <group>
-                                <field name="name" string="Name"/>
-                                <field name="active" widget="boolean_toggle"/>
-                                
-                            </group>
+                            <field name="name" string="Name"/>
 
                         </group>
-                        <group>
-                           
-                        </group>
 
-                    </sheet>
-                </form>
-            </field>
-        </record>
+                    </group>
+                    <group>
 
-        <record id="product_material_tree_view_spt" model="ir.ui.view">
-            <field name="name">product.material.tree.view.spt</field>
-            <field name="model">product.material.spt</field>
-            <field name="arch" type="xml">
-                <tree default_order="name" create="1" edit="1">
-                    <field name="name" string="Name"/>
-                    <!-- <field name="is_published"/> -->
-                </tree>
-            </field>
-        </record>
+                    </group>
 
-        <record id="product_material_spt_view_search" model="ir.ui.view">
-            <field name="name">product.material.spt.view.search</field>
-            <field name="model">product.material.spt</field>
-            <field name="arch" type="xml">
-                <search string="">
-                    <filter name="active" string="Active" domain="[('active', '=', True)]" context="{}" />
-                    <filter name="inactive" string="Archive" domain="[('active', '=', False)]" context="{}" />
-                </search>
-            </field>
-        </record>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="product_material_tree_view_spt" model="ir.ui.view">
+        <field name="name">product.material.tree.view.spt</field>
+        <field name="model">product.material.spt</field>
+        <field name="arch" type="xml">
+            <tree default_order="name" create="1" edit="1">
+                <field name="name" string="Name"/>
+                <!-- <field name="is_published"/> -->
+            </tree>
+        </field>
+    </record>
+
+    <record id="product_material_spt_view_search" model="ir.ui.view">
+        <field name="name">product.material.spt.view.search</field>
+        <field name="model">product.material.spt</field>
+        <field name="arch" type="xml">
+            <search string="">
+                <field name="name" string="Name"/>
+                <filter name="active" string="Active" domain="[('active', '=', True)]" context="{}" />
+                <filter name="inactive" string="Archive" domain="[('active', '=', False)]" context="{}" />
+            </search>
+        </field>
+    </record>
 
 
-    </data>
+</data>
 </odoo>

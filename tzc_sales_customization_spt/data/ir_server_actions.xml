@@ -478,5 +478,25 @@
             </field>
         </record>
 
+        <record model="ir.actions.server" id="action_remove_force_unpublished_product">
+            <field name="name">Unpublish</field>
+            <field name="model_id" ref="tzc_sales_customization_spt.model_shipping_provider_spt"/>
+            <field name="binding_model_id" ref="tzc_sales_customization_spt.model_shipping_provider_spt" />
+            <field name="state">code</field>
+            <field name="code">
+                action = records.action_unpublished()
+            </field>
+        </record>
+        <record model="ir.actions.server" id="action_remove_force_published_product">
+            <field name="name">Publish</field>
+            <field name="model_id" ref="tzc_sales_customization_spt.model_shipping_provider_spt"/>
+            <field name="binding_model_id" ref="tzc_sales_customization_spt.model_shipping_provider_spt" />
+            <field name="state">code</field>
+            <field name="code">
+                action = records.action_published()
+            </field>
+        </record>
+        
+
     </data>
 </odoo>

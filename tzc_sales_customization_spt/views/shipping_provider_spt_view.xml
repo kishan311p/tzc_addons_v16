@@ -8,10 +8,18 @@
             <field name="arch" type="xml">
                 <form string="">
                     <sheet>
+                        <div class="oe_button_box" name="button_box">
+                            <field name="is_published" invisible="1" />
+                            <button type="object" name="action_published" class="oe_stat_button" icon="fa-square-o" attrs="{'invisible':[('is_published','=',True)]}">
+                                <span style="color:#f06767;">Unpublished</span>
+                            </button>
+                            <button type="object" name="action_unpublished" class="oe_stat_button" icon="fa-check-square-o" attrs="{'invisible':[('is_published','=',False)]}">
+                                <span style="color:#00b115;">Published</span>
+                            </button>
+                        </div>
                         <group>
                             <group>
                                 <field name="name" />
-                                <field name="active" widget="boolean_toggle"/>
                                 <field name="provider" />
                                 <field name="carrier_id" />
                             </group>
@@ -42,6 +50,7 @@
             <field name="model">shipping.provider.spt</field>
             <field name="arch" type="xml">
                 <search string="">
+                    <field name="name" />
                     <filter name="active" string="Active" domain="[('active', '=', True)]" context="{}" />
                     <filter name="inactive" string="Archive" domain="[('active', '=', False)]" context="{}" />
                 </search>

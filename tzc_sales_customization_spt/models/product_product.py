@@ -99,7 +99,7 @@ class ProductProduct(models.Model):
     # clearance_cad_in_percentage = fields.Float('Clearance CAD In Percentage',compute='_compute_clearance_price',store=True)
     clearance_usd_in_percentage = fields.Float('Clearance Price In Percentage')
     temporary_out_of_stock = fields.Boolean('Temporary Out Of Stock')
-    geo_restriction = fields.Many2many('res.country','product_with_country_real','product_id','country_id','Geo Restriction', index=True)
+    geo_restriction = fields.Many2many('res.country','product_with_country_real','product_id','country_id','Geo Restriction', index=True,store=True,related='brand.geo_restriction')
     new_arrivals = fields.Boolean('New Arrivals (Flag)')
     new_arrival_update = fields.Datetime('New Arrival Update',compute='_onchange_new_arrivals',store=True)
     length = fields.Float('Length (cm)')
@@ -135,7 +135,7 @@ class ProductProduct(models.Model):
     case_image_url_128 = fields.Image("Case Image 128", max_width=128, max_height=128, store=True)
 
     rim_type = fields.Many2one('product.rim.type.spt','Rim Type')
-    custom_message = fields.Text(string='Custom Message', default='', translate=True)
+    custom_message = fields.Text(string='Custom Message', default='', translate=True,related='brand.description',store=True)
     country_of_origin = fields.Many2one('res.country','Country Of Origin')
     gender = fields.Selection([('male','Male'),('female','Female'),('m/f','Unisex')], string='Gender')
     bridge_size = fields.Many2one('product.bridge.size.spt','Bridge Size')

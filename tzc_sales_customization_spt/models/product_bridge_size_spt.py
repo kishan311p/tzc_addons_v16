@@ -27,3 +27,11 @@ class ProductBridgeSizeSpt(models.Model):
             "domain":[('bridge_size','=',self.id)],
             "target":"current",
         }
+
+    def action_active(self):
+        for record in self:
+            record.active = True
+
+    def action_unactive(self):
+        for record in self:
+            record.active = False

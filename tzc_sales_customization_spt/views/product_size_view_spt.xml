@@ -18,12 +18,18 @@
                             <button name="action_open_size_products_spt" type="object" class="oe_stat_button" icon="fa-cubes">
                                 <field name="products_count" string="Products" widget="statinfo"/>
                             </button>
+                            <field name="active" invisible="1" />
+                            <button type="object" name="action_active" class="oe_stat_button" icon="fa-square-o" attrs="{'invisible':[('active','=',True)]}">
+                                <span style="color:#f06767;">Inactive</span>
+                            </button>
+                            <button type="object" name="action_unactive" class="oe_stat_button" icon="fa-check-square-o" attrs="{'invisible':[('active','=',False)]}">
+                                <span style="color:#00b115;">Active</span>
+                            </button>
                         </div>
 
                         <group>
                             <group>
                                 <field name="name"/>
-                                <field name="active" widget="boolean_toggle"/>
                             </group>
 
                         </group>
@@ -48,6 +54,7 @@
             <field name="model">product.size.spt</field>
             <field name="arch" type="xml">
                 <search string="">
+                    <field name="name" string="Name"/>
                     <filter name="active" string="Active" domain="[('active', '=', True)]" context="{}" />
                     <filter name="inactive" string="Archive" domain="[('active', '=', False)]" context="{}" />
                 </search>

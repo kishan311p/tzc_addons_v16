@@ -64,3 +64,11 @@ class ProductColorSpt(models.Model):
     #     for rec in self:
     #         if rec.is_published:
     #             rec.is_published = False
+
+    def action_active(self):
+        for record in self:
+            record.active = True
+
+    def action_unactive(self):
+        for record in self:
+            record.active = False

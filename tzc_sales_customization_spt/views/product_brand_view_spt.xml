@@ -37,6 +37,13 @@
                                     <span class="o_stat_text"> Products</span>
                                 </div>
                             </button>
+                            <field name="active" invisible="1" />
+                            <button type="object" name="action_active" class="oe_stat_button" icon="fa-square-o" attrs="{'invisible':[('active','=',True)]}">
+                                <span style="color:#f06767;">Inactive</span>
+                            </button>
+                            <button type="object" name="action_unactive" class="oe_stat_button" icon="fa-check-square-o" attrs="{'invisible':[('active','=',False)]}">
+                                <span style="color:#00b115;">Active</span>
+                            </button>
                         </div>
                         <field name="logo" widget="image" class="oe_avatar" options="{'zoom': true,'preview_image': 'logo','size': [50, 50]}" size="[50,50]"/>
                         <div class="oe_title">
@@ -47,7 +54,6 @@
                         </div>
                         <group>
                             <group>
-                                <field name="active" widget="boolean_toggle"/>
                                 <field name="brand_link" widget="url"/>
                             </group>
                             <group>
@@ -104,6 +110,10 @@
                                             <field name="updated_by" optional="show"/>
                                         </tree>
                                     </field>
+                                </page>
+                                <page name="geo_restriction" string="Geo Restriction">
+                                    <label for="geo_restriction"/>
+                                    <field name="geo_restriction" widget="many2many_tags" />
                                 </page>
                             </notebook>
                         </xpath>

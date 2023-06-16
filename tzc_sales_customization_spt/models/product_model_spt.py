@@ -28,3 +28,10 @@ class ProductModelSpt(models.Model):
             "type":'ir.actions.act_window',
             "target":"current",
         }
+    def action_active(self):
+        for record in self:
+            record.active = True
+
+    def action_unactive(self):
+        for record in self:
+            record.active = False

@@ -21,3 +21,11 @@ class ProductCategory(models.Model):
         for record in self:
             categ_ids = self.env['product.product'].search([('is_pending_price','=',False),('categ_id','=',record.id)])
             record.product_count = len(categ_ids)
+
+    def action_active(self):
+        for record in self:
+            record.active = True
+
+    def action_unactive(self):
+        for record in self:
+            record.active = False

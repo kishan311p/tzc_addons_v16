@@ -40,7 +40,7 @@ class ProductBrandSpt(models.Model):
     # case_type = fields.Selection([('original', 'Original'),('generic', 'Generic')],"Case Type",default='generic')
     model_ids = fields.One2many('product.model.spt', 'brand_id', string='Model')
     case_product_ids = fields.One2many('product.product', 'brand_id', string='Case Products')
-
+    geo_restriction = fields.Many2many('res.country','brand_with_country_real','brand_id','country_id','Geo Restriction', index=True)
     
     def action_open_brand_products_spt(self):
         return {
@@ -82,3 +82,11 @@ class ProductBrandSpt(models.Model):
     #         self.write({'website_published': False})
     #     else:
     #         self.write({'website_published': True})
+
+    def action_active(self):
+        for record in self:
+            record.active = True
+
+    def action_unactive(self):
+        for record in self:
+            record.active = False

@@ -33,3 +33,11 @@ class kits_product_color_code(models.Model):
             "domain":[('color_code','=',self.id)],
             "target":"current",
         }
+
+    def action_active(self):
+        for record in self:
+            record.active = True
+
+    def action_unactive(self):
+        for record in self:
+            record.active = False
