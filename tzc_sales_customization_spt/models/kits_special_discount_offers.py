@@ -8,6 +8,15 @@ class kits_special_discount_offers_line(models.Model):
     brand_ids = fields.Many2many('product.brand.spt','special_discount_offer_with_line_real','line_id','brand_id', string='Brand')
     amount = fields.Float('Discount(%)')
 
+
+class kits_special_discount_offers_product_line(models.Model):
+    _name = 'kits.special.discount.offers.product.line'
+
+    pp_sdo_id = fields.Many2one('kits.special.discount.offers', string='Special Discount Offers')
+    product_ids = fields.Many2many('product.product','sdo_with_pp_real','line_id','product_id', string='Product')
+    amount = fields.Float('Discount(%)')
+
+
 class kits_special_discount_offers(models.Model):
     _name = 'kits.special.discount.offers'
 
@@ -27,3 +36,5 @@ class kits_special_discount_offers(models.Model):
     active = fields.Boolean('Active',default=True)
     offer_icon_url = fields.Char('Offer Icon URL')
     offer_icon = fields.Char('Offer Icon',related='offer_icon_url')
+    product_ids = fields.One2many('kits.special.discount.offers.product.line', 'pp_sdo_id', string='Brands')
+    

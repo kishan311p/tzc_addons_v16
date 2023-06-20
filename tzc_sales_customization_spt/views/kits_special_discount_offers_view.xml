@@ -46,8 +46,8 @@
                         </group>
                          <group>
                             <field name="offer_icon_url" widget="url"  required="1"/>
-                            <field name="mobile_main_banners_url"  required="1"/>
                             <field name="desktop_main_banners_url" required="1" />
+                            <field name="mobile_main_banners_url"  required="1"/>
 
                         </group>
                         <group>
@@ -75,6 +75,14 @@
                             <field name="brands_ids">
                                 <tree editable="bottom">
                                     <field name="brand_ids" widget="many2many_tags" options="{'no_create': True, 'no_open': True}"/>
+                                    <field name="amount" />
+                                </tree>
+                            </field>
+                        </page>
+                        <page name="product" string="Product">
+                            <field name="product_ids">
+                                <tree editable="bottom">
+                                    <field name="product_ids" widget="many2many_tags" options="{'no_create': True, 'no_open': True}"/>
                                     <field name="amount" />
                                 </tree>
                             </field>
