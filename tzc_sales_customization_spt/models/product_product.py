@@ -110,7 +110,7 @@ class ProductProduct(models.Model):
     # shape_ids = fields.Many2many('product.shape.spt','product_with_shape_real','product_id','shape_id','Shapes')
     shape_id = fields.Many2one('product.shape.spt','Shapes')
     # website_id = fields.Many2one(compute="_compute_fields_stored", readonly=False, store=True)
-    qty_available = fields.Float(
+    qty_available = fields.Integer(
         'Quantity On Hand', compute='_compute_quantities', search='_search_qty_available',
         digits='Product Unit of Measure', compute_sudo=False,
         help="Current quantity of products.\n"
@@ -148,7 +148,7 @@ class ProductProduct(models.Model):
     on_consignment = fields.Boolean('On Consignment')
     minimum_qty = fields.Integer('Minimum Qty')
     is_new_price = fields.Boolean('New Price (Flag)')
-    actual_stock = fields.Float('Actual Stock',compute="calculate_actual_stock")
+    actual_stock = fields.Integer('Actual Stock',compute="calculate_actual_stock")
     # assign_qty = fields.Float('Assign Qty',default=0.0)
     # kits_ecom_categ_id = fields.Many2one('product.public.category','Website Public Product Category')
     variant_count = fields.Integer('Product Variant',compute="_get_product_variant")
@@ -316,10 +316,11 @@ class ProductProduct(models.Model):
 
     @api.depends('is_new_price')
     def _onchange_price_drop(self):
-        if self.is_new_price:
-            self.sudo().write({'price_drop_update' : datetime.now()})
-        else:
-            self.sudo().write({'price_drop_update' : False})
+        for rec in self:
+            if rec.is_new_price:
+                rec.sudo().write({'price_drop_update' : datetime.now()})
+            else:
+                rec.sudo().write({'price_drop_update' : False})
 
     @api.onchange('clearance_usd')
     def onchange_clearance_usd(self):
@@ -713,8 +714,8 @@ class ProductProduct(models.Model):
     def write(self, vals):
         field_list = ['variant_name','brand','default_code','image_url','lst_price','case_type','height','width','length','weight','volume']
         update = self.env['ir.model']._updated_data_validation(field_list,vals,self._name)
-        if vals.get('list_price') and self.lst_price > vals.get('list_price'):
-            vals.update({'is_new_price':True,'price_drop_update' : datetime.now()})
+        # if vals.get('list_price') and self.lst_price > vals.get('list_price'):
+        #     vals.update({'is_new_price':True,'price_drop_update' : datetime.now()})
         if update:
             vals.update({'updated_by':self.env.user.id,'updated_on':datetime.today()})
         if 'active' in vals and (vals['active'] == False or vals['active']) and not self.env.context.get('from_product_import'):

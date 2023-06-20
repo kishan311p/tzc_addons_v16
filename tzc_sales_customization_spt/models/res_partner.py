@@ -605,7 +605,7 @@ class res_partner(models.Model):
             if partner.internal_id:
                 partner_count = partner_obj.search_count([('internal_id','=',partner.internal_id)])
                 if partner_count >1:
-                    raise UserError(_('Internal id must be uniue'))
+                    raise UserError(_('Internal id must be unique'))
         
     # @api.constrains('property_product_pricelist', 'country_id')
     # def _check_pricelist(self):

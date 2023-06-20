@@ -72,7 +72,7 @@ class sale_order(models.Model):
     #kits_shipping_cost
     shipping_id = fields.Many2one('shipping.provider.spt',default=False,tracking=True)
     estimate_shipping_cost = fields.Float('Shipping Cost ')
-    actual_weight = fields.Float('Actual Weight (kg)')
+    actual_weight = fields.Float('Actual Weight (kg)',compute_sudo=True)
     kits_carrier_tracking_ref = fields.Char('Tracking Reference',compute="_compute_carrier_tracking_ref",compute_sudo=True,store=True)
     glass_weight_kg = fields.Float('Weight for items (kg)' ,compute='_compute_weight_kits',compute_sudo=True,store=True,help="The total weight of picked products.")
     weight_total_kg = fields.Float('Total Weight (kg)',compute='_compute_weight_kits',compute_sudo=True,store=True)

@@ -34,6 +34,7 @@ class kits_landing_view(models.Model):
 
 class kits_landing_url(models.Model):
     _name = 'kits.landing.url'
+    _description = "Kits Landing URL"
 
     sequence = fields.Integer(string="Sequence")
     url = fields.Char('URL')

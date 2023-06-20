@@ -5,6 +5,7 @@ class product_pricelist_item(models.Model):
 
     def write(self, vals):
         if vals.get('fixed_price'):
-            print('Hey')
+            if self.fixed_price > vals.get('fixed_price'):
+                self.product_id.is_new_price = True
         res = super(product_pricelist_item,self).write(vals)
         return res

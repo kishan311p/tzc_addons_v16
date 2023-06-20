@@ -8,7 +8,7 @@ class kits_inflation_rule(models.Model):
     country_id = fields.Many2many('res.country','inflation_country_rel','discount_id','brand_id',string='Country',index = True)
     brand_ids = fields.Many2many('product.brand.spt','inflation_brand_rel','model_id','brand_id','Brands',index = True)
     # inflation_rate = fields.Float('inflation (%)')
-    inflation_rate = fields.Integer('inflation (%)')
+    inflation_rate = fields.Integer('Inflation (%)')
     inflation_id = fields.Many2one('kits.inflation')
     
 

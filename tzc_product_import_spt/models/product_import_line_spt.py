@@ -29,7 +29,7 @@ class product_import_line_spt(models.Model):
     import_id = fields.Many2one('product.import.spt', 'Product Import')
     taxes_id = fields.Many2many('account.tax','import_line_tax_spt_real','import_line_id','tax_id','Customer Taxes')
     
-    qty = fields.Float('qty')
+    qty = fields.Integer('qty')
     hs_code = fields.Char('Hs Code')
     weight = fields.Float('Weight')
     volume = fields.Float('Volume')

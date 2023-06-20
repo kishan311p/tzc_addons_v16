@@ -57,7 +57,7 @@
             name="Video Page"
             action="action_kits_landing_view" 
             parent="kits_b2b_website.kits_b2b_main_menu" 
-            groups="base.group_system" 
+            groups="base.group_system,tzc_sales_customization_spt.group_marketing_user" 
             sequence="52"
             />
         <menuitem 
