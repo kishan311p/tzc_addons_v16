@@ -18,7 +18,7 @@
                         <field name="is_currency_change" invisible="1"/>
                     </div>
                     <div class="col-6" style="display:flex; margin-top: -6px;">
-                        <button icon="fa-solid fa-pencil" name="action_change_currency" type="object" attrs="{'invisible':[('is_currency_change','=',False)]}"/>
+                        <button icon="fa-solid fa-pencil" name="action_change_currency" type="object" attrs="{'invisible':[('is_currency_change','=',False)]}" title="Pencil Icon"/>
                     </div>
                 </div>
             </xpath>

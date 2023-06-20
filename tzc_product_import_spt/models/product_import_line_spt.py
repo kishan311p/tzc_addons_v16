@@ -68,8 +68,8 @@ class product_import_line_spt(models.Model):
     
     product_seo_keyword = fields.Char('Product SEO Keyword')
     gender = fields.Selection([('male','Male'),('female','Female'),('m/f','M/F')], string='Gender')
-    bridge_size = fields.Many2one('product.bridge.size.spt','Bridge Size')
-    temple_size = fields.Many2one('product.temple.size.spt','Temple Size')
+    bridge_size = fields.Many2one('product.bridge.size.spt','Bridge Size ')
+    temple_size = fields.Many2one('product.temple.size.spt',' Temple Size')
     shape = fields.Many2one('product.shape.spt','Shape')
     lense_color_name =  fields.Many2one('product.color.spt','Lense Color Name')
     aging = fields.Many2one('product.aging.spt','Aging')

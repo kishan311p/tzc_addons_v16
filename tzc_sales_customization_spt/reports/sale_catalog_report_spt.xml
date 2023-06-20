@@ -12,7 +12,7 @@
             menu="False"
 
         /> -->
-        <report 
+        <!-- <report 
             id="action_report_sales_preson_spt"
             string="sales_preson"
             model="sales.report.for.sales.person.wizard.spt" 
@@ -22,7 +22,16 @@
             print_report_name="'Sales Person Report'"
             menu="False"
 
-        />
+        /> -->
+        <record id="action_report_sales_preson_spt" model="ir.actions.report">
+            <field name="name">Sales Commission Report</field>
+            <field name="model">sales.report.for.sales.person.wizard.spt</field>
+            <field name="report_type">qweb-pdf</field>
+            <field name="report_name">tzc_sales_customization_spt.report_template_sales_preson_spt</field>
+            <field name="report_file">tzc_sales_customization_spt.report_template_sales_preson_spt</field>
+            <field name="print_report_name">'Sales Person Report'</field>
+            <field name="multi">False</field>
+        </record>
         <!-- <report 
             id="action_report_saleorder"
             string="Quotation / Order"
@@ -33,7 +42,7 @@
             print_report_name="(object.state in ('draft', 'sent') and 'Quotation - %s' % (object.name)) or 'Order - %s' % (object.name)"
         /> -->
 
-        <report
+        <!-- <report
             string="Picking Operations"
             id="stock.action_report_picking"
             model="False"
@@ -41,9 +50,17 @@
             name="stock.report_picking"
             file="stock.report_picking_operations"
             print_report_name="'Picking Operations - %s - %s' % (object.partner_id.name or '', object.name)"
-        />
+        /> -->
+        <record id="stock.action_report_picking" model="ir.actions.report">
+            <field name="name">Picking Operations</field>
+            <field name="model">False</field>
+            <field name="report_type">qweb-pdf</field>
+            <field name="report_name">stock.report_picking</field>
+            <field name="report_file">stock.report_picking_operations</field>
+            <field name="print_report_name">'Picking Operations - %s - %s' % (object.partner_id.name or '', object.name)</field>
+        </record>
 
-        <report 
+        <!-- <report 
             id="action_catalog_report_pdf"
             string="Catalog"
             model="sale.catalog"
@@ -53,11 +70,22 @@
             print_report_name="'Catalog - %s' % (object.name)"
             menu="False"
 
-        />
+        /> -->
+        <record id="action_catalog_report_pdf" model="ir.actions.report">
+            <field name="name">Catalog</field>
+            <field name="model">sale.catalog</field>
+            <field name="report_type">qweb-pdf</field>
+            <field name="report_name">tzc_sales_customization_spt.confirm_catalog_report_pdf_template</field>
+            <field name="report_file">tzc_sales_customization_spt.confirm_catalog_report_pdf_template</field>
+            <field name="print_report_name">'Catalog - %s' % (object.name)</field>
+            <field name="multi">False</field>
+        </record>
+
         <record id="action_catalog_report_pdf" model="ir.actions.report">
             <field name="paperformat_id" ref="tzc_sales_customization_spt.kits_quotations_and_order"/>
         </record>
-        <report 
+        
+        <!-- <report 
             id="action_abbreviate_report_spt"
             string="Abbreviate Report"
             model="sale.order" 
@@ -67,9 +95,18 @@
             print_report_name="'Sales - %s Abbreviate Report' % (object.name)"
             menu="False"
 
-        />
+        /> -->
+        <record id="action_abbreviate_report_spt" model="ir.actions.report">
+            <field name="name">Abbreviate Report</field>
+            <field name="model">sale.order</field>
+            <field name="report_type">qweb-pdf</field>
+            <field name="report_name">tzc_sales_customization_spt.abbreviate_report_template_spt</field>
+            <field name="report_file">tzc_sales_customization_spt.abbreviate_report_template_spt</field>
+            <field name="print_report_name">'Sales - %s Abbreviate Report' % (object.name)</field>
+            <field name="multi">False</field>
+        </record>
 
-        <report 
+        <!-- <report 
             id="action_abbreviate_invoice_report_spt"
             string="Abbreviate Report"
             model="account.move" 
@@ -79,9 +116,18 @@
             print_report_name="'Invoice - %s Abbreviate Report' % (object.name)"
             menu="False"
 
-        />
+        /> -->
+        <record id="action_abbreviate_invoice_report_spt" model="ir.actions.report">
+            <field name="name">Abbreviate Report</field>
+            <field name="model">account.move</field>
+            <field name="report_type">qweb-pdf</field>
+            <field name="report_name">tzc_sales_customization_spt.abbreviate_invoice_report_template_spt</field>
+            <field name="report_file">tzc_sales_customization_spt.abbreviate_invoice_report_template_spt</field>
+            <field name="print_report_name">'Invoice - %s Abbreviate Report' % (object.name)</field>
+            <field name="multi">False</field>
+        </record>
 
-        <report
+        <!-- <report
             id = "account.account_invoices"
             string = "Invoices"
             model = "account.move"
@@ -89,9 +135,17 @@
             file = "tzc_sales_customization_spt.kits_invoice_report"
             name = "tzc_sales_customization_spt.kits_invoice_report"
             print_report_name = "(object._get_report_base_filename())"
-        />
+        /> -->
+        <record id="account.account_invoices" model="ir.actions.report">
+            <field name="name">Invoices</field>
+            <field name="model">account.move</field>
+            <field name="report_type">qweb-pdf</field>
+            <field name="report_name">tzc_sales_customization_spt.kits_invoice_report</field>
+            <field name="report_file">tzc_sales_customization_spt.kits_invoice_report</field>
+            <field name="print_report_name">(object._get_report_base_filename())</field>
+        </record>
 
-        <report
+        <!-- <report
             id="account.account_invoices_without_payment"
             model="False"
             string="Invoices without Payment"
@@ -100,7 +154,15 @@
             file="account.report_invoice"
             attachment="(object.state == 'posted') and ((object.name or 'INV').replace('/','_')+'.pdf')"
             print_report_name="(object._get_report_base_filename())"
-        />
-
+        /> -->
+        <record id="account.account_invoices_without_payment" model="ir.actions.report">
+            <field name="name">Invoices without Payment</field>
+            <field name="model">account.move</field>
+            <field name="report_type">qweb-pdf</field>
+            <field name="report_name">account.report_invoice</field>
+            <field name="report_file">account.report_invoice</field>
+            <field name="print_report_name">(object._get_report_base_filename())</field>
+            <field name="attachment">(object.state == 'posted') and ((object.name or 'INV').replace('/','_')+'.pdf')</field>
+        </record>
     </data>
 </odoo>

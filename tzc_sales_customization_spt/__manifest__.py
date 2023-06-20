@@ -4,6 +4,7 @@
     'summary': 'ETO Sales Customization',
     'description': """
     """,
+    'license':"LGPL-3",
     'author': 'Keypress',
     'sequence': 1,
     'version': '16.0.0',

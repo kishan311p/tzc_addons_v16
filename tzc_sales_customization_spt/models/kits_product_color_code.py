@@ -9,8 +9,8 @@ class kits_product_color_code(models.Model):
     name = fields.Char('Color')
     color = fields.Char('HTML Code')
     model_id = fields.Many2one('product.model.spt', string='model')
-    temple_size_ids = fields.One2many('product.temple.size.spt', 'templesize_id', string='Temple Size')
-    bridge_size_ids = fields.One2many('product.bridge.size.spt', 'bridgesize_id', string='Bridge Size')
+    temple_size_ids = fields.One2many('product.temple.size.spt', 'templesize_id', string='Temple Size ')
+    bridge_size_ids = fields.One2many('product.bridge.size.spt', 'bridgesize_id', string='Bridge Size  ')
     eye_size_ids = fields.One2many('product.size.spt', 'eyesize_id', string='Eye Size')
     active = fields.Boolean('Active')
     products_count = fields.Integer(

@@ -393,11 +393,6 @@ The ${object.company_id.name} Team -->
                         Best regards,<br/>
                         Team Everything Optical
                         </p>
-                        <p>
-                            <t t-if="object.invoice_user_id.signature">
-                                <t t-out="object.invoice_user_id.signature or ''"></t>
-                            </t>
-                        </p>
                     </p>
                     <a t-attf-href="{{object.get_base_url()}}/report/pdf/account.report_invoice/{{object.id}}">
                         <img src="/tzc_sales_customization_spt/static/src/img/pdf.png" style="height:60px;width:100px;"/>

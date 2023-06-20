@@ -12,7 +12,7 @@ class kits_multi_website_coupon(models.Model):
     min_qty = fields.Integer("Minimum Order Quantity")
     min_purchase = fields.Float("Minimum Purhcase")
     promo_code = fields.Char("Promo Code")
-    discount_amount = fields.Float("Amount") 
+    discount_amount = fields.Float(" Amount") 
     website_id = fields.Many2one("kits.b2c.website","Website")
     start_date = fields.Date("Start Date")
     end_date = fields.Date("End Date")

@@ -9,7 +9,7 @@ class pricelist_partner_wizard_spt(models.TransientModel):
     _description = 'Set Pricelist In Partner'
 
     property_product_pricelist = fields.Many2one(
-        'product.pricelist', 'Pricelist')
+        'product.pricelist', ' Pricelist ')
     
     partner_ids = fields.Many2many('res.partner','pricelist_partner_wizard_res_partner_real','wizard_id','partner_id',string='Partner')
     

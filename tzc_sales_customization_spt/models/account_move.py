@@ -44,8 +44,8 @@ class account_move(models.Model):
     ordered_qty = fields.Integer('Ordered Quantity',compute="_compute_qty")
     delivered_qty = fields.Integer('Delivered Quantity',compute="_compute_qty")
     # picked_qty = fields.Integer('Picked Quantity',compute="_compute_qty")
-    amount_without_discount = fields.Monetary(string='Subtotal',compute_sudo=True,compute='_compute_amount', store=True, tracking=4)
-    amount_discount = fields.Monetary(string='Discount',compute_sudo=True,compute='_compute_amount', store=True, tracking=4)
+    amount_without_discount = fields.Monetary(string=' Subtotal',compute_sudo=True,compute='_compute_amount', store=True, tracking=4)
+    amount_discount = fields.Monetary(string=' Discount',compute_sudo=True,compute='_compute_amount', store=True, tracking=4)
     global_discount = fields.Float('Additional Discount',compute_sudo=True,store=True,compute='_compute_amount')
     order_id = fields.Many2one('sale.order','Sale Order',compute_sudo=True,compute='_compute_order_id',store=True)
     report_file = fields.Binary()
@@ -62,13 +62,13 @@ class account_move(models.Model):
     updated_by = fields.Many2one('res.users','Updated By  ')
     count_return_credit_notes = fields.Integer(compute="_count_return_credit_notes")
     is_commission_paid = fields.Boolean('Paid ?',tracking=True)
-    inv_payment_status = fields.Selection([('full','Fully Paid'),('partial','Partial Paid'),('over','Over Paid')],'Payment Status',compute="_compute_inv_payment_status",copy=False)
+    inv_payment_status = fields.Selection([('full','Fully Paid'),('partial','Partial Paid'),('over','Over Paid')],'   Payment Status  ',compute="_compute_inv_payment_status",copy=False)
     filtere_state = fields.Char(compute="_compute_payment_status",copy=False,store=True)
     is_admin = fields.Char(compute='_compute_is_admin', string='is_admin')
     report_token = fields.Char('Report Access Token')
     sale_order_number = fields.Char('Order Number',compute="_compute_sale_order_number")
-    kits_amount_tax = fields.Float('Tax')
-    kits_amount_total = fields.Float('Total')
+    kits_amount_tax = fields.Float(' Tax ')
+    kits_amount_total = fields.Float('  Total   ')
     # kits_amount_residual = fields.Float('Amount Due')
 
     def _filter_non_case_line(self):
@@ -659,7 +659,7 @@ class account_move(models.Model):
             model_description=self.with_context(lang=lang).type_name,
             force_email=True,
             default_is_print=False,
-            signature=self.invoice_user_id.signature,
+            user_signature=self.invoice_user_id.id,
             quotation_send = True
         )
         return {
@@ -1262,3 +1262,30 @@ class account_move(models.Model):
                         message = _("You cannot add/modify entries prior to and inclusive of the lock date %s. Check the company settings or ask someone with the 'Adviser' role", format_date(self.env, lock_date))
                     raise UserError(message)
         return True
+
+
+class account_invoice_send(models.TransientModel):
+    _inherit = 'account.invoice.send'
+
+    def send_and_print_action(self):
+        self.ensure_one()
+        if self._context.get('user_signature'):
+            ctx = self._context.copy()
+            signature = self.env['res.users'].browse(ctx.get('user_signature')).signature
+            ctx.update({'signature': signature}) 
+            self.env.context = ctx
+        if self.composition_mode == 'mass_mail' and self.template_id:
+            active_ids = self.env.context.get('active_ids', self.res_id)
+            active_records = self.env[self.model].browse(active_ids)
+            langs = active_records.mapped('partner_id.lang')
+            default_lang = get_lang(self.env)
+            for lang in (set(langs) or [default_lang]):
+                active_ids_lang = active_records.filtered(lambda r: r.partner_id.lang == lang).ids
+                self_lang = self.with_context(active_ids=active_ids_lang, lang=lang)
+                self_lang.onchange_template_id()
+                self_lang._send_email()
+        else:
+            self._send_email()
+        if self.is_print:
+            return self._print_document()
+        return {'type': 'ir.actions.act_window_close'}

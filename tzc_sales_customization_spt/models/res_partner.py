@@ -34,7 +34,7 @@ class res_partner(models.Model):
     def _get_default_pricelist(self):
         return self.env.ref('tzc_sales_customization_spt.usd_public_pricelist_spt').id
 
-    b2b_pricelist_id = fields.Many2one(comodel_name='product.pricelist',string="Pricelist",index = True,default=_get_default_pricelist)
+    b2b_pricelist_id = fields.Many2one(comodel_name='product.pricelist',string=" Pricelist",index = True,default=_get_default_pricelist)
     internal_id = fields.Char('Internal ID ')
     previous_total_sales = fields.Float('Previous Total Sales')
     customer_sales_rank = fields.Float('Customer Sales Rank')
@@ -118,7 +118,7 @@ class res_partner(models.Model):
         return [[code, name] for code,_, name,active,image in self.env['res.lang'].get_available()]
 
     # kits_lang = fields.Selection(_get_all_data,string='Language',default=_get_default_lang)
-    kits_lang = fields.Selection(language_code,string='Language',default='en')
+    kits_lang = fields.Selection(language_code,string=' Language',default='en')
     internal_language = fields.Selection(language_code,string='Internal Language',default='en')
 
     def onchange_country_id(self):
@@ -171,7 +171,7 @@ class res_partner(models.Model):
                 config_parameter = config_parameter_obj.sudo().get_param('user_ids_spt', False)
                 user_ids =user_obj.search([('id','in',eval(config_parameter or '[]')+partner.user_id.ids)])
                 # approve email for customer
-                self.env.ref('tzc_sales_customization_spt.tzc_mail_template_customer_approve_notify_spt').sudo().send_mail(partner.id,force_send=True,email_values={'partner_ids':[(6,0,partner.ids)]},email_layout_xmlid="mail.mail_notification_light")
+                self.env.ref('tzc_sales_customization_spt.tzc_mail_template_customer_approve_notify_spt').with_context(signature=partner.user_id.signature).sudo().send_mail(partner.id,force_send=True,email_values={'partner_ids':[(6,0,partner.ids)]},email_layout_xmlid="mail.mail_notification_light")
                 # approve email for salesperson and admin
                 self.env.ref('tzc_sales_customization_spt.tzc_mail_template_customer_approve_notify_salesperson_spt').sudo().send_mail(partner.id,force_send=True,email_values={'partner_ids':[(6,0,user_ids.mapped('partner_id').ids)]},email_layout_xmlid="mail.mail_notification_light")
             if self._context.get('set_user_spt'):
@@ -563,7 +563,7 @@ class res_partner(models.Model):
                     if any(u._is_internal() for u in partner.user_ids if u != self.env.user):
                         self.env['res.users'].check_access_rights('write')
                     partner.signup_url = result.get(partner.id, False)
-            elif rec.is_granted_portal_access:
+            elif rec.is_granted_portal_access and rec.user_ids:
                 website = self.env['kits.b2b.website'].search([('website_name','=','b2b1')],limit=1)
                 url='%s/forget-password?code=%s&login=%s' % (website.url or '', rec.user_ids[0].access_token, rec.user_ids[0].login)
                 rec.signup_url = url
@@ -699,7 +699,7 @@ class res_partner(models.Model):
             if 'customer_type' in val.keys() and val['customer_type'] in ['b2b_regular']:
                 config_parameter = config_parameter_obj.sudo().get_param('user_ids_spt', False)
                 user_ids =user_obj.search([('id','=',eval(config_parameter)+res.user_id.ids)])
-                self.env.ref('tzc_sales_customization_spt.tzc_mail_template_customer_approve_notify_spt').sudo().send_mail(res.id,force_send=True,email_values={'partner_ids':[(6,0,res.ids)]},email_layout_xmlid="mail.mail_notification_light")
+                self.env.ref('tzc_sales_customization_spt.tzc_mail_template_customer_approve_notify_spt').sudo().with_context(signature=res.user_id.signature).send_mail(res.id,force_send=True,email_values={'partner_ids':[(6,0,res.ids)]},email_layout_xmlid="mail.mail_notification_light")
                 self.env.ref('tzc_sales_customization_spt.tzc_mail_template_customer_approve_notify_salesperson_spt').sudo().send_mail(res.id,force_send=True,email_values={'partner_ids':[(6,0,user_ids.mapped('partner_id').ids)]},email_layout_xmlid="mail.mail_notification_light")
         if res.customer_rank or res.is_customer:
                 res._onchange_is_customer()
@@ -1623,3 +1623,40 @@ class res_partner(models.Model):
                     'channelMembers': [('insert', member_by_partner.get(partner)._mail_channel_member_format(fields={'id': True, 'channel': {'id'}, 'persona': {'partner': {'id'}}}).get(member_by_partner.get(partner)))],
                 }
         return list(partners_format.values())
+
+    def address_get(self, adr_pref=None):
+        """ Find contacts/addresses of the right type(s) by doing a depth-first-search
+        through descendants within company boundaries (stop at entities flagged ``is_company``)
+        then continuing the search at the ancestors that are within the same company boundaries.
+        Defaults to partners of type ``'default'`` when the exact type is not found, or to the
+        provided partner itself if no type ``'default'`` is found either. """
+        adr_pref = set(adr_pref or [])
+        if 'contact' not in adr_pref:
+            adr_pref.add('contact')
+        result = {}
+        visited = set()
+        for partner in self:
+            current_partner = partner
+            while current_partner:
+                to_scan = [current_partner]
+                # Scan descendants, DFS
+                while to_scan:
+                    record = to_scan.pop(0)
+                    visited.add(record)
+                    if record.type in adr_pref and not result.get(record.type):
+                        result[record.type] = record.id
+                    if len(result) == len(adr_pref):
+                        return result
+                    to_scan = [c for c in record.child_ids
+                                 if c not in visited] + to_scan
+
+                # Continue scanning at ancestor if current_partner is not a commercial entity
+                if current_partner.is_company or not current_partner.parent_id:
+                    break
+                current_partner = current_partner.parent_id
+
+        # default to type 'contact' or the partner itself
+        default = result.get('contact', self.id or False)
+        for adr_type in adr_pref:
+            result[adr_type] = result.get(adr_type) or default
+        return result

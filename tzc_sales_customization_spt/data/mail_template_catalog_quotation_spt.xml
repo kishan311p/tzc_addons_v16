@@ -187,7 +187,11 @@
                         </div>
                     </td>
                 </table>
-
+                <p style="margin:25px 0px 0px 0px">
+                    <t t-if="object.user_id.signature">
+                        <t t-out="object.user_id.signature"/>
+                    </t>
+                </p>
             </field>
         </record>
         

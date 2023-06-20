@@ -5,6 +5,7 @@
     'description': """Kits B2B website""",
     'author': 'Keypress IT Services',
     'version': '13.0.0.1',
+    'license':'LGPL-3',
     'sequence' : 1,
     'website' : 'https://keypress.co.in',
     'depends':['tzc_sales_customization_spt'],

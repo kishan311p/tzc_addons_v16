@@ -2,7 +2,7 @@
 <odoo>
 
     <data>
-        <report 
+        <!-- <report 
         id="action_report_shipped_orders" 
         model="shipped.orders.report.wizard.spt" 
         string="Shipped Orders Report" 
@@ -10,11 +10,19 @@
         name="tzc_sales_customization_spt.report_template_shipped_orders_spt" 
         file="tzc_sales_customization_spt.report_template_shipped_orders_spt" 
         menu="False" 
-        />
+        /> -->
+        <record id="action_report_shipped_orders" model="ir.actions.report">
+            <field name="name">Shipped Orders Report</field>
+            <field name="model">shipped.orders.report.wizard.spt</field>
+            <field name="report_type">qweb-pdf</field>
+            <field name="report_name">tzc_sales_customization_spt.report_template_shipped_orders_spt</field>
+            <field name="report_file">tzc_sales_customization_spt.report_template_shipped_orders_spt</field>
+            <field name="multi">False</field>
+        </record>
         <record id="action_report_shipped_orders" model="ir.actions.report">
             <field name="paperformat_id" ref="tzc_sales_customization_spt.shipped_orders_landscape_paperformat"/>
         </record>
-        <report
+        <!-- <report
             id="stock.action_label_transfer_template_zpl"
             model="stock.picking"
             string="Barcodes (ZPL)"
@@ -22,7 +30,15 @@
             name="stock.label_transfer_template_view_zpl"
             file="stock.label_transfer_template_view_zpl"
             menu="False" 
-        />
+        /> -->
+        <record id="stock.action_label_transfer_template_zpl" model="ir.actions.report">
+            <field name="name">Barcodes (ZPL)</field>
+            <field name="model">stock.picking</field>
+            <field name="report_type">qweb-pdf</field>
+            <field name="report_name">stock.label_transfer_template_view_zpl</field>
+            <field name="report_file">stock.label_transfer_template_view_zpl</field>
+            <field name="multi">False</field>
+        </record>
     </data>
 
 </odoo>

@@ -22,7 +22,7 @@
                     </div>
                     <sheet>
                         <div class="oe_button_box" name="button_box">
-                            <button type="object" class="oe_stat_button" name="action_open_wallet_logs" icon="fa-money">
+                            <button type="object" class="oe_stat_button" name="action_open_wallet_logs" icon="fa-money" title="Money Icon">
                                 <div class="o_field_widget o_stat_info">
                                     <span class="o_stat_value">
                                         <field name="wallet_amount" widget="monetary"/>
@@ -32,7 +32,7 @@
                                     </span>
                                 </div>
                             </button>
-                            <button type="object" class="oe_stat_button" name="action_show_recent_views" icon="fa-eye">
+                            <button type="object" class="oe_stat_button" name="action_show_recent_views" icon="fa-eye" title="Eye Icon">
                                 <div class="o_field_weidget o_stat_info">
                                     <span class="o_state_value">
                                         <field name="recent_view_count" />
@@ -42,7 +42,7 @@
                                     </span>
                                 </div>
                             </button>
-                            <button type="object" class="oe_stat_button" name="action_show_wishlist" icon="fa-heart">
+                            <button type="object" class="oe_stat_button" name="action_show_wishlist" icon="fa-heart" title="Heart Icon">
                                 <div class="o_field_weidget o_stat_info">
                                     <span class="o_state_value">
                                         <field name="wishlist_count" />

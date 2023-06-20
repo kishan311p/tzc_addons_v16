@@ -7,7 +7,7 @@ class kits_multi_website_refund_option(models.TransientModel):
 
     return_request_id = fields.Many2one("kits.multi.website.return.request","Return Request")
     refund_option = fields.Selection([('wallet','Wallet'), ('bank','Bank Account')])
-    amount = fields.Float("Amount")
+    amount = fields.Float(" Amount ")
 
     def action_process_refund(self):
         for record in self:

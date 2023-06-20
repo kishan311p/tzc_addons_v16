@@ -206,7 +206,8 @@ class sale_order(models.Model):
             #     })
                 # move_id._set_quantity_done(case_ol.product_uom_qty)
             template_id = self.env.ref('tzc_sales_customization_spt.tzc_picking_ready_notification_to_salesperson_spt')
-            template_id.with_context(signature=self.user_id.signature).send_mail(self.id,force_send=True,email_layout_xmlid="mail.mail_notification_light")
+            template_id.send_mail(self.id,force_send=True,email_layout_xmlid="mail.mail_notification_light")
+            # template_id.with_context(signature=self.user_id.signature).send_mail(self.id,force_send=True,email_layout_xmlid="mail.mail_notification_light")
             # template_id.send_mail(self.id,force_send=True,email_layout_xmlid="mail.mail_notification_light")
             ready_to_ship_template_id = self.env.ref('tzc_sales_customization_spt.tzc_email_template_order_ready_to_ship')
             ready_to_ship_template_id.with_context(signature=self.user_id.signature).send_mail(self.id,force_send=True,email_layout_xmlid="mail.mail_notification_light")
@@ -263,9 +264,9 @@ class sale_order(models.Model):
     mark_as_paid_by_user = fields.Many2one('res.users','Order Mark As Paid By',copy=False)
     payment_link_approved_by = fields.Many2one('res.users','Payment Approved By',copy=False)
     paid_amount = fields.Float('Paid Amount',copy=False)
-    amount_paid = fields.Float('Paid Amount',copy=False,compute="_get_amount_paid",store=True)
+    amount_paid = fields.Float(' Paid Amount ',copy=False,compute="_get_amount_paid",store=True)
     payment_ids = fields.One2many('order.payment','order_id','Payment',copy=False)
-    payment_status = fields.Selection([('full','Fully Paid'),('partial','Partial Paid'),('over','Over Paid')],'Payment Status',compute="_compute_payment_status",copy=False,store=True)
+    payment_status = fields.Selection([('full','Fully Paid'),('partial','Partial Paid'),('over','Over Paid')],' Payment Status',compute="_compute_payment_status",copy=False,store=True)
     due_amount = fields.Float('Amount Due',compute="_compute_amount_due",store=True,copy=False)
 
     #kits_package_product
@@ -319,12 +320,12 @@ class sale_order(models.Model):
     amount_is_shipping_total = fields.Monetary(string='Shipping Cost', store=True, readonly=True,compute_sudo=True, compute='_amount_all', tracking=4)
     shipping_cost = fields.Float(string="Original Shipping Cost",store=True, readonly=True,compute_sudo=True, compute='_amount_all')
     amount_is_admin = fields.Monetary(string='Admin Fee', store=True, readonly=True,compute_sudo=True, compute='_amount_all', tracking=4)
-    amount_discount = fields.Monetary(string='Discount', store=True, readonly=True,compute_sudo=True, compute='_amount_all', tracking=4)
+    amount_discount = fields.Monetary(string='    Discount', store=True, readonly=True,compute_sudo=True, compute='_amount_all', tracking=4)
     delivered_qty = fields.Integer('Delivered Quantity ',compute_sudo=True,compute="_amount_all",store=True)
     ordered_qty = fields.Integer('Ordered Quantity ',compute_sudo=True,compute="_amount_all",store=True)
     extra_qty = fields.Integer('Extra Quantity ',compute_sudo=True,compute="_compute_extra_qty",store=True)
     picked_qty = fields.Integer('Quantity Shipped ',compute_sudo=True,compute="_amount_all",store=True)
-    amount_without_discount = fields.Monetary(string='Subtotal',compute_sudo=True,compute='_amount_all',  store=True,tracking=4)
+    amount_without_discount = fields.Monetary(string='   Subtotal',compute_sudo=True,compute='_amount_all',  store=True,tracking=4)
     global_discount = fields.Monetary('Additional Discount',compute_sudo=True, store=True, readonly=True, compute='_amount_all', tracking=4)
     # check_line_qty = fields.Integer('Line Qty',compute="_compute_check_line_qty")
     # report_file = fields.Binary()
@@ -334,12 +335,12 @@ class sale_order(models.Model):
     invoice_name = fields.Char("Invoice",compute="_compute_invoice_name",store=True,compute_sudo=True)
     partner_shipping_id = fields.Many2one('res.partner','Delivery Address')
 
-    picked_qty_order_subtotal = fields.Monetary('Subtotal', tracking='32',compute="_amount_all",store=True,compute_sudo=True)
-    picked_qty_order_total = fields.Monetary('Total', tracking='33',compute="_amount_all",store=True,compute_sudo=True)
-    picked_qty_order_tax = fields.Monetary('Tax', tracking='34',compute="_amount_all",store=True,compute_sudo=True)
-    picked_qty_order_discount = fields.Monetary('Discount', tracking='35',compute="_amount_all",store=True,compute_sudo=True)
+    picked_qty_order_subtotal = fields.Monetary('Subtotal   ', tracking='32',compute="_amount_all",store=True,compute_sudo=True)
+    picked_qty_order_total = fields.Monetary('Total ', tracking='33',compute="_amount_all",store=True,compute_sudo=True)
+    picked_qty_order_tax = fields.Monetary('Tax ', tracking='34',compute="_amount_all",store=True,compute_sudo=True)
+    picked_qty_order_discount = fields.Monetary('    Discount   ', tracking='35',compute="_amount_all",store=True,compute_sudo=True)
     create_uid_spt = fields.Many2one('res.users', 'Created by User',compute="_compute_create_uid_spt", index=True, readonly=True)
-    count_backup_order = fields.Integer('Original Order',compute="_get_compute_message",store=True)
+    # count_backup_order = fields.Integer('Original Order',compute="_get_compute_message",store=True)
     free_shipping = fields.Boolean('Free Shippping')
     country_id = fields.Many2one('res.country','Country',compute="_compute_country_id",store=True,compute_sudo=True)
     street = fields.Char('Street',related='partner_id.street')
@@ -360,7 +361,7 @@ class sale_order(models.Model):
     case_weight_gm = fields.Float('Weight for cases (gm)',default=_get_default_case_weight_gm)
     is_confirm_by_saleperson = fields.Boolean()
     download_image_sent = fields.Boolean()
-    message = fields.Char(compute="_get_compute_message",store=True)
+    message = fields.Char(string="Message")
     is_same_delivery_address = fields.Boolean(compute='_get_delivery_address',default=False,store=True)
     reward_amount = fields.Float(compute='_compute_base_boolean_fields',store=True)
     delivery_set = fields.Boolean(compute='_compute_base_boolean_fields',store=True)
@@ -391,8 +392,8 @@ class sale_order(models.Model):
     def _get_currency_id(self):
         return self.partner_id.preferred_currency.id
     
-    b2b_currency_id = fields.Many2one('res.currency',default=_get_currency_id ,string=' Currency')
-    currency_id = fields.Many2one(related='b2b_currency_id',depends=["b2b_currency_id"],store=True, precompute=True, ondelete="restrict")
+    b2b_currency_id = fields.Many2one('res.currency',default=_get_currency_id ,string='  Currency   ')
+    currency_id = fields.Many2one(related='b2b_currency_id',depends=["b2b_currency_id"],store=True, precompute=True, ondelete="restrict",string="_Currency")
 
     @api.depends('state','source_spt')
     def _compute_is_currency_change(self):
@@ -564,6 +565,7 @@ class sale_order(models.Model):
                 line._onchange_discount_spt()
                 line._onchange_fix_discount_price_spt()
                 line._onchange_unit_discounted_price_spt()
+                line.order_id._amount_all()
             else:
                 line.unlink()
 
@@ -1038,15 +1040,15 @@ class sale_order(models.Model):
                             picked_qty += picking.quantity_done
                     product_list.append(line.product_id.id)
 
-
-                if line.product_id.type != 'service' and line.picked_qty:
+                line_qty = line.product_uom_qty if line.order_id.state in ('draft','sent','received') else line.picked_qty
+                if line.product_id.type != 'service' and line_qty:
                     if line.product_id.type != 'service' and line.picked_qty and not line.product_id.is_case_product:
                         picked_qty_order_subtotal = picked_qty_order_subtotal + (line.price_unit * line.picked_qty)
                     picked_qty_order_tax = picked_qty_order_tax + line.picked_qty_subtotal*line.tax_id.amount/100
 
                     if line.product_id.type != 'service' and line.picked_qty and not line.product_id.is_case_product:
                         total_discount_per_unit = line.price_unit - line.unit_discount_price
-                        picked_qty_order_discount = round(picked_qty_order_discount + (total_discount_per_unit * line.picked_qty),2)
+                        picked_qty_order_discount = round(picked_qty_order_discount + (total_discount_per_unit * line_qty),2)
             amount_discount += abs(global_discount)
             picked_qty_order_discount += round(abs(global_discount),2)
         
@@ -1157,7 +1159,7 @@ class sale_order(models.Model):
         return []
 
     
-    @api.onchange('partner_shipping_id', 'partner_id', 'company_id','partner_id.country_id','pricelist_id')
+    @api.onchange('partner_shipping_id', 'partner_id', 'company_id','pricelist_id')
     def onchange_partner_shipping_id_kits(self):
         for record in self:
             record.pricelist_id = record.partner_id.b2b_pricelist_id if record.partner_id else False
@@ -2586,19 +2588,19 @@ class sale_order(models.Model):
                         break
             rec.cart_update()
 
-    @api.depends('order_line','order_line.product_id.virtual_available','order_line.product_uom_qty','website_id','state')
-    def _get_compute_message(self):
-        backup_order_obj = self.env['sale.order.backup.spt']
-        self._get_product_avail_qty()
-        for rec in self:
-            rec.count_backup_order = int(len(backup_order_obj.search([('order_id','=',rec.id)],limit=1)))
-            rec.message = False
-            if rec.website_id and rec.state == 'draft':
-                for line in range(len(rec.order_line)):
-                    line = rec.order_line[line]
-                    if line.product_uom_qty > line.product_id.available_qty_spt:
-                        rec.message = "This order comes from an abandoned cart. The quantities may not be correct. Please check the red icons in the order lines and verify the quantities with the warehouse."
-                        break
+    # @api.depends('order_line','order_line.product_id.virtual_available','order_line.product_uom_qty','website_id','state')
+    # def _get_compute_message(self):
+    #     backup_order_obj = self.env['sale.order.backup.spt']
+    #     self._get_product_avail_qty()
+    #     for rec in self:
+    #         rec.count_backup_order = int(len(backup_order_obj.search([('order_id','=',rec.id)],limit=1)))
+    #         rec.message = False
+    #         if rec.website_id and rec.state == 'draft':
+    #             for line in range(len(rec.order_line)):
+    #                 line = rec.order_line[line]
+    #                 if line.product_uom_qty > line.product_id.available_qty_spt:
+    #                     rec.message = "This order comes from an abandoned cart. The quantities may not be correct. Please check the red icons in the order lines and verify the quantities with the warehouse."
+    #                     break
 
     @api.model_create_multi
     def create(self, vals):
@@ -2627,11 +2629,11 @@ class sale_order(models.Model):
                 if record.partner_id:
                     verified = record.partner_verification()
                     quotation_template_id = self.env.ref('sale.email_template_edi_sale')
-                    quotation_template_id.with_context(proforma=False,pdf_url=url).send_mail(record.id,force_send=True,email_layout_xmlid="mail.mail_notification_light") if verified else None
+                    quotation_template_id.with_context(proforma=False,pdf_url=url,signature=record.user_id.signature).send_mail(record.id,force_send=True,email_layout_xmlid="mail.mail_notification_light") if verified else None
             if record.state == 'draft' and not record.catalog_id and record.website_id:
                 mail_template_id = self.env.ref('tzc_sales_customization_spt.tzc_start_adding_into_cart_notification_to_salesperson_spt').sudo()
                 recipients = record.user_id.partner_id.ids if record.user_id and record.user_id.partner_id else []
-                mail_template_id.with_context.get(pdf_url=url).send_mail(res_id=record.id,force_send=True,email_values={'recipient_ids':[(6,0,recipients)]},email_layout_xmlid="mail.mail_notification_light")
+                mail_template_id.with_context(pdf_url=url).send_mail(res_id=record.id,force_send=True,email_values={'recipient_ids':[(6,0,recipients)]},email_layout_xmlid="mail.mail_notification_light")
         return res
 
     #kits_abadon_card_order
@@ -2930,7 +2932,8 @@ class sale_order(models.Model):
                 'mark_so_as_sent': True,
                 'force_email': True,
                 'default_email_layout_xmlid':'mail.mail_notification_light',
-                'generate_payment' : True
+                'generate_payment' : True,
+                'signature_user' : self.user_id.id
             }
             return {
                 'name': _('Send Mail'),
@@ -3036,14 +3039,14 @@ class sale_order(models.Model):
     package_order_status = fields.Selection([('available','Available'),('out_of_stock','Out of stock')],compute="_compute_package_order_status")
     package_order_lines =fields.One2many('kits.package.order.line','order_id','Package Order Line')
 
-    @api.depends('package_order_lines','count_backup_order','package_order_lines.order_id','package_order_lines.backup_order')
+    @api.depends('package_order_lines','package_order_lines.order_id','package_order_lines.backup_order')
     def _compute_package_order(self):
         backup_Obj = self.env['sale.order.backup.spt']
         for record in self:
             package_order = True if len(record.package_order_lines) > 0 else False
-            if record.count_backup_order:
-                backup_orders = backup_Obj.search([('order_id','=',record.id)],order="id desc",limit=1)
-                package_order = backup_orders.pack_order_backup
+            # if record.count_backup_order:
+            backup_orders = backup_Obj.search([('order_id','=',record.id)],order="id desc",limit=1)
+            package_order = backup_orders.pack_order_backup
             record.package_order = package_order
     
     def action_draft(self):
@@ -3158,7 +3161,8 @@ class sale_order(models.Model):
                 record._get_unavailable_package_ids()
                 restricted_package_lines = record.package_order_lines.filtered(lambda x: x.availability == 'out_of_stock')
                 #Merge same product lines
-                record.merge_order_lines()
+                # record.merge_order_lines()
+                record.order_line.filtered(lambda x:x.product_uom_qty == 0.0).unlink()
                 pack_sale_lines = []
                 if restricted_package_lines and not self.env.context.get('package_allow'):
                     return {
@@ -3305,7 +3309,7 @@ class sale_order(models.Model):
                     }
                 if record.state in ['draft'] and not record.website_id and not record.catalog_id:
                     template_id = self.env.ref('tzc_sales_customization_spt.mail_template_notify_customer_quotation_create').sudo()
-                    template_id.send_mail(res_id=record.id,force_send=True,email_layout_xmlid="mail.mail_notification_light")
+                    template_id.with_context(signature=record.user_id.signature).send_mail(res_id=record.id,force_send=True,email_layout_xmlid="mail.mail_notification_light")
                 res = super(sale_order, self).action_confirm()
                 picking_ids = self.mapped('picking_ids')
                 if picking_ids:
@@ -3941,6 +3945,7 @@ class sale_order(models.Model):
                 'website_sale_send_recovery_email': True,
                 'active_ids': self.ids,
                 'quotation_send' : True,
+                'signature_user' : self.user_id.id
             },
         }
 
@@ -3956,9 +3961,9 @@ class sale_order(models.Model):
         If the default is not found, the empty ['mail.template'] is returned.
         """
         # to changes
-        template = eval(self.env['ir.config_parameter'].sudo().get_param('tzc_sales_customization_spt.cart_recovery_mail_template', default='None'))
+        template = eval(self.env['ir.config_parameter'].sudo().get_param('tzc_sales_customization_spt.tzc_email_template_cart_recovery_spt', default='None'))
         if not template:
-            template = self.env.ref('tzc_sales_customization_spt.mail_template_sale_cart_recovery', raise_if_not_found=False)
+            template = self.env.ref('tzc_sales_customization_spt.tzc_email_template_cart_recovery_spt', raise_if_not_found=False)
             if template:
                 return template.id
             else:

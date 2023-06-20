@@ -162,9 +162,9 @@
         
         <xpath expr="//group[@name='note_group']" position="replace">
                 <div align="right">
-                    <button class='button_order_icon' icon="fa-money" help="Admin Fee" name="action_add_admin_fee" type="object" attrs="{'invisible':[('state','in',['scan','shipped','open_inv','cancel','merged','draft_inv'])]}"/>
-                    <button class='button_order_icon' icon="fa-percent" help="Additional Discount" name="action_add_aditional_discount" type="object" attrs="{'invisible':[('state','in',['scan','shipped','open_inv','cancel','merged','paid','draft_inv'])]}"/>
-                    <button class='button_order_icon' icon="fa-truck" help="Shipping Cost" name="action_add_shipping_cost" type="object" attrs="{'invisible':[('state','in',['scan','shipped','open_inv','cancel','merged','paid','draft_inv'])]}" groups="base.group_system,stock.group_stock_manager"/>
+                    <button class='button_order_icon' icon="fa-money" help="Admin Fee" name="action_add_admin_fee" type="object" attrs="{'invisible':[('state','in',['scan','shipped','open_inv','cancel','merged','draft_inv'])]}" title="Money Icon"/>
+                    <button class='button_order_icon' icon="fa-percent" help="Additional Discount" name="action_add_aditional_discount" type="object" attrs="{'invisible':[('state','in',['scan','shipped','open_inv','cancel','merged','paid','draft_inv'])]}" title="Percent Icon"/>
+                    <button class='button_order_icon' icon="fa-truck" help="Shipping Cost" name="action_add_shipping_cost" type="object" attrs="{'invisible':[('state','in',['scan','shipped','open_inv','cancel','merged','paid','draft_inv'])]}" groups="base.group_system,stock.group_stock_manager" title="Truck Icon"/>
                 </div>
                 <group name="note_group">
                     <group>
@@ -224,8 +224,9 @@
                 <field name="note" nolabel="1" placeholder="Terms and conditions..." />
             </xpath>
             <button name="action_preview_sale_order" position="before">
-                    <button name="action_get_backup_order" type="object" class="oe_stat_button" icon="fa-chevron-circle-right" attrs="{'invisible': [('count_backup_order', '=', 0)]}">
-                        <field name="count_backup_order" widget="statinfo" string="Original Quotation"/>
+                    <button name="action_get_backup_order" type="object" class="oe_stat_button" icon="fa-chevron-circle-right" attrs="{'invisible': [('state', 'in', ('draft','sent','received','cancel','merged'))]}">
+                        <!-- <field name="count_backup_order" widget="statinfo" string="Original Quotation"/> -->
+                        <span>Original Quotation</span>
                     </button>
             </button>
             <xpath expr="//button[@name='action_preview_sale_order']" position="attributes">
@@ -301,6 +302,7 @@
             <!-- abadon_card -->
             <xpath expr="//group[@name='sales_person']" position="inside">
                     <field name="next_execution_date" attrs="{'readonly': [('state','in',['scan','shipped','draft_inv','open_inv','paid','cancel','merged'])]}"/>
+                    <field name="source_spt" readonly="1"/>
                     <field name="abandoned_reason" force_save="1" invisible="1"/>
                 </xpath>
             <xpath expr="//field[@name='tag_ids']" position="attributes">
@@ -494,7 +496,7 @@
                                     <button name="action_check_shipping_cost"
                                         class="button_order_icon" type="object"
                                         attrs="{'invisible':[('state','in',('cancel','merged'))]}" groups="base.group_system,stock.group_stock_manager">
-                                        <i class="fa fa-truck" title="Done"/>
+                                        <i class="fa fa-truck" title="Truck Icon"/>
                                     </button>
                                 </div>
                             </div>

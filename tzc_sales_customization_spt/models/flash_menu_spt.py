@@ -43,7 +43,7 @@ class flash_menu_spt(models.Model):
         help="For the rule to apply, bought/sold quantity must be greater "
              "than or equal to the minimum quantity specified in this field.\n"
              "Expressed in the default unit of measure of the product.")
-    pricelist_id = fields.Many2one('product.pricelist', 'Pricelist')
+    pricelist_id = fields.Many2one('product.pricelist', ' Pricelist')
     pricelist_usd_id = fields.Many2one('product.pricelist', 'Pricelist USD')
 
     compute_price = fields.Selection([

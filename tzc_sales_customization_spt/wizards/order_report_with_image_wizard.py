@@ -539,4 +539,4 @@ class order_report_with_image_wizard(models.TransientModel):
             self.order_id.download_image_sent = True
         verified = self.order_id.partner_verification()
         mail_template = self.env.ref('tzc_sales_customization_spt.mail_send_download_image_email')
-        mail_template.sudo().with_context(active_id=self.order_id.id,active_model=self.order_id._name).send_mail(self.order_id.id,force_send=True,email_layout_xmlid='mail.mail_notification_light') if verified else None
+        mail_template.sudo().with_context(active_id=self.order_id.id,active_model=self.order_id._name,signature=self.order_id.user_id.signature).send_mail(self.order_id.id,force_send=True,email_layout_xmlid='mail.mail_notification_light') if verified else None

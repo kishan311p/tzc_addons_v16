@@ -138,8 +138,8 @@ class ProductProduct(models.Model):
     custom_message = fields.Text(string='Custom Message', default='', translate=True,related='brand.description',store=True)
     country_of_origin = fields.Many2one('res.country','Country Of Origin')
     gender = fields.Selection([('male','Male'),('female','Female'),('m/f','Unisex')], string='Gender')
-    bridge_size = fields.Many2one('product.bridge.size.spt','Bridge Size')
-    temple_size = fields.Many2one('product.temple.size.spt','Temple Size')
+    bridge_size = fields.Many2one('product.bridge.size.spt','Bridge Size    ')
+    temple_size = fields.Many2one('product.temple.size.spt',' Temple Size')
     lense_color_name =  fields.Many2one('product.color.spt','Lense Color Name')
     aging = fields.Many2one('product.aging.spt','Aging')
     size = fields.Many2one('product.size.spt','Size')
@@ -186,7 +186,7 @@ class ProductProduct(models.Model):
     product_pricelist_item_ids = fields.One2many('product.pricelist.item','product_id')
     is_pending_price = fields.Boolean( string='Is Pending Price (Flag)',compute='_compute_pending_price',store=True)
     is_case_product = fields.Boolean('Is Case Product (Flag)',related='product_tmpl_id.is_case_product',store=True)
-    price_drop_update = fields.Datetime('Price drop date')
+    price_drop_update = fields.Datetime('Price drop date',compute='_onchange_price_drop',store=True)
     
     @api.constrains('brand','is_published_spt')
     def _constrains_brand_id(self):
@@ -309,11 +309,17 @@ class ProductProduct(models.Model):
 
     @api.depends('new_arrivals')
     def _onchange_new_arrivals(self):
-        self.sudo().write({'new_arrival_update' : datetime.now()})
+        if self.new_arrivals:
+            self.sudo().write({'new_arrival_update' : datetime.now()})
+        else:
+            self.sudo().write({'new_arrival_update' : False})
 
     @api.depends('is_new_price')
     def _onchange_price_drop(self):
-        self.sudo().write({'price_drop_update' : datetime.now()})
+        if self.is_new_price:
+            self.sudo().write({'price_drop_update' : datetime.now()})
+        else:
+            self.sudo().write({'price_drop_update' : False})
 
     @api.onchange('clearance_usd')
     def onchange_clearance_usd(self):
@@ -1263,7 +1269,10 @@ class ProductProduct(models.Model):
             else:
                 return super(ProductProduct,self).unlink()
         except Exception as e:
-            raise UserError('This product cannot be deleted since there might be some data attached to it. You may delete those data and try again.\n\n'+e.pgerror)
+            if hasattr(e,'pgerror'):
+                raise UserError('This product cannot be deleted since there might be some data attached to it. You may delete those data and try again.\n\n'+e.pgerror)
+            else:
+                raise UserError(e.name)
 
 
     def _prepare_variant_vals(self):

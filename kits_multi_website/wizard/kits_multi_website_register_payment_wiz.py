@@ -5,7 +5,7 @@ class kits_multi_website_register_payment_wiz(models.TransientModel):
     _name = "kits.multi.website.register.payment.wiz"
     _description = "Kits Multi Website Register Payment Wiz"
 
-    amount = fields.Float("Amount")
+    amount = fields.Float("Amount   ")
     journal_id = fields.Many2one("account.journal",domain=[('type','in',['bank', 'cash'])])
     invoice_id = fields.Many2one("kits.multi.website.invoice", "Invoice")
     payment_option = fields.Selection([('wallet','Wallet'),('bank','Bank Account')])

@@ -13,8 +13,8 @@ class ProductBrandSpt(models.Model):
     kits_product_ids = fields.One2many('product.product','brand',string="Brand ")
     description = fields.Text('   Description', translate=True)
     # website_id = fields.Many2one("website", string="Website")
-    logo = fields.Char('Image')
     brand_link = fields.Char('Image URL')
+    logo = fields.Char('Image',related='brand_link')
     # slider_image_ids = fields.One2many('product.brand.slider.image.spt', 'brand',string='Slider Images')
     product_ids = fields.Many2many(
         'product.product',

@@ -26,7 +26,7 @@ class kits_b2b_website(models.Model):
         'my_dashboard_model_id',
         'My Dashboard'
     )
-    logo = fields.Char('Logo', related="image_logo")
+    logo = fields.Char(' Logo', related="image_logo")
     image_logo = fields.Char('Logo')
     stock_location_id = fields.Many2one(
         'stock.location',

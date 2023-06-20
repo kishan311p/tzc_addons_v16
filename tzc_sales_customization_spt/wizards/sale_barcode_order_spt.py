@@ -54,13 +54,18 @@ class sale_barcode_order_spt(models.TransientModel):
                 if extra_pricing.get('is_special_discount'):
                     unit_discount_price = (unit_discount_price - unit_discount_price * extra_pricing.get('special_disc_rate') / 100)
                 
+                fix_discount_price = price_unit - unit_discount_price
+                discount = (fix_discount_price*100/price_unit)
+                
                 vals = {
                     'product_id' : line.product_id.id,
                     'product_uom_qty' : line.product_qty,
                     'order_id' : self.sale_id.id,
                     'price_unit': round(price_unit,2),
                     'sale_type': product_data.get('sale_type'),
-                    'unit_discount_price':round(unit_discount_price,2)
+                    'unit_discount_price':round(unit_discount_price,2),
+                    'fix_discount_price':round(fix_discount_price,2),
+                    'discount':round(discount,2),
                 }
 
                 sale_order_line = sale_order_line_obj.create(vals)
@@ -101,7 +106,7 @@ class sale_barcode_order_spt(models.TransientModel):
                         # }
                         sale_case_order_line = sale_order_line_obj.create(case_vals)
                         sale_case_order_line.product_id_change()
-                        sale_case_order_line._onchange_fix_discount_price_spt()
+                        # sale_case_order_line._onchange_fix_discount_price_spt()
         # self.sale_id.merge_order_lines()
         self.sale_id._amount_all()
         

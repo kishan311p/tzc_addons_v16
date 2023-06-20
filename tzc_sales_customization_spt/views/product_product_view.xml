@@ -123,7 +123,7 @@
                     <field name="product_pricelist_item_ids" string="Pricing" groups="base.group_system">
                         <tree editable="bottom">
                             <field name="pricelist_id" />
-                            <field name="price" />
+                            <field name="fixed_price" />
                         </tree>
                     </field>
                 </xpath>
@@ -248,6 +248,8 @@
                             <field name="case_type" />
                             <field name="new_arrival_update" />
                             <field name="new_arrivals" string="New Arrivals" />
+                            <field name="price_drop_update" string="Price Drop Update" />
+                            <field name="is_new_price" string='Price Drop' />
                             <field name="on_consignment" />
                             <field name="minimum_qty"
                                 attrs="{'invisible':[('on_consignment','=',False)]}" />
@@ -327,7 +329,7 @@
                     </button>
                     <button type="object" name="action_product_reserv_qty"
                         attrs="{'invisible':[('type', 'not in', ['product', 'consu'])]}"
-                        class="oe_stat_button" icon="fa-truck">
+                        class="oe_stat_button" icon="fa-truck" title="Truck Icon">
                         <div class="o_field_widget o_stat_info">
                             <span class="o_stat_value">
                                 <field name="reversed_qty_spt" widget="statinfo" nolabel="1"
@@ -409,8 +411,7 @@
                 </xpath>
                 <xpath expr="//field[@name='default_code']" position="after">
                     <field name="variant_count" string="#Variant" optional="show" />
-                    <button name="open_product_variant_spt" type="object" 
-                        icon="fa-eye" attrs="{'invisible':[('variant_count','&lt;',2)]}" />
+                    <button name="open_product_variant_spt" type="object" icon="fa-eye" attrs="{'invisible':[('variant_count','&lt;',2)]}" title="Eye Icon"/>
                     <field name="barcode" optional="show" />
                     <field name="categ_id" optional="show" />
                     <field name="brand" optional="show" />
@@ -529,16 +530,13 @@
                     <separator/>
                     <!-- <filter name="available_in_slider_spt" string="Available In Slider" domain="[('available_in_slider_spt','=',True)]"/>
                     <separator/> -->
-                    <filter name="on_sale_products" string="On Sale Products" domain="[('sale_type','=','on_sale')]"/>
-                    <separator/>
-                    <filter name="clearance_products" string="Clearance Products" domain="[('sale_type','=','clearance')]"/>
+                    <!-- <separator/> -->
                     <separator/>
                     <filter name="product_consignment_filter" string="Consignment Product" domain="[('on_consignment', '=', True)]"/>
                     <separator/>
                     <filter name="temporary_out_of_stock" string="Temporary Out Of Stock" domain="[('temporary_out_of_stock', '=', True)]"/>
                     <separator/>
-                    <filter name="new_price_product" string="New Price" domain="[('is_new_price','=',True)]"/>
-                    <filter name="actual_price_product" string="Actual Price" domain="[('is_new_price','=',False)]"/>
+                    <!-- <filter name="actual_price_product" string="Actual Price" domain="[('is_new_price','=',False)]"/> -->
                     <separator />
                     <filter name="is_select_for_lenses" string="Product For Lenses" domain="[('is_select_for_lenses','=',True)]"/>
 
@@ -556,6 +554,9 @@
                     <filter string="Published" name="published" domain="[('is_published_spt', '=', True)]"/>
                     <separator/>
                     <filter name="filter_new_arrival" string="New Arrival" domain="[('new_arrivals','=',True)]"/>
+                    <filter name="new_price_product" string="Price Drop" domain="[('is_new_price','=',True)]"/>
+                    <filter name="on_sale_products" string="On Sale Products" domain="[('sale_type','=','on_sale')]"/>
+                    <filter name="clearance_products" string="Clearance Products" domain="[('sale_type','=','clearance')]"/>
                     <separator/>
                     <filter name="filter_available_qty_spt" string="Available Qty" domain="[('available_qty_spt','>',0)]"/>
                     <filter name="filter_qty_on_hand" string="QTY On Hand" domain="[('qty_available','>',0)]" />

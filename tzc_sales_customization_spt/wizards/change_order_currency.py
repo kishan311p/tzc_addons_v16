@@ -4,7 +4,7 @@ class change_order_currency(models.TransientModel):
     _name = 'change.order.currency'
     _description = 'Change Order Currency'
 
-    currency_id = fields.Many2one('res.currency','Currency')
+    currency_id = fields.Many2one('res.currency','Currency ')
 
     def btn_process(self):
         order_id = self.env['sale.order'].browse(self._context.get('order_id'))

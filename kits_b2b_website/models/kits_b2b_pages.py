@@ -17,13 +17,13 @@ class kits_b2b_pages(models.Model):
     text_1 = fields.Text('Text')
     image_url_text_1 = fields.Char('Image URL')
     image_url_text_1_copy = fields.Char('Image', related="image_url_text_1")
-    text_1_redirect_url = fields.Text('Redirect URL')
+    text_1_redirect_url = fields.Text(' Redirect URL')
     text_1_redirect_url_text = fields.Char('Redirect URL Text')
     banner_1_id = fields.Many2one('kits.b2b.image.model', 'Banner URL')
-    banner_url = fields.Char('Banner URL')
+    banner_url = fields.Char(' Banner URL')
     banner_image = fields.Char('Banner Image', related="banner_url")
     banner_1_image = fields.Char(
-        'Banner Image', related='banner_1_id.url', store=True)
+        ' Banner Image', related='banner_1_id.url', store=True)
     slider_ids = fields.One2many(
         'kits.b2b.website.slider', 'page_id', 'Sliders')
     faq_ids = fields.One2many(
@@ -35,10 +35,10 @@ class kits_b2b_pages(models.Model):
         'contact_us_page_id',
         string='Branches'
     )
-    header_text_2 = fields.Char('Header Text')
-    text_2 = fields.Char('Text')
-    image_url_text_2 = fields.Char('Image URL')
-    image_url_text_2_copy = fields.Char('Image', related="image_url_text_2")
+    header_text_2 = fields.Char(' Header Text')
+    text_2 = fields.Char(' Text')
+    image_url_text_2 = fields.Char(' Image URL')
+    image_url_text_2_copy = fields.Char(' Image', related="image_url_text_2")
     text_field = fields.Html('Text Field')
     banner_2_id = fields.Many2one('kits.b2b.image.model', 'Banner 2')
     banner_2_image = fields.Char(
@@ -47,16 +47,16 @@ class kits_b2b_pages(models.Model):
     banner_2_image = fields.Char('Banner 2 Image', related='banner_2_url')
     is_our_core_values = fields.Boolean('Use For Our Core Values')
 
-    header_text_3 = fields.Char('Header Text')
-    text_3 = fields.Char('Text')
-    image_url_text_3 = fields.Char('Image URL')
-    image_url_text_3_copy = fields.Char('Image', related="image_url_text_3")
+    header_text_3 = fields.Char('Header Text ')
+    text_3 = fields.Char('Text ')
+    image_url_text_3 = fields.Char('Image URL ')
+    image_url_text_3_copy = fields.Char('Image ', related="image_url_text_3")
     text_3_redirect_url = fields.Text('Redirect URL')
-    text_3_redirect_url_text = fields.Char('Redirect URL Text')
+    text_3_redirect_url_text = fields.Char('Redirect URL Text ')
 
     # Contact Us Sliders
     contact_us_slider_ids = fields.One2many(
-        'kits.b2b.website.slider', 'cu_page_id', 'Sliders'
+        'kits.b2b.website.slider', 'cu_page_id', ' Sliders'
     )
     char_field = fields.Char('Char Field')
 
@@ -74,7 +74,7 @@ class kits_b2b_pages(models.Model):
     offer_ids = fields.One2many(
         'kits.b2b.image.model', 'offer_id', string='Offers')
     homepage_main_banner_ids = fields.One2many(
-        'kits.b2b.image.model', 'homepage_main_banner_id', 'Main Banner')
+        'kits.b2b.image.model', 'homepage_main_banner_id', ' Main Banner')
     team_member_ids = fields.One2many(
         'kits.b2b.website.slider',
         'team_member_page_id',

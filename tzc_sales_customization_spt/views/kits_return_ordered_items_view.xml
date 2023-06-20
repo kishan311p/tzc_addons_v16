@@ -31,7 +31,7 @@
                 </header>
                 <sheet>
                     <div class="oe_button_box" name="button_box">
-                        <button name="action_view_delivery" type="object" class="oe_stat_button" attrs="{'invisible': [('delivery_count', '=', 0)]}" icon="fa-truck">
+                        <button name="action_view_delivery" type="object" class="oe_stat_button" attrs="{'invisible': [('delivery_count', '=', 0)]}" icon="fa-truck" title="Truck Icon">
                             <field name="delivery_count" string="" widget="statinfo"/>
                         </button>
                     </div>

@@ -8,7 +8,7 @@ class kits_multi_website_wallet_transaction(models.Model):
 
     return_request_id = fields.Many2one("kits.multi.website.return.request","Return Request")
     sale_order_id = fields.Many2one("kits.multi.website.sale.order", "Sale Order")
-    amount = fields.Float("Amount")
+    amount = fields.Float("Amount ")
     customer_id = fields.Many2one("kits.multi.website.customer","Customer")
     refund_date = fields.Datetime("Refund Date")
     invoice_id = fields.Many2one("kits.multi.website.invoice","Invoice")

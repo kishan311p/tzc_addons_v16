@@ -16,17 +16,17 @@ class sale_order_backup_spt(models.Model):
     # applied_promo_code = fields.Char('Applied Promo Code')
     payment_term_id = fields.Many2one('account.payment.term','Payment Terms')
     line_ids = fields.One2many('sale.order.backup.line.spt','order_backup_id','Order Lines', ondelete='cascade', index=True, copy=False)
-    total_subtotal = fields.Monetary('Subtotal',compute="_compute_order_total")
-    total_tax = fields.Monetary('Tax',compute="_compute_order_total")
+    total_subtotal = fields.Monetary(' Subtotal ',compute="_compute_order_total")
+    total_tax = fields.Monetary(' Tax',compute="_compute_order_total")
     total_shipping_cost = fields.Monetary('Shipping Cost',compute="_compute_order_total")
     total_admin_cost = fields.Monetary('Admin Fee',compute="_compute_order_total")
-    total_discount = fields.Monetary('Discount',compute="_compute_order_total")
+    total_discount = fields.Monetary('Discount  ',compute="_compute_order_total")
     global_discount = fields.Monetary('Additional Discount',compute="_compute_order_total")
-    total_amount = fields.Monetary('Total',compute="_compute_order_total")
+    total_amount = fields.Monetary(' Total',compute="_compute_order_total")
     currency_id = fields.Many2one("res.currency", string="Currency", readonly=True, required=True)
     user_id = fields.Many2one('res.users','Salesperson')
     pricelist_id = fields.Many2one(
-        'product.pricelist', string='Pricelist',# Unrequired company
+        'product.pricelist', string='Pricelist ',# Unrequired company
      readonly=True,
         domain="['|', ('company_id', '=', False), ('company_id', '=', company_id)]",
         help="If you change the pricelist, only newly added lines will be affected.")

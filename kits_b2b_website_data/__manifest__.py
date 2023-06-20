@@ -6,6 +6,7 @@
     'author': 'Keypress IT Services',
     'version': '13.0.0.1',
     'sequence' : 1,
+    'license':"LGPL-3",
     'website' : 'https://keypress.co.in',
     'depends':['kits_b2b_website'],
     'data': [

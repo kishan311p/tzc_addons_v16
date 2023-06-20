@@ -12,19 +12,14 @@
             <field name="auto_delete" eval="False"/>
             <field name="lang">{{object.partner_id.lang}}</field>
             <field name="body_html" type="html">
-                <table border="0" cellpadding="0" cellspacing="0" style="background-color: white; color: #454748; border-collapse:separate;width:100%;">
-                    <tbody>
-                        <!-- CONTENT -->
-                        <tr>
-                            <td align="center" style="min-width: 590px;">
-                                <table border="0" cellpadding="0" cellspacing="0" style="min-width: 590px; background-color: white; padding: 0px 8px 0px 8px; border-collapse:separate;width:100%;">
+                                <table border="0" cellpadding="0" cellspacing="0" width="590" style="padding: 0px; background-color: white; color: #454748; border-collapse:separate;">
                                     <tr>
                                         <td valign="top" style="font-size: 13px;">
                                             <p style="margin-top:0px;">Dear <t t-out="object.partner_id.name"/></p>
                                             <p>
                                                 We see that you have left some items in your cart without checking out. 
                                             </p>
-                                            <table width='100%' style="border: 1px solid #dbdde0;">
+                                            <table style="border: 1px solid #dbdde0;border-collapse: collapse;">
                                                 <thead>
                                                     <tr>
                                                         <th style="padding: 10px;width: 50%;" colspan="2">
@@ -44,13 +39,13 @@
                                                 </th>
                                             </tr>
                                         </thead>
-                                    </table>
 
-                                    <t t-foreach="object.order_line" t-as="line">
-                                        <table width="100%">
+                                    <tbody>
+                                    <t t-foreach="object.non_case_order_line" t-as="line">
+                                        <!-- <table width="100%"> -->
                                             <tr>
                                                 <!-- Image -->
-                                                <td style="border: 1px solid #dbdde0; padding: 10px;width: 25%;">
+                                                <td style="border: 1px solid #dbdde0; padding: 10px;">
                                                     <t t-set="special_discount" t-value="line.product_id.get_black_special_friday_sale()"/>
                                                     <t t-if="line.sale_type">
 
@@ -105,13 +100,13 @@
                                                         </t>
 
                                                     </t>
-                                                    <img width="100%" t-attf-src="{{line.product_id.image_url}}"/>
+                                                    <img width="150px" t-attf-src="{{line.product_id.image_url}}"/>
                                                 </td>
 
-                                                <td style="border: 1px solid #dbdde0; padding: 10px;width: 25%;">
-                                                    <img width="100%" t-attf-src="{{line.product_id.image_secondary_url}}"/>
+                                                <td style="border: 1px solid #dbdde0; padding: 10px;">
+                                                    <img width="150px" t-attf-src="{{line.product_id.image_secondary_url}}"/>
                                                 </td>
-                                                <td style="text-align: center; border: 1px solid #dbdde0; padding: 10px;text-transform: capitalize;width:15%;">
+                                                <td style="text-align: center; border: 1px solid #dbdde0; padding: 10px;text-transform: capitalize;">
                                                     <p >
                                                         <t t-if="line.product_id.brand">
                                                             <t t-out="line.product_id.brand.name"/>
@@ -171,7 +166,7 @@
                                                     </div>
                                                 </td>
                                                 <!-- QTY -->
-                                                <td style="text-align: center; border: 1px solid #dbdde0; padding: 10px;width:8%;">
+                                                <td style="text-align: center; border: 1px solid #dbdde0; padding: 10px;">
                                                     <p >
                                                         <t t-if="line.product_uom_qty">
                                                             <t t-out="int(line.product_uom_qty)"/>
@@ -182,7 +177,7 @@
                                                     </p>
                                                 </td>
                                                 <!-- PRICE UNIT -->
-                                                <td style="text-align: center; border: 1px solid #dbdde0; padding: 2px;width:8%;">
+                                                <td style="text-align: center; border: 1px solid #dbdde0; padding: 2px;">
                                                     <t t-if="line.price_unit != line.unit_discount_price">
 
                                                         <p style="color: #ff0000;text-decoration:line-through;">
@@ -223,19 +218,21 @@
                                                     </t>
                                                 </td>
                                                 <!-- SUBTOTAL -->
-                                                <td style="text-align: center; border: 1px solid #dbdde0; padding: 10px;width:8%;">
+                                                <td style="text-align: center; border: 1px solid #dbdde0; padding: 10px;">
                                                     <t t-out="object.partner_id.property_product_pricelist.currency_id.symbol"/>
                                                     <t t-out="line.picked_qty_subtotal"/>
                                                 </td>
                                             </tr>
-                                        </table>
+                                        <!-- </table> -->
 
                                     </t>
+                                    </tbody>
+                                </table>
                                     <hr/>
 
             
                                     <div align='center' style="margin:20px 0px 20px 0px">
-                                        <a t-attf-href="{{object.get_order_portal_url()}}/cart" target="_blank" style="background-color:#1F7B6F !important; padding: 20px; text-decoration: none; color: #fff; border-radius: 100px; font-size: 16px;" class="o_default_snippet_text">
+                                        <a t-attf-href="{{object.get_order_portal_url()}}/cart" target="_blank" style="background-color:#1F7B6F !important; padding: 10px; text-decoration: none; color: #fff; border-radius: 100px; font-size: 16px;" class="o_default_snippet_text">
         View Cart
                                         </a>
                                     </div>
@@ -251,10 +248,7 @@
                                 </td>
                             </tr>
                         </table>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
+
 
 
     </field>

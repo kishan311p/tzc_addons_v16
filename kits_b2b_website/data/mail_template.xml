@@ -9,42 +9,13 @@
             <field name="subject">Verify Your Email Address: Everything Optical.</field>
             <field name="body_html" type="html">
 
-                <table border="0" cellpadding="0" cellspacing="0" style="padding-top:16px;background-color: #F1F1F1; font-family:Verdana, Arial,sans-serif; color: #454748; width: 100%; border-collapse:separate;">
-                    <tr>
+                <table border="0" cellpadding="0" cellspacing="0" style="font-family:Verdana, Arial,sans-serif; width: 100%; border-collapse:separate;">
+                    <tbody><tr>
                         <td align="center" style="min-width:590px;">
                             <table border="0" cellpadding="0" cellspacing="0" width="590" style="padding: 0px 8px 0px 8px;background-color: white; color: #454748; border-collapse:separate;">
                                 <tbody>
                                     <!-- HEADER -->
-                                    <tr>
-                                        <td align="center" style="min-width: 590px;">
-                                            <t t-if="object.env.cr.dbname != 'eto_production'">
-                                                <div class="corner-ribbon" style="top: 5%;position:absolute;width: 165px;font-weight: bold;color: #dc0e0e;font-size: 36px;text-align: center;">TEST</div>
-
-                                            </t>
-                                            <table border="0" cellpadding="0" cellspacing="0" width="590" style="min-width: 590px; background-color: white; padding: 0px 8px 0px 8px; border-collapse:separate;">
-                                                <tr>
-                                                    <td valign="middle" style="width: 245px;">
-                                                        <span style="font-size: 20px; font-weight: bold;">
-                                                        <t t-if="object.contact_name_spt">
-                                                            <t t-out="object.contact_name_spt"/>
-                                                        </t>
-                                                        <t t-else="">
-                                                            <t t-out="object.name"/>
-                                                        </t>
-                                                        </span>
-                                                    </td>
-                                                    <td valign="middle" style="width: 50%;" align="right">
-                                                        <img src="/web/image?model=res.company&amp;id=1&amp;field=logo" style="padding: 0px; margin: 0px; width: 95%;" t-att-alt="object.user_id.company_id.name"/>
-                                                    </td>
-                                                </tr>
-                                                <tr>
-                                                    <td colspan="2" style="text-align:center;">
-                                                        <hr width="100%" style="background-color:rgb(204,204,204);border:medium none;clear:both;display:block;font-size:0px;min-height:1px;line-height:0; margin:16px 0px 16px 0px;"/>
-                                                    </td>
-                                                </tr>
-                                            </table>
-                                        </td>
-                                    </tr>
+                                    
                                     <!-- CONTENT -->
                                     <tr>
                                         <td align="center" style="min-width:590px;">
@@ -55,20 +26,20 @@
                                                             <div>
                                                                 <p style="margin-top:0px;">Dear 
                                                                     <t t-if="object.contact_name_spt">
-                                                                        <t t-out="object.contact_name_spt"/>
+                                                                        <t t-out="object.contact_name_spt"></t>
                                                                     </t>
                                                                     <t t-else="">
-                                                                        <t t-out="object.name"/>
+                                                                        <t t-out="object.name"></t>
                                                                     </t>,
                                                                 </p>
                                                                 <p>Thank you for registering to use our B2B portal. To complete your registration, please verify your email address.</p>
                                                                 <p>
-                                                                    <div style="font-size: 13px; margin: 16px 0px;" align="center">
+                                                                    </p><div style="font-size: 13px; margin: 16px 0px;" align="center">
                                                                         <a t-attf-href="{{object.env['kits.b2b.website'].search([('website_name','=','b2b1')]).url}}/verify-email?details_code={{object.access_token}}&amp;login={{object.login}}" style="background-color:#1F7B6F !important;padding: 8px 16px 8px 16px; text-decoration: none; color: #fff; border-radius: 5px; font-size:13px;">
                                                                             Activate Account
                                                                         </a>
                                                                     </div>
-                                                                </p>
+                                                                <p></p>
                                                                 <p>
                                                                     Once you have verified your email, please give our team up to 2 business days to review your information before we provide approval. Please note, only businesses in the optical industry will be granted access to your portal. You will receive an email confirming your approval and further instructions.
                                                                 </p>
@@ -88,61 +59,13 @@
                                             </table>
                                         </td>
                                     </tr>
-                                    <tr>
-                                        <td style="text-align:center;">
-                                            <hr width="100%" style="background-color:rgb(204,204,204);border:medium none;clear:both;display:block;font-size:0px;min-height:1px;line-height:0; margin: 16px 0px 16px 0px;"/>
-                                        </td>
-                                    </tr>
                                 </tbody>
                             </table>
                         </td>
                     </tr>
                     <!-- FOOTER -->
-                    <tr>
-                        <td align="center" style="min-width: 605px;">
-                            <table border="0" cellpadding="0" cellspacing="0" width="590" style="min-width: 605px; background-color: white; font-size: 11px; padding: 0px 8px 16px 8px; border-collapse:separate;">
-                                <tr>
-                                    <td valign="middle" align="left">
-                                        <t t-out="object.user_id.company_id.name"/>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td valign="middle" align="left" style="opacity: 0.7;">
-                                        <t t-out="object.user_id.company_id.phone"/>
-                                        <t t-if="object.user_id.company_id.email">
-                |                                            <a t-attf-href="'mailto:%s' % {{object.company_id.email}}" style="text-decoration:none; color: #454748;">
-                                                <t t-out="object.user_id.company_id.email"/>
-                                            </a>
-
-                                        </t>
-                                        <t t-if="object.user_id.company_id.website">
-                                                            |                                            <a t-attf-href="'%s' % {{object.company_id.website}}" style="text-decoration:none; color: #454748;">
-                                                <t t-out="object.user_id.company_id.website"/>
-                                            </a>
-
-                                        </t>
-                                    </td>
-                                </tr>
-                            </table>
-                        </td>
-                    </tr>
-                    <tr>
-                    </tr>
-                    <!-- POWERED BY -->
-                    <tr>
-                        <td align="center" style="min-width:605px;">
-                            <table border="0" cellpadding="0" cellspacing="0" width="605" style="min-width:605px;background-color: #F1F1F1; color: #454748; padding: 8px; border-collapse:separate;">
-                                <tbody>
-                                    <tr>
-                                        <td style="text-align:center;font-size: 13px;">
-                                                Powered by <a target="_blank" href="www.teameto.com" style="color: #1F7B6F;">ETO</a>
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </td>
-                    </tr>
-                </table>
+                    
+                </tbody></table>
 
             </field>
         </record>

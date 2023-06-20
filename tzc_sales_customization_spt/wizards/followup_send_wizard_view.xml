@@ -48,7 +48,7 @@
             </field>
         </record>
 
-       <act_window
+       <!-- <act_window
             name="Send by post"
             id="followup_send"
             res_model="followup.send.wizard"
@@ -57,7 +57,18 @@
             view_mode="form"
             target="new"
             groups="account.group_account_invoice"
-            />
+            /> -->
+
+        <record id="followup_send" model="ir.actions.act_window">
+            <field name="name">Send by post</field>
+            <field name="res_model">followup.send.wizard</field>
+            <field name="view_mode">form</field>
+            <field name="binding_model_id" ref="base.model_res_partner"/>
+            <field name="binding_view_types">list</field>
+            <field name="target">new</field>
+            <field name="groups_id" eval="[(4,ref('account.group_account_invoice'))]"/>
+        </record>
+        
 
     </data>
 

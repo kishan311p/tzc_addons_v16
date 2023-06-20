@@ -6,10 +6,10 @@ class ProductBridgeSizeSpt(models.Model):
     _name = 'product.bridge.size.spt'
     _description = 'Product Bridge Size' 
 
-    name = fields.Char('Bridge Size', index=True)
+    name = fields.Char('    Bridge Size', index=True)
     # product_ids = fields.One2many('product.template','bridge_size',string='Products')
     kits_product_ids = fields.One2many('product.product','bridge_size',string='Products')
-    bridgesize_id = fields.Many2one('kits.product.color.code', string='Bridge Size')
+    bridgesize_id = fields.Many2one('kits.product.color.code', string=' Bridge Size')
     products_count = fields.Integer(compute="_compute_bridge_size_spt")
     active = fields.Boolean('Active')
 

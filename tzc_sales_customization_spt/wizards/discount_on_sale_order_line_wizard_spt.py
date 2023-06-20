@@ -33,7 +33,7 @@ class discount_on_sale_order_line_wizard_spt(models.TransientModel):
         ('percentage', 'Discount In Percentage'),('fix_discount','Discounted Amount'),
         ('fix','Fixed Price')],'Discount Based On', default="fix",required=True)
 
-    fix_discount_price = fields.Float('Discount')
+    fix_discount_price = fields.Float('Discount    ')
     fix_price = fields.Float('Fix Price')    
 
     @api.model
@@ -125,6 +125,7 @@ class discount_on_sale_order_line_wizard_spt(models.TransientModel):
                             line.write({'unit_discount_price':unit_discount_price})
                             line.order_id.write({'updated_by':self.env.user.id,'updated_on':datetime.now()})
                             line._onchange_unit_discounted_price_spt()
+                            line.order_id._amount_all()
         # else:
         #     raise UserError(_("This order contains promotion program,You can't apply bulk discount.")) 
  

@@ -19,7 +19,7 @@ class kits_multi_website_invoice(models.Model):
     promo_code_discount = fields.Float("Promo Code Discount")
     discounted_shipping_cost = fields.Float("Discounted Shipping Cost")
     currency_id = fields.Many2one("res.currency", "Currency",related="customer_id.currency_id")
-    amount_paid = fields.Float("Amount")
+    amount_paid = fields.Float(" Amount ")
     journal_id = fields.Many2one("account.journal",domain=[('type','in',['bank', 'cash'])])
     payment_date = fields.Date("Payment Date")
     shipping_discount = fields.Float("Shipping Discount")

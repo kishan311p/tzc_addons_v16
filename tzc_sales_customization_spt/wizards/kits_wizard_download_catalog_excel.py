@@ -24,7 +24,7 @@ class kits_wizard_download_catalog_excel(models.TransientModel):
     partner_id = fields.Many2one('res.partner','Customer')
     partner_ids = fields.Many2many('res.partner',string="Contacts")
     file = fields.Binary()
-    currency = fields.Selection([('usd','USD'),('cad','CAD')],string='Currency',default='usd')
+    currency = fields.Selection([('usd','USD'),('cad','CAD')],string=' Currency ',default='usd')
 
     def action_download_report(self):
         alignment_left = Alignment(vertical='center', horizontal='left', text_rotation=0, wrap_text=True)

@@ -139,7 +139,7 @@ class stock_picking(models.Model):
     # credit_note_created  = fields.Boolean('Credit note ?')
     # count_return_order = fields.Integer('Return Orders',compute="_count_return_pickings")
     # kits_return_picking = fields.Boolean(compute="_compute_kits_return_picking",store=True,compute_sudo=True)
-    move_lines = fields.One2many('stock.move', 'picking_id', string="Stock Moves", copy=True)
+    move_lines = fields.One2many('stock.move', 'picking_id', string=" Stock Moves", copy=True)
 
     actual_weight = fields.Float('Actual Weight (kg)',compute="_compute_weight_of_cases")
     # actual_weight = fields.Float('Actual Weight (kg)',related="weight")
@@ -231,6 +231,12 @@ class stock_picking(models.Model):
     sale_order_number = fields.Char('Order Number',compute="_compute_sale_order_number")
 
     is_fulfiled = fields.Boolean('Is Fullfiled (Flag)',default=False)
+    move_ids_without_package = fields.One2many(
+        'stock.move', 'picking_id', string="Stock moves not in package", compute='_compute_move_without_package',
+        inverse='_set_move_without_package', compute_sudo=True, search="_search_value")
+
+    def _search_value(self,operator, value):
+        return [('id', operator, self.id)]
 
     # Case Products
     def _filter_non_case_products(self):
@@ -1625,7 +1631,7 @@ class stock_picking(models.Model):
                 # stock_pick.with_context(force_send=True).message_post_with_template(delivery_template_id, email_layout_xmlid='mail.mail_notification_light')
                 delivery_template_id = self.env.ref('stock.mail_template_data_delivery_confirmation')
                 delivery_template_id.model = 'sale.order'
-                delivery_template_id.send_mail(stock_pick.sale_id.id,force_send=True,email_layout_xmlid="mail.mail_notification_light")
+                delivery_template_id.with_context(signature=stock_pick.sale_id.user_id.signature).send_mail(stock_pick.sale_id.id,force_send=True,email_layout_xmlid="mail.mail_notification_light")
 
     def get_scanned_product(self):
         scaned_product = {}

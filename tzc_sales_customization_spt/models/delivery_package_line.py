@@ -12,7 +12,7 @@ class delivery_package_line(models.Model):
     weight = fields.Float('Weight (in kg)')
     picking_id = fields.Many2one('stock.picking')
     deliver_box_domain_ids = fields.Many2many('delivery.box.line','delivery_package_domain_deliverybox_rel','package_domain_id','box_domain_id','Box')
-    delivery_box_ids = fields.Many2many('delivery.box.line','packageline_deliverybox_rel','deliverypackage_line_id','delverybox_id','Box')
+    delivery_box_ids = fields.Many2many('delivery.box.line','packageline_deliverybox_rel','deliverypackage_line_id','delverybox_id',' Box')
     # deliver_box_ids = fields.One2many('delivery.box.line','delivery_package_line_id','Box')
     tracking_number = fields.Char('Tracking Number')
     package_label = fields.Binary('Shipping Label')
@@ -21,7 +21,7 @@ class delivery_package_line(models.Model):
         categories_ids = self.env['product.category'].search([('name','in',['S','E','Case'])])
         return categories_ids.ids
     categ_ids = fields.Many2many('product.category','delivery_packagelinedomain_product_categ_rel','delivery_package_linedomain_id','product_categ_id','Commodities',default=_filter_commodity_categories)
-    commodity_ids = fields.Many2many('product.category','delivery_packageline_product_categ_rel','delivery_package_line_id','product_categ_id','Commodities')
+    commodity_ids = fields.Many2many('product.category','delivery_packageline_product_categ_rel','delivery_package_line_id','product_categ_id','Commodities ')
     qty = fields.Float('Quantity')
 
     # @api.onchange('delivery_box_ids')

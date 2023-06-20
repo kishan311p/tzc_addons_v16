@@ -47,6 +47,11 @@ class mail_compose_message_wizard(models.TransientModel):
             ctx = self._context.copy()
             ctx.update({'mail_notify_author': True})
             self.env.context = ctx
+        if self._context.get('signature_user'):
+            ctx = self._context.copy()
+            signature = self.env['res.users'].browse(ctx.get('signature_user')).signature
+            ctx.update({'signature': signature}) 
+            self.env.context = ctx
         if self._context.get('active_model') and self._context.get('active_model') == 'kits.generate.payment.link.wizard':
             ctx = self._context.copy()
             ctx.update({'order_id':self.res_id})

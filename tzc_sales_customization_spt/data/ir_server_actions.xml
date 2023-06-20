@@ -133,7 +133,7 @@
         </record>
 
         <record id="action_product_remove_new_price" model="ir.actions.server">
-            <field name="name">Remove to Price Drop</field>
+            <field name="name">Remove from Price Drop</field>
             <field name="model_id" ref="model_product_product"/>
             <field name="binding_model_id" ref="model_product_product"/>
             <field name="state">code</field>

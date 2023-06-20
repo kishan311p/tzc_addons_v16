@@ -29,7 +29,7 @@ class SaleCatalog(models.Model):
     # pending_catalog_ids = fields.One2many('pending.catalog.spt','catalog_id','Pending Catalogs')
     customer_count = fields.Integer(compute='_get_customer_count',store=True)
     partner_ids = fields.Many2many('res.partner', string='Customers',copy=True)
-    discount = fields.Float(string='Discount (%)', digits='Discount', default=0.0)
+    discount = fields.Float(string='Discount (%)', digits=' Discount ', default=0.0)
     active = fields.Boolean('Active', default=True,copy=True)
     state = fields.Selection(selection=[
             ('draft', 'Draft'),
@@ -415,7 +415,8 @@ class SaleCatalog(models.Model):
             line_ids = self.line_ids
             product_list = set(line_ids.mapped('product_pro_id.variant_name'))
             
-        (list(product_list)).sort()
+        product_list = list(product_list)
+        product_list.sort()
         product_dict = {}
         for product_name in product_list:
             product_id = product_obj.search([('active','=',True),('variant_name','=',product_name)],order = 'id desc',limit=1)

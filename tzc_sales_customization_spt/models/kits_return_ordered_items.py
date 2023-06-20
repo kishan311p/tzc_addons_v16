@@ -6,7 +6,7 @@ class kits_return_ordered_items_line(models.Model):
     
     product_id = fields.Many2one('product.product', string='Product')
     return_order_id = fields.Many2one('kits.return.ordered.items', string='Return Order')
-    scrap_order_id = fields.Many2one('kits.return.ordered.items', string='Return Order')
+    scrap_order_id = fields.Many2one('kits.return.ordered.items', string=' Return Order')
     product_qty = fields.Integer('Quantity',default="1")
     return_type = fields.Selection([
         ('return', 'Return'),('scrap', 'Scrap')

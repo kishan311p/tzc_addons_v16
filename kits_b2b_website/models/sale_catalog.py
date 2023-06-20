@@ -90,7 +90,8 @@ class sale_catalog(models.Model):
             line_ids = self.line_ids
             product_list = set(line_ids.mapped('product_pro_id.variant_name'))
             
-        (list(product_list)).sort()
+        product_list = list(product_list)
+        product_list.sort()
         product_dict = {}
         for product_name in product_list:
             product_id = product_obj.search([('active','=',True),('variant_name','=',product_name)],order = 'id desc',limit=1)

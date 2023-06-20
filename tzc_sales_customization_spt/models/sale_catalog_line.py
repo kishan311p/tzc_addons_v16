@@ -23,11 +23,11 @@ class sale_catalog_line(models.Model):
     product_qty_available = fields.Float('Qty On Hand', related='product_pro_id.qty_available', readonly=True)
     qty_available_spt = fields.Integer('Available QTY', related='product_pro_id.available_qty_spt', readonly=True)
     currency_id = fields.Many2one('res.currency', help='The currency used to enter statement', string="Currency",default=lambda self: self.env.company.currency_id.id)
-    price_subtotal = fields.Monetary(compute='_compute_amount', string='Subtotal')
+    price_subtotal = fields.Monetary(compute='_compute_amount', string='  Subtotal')
     sale_type = fields.Selection([('clearance','Clearance'),('on_sale','On Sale')],'Sale Type')
     
     unit_discount_price = fields.Float('Our Price')
-    discount = fields.Float(string='Discount (%)', digits='Discount', default=0.0)
+    discount = fields.Float(string='Discount (%)', digits='Discount ', default=0.0)
     # fix_discount_price = fields.Float('Discount')
     product_categ_id = fields.Many2one('product.category',related="product_pro_id.categ_id", string='Category', readonly=True)
     actual_available_qty = fields.Float('Available Qty',related="product_pro_id.actual_stock")

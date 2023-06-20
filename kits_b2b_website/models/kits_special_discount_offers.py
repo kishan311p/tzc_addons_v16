@@ -20,5 +20,5 @@ class kits_special_discount_offers(models.Model):
         for record in self:
             page_url = ''
             if record.website_id and record.url_keyword:
-                page_url = record.website_id.url +'/offer?name='+ record.url_keyword
+                page_url = record.website_id.url +'/offer?offer='+ record.url_keyword
             record.page_url =  page_url

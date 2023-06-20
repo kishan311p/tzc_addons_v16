@@ -21,7 +21,7 @@ class kits_b2b_image_model(models.Model):
     url = fields.Char('Image URL')
     image_icon = fields.Char('Image', related="url")
     website_id = fields.Many2one('kits.b2b.website', 'Website')
-    main_banner_id = fields.Many2one('kits.b2b.pages', 'Pages')
+    main_banner_id = fields.Many2one('kits.b2b.pages', ' Pages')
     homepage_main_banner_id = fields.Many2one('kits.b2b.pages', 'Pages')
     our_core_values_id = fields.Many2one('kits.b2b.pages', 'Our Core Values')
     parent_id = fields.Many2one('kits.b2b.image.model', string='Parent')

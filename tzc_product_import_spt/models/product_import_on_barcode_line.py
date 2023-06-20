@@ -13,7 +13,7 @@ class product_import_on_barcode_line(models.Model):
     model_id = fields.Many2one('product.model.spt', string='Model')
     mcc_id = fields.Many2one('kits.product.color.code', string='Manufacturing Color Code')
     eye_size_id = fields.Many2one('product.size.spt', string='Eye Size')
-    bridge_size_id = fields.Many2one('product.bridge.size.spt', string='Bridge Size')
+    bridge_size_id = fields.Many2one('product.bridge.size.spt', string='  Bridge Size')
     temple_size_id = fields.Many2one('product.temple.size.spt', string='Temple Size')
     case_product_id = fields.Many2one('product.product', string='Case Product')
     image_url = fields.Char('Image1 URL')

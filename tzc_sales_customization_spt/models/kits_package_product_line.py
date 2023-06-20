@@ -15,7 +15,7 @@ class kits_package_product_lines(models.Model):
     product_price = fields.Float('Unit Price')
     usd_price = fields.Float('USD Price')
     cad_price = fields.Float('CAD Price',compute="_get_product_price_cad",store=True,compute_sudo=True)
-    subtotal = fields.Float('Subtotal',compute="_calc_subtotal",store=True,compute_sudo=True)
+    subtotal = fields.Float('Subtotal ',compute="_calc_subtotal",store=True,compute_sudo=True)
     sale_type = fields.Selection([('on_sale','On Sale'),('clearance','Clearance')],string="Sale Type",compute='_get_default_sale_type',store=True,compute_sudo=True)
 
     discount = fields.Float('Discount (%)')

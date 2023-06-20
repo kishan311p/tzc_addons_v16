@@ -28,14 +28,14 @@ class SaleOrderLine(models.Model):
     is_global_discount = fields.Boolean("Is Additional Discount",related="product_id.is_global_discount", store=True)
     is_shipping_product = fields.Boolean("Is Shipping Product",related="product_id.is_shipping_product", store=True)
     is_admin = fields.Boolean("Is Admin Product",related="product_id.is_admin", store=True)
-    fix_discount_price = fields.Float('Discount')    
+    fix_discount_price = fields.Float('  Discount  ')    
     # is_fs = fields.Boolean("Is FS?")
     sale_type = fields.Selection([('clearance','Clearance'),('on_sale','On Sale')],'Sale Type')
     unit_discount_price = fields.Float('Our Price')
     product_categ_id = fields.Many2one('product.category',related="product_id.categ_id", string='Category ', readonly=True)
     # is_promotion_applied = fields.Boolean("Is promotion applied?")
-    picked_qty = fields.Integer('Delivered',compute='_compute_picked_qty',store=True)
-    picked_qty_subtotal = fields.Float('Subtotal',compute="_compute_picked_qty",store=True)
+    picked_qty = fields.Integer('Delivered',compute='_compute_picked_qty',store=True,precompute=True)
+    picked_qty_subtotal = fields.Float('  Subtotal  ',compute="_compute_picked_qty",store=True,precompute=True)
     is_special_discount = fields.Boolean("Is Special Discount",help="This is flag for check product is in special discount or not.")
     primary_image_url = fields.Char("Primary Image URL",related='product_id.primary_image_url')
     case_type = fields.Selection(string="Case Type",related='product_id.case_type')
@@ -102,7 +102,7 @@ class SaleOrderLine(models.Model):
     #             record.update({'price_unit':price_unit,'unit_discount_price': unit_discount_price})
 
 
-    @api.depends('product_id','price_unit','unit_discount_price','picked_qty','product_uom_qty','discount','tax_id','move_ids','move_ids.quantity_done')
+    @api.depends('product_id','price_unit','unit_discount_price','picked_qty','product_uom_qty','discount','tax_id','move_ids','move_ids')
     def _compute_picked_qty(self):
         move_obj = self.env['stock.move']
         for record in range(len(self)):
@@ -133,27 +133,24 @@ class SaleOrderLine(models.Model):
         res = super(SaleOrderLine,self)._compute_amount()
         for record in range(len(self)):
             record = self[record]
-            if record.is_included_case and record.product_id.is_case_product:
-                return res
-            product_price = record.price_unit
-            unit_discount_price = record.unit_discount_price
-            if not record.product_id.is_shipping_product and not record.product_id.is_global_discount and not record.product_id.is_admin:
+            # product_price = record.price_unit
+            # unit_discount_price = record.unit_discount_price
+            # if not record.product_id.is_shipping_product and not record.product_id.is_global_discount and not record.product_id.is_admin:
             # Convert price based on currency.
-                product_price_dict = (self.env['kits.b2b.multi.currency.mapping'].with_context(from_order_line=True).get_product_price(record.order_id.partner_id.id,record.product_id.ids,order_id=record.order_id) or {}).get(record.product_id.id,{})
+                # product_price_dict = (self.env['kits.b2b.multi.currency.mapping'].with_context(from_order_line=True).get_product_price(record.order_id.partner_id.id,record.product_id.ids,order_id=record.order_id) or {}).get(record.product_id.id,{})
                 
-                product_price = product_price_dict.get('price')
-                unit_discount_price = product_price_dict.get('discounted_unit_price')
+                # product_price = product_price_dict.get('price')
+                # unit_discount_price = product_price_dict.get('discounted_unit_price')
 
             # Call method for extra pricing.
-            extra_pricing = record.product_id.inflation_special_discount(record.order_id.partner_id.country_id.ids,bypass_flag=record.order_id.partner_id.b2b_pricelist_id.is_pricelist_excluded)
-            if extra_pricing.get('is_inflation'):
-                product_price = product_price_dict.get('price')+(product_price_dict.get('price')*extra_pricing.get('inflation_rate') /100)
-                unit_discount_price = unit_discount_price+(unit_discount_price*extra_pricing.get('inflation_rate') /100)
-            if extra_pricing.get('is_special_discount'):
-                unit_discount_price = (unit_discount_price - unit_discount_price * extra_pricing.get('special_disc_rate') / 100)
+            # extra_pricing = record.product_id.inflation_special_discount(record.order_id.partner_id.country_id.ids,bypass_flag=record.order_id.partner_id.b2b_pricelist_id.is_pricelist_excluded)
+            # if extra_pricing.get('is_inflation'):
+            #     product_price = product_price_dict.get('price')+(product_price_dict.get('price')*extra_pricing.get('inflation_rate') /100)
+            #     unit_discount_price = unit_discount_price+(unit_discount_price*extra_pricing.get('inflation_rate') /100)
+            # if extra_pricing.get('is_special_discount'):
+            #     unit_discount_price = (unit_discount_price - unit_discount_price * extra_pricing.get('special_disc_rate') / 100)
             
-            if not self._context.get('currency_change'):
-                record.price_unit = product_price 
+            # record.price_unit = product_price
             # if unit_discount_price:
             if record.order_id.state not in record.order_id.draft_states():
                 record.price_subtotal = round(record.unit_discount_price * record.picked_qty,2)

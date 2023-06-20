@@ -85,6 +85,7 @@ from . import kits_return_ordered_items
 from . import product_pricelist
 from . import create_homepage_html
 from . import tzc_homepage_banner
+from . import crm_lead
 from . import fedex_request
 from . import delivery_box
 from . import delivery_box_line
@@ -93,3 +94,4 @@ from . import account_tax
 from . import marketing_participant
 from . import utm_campaign
 from . import kits_special_discount_offers
+from . import product_pricelist_item

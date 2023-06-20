@@ -40,10 +40,10 @@ days
                                 <span>Return Request</span>
                             </button>
                             <button type="object" name="action_open_moves" attrs="{'invisible': [('has_moves', '=', False)]}" class="oe_stat_button">
-                                <i class="fa fa-fw fa-truck"/>
+                                <i class="fa fa-fw fa-truck" title="Truck Icon"/>
                                 <span>Moves</span>
                             </button>
-                            <button type="object" name="action_open_invoices" attrs="{'invisible': [('has_invoice', '=', False)]}" class="oe_stat_button" icon="fa-money">
+                            <button type="object" name="action_open_invoices" attrs="{'invisible': [('has_invoice', '=', False)]}" class="oe_stat_button" icon="fa-money" title="Money Icon">
                                 <span>Invoices</span>
                             </button>
                         </div>
@@ -195,7 +195,7 @@ days
                                     </form>
                                 </field>
                                 <div align="right">
-                                    <button style="font-size:30px;" icon="fa-truck" help="Shipping Cost" name="action_add_shipping_cost" type="object" />
+                                    <button style="font-size:30px;" icon="fa-truck" help="Shipping Cost" name="action_add_shipping_cost" type="object" title="Truck Icon"/>
                                 </div>
                                 <div>
                                     <group class="oe_subtotal_footer oe_right">

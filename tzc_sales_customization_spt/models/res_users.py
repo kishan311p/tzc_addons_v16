@@ -315,10 +315,10 @@ class res_users(models.Model):
                     wizard_id = self.env['portal.wizard'].create({})
                     portal_user = self.env['portal.wizard.user'].create({'user_id':user.id,'partner_id':user.partner_id.id,'wizard_id':wizard_id.id})
                     # portal_user = self.env['portal.wizard.user'].create({'user_id':user.id,'partner_id':user.partner_id.id,'wizard_id':wizard_id.id})
-                    template.with_context(lang=user.lang,url=url).send_mail(portal_user.id, force_send=True, raise_exception=True,email_values={'recipient_ids':[(6,0,user.partner_id.ids)]})
+                    template.with_context(lang=user.lang,url=url,signature=user.user_id.signature).send_mail(portal_user.id, force_send=True, raise_exception=True,email_values={'recipient_ids':[(6,0,user.partner_id.ids)]})
                     _logger.info("Invitation email sent for user <%s> to <%s>", user.login, user.email)
                 else:
-                    template.with_context(lang=user.partner_id.lang).send_mail(user.id, force_send=force_send, raise_exception=True,email_layout_xmlid="mail.mail_notification_light")
+                    template.with_context(lang=user.partner_id.lang,signature=user.user_id.signature).send_mail(user.id, force_send=force_send, raise_exception=True,email_layout_xmlid="mail.mail_notification_light")
                     # template.with_context(lang=user.partner_id.lang).send_mail(user.partner_id.id, force_send=force_send, raise_exception=True)
                     values = template.generate_email(
                                 user.id,

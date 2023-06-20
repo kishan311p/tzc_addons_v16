@@ -24,7 +24,7 @@ class res_company(models.Model):
 
     bank_details = fields.Html('Bank Details')
     
-    journal_id = fields.Many2one('account.journal',string='Journal',domain="[('company_id','=',id),('type','in',['bank','cash'])]")
+    journal_id = fields.Many2one('account.journal',string=' Journal',domain="[('company_id','=',id),('type','in',['bank','cash'])]")
 
     def action_token_generator(self,size=32, chars=string.ascii_uppercase + string.digits + string.ascii_lowercase):
         for record in self:

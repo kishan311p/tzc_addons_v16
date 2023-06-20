@@ -24,7 +24,7 @@ class kits_multi_website_sale_order(models.Model):
     has_invoice = fields.Boolean("Has Invoice",compute="_compute_moves_and_invoice")
     amount_without_discount = fields.Float("Subtotal",compute="_compute_all")
     amount_discount = fields.Float("Discount",compute="_compute_all")
-    amount_tax = fields.Float("Tax",compute="_compute_all")
+    amount_tax = fields.Float(" Tax  ",compute="_compute_all")
     fiscal_position_id = fields.Many2one("account.fiscal.position", "Fiscal Position")
     promo_code = fields.Char("Promo Code")
     promo_code_discount = fields.Float("Promo Code Discount")

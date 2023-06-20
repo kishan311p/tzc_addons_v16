@@ -31,7 +31,7 @@ class project_task(models.Model):
     check_date = fields.Boolean("Current Date", compute="_check_date")
     current_date = fields.Date('Current Date & Time',compute="_compute_current_date")
     user_id = fields.Many2one('res.users',string='Assigned to',default=lambda self: self.env.uid,index=True, tracking=True,domain=_get_admin_user)
-    task_status = fields.Selection(string='Status',related='stage_id.progress_status')
+    task_status = fields.Selection(string=' Status ',related='stage_id.progress_status')
 
     @api.constrains('sequence')
     def onchange_time_duration(self):
@@ -172,7 +172,11 @@ class project_task(models.Model):
             res = super(project_task,self).unlink()
             return res
         except Exception as e:
-            raise UserError('This task cannot be deleted since there might be some data attached to it. You may delete those data and try again.\n\n'+e.pgerror)
+            if hasattr(e,'pgerror'):
+                raise UserError('This task cannot be deleted since there might be some data attached to it. You may delete those data and try again.\n\n'+e.pgerror)
+            else:
+                raise UserError(e.name)
+                
 
     @api.depends('planned_date_begin', 'planned_date_end', 'company_id.resource_calendar_id', 'user_ids')
     def _compute_allocated_hours(self):

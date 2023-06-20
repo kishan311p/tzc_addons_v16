@@ -5,6 +5,7 @@
     'description': """This module is for Kits B2C1""",
     'author': 'Keypress IT Services',
     'version': '13.0.0.2',
+    'license':"LGPL-3",
     'sequence' : 1,
     'website' : 'https://www.keypress.co.in',
     'depends':['kits_multi_website'],

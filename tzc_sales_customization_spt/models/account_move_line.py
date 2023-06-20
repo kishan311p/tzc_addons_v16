@@ -17,7 +17,7 @@ class AccountMoveLine(models.Model):
     is_admin = fields.Boolean("Is Admin Fee",related="product_id.is_admin", store=True)
     is_shipping_product = fields.Boolean("Is Shipping Product",related="product_id.is_shipping_product", store=True)
     unit_discount_price = fields.Float('Discount',compute='_compute_discount_price')
-    product_categ_id = fields.Many2one('product.category',related="product_id.categ_id", string='Category', readonly=True)
+    product_categ_id = fields.Many2one('product.category',related="product_id.categ_id", string='  Category ', readonly=True)
     discount_unit_price = fields.Float('Our Price',compute='_compute_discount_price')
     # is_fs = fields.Boolean("Is FS?",compute='_compute_boolean_fields')
     # is_fs = fields.Boolean("Is FS?")
