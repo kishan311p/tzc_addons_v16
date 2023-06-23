@@ -3,9 +3,9 @@ from odoo import models,fields,api,_
 class crm_lead(models.Model):
     _inherit = 'crm.lead'
 
-    @api.model
-    def create(self,vals):
-        res = super(crm_lead,self).create(vals)
+    @api.model_create_multi
+    def create(self,vals_list):
+        res = super(crm_lead,self).create(vals_list)
         user_ids = eval(self.env['ir.config_parameter'].sudo().get_param('tzc_sales_customization_spt.to_notify_user_ids', default='[]'))
         users = self.env['res.users'].browse(user_ids)
         partner_ids = users.mapped('partner_id')

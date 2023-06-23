@@ -1,10 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <record id="kits_special_discount_offers_action" model="ir.actions.act_window">
-        <field name="name">Special Discount Offers</field>
-        <field name="res_model">kits.special.discount.offers</field>
-        <field name="view_mode">tree,form</field>
-    </record>
+
+    
     <record id="kits_special_discount_offers_view_search" model="ir.ui.view">
         <field name="name">kits.special.discount.offers.view.search</field>
         <field name="model">kits.special.discount.offers</field>
@@ -38,6 +35,7 @@
                             <field name="name"  required="1"/>
                             <field name="active" widget="boolean_toggle"/>
                             <field name="url_keyword" widget="url"  required="1"/>
+                            <field name="offer_icon_text" />
                         </group>
                         <group>
                             <field name="start_date" />
@@ -45,16 +43,14 @@
 
                         </group>
                          <group>
-                            <field name="offer_icon_url" widget="url"  required="1"/>
                             <field name="desktop_main_banners_url" required="1" />
                             <field name="mobile_main_banners_url"  required="1"/>
 
                         </group>
                         <group>
 
-                            <field name="offer_icon" widget="image" class="oe_avatar" options="{'zoom': true,'preview_image': 'offer_icon_url','size': [128, 128]}"/>
-                            <field name="mobile_main_banners"  widget="image" class="oe_avatar" options="{'zoom': true,'preview_image': 'mobile_main_banners_url','size': [128, 128]}"/>
                             <field name="desktop_main_banners"  widget="image" class="oe_avatar" options="{'zoom': true,'preview_image': 'desktop_main_banners_url','size': [128, 128]}"/>
+                            <field name="mobile_main_banners"  widget="image" class="oe_avatar" options="{'zoom': true,'preview_image': 'mobile_main_banners_url','size': [128, 128]}"/>
 
                         </group>
                         <group>
@@ -92,5 +88,10 @@
             </form>
         </field>
     </record>
-
+    <record id="action_kits_special_discount_offers" model="ir.actions.act_window">
+        <field name="name">Special Discount Offers</field>
+        <field name="res_model">kits.special.discount.offers</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+    
 </odoo>

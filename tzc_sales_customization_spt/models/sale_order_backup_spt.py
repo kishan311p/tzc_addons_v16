@@ -15,7 +15,7 @@ class sale_order_backup_spt(models.Model):
     date_order = fields.Datetime('Order Date')
     # applied_promo_code = fields.Char('Applied Promo Code')
     payment_term_id = fields.Many2one('account.payment.term','Payment Terms')
-    line_ids = fields.One2many('sale.order.backup.line.spt','order_backup_id','Order Lines', ondelete='cascade', index=True, copy=False)
+    line_ids = fields.One2many('sale.order.backup.line.spt','order_backup_id','Order Lines', index=True, copy=False)
     total_subtotal = fields.Monetary(' Subtotal ',compute="_compute_order_total")
     total_tax = fields.Monetary(' Tax',compute="_compute_order_total")
     total_shipping_cost = fields.Monetary('Shipping Cost',compute="_compute_order_total")
@@ -34,15 +34,15 @@ class sale_order_backup_spt(models.Model):
     # Glasses
     def _non_case_domain(self):
         return [('id','in',self.line_ids.filtered(lambda x: x.product_id.is_case_product==False).ids)]
-    non_case_line_ids = fields.One2many('sale.order.backup.line.spt','order_backup_id','Product Lines', ondelete='cascade', index=True, copy=False,domain=_non_case_domain)
+    non_case_line_ids = fields.One2many('sale.order.backup.line.spt','order_backup_id','Product Lines', index=True, copy=False,domain=_non_case_domain)
     # Cases.
     def _include_case_domain(self):
         return [('id','in',self.line_ids.filtered(lambda x: x.product_id.is_case_product==True and x.is_included_case==True).ids)]
-    included_cases_line_ids = fields.One2many('sale.order.backup.line.spt','order_backup_id','Include Case Lines', ondelete='cascade', index=True, copy=False,domain=_include_case_domain)
+    included_cases_line_ids = fields.One2many('sale.order.backup.line.spt','order_backup_id','Include Case Lines', index=True, copy=False,domain=_include_case_domain)
     
     def _extra_case_domain(self):
         return [('id','in',self.line_ids.filtered(lambda x: x.product_id.is_case_product==True and x.is_included_case==False).ids)]
-    extra_cases_line_ids = fields.One2many('sale.order.backup.line.spt','order_backup_id','Extra Case Lines', ondelete='cascade', index=True, copy=False,domain=_extra_case_domain)
+    extra_cases_line_ids = fields.One2many('sale.order.backup.line.spt','order_backup_id','Extra Case Lines', index=True, copy=False,domain=_extra_case_domain)
 
     def _compute_order_total(self):
         for record in self:

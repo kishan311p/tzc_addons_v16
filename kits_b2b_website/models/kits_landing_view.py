@@ -39,3 +39,5 @@ class kits_landing_url(models.Model):
     sequence = fields.Integer(string="Sequence")
     url = fields.Char('URL')
     landing_view_id = fields.Many2one('kits.landing.view', string='Landing View')
+    thumbnail_image_url = fields.Char('Thumbnail Image URL')
+    thumbnail_image = fields.Char('Thumbnail Image',related='thumbnail_image_url')

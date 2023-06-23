@@ -4,7 +4,7 @@ class sale_order_backup_line_spt(models.Model):
     _name = 'sale.order.backup.line.spt'
     _description = "Sale Order Backup Line"
 
-    order_backup_id = fields.Many2one('sale.order.backup.spt','Order')
+    order_backup_id = fields.Many2one('sale.order.backup.spt','Order',ondelete='cascade')
     product_id = fields.Many2one('product.product','Product')
     categ_id = fields.Many2one('product.category','Category',related="product_id.categ_id")
     product_uom_qty = fields.Integer('Quantity')

@@ -222,7 +222,7 @@ class remove_stock_done_qty_line_spt(models.TransientModel):
 
     product_id = fields.Many2one('product.product','Product',domain=_get_domain)
     product_qty = fields.Integer("Qty",default=1)
-    product_line_id = fields.Many2one('remove.done.quantity.spt',"Product")
+    product_line_id = fields.Many2one('remove.done.quantity.spt',"  Product ")
     sequence = fields.Integer(string='Sequence',index=True)
 
     def action_product_selection(self):

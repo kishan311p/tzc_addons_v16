@@ -8,7 +8,7 @@ class eto_partner_wizard_spt(models.TransientModel):
     _name = 'eto.partner.wizard.spt'
     _description = 'Set eto In Partner'
 
-    property_product_eto = fields.Selection([('b2c','Pending'),('b2b_regular','Verified')],default="b2c",tracking=True,string='ETO')
+    property_product_eto = fields.Selection([('b2c','Pending'),('b2b_regular','Verified')],default="b2c",string='ETO')
     
     partner_ids = fields.Many2many('res.partner','eto_partner_wizard_res_partner_real','wizard_id','partner_id',string='Partner')
     

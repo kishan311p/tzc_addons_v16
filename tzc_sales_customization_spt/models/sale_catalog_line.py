@@ -19,7 +19,7 @@ class sale_catalog_line(models.Model):
     product_price_msrp = fields.Float("MSRP")
     product_price_wholesale = fields.Float("Wholesale")
     product_uom_id = fields.Many2one('uom.uom', related='product_pro_id.uom_id', readonly=True)
-    product_qty = fields.Integer('Qty', digits='Product Unit of Measure', default=1)
+    product_qty = fields.Integer('Qty', default=1)
     product_qty_available = fields.Integer('Qty On Hand', related='product_pro_id.qty_available', readonly=True)
     qty_available_spt = fields.Integer('Available QTY', related='product_pro_id.available_qty_spt', readonly=True)
     currency_id = fields.Many2one('res.currency', help='The currency used to enter statement', string="Currency",default=lambda self: self.env.company.currency_id.id)

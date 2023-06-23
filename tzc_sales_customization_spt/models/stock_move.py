@@ -15,9 +15,12 @@ class stock_move(models.Model):
     pro_primary_image_url = fields.Char("Primary Image URL",related='product_id.primary_image_url')
     scan_extra_item = fields.Boolean(default=False)
     return_order_line_id = fields.Many2one('kits.return.ordered.items.line', string='Return Order Line')
+    quantity_done = fields.Float(
+        'Quantity Done', compute='_quantity_done_compute', digits='Product Unit of Measure',
+        inverse='_quantity_done_set', store=True,precompute=True)
 
     # include case flag
-    is_included_case = fields.Boolean('Included Case?',help='To identify move is for included case product or not.',related='sale_line_id.is_included_case',store=True,default=False)
+    is_included_case = fields.Boolean('Included Case?',help='To identify move is for included case product or not.',related='sale_line_id.is_included_case',store=True)
 
     @api.depends('sale_line_id','sale_line_id.package_id')
     def _compute_package_id(self):

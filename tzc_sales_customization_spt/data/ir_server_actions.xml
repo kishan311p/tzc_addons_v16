@@ -332,7 +332,7 @@
             </field>
         </record>
         <record id="action_res_partner_delete" model="ir.actions.server">
-            <field name="groups_id" eval="[(4, ref('base.group_system')),(4, ref('tzc_sales_customization_spt.group_sales_manager_spt'))]"/>
+            <!-- <field name="groups_id" eval="[(4, ref('base.group_system')),(4, ref('tzc_sales_customization_spt.group_sales_manager_spt'))]"/> -->
             <field name="name">Delete</field>
             <field name="model_id" ref="base.model_res_partner"/>
             <field name="binding_model_id" ref="base.model_res_partner"/>

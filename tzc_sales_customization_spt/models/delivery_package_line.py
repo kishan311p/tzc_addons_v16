@@ -22,7 +22,7 @@ class delivery_package_line(models.Model):
         return categories_ids.ids
     categ_ids = fields.Many2many('product.category','delivery_packagelinedomain_product_categ_rel','delivery_package_linedomain_id','product_categ_id','Commodities',default=_filter_commodity_categories)
     commodity_ids = fields.Many2many('product.category','delivery_packageline_product_categ_rel','delivery_package_line_id','product_categ_id','Commodities ')
-    qty = fields.Float('Quantity')
+    qty = fields.Integer('Quantity')
 
     # @api.onchange('delivery_box_ids')
     # def _compute_categ_ids(self):

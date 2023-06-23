@@ -23,7 +23,7 @@ class SaleOrderLine(models.Model):
     is_pack_order_line = fields.Boolean('Package order line')
     package_line_id = fields.Many2one('kits.package.order.line',"Package Line",ondelete='cascade')
 
-    state = fields.Selection(related='order_id.state', string='Order Status', readonly=True, copy=False, store=True, default='draft')
+    state = fields.Selection(related='order_id.state', string='Order Status', readonly=True, copy=False, store=True)
     price_unit = fields.Float(tracking=True)
     is_global_discount = fields.Boolean("Is Additional Discount",related="product_id.is_global_discount", store=True)
     is_shipping_product = fields.Boolean("Is Shipping Product",related="product_id.is_shipping_product", store=True)
@@ -102,7 +102,7 @@ class SaleOrderLine(models.Model):
     #             record.update({'price_unit':price_unit,'unit_discount_price': unit_discount_price})
 
 
-    @api.depends('product_id','price_unit','unit_discount_price','picked_qty','product_uom_qty','discount','tax_id','move_ids','move_ids')
+    @api.depends('product_id','price_unit','unit_discount_price','picked_qty','product_uom_qty','discount','tax_id','move_ids','move_ids.quantity_done')
     def _compute_picked_qty(self):
         move_obj = self.env['stock.move']
         for record in range(len(self)):

@@ -47,10 +47,7 @@ class res_users(models.Model):
     alias_id = fields.Many2one('mail.alias', 'Alias', ondelete="set null", required=False,
             help="Email address internally associated with this user. Incoming "\
                  "emails will appear in the user's notifications.", copy=False, auto_join=True)
-    alias_contact = fields.Selection([
-        ('everyone', 'Everyone'),
-        ('partners', 'Authenticated Partners'),
-        ('followers', 'Followers only')], string='Alias Contact Security', related='alias_id.alias_contact', readonly=False)
+    alias_contact = fields.Selection(string='Alias Contact Security', related='alias_id.alias_contact', readonly=False)
     def _get_internal_salesperson_id(self):
         for record in self:
             if record.partner_id:

@@ -7,7 +7,7 @@
             <field name="arch" type="xml">
                 <form>
                     <sheet>
-                       <group>
+                        <group>
                             <group>
                                 <field name="name" required="1"/>
                                 <field name="on_link" required="1" widget="url"/>
@@ -27,14 +27,16 @@
                             <page name="video_url" string="Video Url">
                                 <field name="video_url_ids">
                                     <tree editable="bottom">
-                                    
+
                                         <field name="sequence" widget="handle"/>
+                                        <field name="thumbnail_image" widget="image" class="oe_avatar" options="{'zoom': true,'preview_image': 'thumbnail_image','size': [128, 128]}" />
+                                        <field name="thumbnail_image_url" />
                                         <field name="url" />
                                     </tree>
                                 </field>
                             </page>
                         </notebook>
-                       
+
                     </sheet>
                 </form>
             </field>
@@ -44,14 +46,14 @@
             <field name="model">kits.landing.view</field>
             <field name="arch" type="xml">
                 <tree>
-                    <field name="mobile_banner"  widget="image" class="oe_avatar" options="{'zoom': true,'preview_image': 'mobile_banner','size': [128, 128]}"/>
-                    <field name="dekstop_banner"  widget="image" class="oe_avatar" options="{'zoom': true,'preview_image': 'dekstop_banner','size': [128, 128]}"/>
+                    <field name="mobile_banner" widget="image" class="oe_avatar" options="{'zoom': true,'preview_image': 'mobile_banner','size': [128, 128]}"/>
+                    <field name="dekstop_banner" widget="image" class="oe_avatar" options="{'zoom': true,'preview_image': 'dekstop_banner','size': [128, 128]}"/>
                     <field name="name" />
                     <field name="on_link" />
                 </tree>
             </field>
         </record>
-      
+
         <record id="action_kits_landing_view" model="ir.actions.act_window">
             <field name="name">Landing View</field>
             <field name="res_model">kits.landing.view</field>

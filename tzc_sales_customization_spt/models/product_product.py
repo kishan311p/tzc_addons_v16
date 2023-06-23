@@ -111,8 +111,7 @@ class ProductProduct(models.Model):
     shape_id = fields.Many2one('product.shape.spt','Shapes')
     # website_id = fields.Many2one(compute="_compute_fields_stored", readonly=False, store=True)
     qty_available = fields.Integer(
-        'Quantity On Hand', compute='_compute_quantities', search='_search_qty_available',
-        digits='Product Unit of Measure', compute_sudo=False,
+        'Quantity On Hand', compute='_compute_quantities', search='_search_qty_available', compute_sudo=False,
         help="Current quantity of products.\n"
              "In a context with a single Stock Location, this includes "
              "goods stored at this Location, or any of its children.\n"
@@ -135,7 +134,7 @@ class ProductProduct(models.Model):
     case_image_url_128 = fields.Image("Case Image 128", max_width=128, max_height=128, store=True)
 
     rim_type = fields.Many2one('product.rim.type.spt','Rim Type')
-    custom_message = fields.Text(string='Custom Message', default='', translate=True,related='brand.description',store=True)
+    custom_message = fields.Text(string='Custom Message', translate=True,related='brand.description',store=True)
     country_of_origin = fields.Many2one('res.country','Country Of Origin')
     gender = fields.Selection([('male','Male'),('female','Female'),('m/f','Unisex')], string='Gender')
     bridge_size = fields.Many2one('product.bridge.size.spt','Bridge Size    ')
@@ -309,10 +308,11 @@ class ProductProduct(models.Model):
 
     @api.depends('new_arrivals')
     def _onchange_new_arrivals(self):
-        if self.new_arrivals:
-            self.sudo().write({'new_arrival_update' : datetime.now()})
-        else:
-            self.sudo().write({'new_arrival_update' : False})
+        for rec in self:
+            if rec.new_arrivals:
+                rec.sudo().write({'new_arrival_update' : datetime.now()})
+            else:
+                rec.sudo().write({'new_arrival_update' : False})
 
     @api.depends('is_new_price')
     def _onchange_price_drop(self):
@@ -1336,19 +1336,19 @@ class ProductProduct(models.Model):
     
     def catalog_report_product_name(self):
         name = ''
-        if self.brand:
+        if self.brand and self.brand.name:
             name += self.brand.name
-        if self.model:
+        if self.model and self.model.name:
             name += '\n'+self.model.name
-        if self.color_code:
+        if self.color_code and self.color_code.name:
             name += '\n'+self.color_code.name
-        if self.eye_size:
+        if self.eye_size and self.eye_size.name:
             name += '\n'+self.eye_size.name
-        if self.bridge_size:
+        if self.bridge_size and self.bridge_size.name:
             name += ' ' + self.bridge_size.name
-        if self.temple_size:
+        if self.temple_size and self.temple_size.name:
             name += ' ' + self.temple_size.name
-        if self.categ_id:
+        if self.categ_id and self.categ_id.name:
             name += ' (' + self.categ_id.name + ')'
 
         return name
@@ -1834,12 +1834,22 @@ class ProductProduct(models.Model):
             row.append(rec.available_qty_spt)
             row.append('deny')
             row.append('manual')
-            usd_price_id = self.env['product.pricelist'].search([('name','=','USD Price List')],limit=1).id
             eto_dubai_price_id = self.env['product.pricelist'].search([('name','=','ETO Dubai Price')],limit=1).id
             eto_other_price_id = self.env['product.pricelist'].search([('name','=','Other ETO Branch Price')],limit=1).id
+            usd_price_id = self.env['product.pricelist'].search([('name','=','USD Price List')],limit=1).id
             row.append(rec.product_pricelist_item_ids.filtered(lambda x:x.pricelist_id.id==usd_price_id).fixed_price)
+            if rec.sale_type=='on_sale':
+                row.append(rec.on_sale_usd)
+            elif rec.sale_type=='clearance':
+                row.append(rec.clearance_usd)
+            else:
+                row.append('')
+                
             row.append(rec.product_pricelist_item_ids.filtered(lambda x:x.pricelist_id.id==eto_dubai_price_id).fixed_price)
             row.append(rec.product_pricelist_item_ids.filtered(lambda x:x.pricelist_id.id==eto_other_price_id).fixed_price)
+            # if rec.sale_type=='on_sale' or rec.sale_type=='clearance':
+            #     row.append(rec.product_pricelist_item_ids.filtered(lambda x:x.pricelist_id.id==usd_price_id).fixed_price)
+            # else:
             row.append(rec.price_wholesale)
             row.append('true')
             row.append('false' if rec.categ_id.name=='E' else 'true')
@@ -1852,14 +1862,14 @@ class ProductProduct(models.Model):
             # Adding first row with details.
             rows.append(row)
             # Adding second row with secondary image.
-            s_row = [rec.default_code,'','','','','','','','','','','','','','','','','','','','','','','','','','',rec.sec_image_url,'2']
-            t_row = [rec.default_code,'','','','','','','','','','','','','','','','','','','','','','','','','','',rec.case_image_url,'3']
+            s_row = [rec.default_code,'','','','','','','','','','','','','','','','','','','','','','','','','','','',rec.sec_image_url,'2']
+            t_row = [rec.default_code,'','','','','','','','','','','','','','','','','','','','','','','','','','','',rec.case_image_url,'3']
             rows.append(s_row)
             rows.append(t_row)
         # creating a csv file
         with open('shopify_product_export.csv', mode='w') as file:
             writer = csv.writer(file, delimiter=',')
-            writer.writerow(['Handle', 'Title', 'Body (HTML)', 'Vendor', 'Product Category', 'Type', 'Tags', 'Published', 'Option1 Name', 'Option1 Value', 'Option2 Name', 'Option2 Value', 'Option3 Name', 'Option3 Value', 'Variant SKU', 'Variant Grams', 'Variant Inventory Tracker', 'Variant Inventory Qty', 'Variant Inventory Policy', 'Variant Fulfillment Service', 'Variant Price', 'Price 2', 'Price 3','Variant Compare At Price','Variant Requires Shipping', 'Variant Taxable', 'Variant Barcode', 'Image Src', 'Image Position', 'Image Alt Text', 'Gift Card', 'SEO Title', 'SEO Description', 'Google Shopping / Google Product Category', 'Google Shopping / Gender', 'Google Shopping / Age Group', 'Google Shopping / MPN', 'Google Shopping / AdWords Grouping', 'Google Shopping / AdWords Labels', 'Google Shopping / Condition', 'Google Shopping / Custom Product', 'Google Shopping / Custom Label 0', 'Google Shopping / Custom Label 1', 'Google Shopping / Custom Label 2', 'Google Shopping / Custom Label 3', 'Google Shopping / Custom Label 4', 'Variant Image', 'Variant Weight Unit', 'Variant Tax Code', 'Cost per item', 'Included / Canada', 'Included / International', 'Price / International', 'Compare At Price / International', 'Included / United States', 'Price / United States', 'Compare At Price / United States', 'Status'])
+            writer.writerow(['Handle', 'Title', 'Body (HTML)', 'Vendor', 'Product Category', 'Type', 'Tags', 'Published', 'Option1 Name', 'Option1 Value', 'Option2 Name', 'Option2 Value', 'Option3 Name', 'Option3 Value', 'Variant SKU', 'Variant Grams', 'Variant Inventory Tracker', 'Variant Inventory Qty', 'Variant Inventory Policy', 'Variant Fulfillment Service', 'Variant Price','Sales Price', 'Price 2', 'Price 3','Variant Compare At Price','Variant Requires Shipping', 'Variant Taxable', 'Variant Barcode', 'Image Src', 'Image Position', 'Image Alt Text', 'Gift Card', 'SEO Title', 'SEO Description', 'Google Shopping / Google Product Category', 'Google Shopping / Gender', 'Google Shopping / Age Group', 'Google Shopping / MPN', 'Google Shopping / AdWords Grouping', 'Google Shopping / AdWords Labels', 'Google Shopping / Condition', 'Google Shopping / Custom Product', 'Google Shopping / Custom Label 0', 'Google Shopping / Custom Label 1', 'Google Shopping / Custom Label 2', 'Google Shopping / Custom Label 3', 'Google Shopping / Custom Label 4', 'Variant Image', 'Variant Weight Unit', 'Variant Tax Code', 'Cost per item', 'Included / Canada', 'Included / International', 'Price / International', 'Compare At Price / International', 'Included / United States', 'Price / United States', 'Compare At Price / United States', 'Status'])
             for row in rows:
                 writer.writerow(row)
         with open('shopify_product_export.csv', 'r', encoding="utf-8") as f2:

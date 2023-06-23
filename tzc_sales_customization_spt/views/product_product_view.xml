@@ -123,7 +123,7 @@
                     <field name="product_pricelist_item_ids" string="Pricing" groups="base.group_system">
                         <tree editable="bottom">
                             <field name="pricelist_id" />
-                            <field name="fixed_price" />
+                            <field name="fixed_price" string='Price' />
                         </tree>
                     </field>
                 </xpath>

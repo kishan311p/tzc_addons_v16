@@ -18,6 +18,7 @@ class product_import_on_barcode_line(models.Model):
     case_product_id = fields.Many2one('product.product', string='Case Product')
     image_url = fields.Char('Image1 URL')
     image_secondary_url = fields.Char('Image2 URL')
+    case_image_url = fields.Char('Case Image URL')
     product_color_id =  fields.Many2one('product.color.spt','Product Color ')
     secondary_color_id =  fields.Many2one('product.color.spt','Secondary Color ')
     lense_color_id =  fields.Many2one('product.color.spt','Lense Color ')

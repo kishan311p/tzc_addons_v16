@@ -59,7 +59,7 @@ ETO Support</p>
                                 <p><t t-out="object.name"/> has been approved to access our b2b portal and you have been assigned as their sales manager.</p>
                                 <p>
                                     <div align='center' style="margin:20px 0px 20px 0px">
-                                        <a t-attf-href="{{object.get_base_url()}}/web#id={{object.id}} &amp;action={{object.env.ref('sale.action_orders').id}} &amp;model=res.partner&amp;view_type=form" target="_blank" style="background-color: #1F7B6F; padding: 8px 16px 8px 16px; text-decoration: none; color: #fff; border-radius: 100px; font-size:13px;">
+                                        <a t-attf-href="{{object.get_base_url()}}/web#id={{object.id}} &amp;action={{object.env.ref('contacts.action_contacts').id}} &amp;model=res.partner&amp;view_type=form" target="_blank" style="background-color: #1F7B6F; padding: 8px 16px 8px 16px; text-decoration: none; color: #fff; border-radius: 100px; font-size:13px;">
                                             View Customer Account
                                         </a>
                                     </div>

@@ -141,7 +141,7 @@ class stock_picking(models.Model):
     # kits_return_picking = fields.Boolean(compute="_compute_kits_return_picking",store=True,compute_sudo=True)
     move_lines = fields.One2many('stock.move', 'picking_id', string=" Stock Moves", copy=True)
 
-    actual_weight = fields.Float('Actual Weight (kg)',compute="_compute_weight_of_cases")
+    actual_weight = fields.Float('Actual Weight (kg)',compute="_compute_weight_of_cases",compute_sudo=True)
     # actual_weight = fields.Float('Actual Weight (kg)',related="weight")
     weight_of_cases = fields.Float('Calculated Weight for cases (kg)',compute="_compute_weight_of_cases",store=True,compute_sudo=True)
     weight_total_kg = fields.Float('Total Weight (kg)',compute="_compute_total_weight",store=True,compute_sudo=True,help='Total weight of packages.')
@@ -247,7 +247,7 @@ class stock_picking(models.Model):
     def _filter_case_products(self):
         for rec in self:
             return [('id','in',rec.move_ids_without_package.filtered(lambda x:x.product_id.is_case_product==True and x.is_included_case==True).ids)]
-    case_move_ids_without_package = fields.One2many('stock.move', 'picking_id', string="Case Products",domain=_filter_case_products)
+    case_move_ids_without_package = fields.One2many('stock.move', 'picking_id', string=" Case Products",domain=_filter_case_products)
 
     def _filter_extra_case_products(self):
         for rec in self:
@@ -1862,14 +1862,17 @@ class stock_picking(models.Model):
                 [('id', 'in', list(set(grp["product_id"][0] for grp in res_groups)))], ['uom_id', 'weight'])
         }
         for res_group in res_groups:
-            uom_id, weight = products_by_id[res_group['product_id'][0]]
-            uom = self.env['uom.uom'].browse(uom_id)
-            product_uom_id = self.env['uom.uom'].browse(res_group['product_uom_id'][0])
-            picking_weights[res_group['picking_id'][0]] += (
-                res_group['__count']
-                * product_uom_id._compute_quantity(res_group['qty_done'], uom)
-                * weight
-            )
+            try:
+                uom_id, weight = products_by_id[res_group['product_id'][0]]
+                uom = self.env['uom.uom'].browse(uom_id)
+                product_uom_id = self.env['uom.uom'].browse(res_group['product_uom_id'][0])
+                picking_weights[res_group['picking_id'][0]] += (
+                    res_group['__count']
+                    * product_uom_id._compute_quantity(res_group['qty_done'], uom)
+                    * weight
+                )
+            except:
+                pass
         for picking in self:
             picking.weight_bulk = picking_weights[picking.id]
 

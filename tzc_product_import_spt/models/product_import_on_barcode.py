@@ -9,6 +9,7 @@ class product_import_on_barcode(models.Model):
     state = fields.Selection([
         ('draft','Draft'),
         ('in_process','In Process'),
+        ('scanned','Rady To Process'),
         ('done','Done'),
     ], string='State', default='draft')
     line_ids = fields.One2many('product.import.on.barcode.line', 'import_id', string='Line')
@@ -18,6 +19,15 @@ class product_import_on_barcode(models.Model):
         self.ensure_one()
         link = self.env['ir.config_parameter'].sudo().get_param('tzc_product_import_spt.import_url', '')+'?uid='+str(self.env.uid)+'&import_id='+str(self.id)+"&name="+self.name        
         self.write({'state': 'in_process','link': link})
+        return {
+            'type': 'ir.actions.act_url',
+            'name': "New Prodict Import",
+            'target': 'new',
+            'url': self.link,
+        }
+    def action_ready_to_process(self):
+        self.ensure_one()
+        self.state = 'scanned'
     
     def action_process(self):
         product_obj = self.env['product.product']
@@ -47,11 +57,12 @@ class product_import_on_barcode(models.Model):
                     'variant_name' : line.name,
                     'default_code' : line.internal_reference,
                     'product_seo_keyword' : line.seo_keyword,
-                    'case_image_url' : line.case_product_id.image_url,
+                    'case_image_url' : line.case_image_url,
                     "image_url" : line.image_url,
                     "image_secondary_url" : line.image_secondary_url,
                     "gender" : line.gender
                 }
+                line.case_product_id.image_url = line.case_image_url
                 if line.opration == 'create':
                     self._cr.execute("""
                         call create_product_template(%s,%s,%s,%s,%s,null);

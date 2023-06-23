@@ -8,7 +8,7 @@ class delivery_box_line(models.Model):
 
     deliver_box_id = fields.Many2one('delivery.box','Box')
     weight = fields.Float('Weight (in kg)')
-    qty = fields.Float('Quantity')
+    qty = fields.Integer('Quantity')
     # extra_case_qty = fields.Float('Extra Case Qty')
     picking_id = fields.Many2one('stock.picking')
     delivery_package_line_id = fields.Many2one('delivery.package.line','Package Line')
