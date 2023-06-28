@@ -66,7 +66,7 @@ class kits_wizard_download_catalog_excel(models.TransientModel):
             total_subtotal = 0.00
             total_products = 0
             # restricted_products = self.env['product.product'].search([('geo_restriction','in',self.partner_id.country_id.ids)])
-            lines = self.catalog_id.get_catalog_line()
+            lines = self.catalog_id.with_context(partner_id = self.partner_id).get_catalog_line()
             for line in lines:
                 line_dict = lines.get(line,{})
                 product_id= line_dict.get('product_id')
@@ -85,56 +85,7 @@ class kits_wizard_download_catalog_excel(models.TransientModel):
                     wrksht.cell(row=data_row, column=4).alignment = alignment_center
                     wrksht.cell(row=data_row, column=4).font = Font(name='Calibri',size='16',bold=False)
                     wrksht.cell(row=data_row, column=4).border = all_border
-                    # price = self.partner_id.property_product_pricelist._get_product_price(line.product_pro_id,line.product_qty,uom=line.product_pro_id.uom_id)
-                    # if line.sale_type == 'on_sale':
-                    #     # if currency_name == 'USD':
-                    #     price = line.product_pro_id.on_sale_usd
-                    #     # else:
-                    #     #     price = line.product_pro_id.on_sale_cad
-                    # if line.sale_type == 'clearance':
-                    #     # if currency_name == 'CAD':
-                    #     #     price = line.product_pro_id.clearance_cad
-                    #     # else:
-                    #     price = line.product_pro_id.clearance_usd
-                    # if not price:
-                    #     # if currency_name == 'USD':
-                    #     #     price = line.product_pro_id.lst_price_usd
-                    #     # else:
-                    #     price = line.product_pro_id.lst_price
-                    
-                    # product_price = 0.0
-                    # if 'eto dubai' in self.partner_id.property_product_pricelist.name.lower() or 'other eto' in self.partner_id.property_product_pricelist.name.lower():
-                    #     product_price = self.env['product.pricelist.item'].search([('product_id','=',line.product_pro_id.id),('pricelist_id','=',self.partner_id.property_product_pricelist.id)],limit=1).fixed_price
-                    # else:
-                    #     # if currency_name == 'USD':
-                    #     #     product_price = line.product_pro_id.lst_price_usd
-                    #     # else:
-                    #     product_price = line.product_pro_id.lst_price
 
-                    # if 'eto dubai' in self.partner_id.property_product_pricelist.name.lower() or 'other eto' in self.partner_id.property_product_pricelist.name.lower():
-                    #     discount_amount = (line.product_price - product_price) * line.product_qty
-                    #     subtotal = product_price * line.product_qty
-                    #     total_discount += round(discount_amount,2)
-                    #     total_subtotal += round(subtotal,2)
-                    # else:
-                    #     discount_amount = product_price * line.discount * 0.01 * line.product_qty
-                    #     subtotal = (product_price * line.product_qty) - discount_amount
-                    #     total_discount += round(discount_amount,2)
-                    #     total_subtotal += round(subtotal,2)
-                    
-                    # if 'eto dubai' in self.partner_id.property_product_pricelist.name.lower() or 'other eto' in self.partner_id.property_product_pricelist.name.lower():
-                    #     wrksht.cell(row=data_row, column=5).value = round(product_price,2) or 0.00
-                    #     wrksht.cell(row=data_row, column=5).alignment = alignment_center
-                    #     wrksht.cell(row=data_row, column=5).font = Font(name='Calibri',size='16',bold=False)
-                    #     wrksht.cell(row=data_row, column=5).number_format = '"$"#,##0.00'
-                    #     wrksht.cell(row=data_row, column=5).border = all_border
-                    # else:
-                    #     wrksht.cell(row=data_row, column=5).value = round(product_price - (product_price * line.discount / 100),2) or 0.00
-                    #     wrksht.cell(row=data_row, column=5).alignment = alignment_center
-                    #     wrksht.cell(row=data_row, column=5).font = Font(name='Calibri',size='16',bold=False)
-                    #     wrksht.cell(row=data_row, column=5).number_format = '"$"#,##0.00'
-                    #     wrksht.cell(row=data_row, column=5).border = all_border
-                    
                     wrksht.cell(row=data_row, column=5).value = round(line_dict.get('our_price',0),2) or 0.00
                     wrksht.cell(row=data_row, column=5).alignment = alignment_center
                     wrksht.cell(row=data_row, column=5).font = Font(name='Calibri',size='16',bold=False)

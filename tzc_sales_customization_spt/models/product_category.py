@@ -1,6 +1,7 @@
 from email.policy import default
 from odoo import models, fields,_
 from odoo.exceptions import UserError
+
 class ProductCategory(models.Model):
     _inherit = 'product.category'
 

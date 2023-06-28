@@ -13,7 +13,7 @@ class kits_product_color_code(models.Model):
     temple_size_ids = fields.One2many('product.temple.size.spt', 'templesize_id', string='Temple Size ')
     bridge_size_ids = fields.One2many('product.bridge.size.spt', 'bridgesize_id', string='Bridge Size  ')
     eye_size_ids = fields.One2many('product.size.spt', 'eyesize_id', string='Eye Size')
-    active = fields.Boolean('Active')
+    active = fields.Boolean('Active', default=True)
     products_count = fields.Integer(
         string='Number of products',
         compute='_get_color_code_data_spt',

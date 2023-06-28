@@ -445,6 +445,7 @@
             <field name="name">Export For Price Update </field>
             <field name="model_id" ref="model_product_product"/>
             <field name="binding_model_id" ref="model_product_product"/>
+            <field name="binding_view_types">list</field>
             <field name="state">code</field>
             <field name="code">
                 action = records.print_pending_price_product()

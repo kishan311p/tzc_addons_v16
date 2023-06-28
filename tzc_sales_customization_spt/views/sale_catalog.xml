@@ -90,6 +90,7 @@
                                 <field name="create_uid" string="Created By" readonly="1"/>
                                 <field name="user_id" string="Salesperson" domain="[('is_salesperson','=',True)]" attrs="{'readonly':[('state','not in',['draft'])]}"/>
                                 <field name="pricelist_id" invisible="1"/>
+                                <field name="currency_id" string="Currency" options="{'no_create': True, 'no_open': True}"/>
                                 <field name="expiry_date" />
                             </group>
                             <group>

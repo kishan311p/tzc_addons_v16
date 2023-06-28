@@ -9,7 +9,7 @@ class ProductBrandSpt(models.Model):
     _description = 'Product Brand' 
     _order = "name asc"
 
-    active = fields.Boolean('Active')
+    active = fields.Boolean('Active', default=True)
     name = fields.Char('Brand',index=True)
     kits_product_ids = fields.One2many('product.product','brand',string="Brand ")
     description = fields.Text('   Description', translate=True)

@@ -218,7 +218,9 @@ class sale_order(models.Model):
             picking_id.get_picking_order_values()
             return True
         else:
-            raise UserError ('This order is in "In Scanning" state, You can\'t approve in scanning order.')
+            # try to get state string.
+            state_string = dict(self._fields['state']._description_selection(self.env)).get(self.state)
+            raise UserError (f'This order is in "{state_string}" state, You can\'t approve in scanning order.')
 
     @api.model
     def _fields_view_get(self,view_id=None, view_type='form', toolbar=False, submenu=False):
@@ -382,7 +384,7 @@ class sale_order(models.Model):
     eto_shipping_cost = fields.Float('ETO Shipping Cost')
     is_currency_change = fields.Boolean('Is Currency Change (Flag)',compute="_compute_is_currency_change",store=True)
 
-    @api.onchange('order_line','order_line.unit_discount_price','amount_is_shipping_total')
+    @api.onchange('order_line','amount_is_shipping_total')
     def onchange_ship_cost_update(self):
         for rec in self:
             shipping_line_id = rec.order_line.filtered(lambda x:x.is_shipping_product==True)
@@ -495,7 +497,7 @@ class sale_order(models.Model):
             cancel_order_ids = self.filtered(lambda x:x.state == 'cancel')
             if not cancel_order_ids:
                 for record in self:
-                    if record.state in ['draft','sent','received'] or (record.state not in ['draft','sent','received','sale'] and self.env.user.has_group('tzc_sales_customization_spt.group_cancel_sale_order_rule_spt')):
+                    if record.state in ['draft','sent','received'] or (record.state not in ['draft','sent','received'] and self.env.user.has_group('tzc_sales_customization_spt.group_cancel_sale_order_rule_spt')):
                         picking_ids = self.env['stock.picking'].search([('sale_id','=',record.id)])
                         if picking_ids:
                             return_ids = self.env['stock.return.picking'].search([('picking_id','in',picking_ids.ids)])
@@ -4113,7 +4115,10 @@ class sale_order(models.Model):
                                 unit_discount_price = round((unit_discount_price - (unit_discount_price * price_rule_id.discount * 0.01 )),2)
                                 fix_discount_price = (product_price - unit_discount_price)
 
-                    discount = round((100 - ( (100 * unit_discount_price)/ product_price )), 2)
+                    discount = 0.0
+                    if product_price:
+                        discount = round((100 - ( (100 * unit_discount_price)/ product_price )), 2)
+
                     line.write({
                         'price_unit': product_price,
                         'unit_discount_price': unit_discount_price,

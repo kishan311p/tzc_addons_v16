@@ -27,6 +27,16 @@ class mail_template(models.Model):
             order_id = self._context.get('record_id')
             email_list.append(order_id.user_id.email) if order_id.user_id.email else None
         email_values['reply_to'] = ','.join(email_list)
+        user_related_mail_temp_ids = [self.env.ref('portal.mail_template_data_portal_welcome').id,
+                                      self.env.ref('auth_signup.reset_password_email').id,
+                                      self.env.ref('kits_b2b_website.mail_template_user_signup_confirmation').id,
+                                      self.env.ref('tzc_sales_customization_spt.tzc_mail_template_customer_approve_notify_spt').id,
+                                      self.env.ref('tzc_sales_customization_spt.tzc_mail_template_customer_approve_spt').id
+                                      ]
+        if self.id in user_related_mail_temp_ids:
+            ctx = self._context.copy()
+            ctx.update({'user_template':True})
+            self.env.context = ctx
         return super(mail_template,self).send_mail(res_id, force_send, raise_exception, email_values, email_layout_xmlid)
 
     def action_send_mail(self):

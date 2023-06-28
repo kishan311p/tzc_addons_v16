@@ -1336,19 +1336,19 @@ class ProductProduct(models.Model):
     
     def catalog_report_product_name(self):
         name = ''
-        if self.brand and self.brand.name:
+        if self.brand :
             name += self.brand.name
-        if self.model and self.model.name:
-            name += '\n'+self.model.name
-        if self.color_code and self.color_code.name:
-            name += '\n'+self.color_code.name
-        if self.eye_size and self.eye_size.name:
-            name += '\n'+self.eye_size.name
-        if self.bridge_size and self.bridge_size.name:
-            name += ' ' + self.bridge_size.name
-        if self.temple_size and self.temple_size.name:
-            name += ' ' + self.temple_size.name
-        if self.categ_id and self.categ_id.name:
+        if self.model :
+            name += '\n'+self.model.name if self.model.name else ' 00'
+        if self.color_code :
+            name += '\n'+self.color_code.name if self.color_code.name else ' 00'
+        if self.eye_size :
+            name += '\n'+self.eye_size.name if self.eye_size.name else ' 00'
+        if self.bridge_size :
+            name += ' ' + self.bridge_size.name if self.bridge_size.name else ' 00'
+        if self.temple_size :
+            name += ' ' + self.temple_size.name if self.temple_size.name else ' 00'
+        if self.categ_id :
             name += ' (' + self.categ_id.name + ')'
 
         return name
@@ -1507,7 +1507,7 @@ class ProductProduct(models.Model):
         catalog_name = self.env['ir.sequence'].next_by_code('sale.catalog') or 'New'
         catalog_id = catalog_obj.create({'name':catalog_name,'state':'draft'})
         for record in self:
-            product_price = record.lst_price_usd
+            product_price = record.lst_price
             if record.sale_type:
                 if record.sale_type == 'on_sale':
                     product_price = record.on_sale_usd
@@ -1517,15 +1517,15 @@ class ProductProduct(models.Model):
             catalog_line_id = catalog_line_obj.create({
                 'catalog_id':catalog_id.id,
                 'product_pro_id': record.id,
-                'product_price_msrp': record.price_msrp_usd,
-                'product_price': record.lst_price_usd,
-                'product_price_wholesale': record.price_wholesale_usd,
+                'product_price_msrp': record.price_msrp,
+                'product_price': record.lst_price,
+                'product_price_wholesale': record.price_wholesale,
                 'product_qty': 1,
                 'sale_type' : record.sale_type,
                 'unit_discount_price' : product_price,
                 })
             catalog_line_id._onchange_fix_discount_price()
-            catalog_id._onchange_pricelist_id()
+            # catalog_id._onchange_pricelist_id()
         
         return {
             'name': _('Sale Catalog'),

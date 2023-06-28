@@ -430,7 +430,7 @@ class SaleOrderLine(models.Model):
                 #     product_currency=line.currency_id
                 # )
 
-    @api.onchange('order_id.state','state','price_unit','unit_discount_price','product_id','product_uom_qty')
+    @api.onchange('state','price_unit','unit_discount_price','product_id','product_uom_qty')
     def onchange_restrict_case(self):
         for rec in self:
             if self._context.get('from_sale_order') and rec.order_id.state not in ['draft','sent','received']:

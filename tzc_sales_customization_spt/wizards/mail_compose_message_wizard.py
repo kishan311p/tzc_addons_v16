@@ -59,7 +59,17 @@ class mail_compose_message_wizard(models.TransientModel):
         if self._context.get('cart_recovery') and self._context.get('next_execution_date'):
             order_id = self.env[self._context.get('default_model')].search([('id','=',self._context.get('default_res_id'))])
             order_id.write({'next_execution_date':self._context.get('next_execution_date')})
+        user_related_mail_temp_ids = [self.env.ref('portal.mail_template_data_portal_welcome').id,
+                                      self.env.ref('auth_signup.reset_password_email').id,
+                                      self.env.ref('kits_b2b_website.mail_template_user_signup_confirmation').id,
+                                      self.env.ref('tzc_sales_customization_spt.tzc_mail_template_customer_approve_notify_spt').id,
+                                      self.env.ref('tzc_sales_customization_spt.tzc_mail_template_customer_approve_spt').id]
+        if self.template_id.id in user_related_mail_temp_ids:
+            ctx = self._context.copy()
+            ctx.update({'user_template':True})
+            self.env.context = ctx        
         self._action_send_mail()
+        self.partner_ids = self.partner_ids.filtered(lambda x : x.customer_type=='b2b_regular')
         if self._context.get('active_model') == 'mail.template':
             mail_context=self._context.copy()
             partner_ids = self.partner_ids.filtered(lambda x: x.mailgun_verification_status == 'approved' and x.email).ids

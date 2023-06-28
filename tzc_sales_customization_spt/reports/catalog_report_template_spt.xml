@@ -468,7 +468,7 @@
                     </div>
 
                 </div>
-                <t t-set="line_dict" t-value="doc.get_catalog_line()"/>
+                <t t-set="line_dict" t-value="doc.with_context(partner_id=doc.customer_id).get_catalog_line()"/>
                 <t t-set="is_shipping_product" t-value="0"/>
                 <t t-set="is_admin" t-value="0"/>
                 <t t-set="discount_total" t-value="0"/>
@@ -482,7 +482,7 @@
                             </th>
                             <th style="padding: 10px;text-align: center;width: 20%;">Product</th>
                             <th style="padding: 10px;text-align: center;width: 9%;">Qty</th>
-                            <th style="padding: 10px;text-align: right;width: 9%;">Price(<t t-esc="doc.customer_id.property_product_pricelist.currency_id.name"/>)</th>
+                            <th style="padding: 10px;text-align: right;width: 9%;">Price(<t t-esc="doc.customer_id.b2b_pricelist_id.currency_id.name"/>)</th>
                         </tr>
                     </thead>
                     <tbody class="sale_tbody">
@@ -496,9 +496,9 @@
                                 <t t-if="not product_id.is_admin">
                                     <t t-if="not product_id.is_shipping_product">
                                             <td style="border: 1px solid #dbdde0; padding: 10px;" name="td_image">
-                                                <t t-set="special_discount" t-value="product_id._get_black_special_friday_sale()"/>
+                                                <!-- <t t-set="special_discount" t-value="product_id._get_black_special_friday_sale()"/> -->
                                         
-                                                <t t-set="fest_discount_icon" t-value="doc.env['tzc.fest.discount'].search([('id','=',special_discount.get('dynamic_label_icon'))])"/>
+                                                <t t-set="fest_discount_icon" t-value="doc.env['tzc.fest.discount'].search([('id','=',line_dict.get('dynamic_label_icon'))])"/>
                                                 <t t-if="product_id.sale_type">
                                                     <style>
                                                         .te_ribbon-wrapper kits_ribbon #style_3.label_div {

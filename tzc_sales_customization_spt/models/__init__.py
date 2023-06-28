@@ -95,3 +95,4 @@ from . import marketing_participant
 from . import utm_campaign
 from . import kits_special_discount_offers
 from . import product_pricelist_item
+from . import mail_mail

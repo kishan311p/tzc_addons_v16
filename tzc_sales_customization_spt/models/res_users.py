@@ -466,7 +466,7 @@ class res_users(models.Model):
                     rec.active = False
                     rec._cr.commit()
                     rec.unlink()
-                    deleted_ids.append(rec.id)
+                    # deleted_ids.append(rec.id)
                     deleted_count += 1
                 except:
                     self._cr.rollback()
@@ -476,7 +476,7 @@ class res_users(models.Model):
                     pass
             else:
                 raise UserError(_('Due to security restrictions, you are not allowed to access "User" (res.users) records \n Contact your administrator to request access if necessary.'))
-        if deleted_ids:
+        if deleted_ids or deleted_count:
             message = (f'Out of {archived_count + deleted_count} users {deleted_count} is deleted and following {archived_count} is archived')
             return {
                     'name':_('Confirm Delete'),

@@ -43,6 +43,7 @@ class SaleCatalog(models.Model):
     send_out = fields.Datetime('Send Out')
     user_id = fields.Many2one('res.users', string='Responsible', required=False, default=lambda self: self.env.user)
     pricelist_id = fields.Many2one('product.pricelist', string='Pricelist')
+    currency_id = fields.Many2one('res.currency',string='Catalog Currency')
     catalog_total = fields.Char(string="Total Amount",compute='_compute_catalog_total',store=True)
     expiry_date = fields.Date(string="Expiry Date")
     visitors = fields.Integer('#Visitors',compute='_get_visitors',store=True,compute_sudo=True)
@@ -59,6 +60,36 @@ class SaleCatalog(models.Model):
     execution_time = fields.Datetime('Execution Time')
     customer_id = fields.Many2one('res.partner')
     report_token = fields.Char('Report Access Token')
+
+    @api.onchange('currency_id')
+    def _onchange_currency_id(self):
+        for rec in self:
+            currency_rate = self.env['kits.b2b.multi.currency.mapping'].search([('currency_id','=',self.currency_id.id)],limit =1).currency_rate
+            for line in rec.line_ids:
+                price_unit = self.env['product.pricelist.item'].search([('product_id','=',line.product_pro_id.id),('pricelist_id','=',rec.pricelist_id.id)],limit=1).fixed_price
+                if rec.currency_id and rec.currency_id.name.lower() != 'usd':
+                    price_unit = price_unit * currency_rate
+                    msrp_price = line.product_pro_id.price_msrp * currency_rate
+                    wholesale_price = line.product_pro_id.price_wholesale * currency_rate
+                    fix_discount_price = round((price_unit * line.discount)/100,2)
+                    unit_discount_price = price_unit - fix_discount_price
+                else:
+                    msrp_price = line.product_pro_id.price_msrp
+                    wholesale_price = line.product_pro_id.price_wholesale
+                    price_unit = line.product_pro_id.lst_price
+                    unit_discount_price = line.product_pro_id.lst_price
+                    if line.sale_type:
+                        if line.sale_type == 'on_sale':
+                            unit_discount_price = line.product_pro_id.on_sale_usd
+                        else:
+                            unit_discount_price = line.product_pro_id.clearance_usd
+
+                line.write({
+                    'product_price_msrp':msrp_price,
+                    'product_price_wholesale':wholesale_price,
+                    'unit_discount_price':unit_discount_price,
+                    'product_price':price_unit,
+                })
 
     @api.onchange('user_id')
     def _onchange_get_manager(self):
@@ -110,9 +141,9 @@ class SaleCatalog(models.Model):
     def _onchange_pricelist_id(self):
         pricelist_obj = self.env['product.pricelist.item']
         for record in self:
-           for line in record.line_ids:
-                extra_pricing = line.product_pro_id.inflation_special_discount(self.env.user.country_id.ids,bypass_flag=record.pricelist_id.is_pricelist_excluded)
-                product_price = line .product_pro_id.lst_price
+            for line in record.line_ids:
+                # extra_pricing = line.product_pro_id.inflation_special_discount(self.env.user.country_id.ids,bypass_flag=record.pricelist_id.is_pricelist_excluded)
+                product_price = line.product_pro_id.lst_price
                 pricelist_item_id = pricelist_obj.search([('product_id','=',line.product_pro_id.id),('pricelist_id','=',record.pricelist_id.id)],limit=1)
                 line.product_price = pricelist_item_id.fixed_price or product_price
                 line.product_price_msrp = line.product_pro_id.price_msrp
@@ -127,57 +158,12 @@ class SaleCatalog(models.Model):
                 if line.discount:
                     line.unit_discount_price = line.product_price - (line.product_price * line.discount) * 0.01
                 
-                # active_inflation = self.env['kits.inflation'].search([('is_active','=',True)])
-                # inflation_rule_ids = self.env['kits.inflation.rule'].search([('country_id','in',self.env.user.country_id.ids),('brand_ids','in',line.product_pro_id.brand.ids),('inflation_id','=',active_inflation.id)])
-                # inflation_rule = inflation_rule_ids[-1] if inflation_rule_ids else False
-                # if inflation_rule:
-                #     is_inflation = False
-                #     if active_inflation.from_date and active_inflation.to_date :
-                #         if active_inflation.from_date <= datetime.now().date() and active_inflation.to_date >= datetime.now().date():
-                #             is_inflation = True
-                #     elif active_inflation.from_date:
-                #         if active_inflation.from_date <= datetime.now().date():
-                #             is_inflation = True
-                #     elif active_inflation.to_date:
-                #         if active_inflation.to_date >= datetime.now().date():
-                #             is_inflation = True
-                #     else:
-                #         if not active_inflation.from_date:
-                #             is_inflation = True
-                #         if not active_inflation.to_date:
-                #             is_inflation = True
-                if extra_pricing.get('is_inflation'):
-                    line.product_price = round(product_price+(product_price*extra_pricing.get('inflation_rate') /100),2)
-                    line.unit_discount_price = round(line.unit_discount_price+(line.unit_discount_price*extra_pricing.get('inflation_rate') /100),2)
-                    line.product_price_msrp = round(line.product_price_msrp+(line.product_price_msrp*extra_pricing.get('inflation_rate') /100),2)
-                    line.product_price_wholesale = round(line.product_price_wholesale+(line.product_price_wholesale*extra_pricing.get('inflation_rate') /100),2)
-
-                # active_fest_id = self.env['tzc.fest.discount'].search([('is_active','=',True)])
-                # special_disocunt_id = self.env['kits.special.discount'].search([('country_id','in',self.env.user.partner_id.country_id.ids),('brand_ids','in',line.product_pro_id.brand.ids),('tzc_fest_id','=',active_fest_id.id)])
-                # price_rule_id = special_disocunt_id[-1] if special_disocunt_id else False
-                # if price_rule_id:
-                #     applicable = False
-                #     if active_fest_id.from_date and active_fest_id.to_date :
-                #         if active_fest_id.from_date <= datetime.now().date() and active_fest_id.to_date >= datetime.now().date():
-                #             applicable = True
-                #     elif active_fest_id.from_date:
-                #         if active_fest_id.from_date <= datetime.now().date():
-                #             applicable = True
-                #     elif active_fest_id.to_date:
-                #         if active_fest_id.to_date >= datetime.now().date():
-                #             applicable = True
-                #     else:
-                #         if not active_fest_id.from_date:
-                #             applicable = True
-                #         if not active_fest_id.to_date:
-                #             applicable = True
-                        
-                if extra_pricing.get('is_special_discount'):
-                    line.unit_discount_price = round((line.unit_discount_price - line.unit_discount_price * extra_pricing.get('special_disc_rate') / 100),2)
-                    line.is_special_discount = extra_pricing.get('is_special_discount')
-                    line.product_price_msrp = round(line.product_price_msrp-(line.product_price_msrp*extra_pricing.get('special_disc_rate') /100),2)
-                    line.product_price_wholesale = round(line.product_price_wholesale-(line.product_price_wholesale*extra_pricing.get('special_disc_rate') /100),2)
-
+                if record.pricelist_id.currency_id.id != record.currency_id.id:
+                    currency_rate = self.env['kits.b2b.multi.currency.mapping'].search([('currency_id','=',self.currency_id.id)],limit =1).currency_rate
+                    line.product_price = line.product_price * currency_rate
+                    line.product_price_msrp = line.product_price_msrp * currency_rate
+                    line.product_price_wholesale = line.product_price_wholesale * currency_rate
+                    line.unit_discount_price = line.unit_discount_price * currency_rate
                 line._compute_amount()
 
     def catalog_manage_qty(self):
@@ -215,6 +201,7 @@ class SaleCatalog(models.Model):
         usd_public_pricelist = self.env.ref('tzc_sales_customization_spt.usd_public_pricelist_spt')
         vals['name'] = self.env['ir.sequence'].next_by_code('sale.catalog') or 'New'
         vals['pricelist_id'] = usd_public_pricelist.id
+        vals['currency_id'] = usd_public_pricelist.currency_id.id
         return vals
 
     @api.depends('state','write_date')
@@ -401,17 +388,17 @@ class SaleCatalog(models.Model):
         order_line_obj = self.env['sale.order.line']
         catalog_line_obj = self.env['sale.catalog.line']
         is_geo_restriction = True
-        order_id = self.env['sale.order'].search([('catalog_id','=',self.id),('partner_id','=',self.customer_id.id)],order = 'id desc',limit = 1)
+        order_id = self.env['sale.order'].search([('catalog_id','=',self.id),('partner_id','=',self._context.get('partner_id').id)],order = 'id desc',limit = 1)
         if order_id:
-            b2b_currency_id = self.env['kits.b2b.multi.currency.mapping'].search([('currency_id','=',order_id.b2b_currency_id.id)])
-            if b2b_currency_id.currency_id.id != self.customer_id.preferred_currency.id:
-                b2b_currency_id = self.env['kits.b2b.multi.currency.mapping'].search([('currency_id','=',self.customer_id.preferred_currency.id)])
-            rate = b2b_currency_id.currency_rate or 1.0
+            # b2b_currency_id = self.env['kits.b2b.multi.currency.mapping'].search([('currency_id','=',order_id.b2b_currency_id.id)])
+            # if b2b_currency_id.currency_id.id != self.customer_id.preferred_currency.id:
+            #     b2b_currency_id = self.env['kits.b2b.multi.currency.mapping'].search([('currency_id','=',self.customer_id.preferred_currency.id)])
+            # rate = b2b_currency_id.currency_rate or 1.0
             line_ids = order_line_obj.search([('order_id','=',order_id.id)])
             product_list = set(line_ids.mapped('product_id.variant_name'))
         else:
-            self._onchange_pricelist_id()
-            rate = self.env['kits.b2b.multi.currency.mapping'].search([('currency_id','=',self.customer_id.preferred_currency.id)]).currency_rate or 1.0
+            # self._onchange_pricelist_id()
+            # rate = self.env['kits.b2b.multi.currency.mapping'].search([('currency_id','=',self._context.get('partner_id').preferred_currency.id)]).currency_rate or 1.0
             line_ids = self.line_ids
             product_list = set(line_ids.mapped('product_pro_id.variant_name'))
             
@@ -420,6 +407,7 @@ class SaleCatalog(models.Model):
         product_dict = {}
         for product_name in product_list:
             product_id = product_obj.search([('active','=',True),('variant_name','=',product_name)],order = 'id desc',limit=1)
+            extra_pricing = product_id.inflation_special_discount(self._context.get('partner_id').country_id.ids,bypass_flag=self._context.get('partner_id').b2b_pricelist_id.is_pricelist_excluded)
             if is_geo_restriction and self.customer_id.country_id.id in product_id.geo_restriction.ids:
                 continue
             line_dict = {'product_id' : product_id,'qty': 0}
@@ -438,21 +426,27 @@ class SaleCatalog(models.Model):
                         line_dict['is_special_discount'] = True
             else: 
                 line_ids = catalog_line_obj.search([('catalog_id','=',self.id),('product_pro_id','=',product_id.id)])
+                product_prices = self.env['kits.b2b.multi.currency.mapping'].get_product_price(self._context.get('partner_id').id,product_id.ids)
+                product_data_dict = product_prices.get(product_id.id)
+                price_unit = product_data_dict.get('price')
+                unit_discount_price = product_data_dict.get('discounted_unit_price')
                 for line in line_ids:
                     if line_dict.get('price_unit',False):
-                        line_dict['price_unit'] = (line_dict.get('price_unit',0) + line.price_unit)/2
-                        line_dict['our_price'] =( line_dict.get('our_price',0) + line.unit_discount_price)/2
+                        line_dict['price_unit'] = (line_dict.get('price_unit',0) + price_unit)/2
+                        line_dict['our_price'] =(line_dict.get('our_price',0) + unit_discount_price)/2
                         line_dict['qty'] = int(line_dict.get('qty',0) + line.product_qty)
                     else:    
-                        line_dict['price_unit'] = line.product_price
-                        line_dict['our_price'] = line.unit_discount_price
-                        line_dict['qty'] = line.product_qty 
+                        line_dict['price_unit'] = price_unit
+                        line_dict['our_price'] = unit_discount_price
+                        line_dict['qty'] = line.product_qty
+
                     if line.is_special_discount:
-                        line_dict['is_special_discount'] = True   
-            line_dict['price_unit'] = round(line_dict.get('price_unit',0)* rate,2)
-            line_dict['our_price'] = round(line_dict.get('our_price',0),2)    
-            line_dict['sub_total'] = round(line_dict.get('our_price',0) * line_dict.get('qty',0),2)        
+                        line_dict['is_special_discount'] = True
+
+            if extra_pricing.get('is_special_discount'):
+                line_dict['special_discount'] = extra_pricing.get('dynamic_label_icon')
             product_dict [product_name] = line_dict
+
         return product_dict
 
     def send_catalog(self):

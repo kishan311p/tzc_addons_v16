@@ -15,7 +15,7 @@ class ProductColorSpt(models.Model):
     # is_published = fields.Boolean('Is Published',default=True)
     kits_product_ids = fields.One2many('product.product','product_color_name',string="Products")
     kits_product_ids = fields.One2many('product.product','secondary_color_name',string="Products")
-    active = fields.Boolean('Active')
+    active = fields.Boolean('Active', default=True)
 
     def _compute_color_products_spt(self):
         for record in self:
