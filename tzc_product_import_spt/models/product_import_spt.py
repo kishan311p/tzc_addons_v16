@@ -288,6 +288,14 @@ class product_import_spt(models.Model):
                                 case_product_id = product_obj.with_context(pending_price=True).sudo().search([('image_url','=','https://cdn.teameto.com/data/product-images/case_generic.jpg'),('default_code','=','generic-case')], limit=1)
                                 product_pro_dict['case_type'] = 'generic'
                         product_pro_dict['case_product_id'] = case_product_id.id
+                    if product_pro_dict.get('geo_restriction') and len(product_pro_dict.get('geo_restriction')) == 1 and len(product_pro_dict.get('geo_restriction')[0]) == 3 and brand_obj.browse(product_pro_dict.get('brand')):
+                        brand = brand_obj.browse(product_pro_dict.get('brand'))
+                        geo_restriction  = [(4,gr) for gr in product_pro_dict.get('geo_restriction')[0][2]] 
+                        if geo_restriction:
+                            brand.geo_restriction = geo_restriction
+                    if brand_obj.browse(product_pro_dict.get('brand')) and product_pro_dict.get('custom_message'):
+                        brand = brand_obj.browse(product_pro_dict.get('brand'))
+                        brand.description = product_pro_dict.get('custom_message')
                     product_pro_id.with_context(from_product_import=True).write(product_pro_dict)
                     product_pro_ids_list.append(product_pro_id.id)
 

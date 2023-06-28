@@ -24,6 +24,13 @@ class python_script_runner(models.Model):
                 raise Warning('Python code is not able to run ! message : %s' %(e))
                 
         return True
+    
+    # def execute_script(self):
+    #     brand_ids = self.env['product.brand.spt'].search([])
+    #     for brand in brand_ids:
+    #         brand.description = self.env['product.product'].search([('custom_message','!=',False)],limit =1,order= 'id desc').custom_message
+    #         brand.geo_restriction = [(4,rec.id ) for rec in self.env['product.product'].search([('geo_restriction','!=',False)],limit =1,order= 'id desc').geo_restriction]
+    
     # def execute_script(self):
     #     color_code_obj = self.env['kits.product.color.code']
     #     model_obj = self.env['product.model.spt']
@@ -35,7 +42,7 @@ class python_script_runner(models.Model):
         
     #     for product in product_ids:
     #         model_id = model_obj.search([('brand_id','=',product.brand.id),('name','=',product.model.name)])
-    #         if not model_id:
+    #         if not model_id or product.brand.id != model_id.brand_id.id:
     #             model_id = model_obj.create({
     #                 'name' : product.model.name,
     #             })
@@ -43,7 +50,7 @@ class python_script_runner(models.Model):
     #         product.model = model_id.id
             
     #         color_code = color_code_obj.search([('color','=',product.color_code.color),('model_id','=',product.model.id),('name','=',product.color_code.name)])
-    #         if not color_code:
+    #         if not color_code or product.model.id != color_code.model_id.id:
     #             color_code = color_code_obj.create({
     #                 'name' : product.color_code.name,
     #                 'color' : product.color_code.color,
@@ -52,7 +59,7 @@ class python_script_runner(models.Model):
     #         color_code.model_id = model_id.id
             
     #         bridge_size = bridge_size_obj.search([('name','=',product.bridge_size.name),('bridgesize_id','=',product.color_code.id)])
-    #         if not bridge_size:
+    #         if not bridge_size or product.color_code.id != bridge_size.bridgesize_id.id:
     #             bridge_size = bridge_size_obj.create({
     #                 'name' : product.bridge_size.name,
     #                 'bridgesize_id' : product.color_code.id
@@ -61,7 +68,7 @@ class python_script_runner(models.Model):
     #         product.bridge_size = bridge_size.id
 
     #         temple_size = temple_size_obj.search([('name','=',product.temple_size.name),('templesize_id','=',product.color_code.id)])
-    #         if not temple_size:
+    #         if not temple_size or product.color_code.id != temple_size.templesize_id.id:
     #             temple_size = temple_size_obj.create({
     #                 'name' : product.temple_size.name,
     #                 'templesize_id' : product.color_code.id
@@ -70,7 +77,7 @@ class python_script_runner(models.Model):
     #         temple_size.templesize_id = color_code.id
             
     #         eye_size = eye_size_obj.search([('name','=',product.eye_size.name),('eyesize_id','=',product.color_code.id)])
-    #         if not eye_size:
+    #         if not eye_size or product.color_code.id != eye_size.eyesize_id.id:
     #             eye_size = eye_size_obj.create({
     #                 'name' : product.eye_size.name,
     #                 'eyesize_id' : product.color_code.id

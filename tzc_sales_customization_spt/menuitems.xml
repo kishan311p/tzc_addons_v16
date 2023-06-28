@@ -2,7 +2,7 @@
 <odoo>
     <data>
 
-        <menuitem name="Products Configuration " groups="base.group_system" id="menu_action_product_custom_spt" parent="sale.sale_menu_root" sequence="250" />
+        <menuitem name="Products Configuration " groups="base.group_system,tzc_sales_customization_spt.group_marketing_user,stock.group_stock_manager" id="menu_action_product_custom_spt" parent="sale.sale_menu_root" sequence="250" />
         <menuitem name="Category" action="product.product_category_action_form" id="menu_product_category_action_form" parent="menu_action_product_custom_spt" sequence="1" />
         <menuitem name="Brand" action="action_product_brand_spt" id="menu_action_product_brand_spt" parent="menu_action_product_custom_spt" sequence="2" />
         <menuitem name="Model" action="action_product_model_spt" id="menu_action_product_model_spt" parent="menu_action_product_custom_spt" sequence="3"/>

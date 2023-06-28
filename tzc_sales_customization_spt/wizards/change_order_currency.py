@@ -26,7 +26,7 @@ class change_order_currency(models.TransientModel):
                 # For delivered type product.
                 else:
                     usd_pricelist_id = self.env.ref('tzc_sales_customization_spt.usd_public_pricelist_spt')
-                    extra_pricing = line.product_id.inflation_special_discount(self.env.user.country_id.ids,bypass_flag=rec.pricelist_id.is_pricelist_excluded)
+                    extra_pricing = line.product_id.inflation_special_discount(order_id.partner_id.country_id.ids,bypass_flag=rec.pricelist_id.is_pricelist_excluded)
                     if line.product_id.is_case_product:
                         unit_price = line.product_id.lst_price
                     else:

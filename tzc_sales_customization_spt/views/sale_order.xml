@@ -824,9 +824,6 @@
             <xpath expr="//group[@name='order_details']/div[hasclass('o_row')]" position="attributes">
                 <attribute name="invisible">1</attribute>
             </xpath>
-            <xpath expr="//page[@name='order_lines']/field[@name='order_line']" position="attributes">
-                <attribute name="invisible">1</attribute>
-            </xpath>
             <xpath expr="//page[@name='order_lines']/field[@name='order_line']" position="after">
                 <group name="non_case_product_lines" string="Products">
                 </group>
@@ -1002,6 +999,56 @@
                         <field name="company_id" invisible="1"/>
                     </tree>
                 </field>
+            </xpath>
+
+            <xpath expr="//page[@name='order_lines']/field[@name='order_line']/form/group[1]/group[1]/field[@name='price_unit']" position="replace">
+            </xpath>
+            <xpath expr="//page[@name='order_lines']/field[@name='order_line']/form/group[1]/group[1]/field[@name='tax_id']" position="replace">
+            </xpath>
+            <xpath expr="//page[@name='order_lines']/field[@name='order_line']/form/group[1]/group[1]/field[@name='product_id']" position="after">
+                <field name="is_shipping_product" invisible="1" />
+                <field name="is_global_discount" invisible="1" />
+                <field name="is_admin" invisible="1" />
+                <field name="sale_type" readonly="1" />
+                <field name="product_categ_id" readonly="1" />
+                <field name="product_uom_qty" attrs="{'readonly':['|',('parent.state', 'in', ('sale', 'done','in_scanning','scanned','scan','shipped','draft_inv','open_inv','cancel')),'|',('is_shipping_product','!=',False),'|',('is_admin','!=',False),('is_global_discount','!=',False)]}" />
+                <field name="picked_qty" readonly="1" />
+                <field name="price_unit" readonly="1" />
+                <field name="discount" attrs="{'readonly':['|','|','|',('is_admin','=',True),('is_shipping_product','=',True),('is_global_discount','=',True),('state','not in',['draft','sent','received','in_scanning','sale','scanned'])]}"/>
+                <field name="fix_discount_price" string="Disc.$" attrs="{'readonly':['|','|','|',('is_admin','=',True),('is_shipping_product','=',True),('is_global_discount','=',True),('state','not in',['draft','sent','received','in_scanning','sale','scanned'])]}" groups="product.group_discount_per_so_line" force_save="1"/>
+                <field name="unit_discount_price" attrs="{'readonly':['|','|',('is_admin','=',True),('is_global_discount','=',True),('state','not in',['draft','sent','received','in_scanning','sale','scanned'])]}"/>
+                <field name="tax_id" readonly="1" />
+                <field name="picked_qty_subtotal" readonly="1"/>
+            </xpath>
+            <xpath expr="//page[@name='order_lines']/field[@name='order_line']/form/group[1]/group[1]/label[@for='product_uom_qty']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+            <xpath expr="//page[@name='order_lines']/field[@name='order_line']/form/group[1]/group[1]/div[@name='ordered_qty']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+            <xpath expr="//page[@name='order_lines']/field[@name='order_line']/form/group[1]/group[1]/label[@for='discount']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+            <xpath expr="//page[@name='order_lines']/field[@name='order_line']/form/group[1]/group[1]/div[@name='discount']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+            <xpath expr="//page[@name='order_lines']/field[@name='order_line']/form/group[1]/group[2]" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+            <xpath expr="//page[@name='order_lines']/field[@name='order_line']/form/label[@for='name'][1]" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+            <xpath expr="//page[@name='order_lines']/field[@name='order_line']/form/label[@for='name'][2]" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+            <xpath expr="//page[@name='order_lines']/field[@name='order_line']/form/label[@for='name'][3]" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+            <xpath expr="//page[@name='order_lines']/field[@name='order_line']/form/field[@name='name']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+            <xpath expr="//page[@name='order_lines']/field[@name='order_line']/form/div[@name='invoice_lines']" position="attributes">
+                <attribute name="invisible">1</attribute>
             </xpath>
         </field>
 

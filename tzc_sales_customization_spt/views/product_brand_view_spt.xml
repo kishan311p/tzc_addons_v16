@@ -55,6 +55,7 @@
                         <group>
                             <group>
                                 <field name="brand_link" widget="url"/>
+                                <field name="sort_name" required="1"/>
                             </group>
                             <group>
                                 <!-- <field name="case_type" /> -->

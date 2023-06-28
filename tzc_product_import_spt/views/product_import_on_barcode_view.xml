@@ -26,9 +26,9 @@
                             <field name="line_ids" readonly="1">
                                 <tree>
                                     <field name="opration" optional="show"/>
-                                    <field name="image_url" />
-                                    <field name="image_secondary_url"/>
-                                    <field name="case_image_url"/>
+                                    <field name="image_url" widget="image" class="oe_avatar" options="{'zoom': true,'preview_image': 'image_url','size': [128, 128]}"/>
+                                    <field name="image_secondary_url" widget="image" class="oe_avatar" options="{'zoom': true,'preview_image': 'image_secondary_url','size': [128, 128]}"/>
+                                    <field name="case_image_url" widget="image" class="oe_avatar" options="{'zoom': true,'preview_image': 'case_image_url','size': [128, 128]}"/>
                                     <field name="name" optional="show" />
                                     <field name="internal_reference" optional="hide"/>
                                     <field name="barcode" optional="show"/>

@@ -3,6 +3,7 @@ from odoo import _, api, fields, models
 class product_import_on_barcode_line(models.Model):
     _name = 'product.import.on.barcode.line'
     _description = 'Product Import On Barcode Line'
+    _order = "id ASC"
     
     import_id = fields.Many2one('product.import.on.barcode', string='Import')
     product_id = fields.Many2one('product.product','Product')

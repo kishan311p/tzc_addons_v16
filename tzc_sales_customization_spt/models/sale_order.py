@@ -495,7 +495,7 @@ class sale_order(models.Model):
             cancel_order_ids = self.filtered(lambda x:x.state == 'cancel')
             if not cancel_order_ids:
                 for record in self:
-                    if record.state in ['draft','sent','received','sale'] or (record.state not in ['draft','sent','received','sale'] and self.env.user.has_group('tzc_sales_customization_spt.group_cancel_sale_order_rule_spt')):
+                    if record.state in ['draft','sent','received'] or (record.state not in ['draft','sent','received','sale'] and self.env.user.has_group('tzc_sales_customization_spt.group_cancel_sale_order_rule_spt')):
                         picking_ids = self.env['stock.picking'].search([('sale_id','=',record.id)])
                         if picking_ids:
                             return_ids = self.env['stock.return.picking'].search([('picking_id','in',picking_ids.ids)])
@@ -716,14 +716,14 @@ class sale_order(models.Model):
                         line.unlink()
     def unlink(self):
         for rec in self:
-            if self.env.user.has_group('base.group_system'):
-                if rec.state == 'cancel' or rec.state == 'draft':
-                    rec.picking_ids.unlink()
-                    rec.invoice_ids.unlink()
-                else:
-                    raise UserError('Order must be in Cancel or Quotation.')
+            # if self.env.user.has_group('base.group_system'):
+            if rec.state == 'cancel':
+                rec.picking_ids.unlink()
+                rec.invoice_ids.unlink()
             else:
-                raise UserError('Only administrator can delete order.')
+                raise UserError('Please cancel quotation or order in order to delete it.')
+            # else:
+            #     raise UserError('Only administrator can delete order.')
 
         return super(sale_order,self).unlink()
 

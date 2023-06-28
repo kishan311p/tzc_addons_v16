@@ -593,13 +593,13 @@
         <!-- <menuitem id="menu_product_data" name="All Product Export" action="action_product_data" groups="base.group_system" parent="sale.menu_sale_report"/> -->
 
         <record id="pending_price_product_action" model="ir.actions.act_window">
-            <field name="name">Product For Pending Price </field>
+            <field name="name">Price For Pending </field>
             <field name="res_model">product.product</field>
             <field name="view_mode">tree,form</field>
             <field name="domain">[('is_pending_price','=',True)]</field>
             <field name="context">{'default_is_pending_price' : True,'pending_price' :True}</field>
         </record>
-        <menuitem id="pending_price_product_product_menu" name="Product For Pending Price" action="pending_price_product_action"  groups="base.group_system" parent="sale.product_menu_catalog" sequence="100"/>
+        <menuitem id="pending_price_product_product_menu" name="Price For Pending" action="pending_price_product_action"  groups="base.group_system" parent="sale.product_menu_catalog" sequence="100"/>
 
         <record id="wix_product_export_action" model="ir.actions.server">
             <field name="name">Wix Products Exports</field>
